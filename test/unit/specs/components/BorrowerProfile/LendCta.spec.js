@@ -5,11 +5,17 @@ import { enableAutoUnmount, shallowMount } from '@vue/test-utils';
 import LendCta from '#src/components/BorrowerProfile/LendCta';
 import { globalOptions } from '../../../specUtils';
 
+const multiMatching = vi.hoisted(() => ({ enabled: true }));
+
 vi.mock('#src/composables/useMultiMatching', () => ({
-	default: () => ({ enableMultiMatching: ref(true), multiMatchingResolved: ref(true) }),
+	default: () => ({ enableMultiMatching: ref(multiMatching.enabled), multiMatchingResolved: ref(true) }),
 }));
 
 enableAutoUnmount(afterEach);
+
+afterEach(() => {
+	multiMatching.enabled = true;
+});
 
 function mountLendCta(props = {}) {
 	return shallowMount(LendCta, {
@@ -94,6 +100,23 @@ describe('LendCta in version b of the new user borrower profile', () => {
 
 		expect(textOf(getByTestId('bp-loan-matching-text')))
 			.toBe('2x matching by Capital One, 3x matching by ACI Worldwide, and 2x matching by a Kiva supporter');
+	});
+
+	it('shows the single matching partner when multi matching is off, even if the loan has several', () => {
+		multiMatching.enabled = false;
+		const { getByTestId } = renderVersionB({
+			matchingText: 'Walton Family Foundation',
+			matchRatio: 1,
+			loanAmount: '15000.00',
+			loanFundraisingInfo: { fundedAmount: '8000.00', reservedAmount: '0.00' },
+			simultaneousMatching: [
+				{ managedAccountId: 1, displayName: 'Capital One', ratio: 1 },
+				{ managedAccountId: 2, displayName: 'ACI Worldwide', ratio: 2 },
+			],
+		});
+
+		expect(textOf(getByTestId('bp-loan-matching-text')))
+			.toBe('2x matching by Walton Family Foundation while funds last');
 	});
 
 	it('leaves no matching text in place for a loan without matching', () => {
