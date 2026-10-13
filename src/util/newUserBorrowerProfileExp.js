@@ -5,7 +5,8 @@ import experimentVersionFragment from '#src/graphql/fragments/experimentVersion.
 export const NEW_USER_BP_EXP_KEY = 'new_user_borrower_profile';
 export const NEW_USER_BP_EXP_EVENT_ACTION = 'EXP-MP-3035-Oct2026';
 
-// Injection key for components under the borrower profile page
+// Injection key for components under the borrower profile page; the provided value is a boolean:
+// true when the visitor sees the new user version
 export const NEW_USER_BP_EXP_INJECT_KEY = 'newUserBorrowerProfileExp';
 
 /**

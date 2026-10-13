@@ -1,5 +1,7 @@
+/* eslint-disable import/no-extraneous-dependencies */
 import { ref } from 'vue';
 import { render } from '@testing-library/vue';
+import { enableAutoUnmount, shallowMount } from '@vue/test-utils';
 import LendCta from '#src/components/BorrowerProfile/LendCta';
 import { globalOptions } from '../../../specUtils';
 
@@ -7,25 +9,62 @@ vi.mock('#src/composables/useMultiMatching', () => ({
 	default: () => ({ enableMultiMatching: ref(true), multiMatchingResolved: ref(true) }),
 }));
 
+enableAutoUnmount(afterEach);
+
+function mountLendCta(props = {}) {
+	return shallowMount(LendCta, {
+		props: {
+			loanId: 123,
+			loanData: {
+				id: 123,
+				status: 'fundraising',
+				name: 'Maria',
+				loanAmount: '500',
+				unreservedAmount: '400',
+				loanFundraisingInfo: { fundedAmount: '100', reservedAmount: '0', isExpiringSoon: false },
+				lenders: { totalCount: 3 },
+			},
+			...props,
+		},
+		global: {
+			...globalOptions,
+			renderStubDefaultSlot: true,
+			mocks: { ...globalOptions.mocks, $route: { params: { id: '123' }, query: {} } },
+		},
+	});
+}
+
+describe('LendCta jump links', () => {
+	it('shows the divider and the jump links by default (control layout)', () => {
+		const wrapper = mountLendCta();
+
+		expect(wrapper.find('hr').exists()).toBe(true);
+		expect(wrapper.find('[data-testid="bp-lend-cta-jump-links"]').exists()).toBe(true);
+	});
+
+	it('hides the divider and the jump links when hideJumpLinks is on', () => {
+		const wrapper = mountLendCta({ hideJumpLinks: true });
+
+		expect(wrapper.find('hr').exists()).toBe(false);
+		expect(wrapper.find('[data-testid="bp-lend-cta-jump-links"]').exists()).toBe(false);
+	});
+});
+
 const textOf = element => element.textContent.replace(/\s+/g, ' ').trim();
 
+// Mounted the way FullBorrowerProfile mounts the lend box in the new user version
 function renderVersionB(loan = {}) {
 	return render(LendCta, {
-		props: { loanData: { id: 1, status: 'fundraising', ...loan }, newUserBpEnabled: true },
-		slots: { sharebutton: '<button>Share</button>' },
+		props: {
+			loanData: { id: 1, status: 'fundraising', ...loan },
+			newUserBpEnabled: true,
+			hideJumpLinks: true,
+		},
 		global: { ...globalOptions, stubs: { KvAtbModalContainer: true } },
 	});
 }
 
 describe('LendCta in version b of the new user borrower profile', () => {
-	it('has no share button and no "Borrower story" or "Loan details" links', () => {
-		const { queryByText, queryByTestId } = renderVersionB();
-
-		expect(queryByText('Share')).toBeNull();
-		expect(queryByTestId('bp-jump-link-borrower-story')).toBeNull();
-		expect(queryByTestId('bp-jump-link-loan-details')).toBeNull();
-	});
-
 	it('shows the 501(c)3 status and the Charity Navigator rating as plain text with four stars', () => {
 		const row = renderVersionB().getByTestId('bp-nonprofit-trust-row');
 
