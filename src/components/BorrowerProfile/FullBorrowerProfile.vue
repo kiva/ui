@@ -19,12 +19,29 @@
 				<summary-card
 					data-testid="bp-summary"
 					class="tw-relative lg:tw--mb-1.5"
+					:class="{
+						'tw-bg-primary tw--mx-2.5 tw-px-2.5 tw-shadow-lg md:tw-mx-0 md:tw-shadow-transparent':
+							isNewUserBpVariant,
+					}"
 					:loan="loanData"
 					:is-logged-in="isLoggedIn"
 					:show-actions="isNewUserBpVariant"
 					@share="openShareLightbox"
 					@loan-details="scrollToLoanDetails"
-				/>
+				>
+					<!-- Below desktop there is no separate lend box, so these show in the top card -->
+					<template v-if="isNewUserBpVariant" #footer>
+						<div class="lg:tw-hidden">
+							<hr class="tw-border-tertiary tw-mt-3">
+							<nonprofit-trust-row class="tw-py-2" />
+							<loan-matching-info
+								class="tw-pb-1"
+								:loan="loanData"
+								tooltip-id="top-card-matching-tooltip"
+							/>
+						</div>
+					</template>
+				</summary-card>
 				<!-- New user version: the share lightbox opens from the top card, so its own trigger is hidden.
 					Lives outside the lend box because that slot is dropped while the lend box is sticky;
 					rendered only once the loan has loaded, as today. -->
@@ -53,6 +70,7 @@
 						:enable-five-dollars-notes="enableFiveDollarsNotes"
 						:show-details-in-rail="showDetailsInRail"
 						:hide-jump-links="isNewUserBpVariant"
+						:new-user-bp-enabled="isNewUserBpVariant"
 					>
 						<!-- Share button; the new user version shows it in the top card instead -->
 						<template v-if="!isNewUserBpVariant" #sharebutton>
@@ -201,6 +219,8 @@ import LoanTags from '#src/components/BorrowerProfile/LoanTags';
 import LoanComments from '#src/components/BorrowerProfile/LoanComments';
 import LoanDetailsRailToggle from '#src/components/BorrowerProfile/LoanDetailsRailToggle';
 import DefinitionsLightbox from '#src/components/BorrowerProfile/DefinitionsLightbox';
+import NonprofitTrustRow from '#src/components/BorrowerProfile/NonprofitTrustRow';
+import LoanMatchingInfo from '#src/components/BorrowerProfile/LoanMatchingInfo';
 import smoothScrollMixin from '#src/plugins/smooth-scroll-mixin';
 import HowKivaWorksLightbox from '#src/components/BorrowerProfile/HowKivaWorksLightbox';
 import {
@@ -279,6 +299,8 @@ export default {
 		LoanDetailsRailToggle,
 		KvLoadingPlaceholder,
 		DefinitionsLightbox,
+		NonprofitTrustRow,
+		LoanMatchingInfo,
 		HowKivaWorksLightbox,
 	},
 	mixins: [smoothScrollMixin],
