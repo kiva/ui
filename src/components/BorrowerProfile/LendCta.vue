@@ -214,7 +214,14 @@
 
 					</span>
 
-					<slot v-if="!isSticky" name="sharebutton"></slot>
+					<loan-matching-info
+						v-if="newUserBpEnabled"
+						class="tw-hidden lg:tw-flex tw-mb-2"
+						:loan="loan"
+						tooltip-id="lend-box-matching-tooltip"
+						tooltip-placement="bottom"
+					/>
+					<slot v-if="!isSticky && !newUserBpEnabled" name="sharebutton"></slot>
 					<p
 						v-if="freeCreditWarning"
 						class="tw-text-upper tw-text-secondary tw-inline-block tw-text-center tw-w-full tw-mb-3"
@@ -229,7 +236,12 @@
 					>
 						All shares reserved
 					</p>
+					<template v-if="newUserBpEnabled">
+						<hr class="tw-hidden lg:tw-block tw-border-tertiary tw-w-full tw-my-2">
+						<nonprofit-trust-row class="tw-hidden lg:tw-flex tw-mb-2" />
+					</template>
 					<hr
+						v-else
 						class="lg:tw-block tw-border-tertiary tw-w-full tw-my-2"
 						:class="[
 							{
@@ -247,6 +259,7 @@
 								'tw-justify-end': !isLoggedIn,
 								'tw-hidden': isSticky,
 								'lg:tw-hidden': showDetailsInRail,
+								'md:tw-mb-2 lg:tw-mb-0': newUserBpEnabled,
 							}
 						]"
 					>
@@ -257,6 +270,7 @@
 							class="tw-inline-block lg:tw-hidden"
 						/>
 						<jump-links
+							v-if="!newUserBpEnabled"
 							class="tw-block lg:tw-mb-1.5 md:tw-mb-3"
 							data-testid="bp-lend-cta-jump-links"
 						/>
@@ -398,6 +412,8 @@ import LoanBookmark from '#src/components/BorrowerProfile/LoanBookmark';
 import LendAmountButton from '#src/components/LoanCards/Buttons/LendAmountButton';
 import CompleteLoanWrapper from '#src/components/BorrowerProfile/CompleteLoanWrapper';
 import SimultaneousMatchingInfo from '#src/components/BorrowerProfile/SimultaneousMatchingInfo';
+import LoanMatchingInfo from '#src/components/BorrowerProfile/LoanMatchingInfo';
+import NonprofitTrustRow from '#src/components/BorrowerProfile/NonprofitTrustRow';
 
 import KvIcon from '#src/components/Kv/KvIcon';
 import {
@@ -518,6 +534,10 @@ export default {
 			type: Boolean,
 			default: false,
 		},
+		newUserBpEnabled: {
+			type: Boolean,
+			default: false,
+		},
 	},
 	components: {
 		LendAmountButton,
@@ -531,6 +551,8 @@ export default {
 		CompleteLoanWrapper,
 		KvAtbModalContainer,
 		SimultaneousMatchingInfo,
+		LoanMatchingInfo,
+		NonprofitTrustRow,
 	},
 	setup() {
 		const { enableMultiMatching, multiMatchingResolved } = useMultiMatching();
@@ -627,7 +649,10 @@ export default {
 				this.basketSize = data?.shop?.nonTrivialItemCount || 0;
 				this.userLoading = false;
 
-				this.initializeMatchingHighlightExp();
+				// The new user version shows its own matching text instead of the matching highlight
+				if (!this.newUserBpEnabled) {
+					this.initializeMatchingHighlightExp();
+				}
 			},
 		},
 	],
@@ -705,7 +730,7 @@ export default {
 			);
 		},
 		advanceStatsSlot() {
-			this.currentSlotStat = getNextSlotStat(this.possibleStats, this.currentSlotStat);
+			this.currentSlotStat = getNextSlotStat(this.rotatingStats, this.currentSlotStat);
 		},
 		cycleStatsSlot() {
 			// Function can be skipped if slot machine interval is already set
@@ -784,7 +809,8 @@ export default {
 		simultaneousMatchingVisibility() {
 			return this.enableMultiMatching
 				&& this.simultaneousMatching.length > 0
-				&& this.status === 'fundraising';
+				&& this.status === 'fundraising'
+				&& !this.newUserBpEnabled;
 		},
 		matchingTextVisibility() {
 			return this.possibleStats.includes('matchingText');
@@ -799,8 +825,15 @@ export default {
 				enableMultiMatching: this.enableMultiMatching,
 			});
 		},
+		// The new user version shows matching in its own line, so it leaves the rotating stats
+		rotatingStats() {
+			if (this.newUserBpEnabled) {
+				return this.possibleStats.filter(stat => stat !== 'matchingText');
+			}
+			return this.possibleStats;
+		},
 		displayedSlotStat() {
-			return getDisplayedStat(this.possibleStats, this.currentSlotStat);
+			return getDisplayedStat(this.rotatingStats, this.currentSlotStat);
 		},
 		statsSlotVisibility() {
 			return !!this.displayedSlotStat;

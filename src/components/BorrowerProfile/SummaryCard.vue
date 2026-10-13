@@ -142,6 +142,7 @@
 			/>
 		</div>
 		<slot name="sharebutton"></slot>
+		<slot name="footer"></slot>
 	</section>
 </template>
 

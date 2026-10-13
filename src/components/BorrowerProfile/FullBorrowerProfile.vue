@@ -19,9 +19,25 @@
 				<summary-card
 					data-testid="bp-summary"
 					class="tw-relative lg:tw--mb-1.5"
+					:class="{
+						'new-user-top-card tw-bg-primary tw--mx-2.5 tw-px-2.5 md:tw-mx-0': newUserBpEnabled,
+					}"
 					:loan="loanData"
 					:is-logged-in="isLoggedIn"
-				/>
+				>
+					<!-- Below desktop there is no separate lend box, so these show in the top card -->
+					<template v-if="newUserBpEnabled" #footer>
+						<div class="lg:tw-hidden">
+							<hr class="tw-border-tertiary tw-mt-3">
+							<nonprofit-trust-row class="tw-py-2" />
+							<loan-matching-info
+								class="tw-pb-1"
+								:loan="loanData"
+								tooltip-id="top-card-matching-tooltip"
+							/>
+						</div>
+					</template>
+				</summary-card>
 			</content-container>
 		</div>
 		<div
@@ -38,6 +54,7 @@
 						:loan-data="loanData"
 						:enable-five-dollars-notes="enableFiveDollarsNotes"
 						:show-details-in-rail="showDetailsInRail"
+						:new-user-bp-enabled="newUserBpEnabled"
 					>
 						<template #sharebutton>
 							<!-- Share button -->
@@ -187,6 +204,9 @@ import LoanTags from '#src/components/BorrowerProfile/LoanTags';
 import LoanComments from '#src/components/BorrowerProfile/LoanComments';
 import LoanDetailsRailToggle from '#src/components/BorrowerProfile/LoanDetailsRailToggle';
 import DefinitionsLightbox from '#src/components/BorrowerProfile/DefinitionsLightbox';
+import NonprofitTrustRow from '#src/components/BorrowerProfile/NonprofitTrustRow';
+import LoanMatchingInfo from '#src/components/BorrowerProfile/LoanMatchingInfo';
+import { NEW_USER_BP_EXP_INJECT_KEY } from '#src/util/newUserBorrowerProfileExp';
 import {
 	getLocalRailPreference,
 	readAccountRailPreference,
@@ -262,8 +282,14 @@ export default {
 		LoanDetailsRailToggle,
 		KvLoadingPlaceholder,
 		DefinitionsLightbox,
+		NonprofitTrustRow,
+		LoanMatchingInfo,
 	},
-	inject: ['apollo', 'cookieStore'],
+	inject: {
+		apollo: { from: 'apollo' },
+		cookieStore: { from: 'cookieStore' },
+		newUserBpExpVersion: { from: NEW_USER_BP_EXP_INJECT_KEY, default: null },
+	},
 	provide() {
 		return {
 			// One definitions lightbox for the BP page; children call this with their cid/sfid.
@@ -356,6 +382,9 @@ export default {
 		isLoggedIn() {
 			return !!this.lender?.id;
 		},
+		newUserBpEnabled() {
+			return this.newUserBpExpVersion === 'b';
+		},
 		isPrivileged() {
 			return this.loanData?.userProperties?.isPrivileged ?? false;
 		},
@@ -405,3 +434,13 @@ export default {
 	},
 };
 </script>
+
+<style lang="postcss" scoped>
+.new-user-top-card {
+	@apply tw-shadow-lg;
+
+	@screen md {
+		box-shadow: none;
+	}
+}
+</style>
