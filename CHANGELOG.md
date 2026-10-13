@@ -1,3 +1,47 @@
+## [3.97.0](https://github.com/kiva/ui/compare/v3.96.0...v3.97.0) (2026-10-13)
+
+### 🎉 New Features
+
+* [MP-3207] reduce goal recap drop-off between screens 1 and 2 ([#7290](https://github.com/kiva/ui/issues/7290)) ([e780dfe](https://github.com/kiva/ui/commit/e780dfecf1722d910e7a68117fd541140b69b889))
+* [MP-3235] - done ([#7292](https://github.com/kiva/ui/issues/7292)) ([09e463a](https://github.com/kiva/ui/commit/09e463ac4af1f5a4682aa8219278056ff395a398))
+* add experiment assignment tracking for new bp variation ([#7314](https://github.com/kiva/ui/issues/7314)) ([d9e6e5c](https://github.com/kiva/ui/commit/d9e6e5ced5326ffaa3d95816a32cb850fe5f2cd3))
+* add share button to mykiva borrower carousel ([#7312](https://github.com/kiva/ui/issues/7312)) ([3f389e5](https://github.com/kiva/ui/commit/3f389e5fa2207f9134c321aa5d781a7c21fb9d98))
+* additional padding ([9a82e12](https://github.com/kiva/ui/commit/9a82e128f9bb5ce1ff2a4daea998fafd2f4d3aa9))
+* goal in review complete in goal year share cta ([#7313](https://github.com/kiva/ui/issues/7313)) ([77b0942](https://github.com/kiva/ui/commit/77b0942f6cd90c8212866b7cc18462f60a987c57))
+* migrate privacy policy legal page out of monolith into ui ([996d0e4](https://github.com/kiva/ui/commit/996d0e462f8ebef6290a24c8294f95f23e061f7e))
+* move tip copy testing from optimizely ([#7310](https://github.com/kiva/ui/issues/7310)) ([0272baf](https://github.com/kiva/ui/commit/0272baf2a67f0d265669ce1ab23231bc9a6e8a7c)), closes [#7300](https://github.com/kiva/ui/issues/7300) [#7306](https://github.com/kiva/ui/issues/7306) [#7309](https://github.com/kiva/ui/issues/7309)
+* **MP-3234:** reorder thanks page modules for first loan users ([f4b9409](https://github.com/kiva/ui/commit/f4b940907d96361290a153dbfbcff59855a1e45d))
+* update KvPill usage for kv-components 11 ([#7316](https://github.com/kiva/ui/issues/7316)) ([788b643](https://github.com/kiva/ui/commit/788b643e11ce850d70f3be0841ff7fa0c6fe96c2))
+
+### 🐛 Bugfixes
+
+* [MP-3207] keep the fundraisers info icon below modals ([#7296](https://github.com/kiva/ui/issues/7296)) ([654b34c](https://github.com/kiva/ui/commit/654b34c0de60d8f032c761703582a6584fbb7115))
+* [MP-3270] reuse goal recap data when the recap is reopened ([#7297](https://github.com/kiva/ui/issues/7297)) ([c80d5d7](https://github.com/kiva/ui/commit/c80d5d70c11dcb0bc01598abdc864f499ec0a37b))
+* [MP-3274] restore goal recap screen 3 top padding and whiten scrollbar track ([#7298](https://github.com/kiva/ui/issues/7298)) ([0594a51](https://github.com/kiva/ui/commit/0594a51fab702c73876cd2d210a1e213da9291dd))
+* add click tracking ([44bcb73](https://github.com/kiva/ui/commit/44bcb736a032688e968140aaf6c49db0a82ffed0))
+* add target _blank to open links in new tabs ([9c1cf97](https://github.com/kiva/ui/commit/9c1cf97972c7b65880debb3f9b09f14af7bd7dae))
+* cleanup upsell experimentation and assignment ([#7324](https://github.com/kiva/ui/issues/7324)) ([02a56c4](https://github.com/kiva/ui/commit/02a56c408d6dccbac9ffbdc2be31a2b6e2b0331e))
+* improvements to custom tip experiment ([#7284](https://github.com/kiva/ui/issues/7284)) ([14c1051](https://github.com/kiva/ui/commit/14c105116027bfe3884f592957f0695dfb1711cf))
+* mp-3258 request estimated repayments grouped by the 1st they are due by ([#7294](https://github.com/kiva/ui/issues/7294)) ([e46d238](https://github.com/kiva/ui/commit/e46d2388b447e576ed81ec848a9ab6a3422e901f))
+* new key and action for second bandit experiment run ([#7317](https://github.com/kiva/ui/issues/7317)) ([7c69890](https://github.com/kiva/ui/commit/7c69890ca30a8a55beb3c9743919d104c71fdeda))
+* **OneTrust:** only set test suffix if env var is not set AD-552 ([66d80bf](https://github.com/kiva/ui/commit/66d80bfcb0034f0f4528e111005150811c29719f))
+* prevent double count on mykiva goal card ([#7289](https://github.com/kiva/ui/issues/7289)) ([91aa59f](https://github.com/kiva/ui/commit/91aa59fca1b1e2feb3db9704fdb15d9d601582c6))
+* resolve several minor issues ([#7283](https://github.com/kiva/ui/issues/7283)) ([8c49329](https://github.com/kiva/ui/commit/8c49329be2e2437fd16dbc694d405fbce3a8ee8f))
+* **server:** drop the path label from request duration metrics ([da0cc47](https://github.com/kiva/ui/commit/da0cc4721ce748c653ebf28eb8025fbe1b3e196f))
+* tweak to ensure sitemap builds ([#7285](https://github.com/kiva/ui/issues/7285)) ([ea0ed92](https://github.com/kiva/ui/commit/ea0ed9254239e5208f8f561fda963a0a7a5d0b42))
+* update click tracker category ([93808c4](https://github.com/kiva/ui/commit/93808c444b868f5da8ea2ea17d9f88148edc2f4e))
+* upsell also hidden when basket empty ([#7325](https://github.com/kiva/ui/issues/7325)) ([d4112da](https://github.com/kiva/ui/commit/d4112dad1db923e733cf20516c93b82b18ad8f5d))
+
+### 🏗️ Build System
+
+* adopt the bypass_gate release input ([9fe8edb](https://github.com/kiva/ui/commit/9fe8edbad34f4637b604d4c0e9861abcd24ddae0))
+
+### 🧹 Chores
+
+* bump kv-analytics version to fix ftd meta tracking ([37c8af2](https://github.com/kiva/ui/commit/37c8af24aec9de3d7ede31534faf6fed384134e0))
+* **release:** 3.97.0-rc.1 [skip ci] ([f34adcf](https://github.com/kiva/ui/commit/f34adcf0aae2b3da56acdad28a03199c783c8914)), closes [#7290](https://github.com/kiva/ui/issues/7290) [#7292](https://github.com/kiva/ui/issues/7292) [#7296](https://github.com/kiva/ui/issues/7296) [#7297](https://github.com/kiva/ui/issues/7297) [#7298](https://github.com/kiva/ui/issues/7298) [#7284](https://github.com/kiva/ui/issues/7284) [#7289](https://github.com/kiva/ui/issues/7289) [#7283](https://github.com/kiva/ui/issues/7283) [#7285](https://github.com/kiva/ui/issues/7285)
+* **release:** 3.97.0-rc.2 [skip ci] ([6df35c8](https://github.com/kiva/ui/commit/6df35c86c4670d10aa3b79c6a8bbbed890c2aca8)), closes [#7314](https://github.com/kiva/ui/issues/7314) [#7312](https://github.com/kiva/ui/issues/7312) [#7313](https://github.com/kiva/ui/issues/7313) [#7300](https://github.com/kiva/ui/issues/7300) [#7306](https://github.com/kiva/ui/issues/7306) [#7309](https://github.com/kiva/ui/issues/7309) [#7316](https://github.com/kiva/ui/issues/7316) [#7324](https://github.com/kiva/ui/issues/7324) [#7294](https://github.com/kiva/ui/issues/7294) [#7317](https://github.com/kiva/ui/issues/7317) [#7325](https://github.com/kiva/ui/issues/7325)
+
 ## [3.97.0-rc.2](https://github.com/kiva/ui/compare/v3.97.0-rc.1...v3.97.0-rc.2) (2026-10-09)
 
 ### 🎉 New Features
