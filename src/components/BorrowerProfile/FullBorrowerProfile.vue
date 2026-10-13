@@ -171,6 +171,10 @@
 			/>
 		</content-container>
 		<definitions-lightbox ref="definitionsLightbox" />
+		<how-kiva-works-lightbox
+			:visible="showHowKivaWorks"
+			@lightbox-closed="showHowKivaWorks = false"
+		/>
 	</article>
 </template>
 
@@ -198,6 +202,7 @@ import LoanComments from '#src/components/BorrowerProfile/LoanComments';
 import LoanDetailsRailToggle from '#src/components/BorrowerProfile/LoanDetailsRailToggle';
 import DefinitionsLightbox from '#src/components/BorrowerProfile/DefinitionsLightbox';
 import smoothScrollMixin from '#src/plugins/smooth-scroll-mixin';
+import HowKivaWorksLightbox from '#src/components/BorrowerProfile/HowKivaWorksLightbox';
 import {
 	getLocalRailPreference,
 	readAccountRailPreference,
@@ -274,6 +279,7 @@ export default {
 		LoanDetailsRailToggle,
 		KvLoadingPlaceholder,
 		DefinitionsLightbox,
+		HowKivaWorksLightbox,
 	},
 	mixins: [smoothScrollMixin],
 	inject: {
@@ -352,6 +358,7 @@ export default {
 			showDetailsInRail: this.initialShowDetailsInRail,
 			userPreferences: null,
 			isShareLightboxOpen: false,
+			showHowKivaWorks: false,
 		};
 	},
 	methods: {
