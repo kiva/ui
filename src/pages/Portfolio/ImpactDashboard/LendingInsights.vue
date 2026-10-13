@@ -5,9 +5,54 @@
 		data-testid="lending-insights"
 		class="!tw-bg-eco-green-4"
 	>
-		<h2 class="tw-text-title !tw-font-serif tw-mb-3 md:tw-mb-2 tw-text-white tw-text-center md:tw-text-left">
-			Your lending insights
-		</h2>
+		<div class="tw-flex tw-items-center tw-justify-between tw-gap-2 tw-mb-3 md:tw-mb-2">
+			<h2 class="tw-text-title !tw-font-serif tw-text-white">
+				Your lending insights
+			</h2>
+			<KvButton
+				v-if="!loading && lifetimeNumberOfLoans > 0"
+				variant="link"
+				class="tw-shrink-0"
+				size="small"
+				data-testid="lending-stats-share-button"
+				@click="openShare"
+			>
+				<span class="tw-inline-flex tw-items-center tw-gap-1 tw-text-base tw-text-eco-green">
+					<kv-material-icon :icon="mdiExportVariant" class="tw-w-2 tw-h-2 tw--mt-0.5" />
+					Share
+				</span>
+			</KvButton>
+		</div>
+		<kv-social-share-button
+			v-if="shareMounted"
+			variant="hidden"
+			tracking-category="portfolio"
+			modal-title="Share your lending impact"
+			compact-buttons
+			fixed-width-modal
+			:open-lightbox="isShareOpen"
+			:share-message="modifiedShareMessage.trim() || shareMessage"
+			share-url="/"
+			:utm-campaign="SHARE_CAMPAIGN"
+			@lightbox-closed="isShareOpen = false"
+		>
+			<template #modal-content>
+				<div class="tw-relative">
+					<textarea
+						class="tw-w-full tw-border tw-border-tertiary tw-rounded-xs tw-h-12 tw-p-2 tw-bg-gray-100"
+						style="height: 10rem;"
+						data-testid="lending-stats-share-message"
+						aria-label="Share message"
+						v-model="modifiedShareMessage"
+					>
+					</textarea>
+					<kv-material-icon
+						class="tw-w-2.5 tw-h-2.5 tw-absolute tw-bottom-2 tw-right-1.5"
+						:icon="mdiTextBoxEditOutline"
+					/>
+				</div>
+			</template>
+		</kv-social-share-button>
 		<kv-grid as="dl" class="stats-container">
 			<div class="tw-col-span-12 md:tw-col-span-6 lg:tw-col-span-3">
 				<kv-loading-placeholder v-if="loading" class="stat-placeholder" style="width: 7rem;" />
@@ -317,11 +362,15 @@
 import { gql } from 'graphql-tag';
 import numeral from 'numeral';
 import getCacheKey from '#src/util/getCacheKey';
-import { mdiArrowRight, mdiClockOutline } from '@mdi/js';
 import {
+	mdiArrowRight, mdiClockOutline, mdiExportVariant, mdiTextBoxEditOutline,
+} from '@mdi/js';
+import {
+	KvButton,
 	KvGrid, KvLoadingPlaceholder, KvMaterialIcon, KvTab, KvTabPanel, KvTabs,
 } from '@kiva/kv-components';
 import { differenceInCalendarDays } from 'date-fns';
+import KvSocialShareButton from '#src/components/Kv/KvSocialShareButton';
 import AsyncPortfolioSection from './AsyncPortfolioSection';
 
 const LENDING_INSIGHTS_LIFETIME_QUERY = gql`query lendingInsights {
@@ -347,6 +396,9 @@ const LENDING_INSIGHTS_LIFETIME_QUERY = gql`query lendingInsights {
 const MAX_PERCENTILE = 99;
 const SUPER_LENDER_THRESHOLD = 10000;
 const DEFAULT_NEXT_THRESHOLD = '$25';
+const SHARE_CAMPAIGN = 'social_share_portfolio_lending_stats';
+
+const pluralize = (count, singular, plural) => `${numeral(count).format('0,0')} ${count === 1 ? singular : plural}`;
 
 const toNumber = value => {
 	const parsedValue = numeral(value ?? 0).value();
@@ -363,14 +415,19 @@ export default {
 		KvTab,
 		KvTabPanel,
 		KvTabs,
+		KvButton,
+		KvSocialShareButton,
 	},
 	inject: ['apollo', 'cookieStore'],
 	serverCacheKey: () => getCacheKey('LendingInsights'),
 	data() {
 		return {
 			MAX_PERCENTILE,
+			SHARE_CAMPAIGN,
 			mdiArrowRight,
 			mdiClockOutline,
+			mdiExportVariant,
+			mdiTextBoxEditOutline,
 			loading: true,
 			currentYearLoadingPromise: null,
 			lifetimeLoadingPromise: null,
@@ -387,6 +444,9 @@ export default {
 			lifetimeCountryCount: 0,
 			lifetimeNumberOfLoans: 0,
 			lifetimePercentile: 0,
+			shareMounted: false,
+			isShareOpen: false,
+			modifiedShareMessage: '',
 		};
 	},
 	computed: {
@@ -400,6 +460,14 @@ export default {
 		},
 		totalDepositsOver10K() {
 			return (this.totalDepositsValue ?? 0) >= SUPER_LENDER_THRESHOLD;
+		},
+		shareMessage() {
+			const loans = pluralize(this.lifetimeNumberOfLoans, 'loan', 'loans');
+			const countries = pluralize(this.lifetimeCountryCount, 'country', 'countries');
+			return `I've made ${loans} in ${countries} through #Kiva. When a loan repays, I re-lend it to someone new. `
+				+ 'Kiva is a nonprofit that lets you lend as little as $25 to people who need a hand up. '
+				+ 'You\'re not just donating, you\'re telling someone you believe in them when others won\'t.'
+				+ '\nGive it a try! Kiva.org';
 		},
 	},
 	apollo: {
@@ -437,6 +505,15 @@ export default {
 			} catch {
 				// Cache miss is expected outside SSR-prefetched renders.
 			}
+		},
+		openShare() {
+			this.$kvTrackEvent('portfolio', 'click', 'lending-stats-share');
+			// Seed once so the lender's edits survive closing and reopening, like the borrower profile share
+			if (!this.shareMounted) {
+				this.modifiedShareMessage = this.shareMessage;
+			}
+			this.shareMounted = true;
+			this.isShareOpen = true;
 		},
 		setActiveTab(tab) {
 			if (tab === 0) {
