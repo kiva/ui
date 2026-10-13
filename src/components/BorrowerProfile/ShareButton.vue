@@ -61,8 +61,7 @@ export default {
 			modifiedShareMessage: '',
 			mdiPencilOutline,
 			borrowedLoanId: null,
-			// A share=true deep link forces the lightbox open once; cleared when it closes
-			openedFromQuery: this.$route?.query?.share === 'true',
+			openedFromQuery: this.$route?.query?.share === 'true', // see forceLightbox
 		};
 	},
 	inject: ['apollo', 'cookieStore'],

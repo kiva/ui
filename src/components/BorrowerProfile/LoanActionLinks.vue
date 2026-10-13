@@ -2,7 +2,10 @@
 	<div class="tw-flex tw-items-center tw-justify-end tw-gap-3 tw-w-full">
 		<button
 			type="button"
-			class="tw-inline-flex tw-items-center tw-gap-0.5 tw-text-action tw-text-button-link hover:tw-underline"
+			class="
+				tw-inline-flex tw-items-center tw-gap-0.5 tw-min-h-4
+				tw-text-action tw-text-button-link hover:tw-underline
+			"
 			data-testid="bp-summary-loan-details-link"
 			@click="$emit('loan-details')"
 		>
@@ -11,7 +14,10 @@
 		</button>
 		<button
 			type="button"
-			class="tw-inline-flex tw-items-center tw-gap-0.5 tw-text-action tw-text-button-link hover:tw-underline"
+			class="
+				tw-inline-flex tw-items-center tw-gap-0.5 tw-min-h-4
+				tw-text-action tw-text-button-link hover:tw-underline
+			"
 			data-testid="bp-summary-share-link"
 			@click="$emit('share')"
 		>

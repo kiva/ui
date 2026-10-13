@@ -1,16 +1,12 @@
 /* eslint-disable import/no-extraneous-dependencies */
-import { shallowMount } from '@vue/test-utils';
+import { enableAutoUnmount, shallowMount } from '@vue/test-utils';
 import FullBorrowerProfile from '#src/components/BorrowerProfile/FullBorrowerProfile';
 import SummaryCard from '#src/components/BorrowerProfile/SummaryCard';
 import ShareButton from '#src/components/BorrowerProfile/ShareButton';
 import { NEW_USER_BP_EXP_INJECT_KEY } from '#src/util/newUserBorrowerProfileExp';
-import { smoothScrollTo } from '#src/plugins/smooth-scroll-mixin';
 import { globalOptions } from '../../../specUtils';
 
-vi.mock('#src/plugins/smooth-scroll-mixin', () => ({
-	smoothScrollTo: vi.fn(),
-	default: { methods: {} },
-}));
+enableAutoUnmount(afterEach);
 
 const {
 	isAnonymized,
@@ -108,7 +104,7 @@ describe('FullBorrowerProfile updates section visibility', () => {
 
 describe('FullBorrowerProfile new user version', () => {
 	const { isNewUserBpVariant } = FullBorrowerProfile.computed;
-	const { openShareLightbox, scrollToLoanDetails } = FullBorrowerProfile.methods ?? {};
+	const { openShareLightbox, scrollToLoanDetails } = FullBorrowerProfile.methods;
 
 	describe('isNewUserBpVariant', () => {
 		it.each([
@@ -137,7 +133,6 @@ describe('FullBorrowerProfile new user version', () => {
 		let section;
 
 		beforeEach(() => {
-			smoothScrollTo.mockClear();
 			section = document.createElement('div');
 			section.id = 'loanDetails';
 			Object.defineProperty(section, 'offsetTop', { value: 1234 });
@@ -148,23 +143,22 @@ describe('FullBorrowerProfile new user version', () => {
 			section.remove();
 		});
 
-		it('smooth-scrolls to the loan details section like the jump link does, and never opens the rail', () => {
-			const ctx = { showDetailsInRail: false, $kvTrackEvent: vi.fn() };
+		it('smooth-scrolls to the loan details section like the jump link does', () => {
+			const ctx = { smoothScrollTo: vi.fn(), $kvTrackEvent: vi.fn() };
 
 			scrollToLoanDetails.call(ctx);
 
-			expect(smoothScrollTo).toHaveBeenCalledWith({ yPosition: 1234, millisecondsToAnimate: 750 });
-			expect(ctx.showDetailsInRail).toBe(false);
+			expect(ctx.smoothScrollTo).toHaveBeenCalledWith({ yPosition: 1234, millisecondsToAnimate: 750 });
 			expect(ctx.$kvTrackEvent).toHaveBeenCalledWith('Borrower profile', 'click-jump-link', 'Loan details');
 		});
 
 		it('scrolls to the top when the section is not in the DOM yet', () => {
 			section.remove();
-			const ctx = { showDetailsInRail: false, $kvTrackEvent: vi.fn() };
+			const ctx = { smoothScrollTo: vi.fn(), $kvTrackEvent: vi.fn() };
 
 			scrollToLoanDetails.call(ctx);
 
-			expect(smoothScrollTo).toHaveBeenCalledWith({ yPosition: 0, millisecondsToAnimate: 750 });
+			expect(ctx.smoothScrollTo).toHaveBeenCalledWith({ yPosition: 0, millisecondsToAnimate: 750 });
 		});
 	});
 
@@ -245,14 +239,13 @@ describe('FullBorrowerProfile new user version', () => {
 			expect(wrapper.findComponent(ShareButton).props('openLightbox')).toBe(true);
 		});
 
-		it('version b scrolls to the details on loan-details and leaves the rail closed', async () => {
+		it('version b scrolls to the details on loan-details and leaves the rail closed', () => {
 			const wrapper = mountProfile({ version: 'b' });
-			smoothScrollTo.mockClear();
+			const scrollSpy = vi.spyOn(wrapper.vm, 'smoothScrollTo').mockImplementation(() => {});
 
 			wrapper.findComponent(SummaryCard).vm.$emit('loan-details');
-			await wrapper.vm.$nextTick();
 
-			expect(smoothScrollTo).toHaveBeenCalledTimes(1);
+			expect(scrollSpy).toHaveBeenCalledTimes(1);
 			expect(wrapper.vm.showDetailsInRail).toBe(false);
 			expect(wrapper.find('[data-testid="bp-rail-details"]').exists()).toBe(false);
 		});

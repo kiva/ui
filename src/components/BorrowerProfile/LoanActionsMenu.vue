@@ -12,7 +12,7 @@
 			:aria-expanded="isOpen ? 'true' : 'false'"
 			:aria-controls="menuId"
 			data-testid="bp-loan-actions-menu-button"
-			@click="toggle"
+			@click="isOpen = !isOpen"
 			@keydown.down.prevent="openAndFocus(0)"
 			@keydown.up.prevent="openAndFocus(-1)"
 		/>
@@ -35,20 +35,20 @@
 			@keydown.tab="close()"
 		>
 			<button
-				v-for="item in items"
-				:key="item.event"
+				v-for="action in actions"
+				:key="action.event"
 				type="button"
 				role="menuitem"
 				tabindex="-1"
-				:data-testid="`bp-loan-actions-menu-${item.event}`"
+				:data-testid="`bp-loan-actions-menu-${action.event}`"
 				class="
 					tw-flex tw-items-center tw-gap-1 tw-w-full tw-min-h-4 tw-px-1 tw-py-0.5 tw-rounded-sm
 					tw-text-label tw-text-primary hover:tw-bg-secondary focus:tw-bg-secondary
 				"
-				@click="select(item.event)"
+				@click="select(action.event)"
 			>
-				<kv-material-icon class="tw-w-2 tw-h-2 tw-shrink-0" :icon="item.icon" />
-				{{ item.label }}
+				<kv-material-icon class="tw-w-2 tw-h-2 tw-shrink-0" :icon="action.icon" />
+				{{ action.label }}
 			</button>
 		</div>
 	</div>
@@ -61,6 +61,7 @@ import { KvIconButton, KvMaterialIcon } from '@kiva/kv-components';
 /**
  * Kebab ("more options") menu for the borrower profile top card on small screens (new user version).
  * Holds "Loan details" and "Share"; presentational, the parent decides what each action does.
+ * Hand-rolled because KvUtilityMenu (kv-components) has no keyboard support, aria state or trigger label.
  *
  * Keyboard: Enter/Space toggle (native button), ArrowDown/ArrowUp open and focus the first/last item,
  * arrows wrap inside the menu, Home/End jump, Escape closes and refocuses the trigger, Tab closes
@@ -72,34 +73,20 @@ export default {
 		KvIconButton,
 		KvMaterialIcon,
 	},
-	props: {
-		menuId: {
-			type: String,
-			default: 'bp-loan-actions-menu',
-		},
-	},
 	emits: ['loan-details', 'share'],
 	data() {
 		return {
 			isOpen: false,
 			mdiDotsVertical,
-			items: [
+			// Links the trigger's aria-controls to the menu
+			menuId: 'bp-loan-actions-menu',
+			actions: [
 				{ event: 'loan-details', label: 'Loan details', icon: mdiFormatListBulleted },
 				{ event: 'share', label: 'Share', icon: mdiExportVariant },
 			],
 		};
 	},
 	methods: {
-		toggle() {
-			if (this.isOpen) {
-				this.close();
-			} else {
-				this.open();
-			}
-		},
-		open() {
-			this.isOpen = true;
-		},
 		close({ focusTrigger = false } = {}) {
 			this.isOpen = false;
 			if (focusTrigger) {
@@ -107,7 +94,7 @@ export default {
 			}
 		},
 		async openAndFocus(index) {
-			this.open();
+			this.isOpen = true;
 			await this.$nextTick();
 			this.focusItem(index);
 		},

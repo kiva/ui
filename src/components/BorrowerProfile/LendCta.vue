@@ -229,41 +229,41 @@
 					>
 						All shares reserved
 					</p>
-					<hr
-						v-if="!hideJumpLinks"
-						data-testid="bp-lend-cta-jump-links-divider"
-						class="lg:tw-block tw-border-tertiary tw-w-full tw-my-2"
-						:class="[
-							{
-								'lg:tw-hidden': showDetailsInRail,
-								'tw-hidden': isSticky,
-								'tw-block': !isSticky,
-							}
-						]"
-					>
-					<div
-						v-if="!hideJumpLinks"
-						class="lg:tw-block tw-flex lg:tw-justify-center tw-w-full"
-						:class="[
-							{
-								'tw-justify-between': isLoggedIn,
-								'tw-justify-end': !isLoggedIn,
-								'tw-hidden': isSticky,
-								'lg:tw-hidden': showDetailsInRail,
-							}
-						]"
-					>
-						<loan-bookmark
-							v-if="isLoggedIn"
-							data-testid="bp-lend-cta-loan-bookmark"
-							:loan-id="loanId"
-							class="tw-inline-block lg:tw-hidden"
-						/>
-						<jump-links
-							class="tw-block lg:tw-mb-1.5 md:tw-mb-3"
-							data-testid="bp-lend-cta-jump-links"
-						/>
-					</div>
+					<!-- Divider and jump links; the new user version shows these actions in the top card -->
+					<template v-if="!hideJumpLinks">
+						<hr
+							class="lg:tw-block tw-border-tertiary tw-w-full tw-my-2"
+							:class="[
+								{
+									'lg:tw-hidden': showDetailsInRail,
+									'tw-hidden': isSticky,
+									'tw-block': !isSticky,
+								}
+							]"
+						>
+						<div
+							class="lg:tw-block tw-flex lg:tw-justify-center tw-w-full"
+							:class="[
+								{
+									'tw-justify-between': isLoggedIn,
+									'tw-justify-end': !isLoggedIn,
+									'tw-hidden': isSticky,
+									'lg:tw-hidden': showDetailsInRail,
+								}
+							]"
+						>
+							<loan-bookmark
+								v-if="isLoggedIn"
+								data-testid="bp-lend-cta-loan-bookmark"
+								:loan-id="loanId"
+								class="tw-inline-block lg:tw-hidden"
+							/>
+							<jump-links
+								class="tw-block lg:tw-mb-1.5 md:tw-mb-3"
+								data-testid="bp-lend-cta-jump-links"
+							/>
+						</div>
+					</template>
 				</div>
 			</kv-grid>
 

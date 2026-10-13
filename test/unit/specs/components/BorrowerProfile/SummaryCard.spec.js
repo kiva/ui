@@ -1,9 +1,11 @@
 /* eslint-disable import/no-extraneous-dependencies */
-import { mount } from '@vue/test-utils';
+import { enableAutoUnmount, mount } from '@vue/test-utils';
 import SummaryCard from '#src/components/BorrowerProfile/SummaryCard';
 import LoanActionLinks from '#src/components/BorrowerProfile/LoanActionLinks';
 import LoanActionsMenu from '#src/components/BorrowerProfile/LoanActionsMenu';
 import { globalOptions, routerLinkStub } from '../../../specUtils';
+
+enableAutoUnmount(afterEach);
 
 function mountSummaryCard({
 	anonymizationLevel, distributionModel, geocode, showActions = false,
@@ -130,21 +132,16 @@ describe('SummaryCard loan actions (new user version)', () => {
 		expect(linksWrapper.findComponent(LoanActionLinks).exists()).toBe(true);
 	});
 
-	it.each(['share', 'loan-details'])('re-emits %s from the action links', async event => {
-		const { wrapper } = mountSummaryCard({ showActions: true });
+	describe.each([
+		['action links', LoanActionLinks],
+		['kebab menu', LoanActionsMenu],
+	])('re-emits from the %s', (_, component) => {
+		it.each(['share', 'loan-details'])('%s', event => {
+			const { wrapper } = mountSummaryCard({ showActions: true });
 
-		wrapper.findComponent(LoanActionLinks).vm.$emit(event);
-		await wrapper.vm.$nextTick();
+			wrapper.findComponent(component).vm.$emit(event);
 
-		expect(wrapper.emitted(event)).toHaveLength(1);
-	});
-
-	it.each(['share', 'loan-details'])('re-emits %s from the kebab menu', async event => {
-		const { wrapper } = mountSummaryCard({ showActions: true });
-
-		wrapper.findComponent(LoanActionsMenu).vm.$emit(event);
-		await wrapper.vm.$nextTick();
-
-		expect(wrapper.emitted(event)).toHaveLength(1);
+			expect(wrapper.emitted(event)).toHaveLength(1);
+		});
 	});
 });
