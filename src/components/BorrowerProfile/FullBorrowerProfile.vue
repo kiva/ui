@@ -20,8 +20,7 @@
 					data-testid="bp-summary"
 					class="tw-relative lg:tw--mb-1.5"
 					:class="{
-						'tw-bg-primary tw--mx-2.5 tw-px-2.5 tw-shadow-lg md:tw-mx-0 md:tw-shadow-transparent':
-							isNewUserBpVariant,
+						'tw-bg-primary tw--mx-2.5 tw-px-2.5 md:tw-mx-0': isNewUserBpVariant,
 					}"
 					:loan="loanData"
 					:is-logged-in="isLoggedIn"
@@ -34,8 +33,13 @@
 						<div class="lg:tw-hidden">
 							<hr class="tw-border-tertiary tw-mt-3">
 							<nonprofit-trust-row class="tw-py-2" />
+							<loan-supporters-row
+								v-if="loanData.id"
+								class="tw--mx-2.5 tw-px-2.5 md:tw--mx-3 md:tw-px-3 md:last:tw--mb-2.5 tw-text-small"
+								:loan="loanData"
+							/>
 							<loan-matching-info
-								class="tw-pb-1"
+								class="tw-py-1"
 								:loan="loanData"
 								tooltip-id="top-card-matching-tooltip"
 							/>
@@ -236,6 +240,7 @@ import LoanDetailsRailToggle from '#src/components/BorrowerProfile/LoanDetailsRa
 import DefinitionsLightbox from '#src/components/BorrowerProfile/DefinitionsLightbox';
 import NonprofitTrustRow from '#src/components/BorrowerProfile/NonprofitTrustRow';
 import LoanMatchingInfo from '#src/components/BorrowerProfile/LoanMatchingInfo';
+import LoanSupportersRow from '#src/components/BorrowerProfile/LoanSupportersRow';
 import smoothScrollMixin from '#src/plugins/smooth-scroll-mixin';
 import HowKivaWorksLightbox from '#src/components/BorrowerProfile/HowKivaWorksLightbox';
 import WhyLoansBanner from '#src/components/BorrowerProfile/WhyLoansBanner';
@@ -317,6 +322,7 @@ export default {
 		DefinitionsLightbox,
 		NonprofitTrustRow,
 		LoanMatchingInfo,
+		LoanSupportersRow,
 		HowKivaWorksLightbox,
 		WhyLoansBanner,
 		KvPageContainer,

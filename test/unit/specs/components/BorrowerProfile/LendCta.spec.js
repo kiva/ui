@@ -119,6 +119,13 @@ describe('LendCta in version b of the new user borrower profile', () => {
 			.toBe('2x matching by Walton Family Foundation while funds last');
 	});
 
+	it('shows how many others support the borrower instead of "powered by" lenders', () => {
+		const { getByTestId, queryByText } = renderVersionB({ name: 'Rachel', lenders: { totalCount: 2058 } });
+
+		expect(queryByText(/powered by/i)).toBeNull();
+		expect(textOf(getByTestId('bp-loan-supporters-text'))).toBe('2,058 others supporting Rachel');
+	});
+
 	it('leaves no matching text in place for a loan without matching', () => {
 		const { queryByTestId } = renderVersionB();
 

@@ -29,9 +29,11 @@
 						'md:tw-border-none': !isSticky,
 						'md:tw-px-3': !isSticky,
 						'md:tw-px-4': isSticky,
-						'tw-bg-transparent md:tw-bg-primary': !isSticky,
+						'tw-bg-transparent md:tw-bg-primary': !isSticky && !newUserBpEnabled,
+						'tw-bg-primary tw--mx-2.5 tw-px-2.5 md:tw-mx-0': !isSticky && newUserBpEnabled,
 						'tw-bg-primary': isSticky,
-						'tw-border-t tw-border-tertiary tw-px-2.5': isSticky
+						'tw-border-t tw-border-tertiary tw-px-2.5': isSticky,
+						'lg:tw-rounded-b-none': showSupportersRow,
 					},
 					'lg:tw-rounded-t',
 					'lg:tw-px-4',
@@ -279,6 +281,12 @@
 				</div>
 			</kv-grid>
 
+			<loan-supporters-row
+				v-if="showSupportersRow"
+				class="tw-hidden lg:tw-flex lg:tw-px-2 lg:tw-rounded-b tw-text-base"
+				:loan="loan"
+			/>
+
 			<transition
 				enter-active-class="tw-transition-transform tw-duration-700 tw-delay-300"
 				:enter-from-class="transitionEnterClasses"
@@ -415,6 +423,7 @@ import CompleteLoanWrapper from '#src/components/BorrowerProfile/CompleteLoanWra
 import SimultaneousMatchingInfo from '#src/components/BorrowerProfile/SimultaneousMatchingInfo';
 import LoanMatchingInfo from '#src/components/BorrowerProfile/LoanMatchingInfo';
 import NonprofitTrustRow from '#src/components/BorrowerProfile/NonprofitTrustRow';
+import LoanSupportersRow from '#src/components/BorrowerProfile/LoanSupportersRow';
 
 import KvIcon from '#src/components/Kv/KvIcon';
 import {
@@ -559,6 +568,7 @@ export default {
 		SimultaneousMatchingInfo,
 		LoanMatchingInfo,
 		NonprofitTrustRow,
+		LoanSupportersRow,
 	},
 	setup() {
 		const { enableMultiMatching, multiMatchingResolved } = useMultiMatching();
@@ -831,12 +841,13 @@ export default {
 				enableMultiMatching: this.enableMultiMatching,
 			});
 		},
-		// The new user version shows matching in its own line, so it leaves the rotating stats
+		// Shown in the new user version where "powered by X lenders" would show today
+		showSupportersRow() {
+			return this.newUserBpEnabled && !!this.loan && this.possibleStats.includes('lenderCount');
+		},
+		// The new user version shows matching and supporters in their own rows, so nothing rotates
 		rotatingStats() {
-			if (this.newUserBpEnabled) {
-				return this.possibleStats.filter(stat => stat !== 'matchingText');
-			}
-			return this.possibleStats;
+			return this.newUserBpEnabled ? [] : this.possibleStats;
 		},
 		displayedSlotStat() {
 			return getDisplayedStat(this.rotatingStats, this.currentSlotStat);
