@@ -74,7 +74,17 @@ const { result, loading } = useApolloQuery(
 	() => ({ loanId: props.loan.id, limit: MAX_AVATARS }),
 );
 
-const lenders = computed(() => result.value?.lend?.loan?.lenders ?? null);
+// KvUserAvatar crashes on a null name, so lenders without one show as anonymous
+const lenders = computed(() => {
+	const loanLenders = result.value?.lend?.loan?.lenders;
+	if (!loanLenders) {
+		return null;
+	}
+	return {
+		...loanLenders,
+		values: (loanLenders.values ?? []).map(lender => ({ ...lender, name: lender.name ?? 'Anonymous' })),
+	};
+});
 const lenderCount = computed(() => props.loan.lenders?.totalCount ?? 0);
 const placeholderCount = computed(() => Math.min(lenderCount.value, MAX_AVATARS));
 

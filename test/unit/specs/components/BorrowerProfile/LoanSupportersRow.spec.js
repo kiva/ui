@@ -2,7 +2,7 @@ import { render } from '@testing-library/vue';
 import LoanSupportersRow from '#src/components/BorrowerProfile/LoanSupportersRow';
 import { globalOptions } from '../../../specUtils';
 
-const renderRow = lenderCount => render(LoanSupportersRow, {
+const renderRow = (lenderCount, apollo = globalOptions.provide.apollo) => render(LoanSupportersRow, {
 	props: {
 		loan: {
 			id: 1,
@@ -11,7 +11,7 @@ const renderRow = lenderCount => render(LoanSupportersRow, {
 			lenders: { totalCount: lenderCount },
 		},
 	},
-	global: globalOptions,
+	global: { ...globalOptions, provide: { ...globalOptions.provide, apollo } },
 });
 
 describe('LoanSupportersRow', () => {
@@ -31,5 +31,20 @@ describe('LoanSupportersRow', () => {
 		const { queryByTestId } = renderRow(0);
 
 		expect(queryByTestId('bp-loan-supporters-row')).toBeNull();
+	});
+
+	it('shows an avatar for every lender, even one without a name', () => {
+		const values = [
+			{ id: 1, name: null, image: { url: 'a.jpg' } },
+			{ id: 2, name: 'Jorge', image: { url: 'b.jpg' } },
+		];
+		const data = { lend: { loan: { lenders: { values } } } };
+		const apollo = {
+			...globalOptions.provide.apollo,
+			watchQuery: () => ({ subscribe: ({ next }) => next({ data }) }),
+		};
+		const { getByTestId } = renderRow(2, apollo);
+
+		expect(getByTestId('participation-lenders').children).toHaveLength(2);
 	});
 });
