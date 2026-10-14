@@ -1,6 +1,5 @@
 <template>
-	<!-- 5% of the action colour; the opacity scale has no 5% step, so the value is spelled out -->
-	<section class="tw-bg-action/[0.05] tw-rounded tw-px-2 tw-pt-3 tw-pb-2 lg:tw-px-3 lg:tw-pb-1">
+	<section class="why-loans-banner tw-rounded tw-px-2 tw-pt-3 tw-pb-2 lg:tw-px-3 lg:tw-pb-1">
 		<h2
 			class="tw-text-label tw-text-primary tw-mb-2 lg:tw-hidden"
 			data-testid="bp-why-loans-heading"
@@ -102,3 +101,10 @@ export default {
 	},
 };
 </script>
+
+<style lang="postcss" scoped>
+/* 5% of the action colour */
+.why-loans-banner {
+	background-color: rgb(var(--bg-action), 0.05);
+}
+</style>
