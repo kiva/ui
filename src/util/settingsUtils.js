@@ -54,15 +54,16 @@ export function readJSONSetting(data, key) {
  * @param {object} data
  * @param {string} startTimeKey
  * @param {string} endTimeKey
+ * @param {Date} [now] The time to check, defaults to the current time
  * @returns {boolean}
  */
-export function settingWithinDateRange(data, startTimeKey, endTimeKey) {
+export function settingWithinDateRange(data, startTimeKey, endTimeKey, now = new Date()) {
 	const startTime = readDateSetting(data, startTimeKey);
 	const endTime = readDateSetting(data, endTimeKey);
 	// Missing or backwards dates count as outside the range. isWithinInterval would throw on them
 	if (!startTime || !endTime) return false;
 	if (!isAfter(endTime, startTime)) return false;
-	return isWithinInterval(new Date(), {
+	return isWithinInterval(now, {
 		start: startTime,
 		end: endTime
 	});

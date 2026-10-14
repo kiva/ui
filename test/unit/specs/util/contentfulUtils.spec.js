@@ -1,6 +1,8 @@
 /* eslint-disable max-len */
 import {
 	buildDynamicString,
+	findRichTextEmbeddedEntry,
+	hasUnresolvedRichTextEntry,
 	formatButton,
 	formatBackground,
 	formatCarousel,
@@ -134,6 +136,65 @@ describe('contentfulUtils.js', () => {
 				dataObject: { 'campaign-data': 'data value field' },
 			};
 			expect(formatUiSetting(uiSettingRaw)).toMatchObject(expectedObject);
+		});
+	});
+
+	describe('findRichTextEmbeddedEntry', () => {
+		const entryOf = (id, key) => ({ sys: { contentType: { sys: { id } } }, fields: { key } });
+		const embed = (target, nodeType = 'embedded-entry-inline') => ({ nodeType, data: { target }, content: [] });
+		const doc = (...nodes) => ({
+			nodeType: 'document',
+			data: {},
+			content: [{ nodeType: 'paragraph', data: {}, content: nodes }],
+		});
+
+		it('returns the raw entry embedded inline below the top level', () => {
+			const setting = entryOf('uiSetting', 'nested');
+
+			expect(findRichTextEmbeddedEntry(doc(embed(setting)), 'uiSetting')).toBe(setting);
+		});
+
+		it('returns an entry embedded as a block', () => {
+			const setting = entryOf('uiSetting', 'block');
+			const body = { nodeType: 'document', data: {}, content: [embed(setting, 'embedded-entry-block')] };
+
+			expect(findRichTextEmbeddedEntry(body, 'uiSetting')).toBe(setting);
+		});
+
+		it('returns the first match of the requested content type, skipping others', () => {
+			const first = entryOf('uiSetting', 'first');
+			const body = doc(embed(entryOf('genericContentBlock', 'other')), embed(first), embed(entryOf('uiSetting', 'x')));
+
+			expect(findRichTextEmbeddedEntry(body, 'uiSetting')).toBe(first);
+		});
+
+		it('ignores hyperlinks and other nodes that carry a target', () => {
+			const body = doc({ nodeType: 'entry-hyperlink', data: { target: entryOf('uiSetting', 'link') }, content: [] });
+
+			expect(findRichTextEmbeddedEntry(body, 'uiSetting')).toBeNull();
+		});
+
+		it('returns null for missing rich text', () => {
+			expect(findRichTextEmbeddedEntry(undefined, 'uiSetting')).toBeNull();
+			expect(findRichTextEmbeddedEntry(null, 'uiSetting')).toBeNull();
+			expect(findRichTextEmbeddedEntry({ nodeType: 'document', content: [] }, 'uiSetting')).toBeNull();
+		});
+	});
+
+	describe('hasUnresolvedRichTextEntry', () => {
+		const embed = target => ({ nodeType: 'embedded-entry-inline', data: { target }, content: [] });
+		const doc = (...nodes) => ({ nodeType: 'document', content: [{ nodeType: 'paragraph', content: nodes }] });
+		const resolved = { sys: { type: 'Entry', contentType: { sys: { id: 'uiSetting' } } }, fields: {} };
+		const unresolved = { sys: { type: 'Link', linkType: 'Entry', id: 'draft' } };
+
+		it('returns true when an embedded entry is still a link', () => {
+			expect(hasUnresolvedRichTextEntry(doc(embed(resolved), embed(unresolved)))).toBe(true);
+		});
+
+		it('returns false when every embedded entry resolved or there is none', () => {
+			expect(hasUnresolvedRichTextEntry(doc(embed(resolved)))).toBe(false);
+			expect(hasUnresolvedRichTextEntry(doc())).toBe(false);
+			expect(hasUnresolvedRichTextEntry(undefined)).toBe(false);
 		});
 	});
 

@@ -171,5 +171,11 @@ describe('settingsUtils.js', () => {
 			const data = { startDate: 'not a date', endDate: '2026-11-01T00:00:00Z' };
 			expect(settingWithinDateRange(data, 'startDate', 'endDate')).toBe(false);
 		});
+
+		it('checks the range against the given time instead of the current time', () => {
+			const data = { startDate: '2026-11-01T00:00:00Z', endDate: '2026-12-01T00:00:00Z' };
+			expect(settingWithinDateRange(data, 'startDate', 'endDate', new Date('2026-11-15T00:00:00Z'))).toBe(true);
+			expect(settingWithinDateRange(data, 'startDate', 'endDate', new Date('2026-12-15T00:00:00Z'))).toBe(false);
+		});
 	});
 });

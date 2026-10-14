@@ -27,6 +27,34 @@ const contentfulData = (entries = [{
 	},
 });
 
+// Dated rounds; each block embeds its round's schedule in its body
+const round = (key, dates, dataObject) => {
+	const schedule = {
+		sys: { contentType: { sys: { id: 'uiSetting' } } },
+		fields: {
+			key, active: true, ...dates, dataObject
+		},
+	};
+	const bodyCopy = {
+		nodeType: 'document',
+		content: [{ nodeType: 'embedded-entry-inline', data: { target: schedule }, content: [] }],
+	};
+	return ['a', 'b'].map(version => {
+		const copyBlock = block(`${key}-${version}`, `${key} ${version.toUpperCase()}`);
+		copyBlock.fields.bodyCopy = bodyCopy;
+		return copyBlock;
+	});
+};
+const NOV = { startDate: '2026-11-01T00:00:00Z', endDate: '2026-12-01T00:00:00Z' };
+const DEC = { startDate: '2026-12-01T00:00:00Z', endDate: '2027-01-01T00:00:00Z' };
+const roundsData = (rounds = [
+	round('tip-copy-nov', NOV, { trackingAction: 'EXP-NOV' }),
+	round('tip-copy-dec', DEC),
+]) => contentfulData([{
+	sys: { contentType: { sys: { id: 'uiSetting' } } },
+	fields: { key: CONTENT_KEY, active: true, content: rounds.flat() },
+}]);
+
 // A fake Apollo client. Its cache holds the copy and the version, and emit() sends a
 // later result the way the browser query would
 function makeApollo({ cacheData = contentfulData(), version = 'b' } = {}) {
@@ -100,7 +128,14 @@ describe('useExperimentCopy', () => {
 			const { out } = renderHost(makeApollo({ cacheData: contentfulData([]) }).client);
 
 			expect(out.variants.value).toBeNull();
+			expect(out.round.value).toBeNull();
 			expect(out.loading.value).toBe(false);
+		});
+
+		it('reports the copy set itself as the round when it links blocks directly', () => {
+			const { out } = renderHost(makeApollo().client);
+
+			expect(out.round.value).toBe(CONTENT_KEY);
 		});
 
 		it('loads the copy on the client when it was not prefetched', async () => {
@@ -118,6 +153,55 @@ describe('useExperimentCopy', () => {
 
 			expect(out.variants.value.a.headline).toBe('A headline');
 			expect(out.loading.value).toBe(false);
+		});
+	});
+
+	describe('with copy rounds', () => {
+		beforeEach(() => {
+			vi.useFakeTimers({ toFake: ['Date'] });
+			vi.setSystemTime(new Date('2026-11-15T12:00:00Z'));
+		});
+
+		afterEach(() => {
+			vi.useRealTimers();
+		});
+
+		it('reads the copy of the round that is live now', () => {
+			const { out } = renderHost(makeApollo({ cacheData: roundsData() }).client);
+
+			expect(out.round.value).toBe('tip-copy-nov');
+			expect(out.copy('headline')).toBe('tip-copy-nov B');
+		});
+
+		it('keeps the round picked at setup when a later result arrives after the round ends', async () => {
+			const { client, emit } = makeApollo({ cacheData: roundsData() });
+			const { out } = renderHost(client);
+
+			vi.setSystemTime(new Date('2026-12-15T00:00:00Z'));
+			emit(roundsData());
+			await nextTick();
+
+			expect(out.round.value).toBe('tip-copy-nov');
+			expect(out.copy('headline')).toBe('tip-copy-nov B');
+		});
+
+		it('picks the round when the copy loads on the client', async () => {
+			const { client, emit } = makeApollo({ cacheData: null });
+			const { out } = renderHost(client);
+
+			expect(out.round.value).toBeNull();
+
+			emit(roundsData());
+			await nextTick();
+
+			expect(out.round.value).toBe('tip-copy-nov');
+		});
+
+		it('shows no copy when no round is live', () => {
+			const { out } = renderHost(makeApollo({ cacheData: roundsData([round('tip-copy-dec', DEC)]) }).client);
+
+			expect(out.round.value).toBeNull();
+			expect(out.copy('headline')).toBeNull();
 		});
 	});
 
@@ -171,7 +255,41 @@ describe('useExperimentCopy', () => {
 
 			expect(out.trackExposure('basket', 'EXP-TEST')).toBe(true);
 			expect(trackEvent).toHaveBeenCalledTimes(1);
-			expect(trackEvent).toHaveBeenCalledWith('basket', 'EXP-TEST', 'b', undefined);
+			expect(trackEvent).toHaveBeenCalledWith('basket', 'EXP-TEST', 'b', CONTENT_KEY);
+		});
+
+		describe('with copy rounds', () => {
+			beforeEach(() => {
+				vi.useFakeTimers({ toFake: ['Date'] });
+			});
+
+			afterEach(() => {
+				vi.useRealTimers();
+			});
+
+			it("sends the round's tracking action with the round key as the property", () => {
+				vi.setSystemTime(new Date('2026-11-15T12:00:00Z'));
+				const { out, trackEvent } = renderHost(makeApollo({ cacheData: roundsData() }).client);
+
+				expect(out.trackExposure('basket', 'EXP-TEST')).toBe(true);
+				expect(trackEvent).toHaveBeenCalledWith('basket', 'EXP-NOV', 'b', 'tip-copy-nov');
+			});
+
+			it('sends the fallback action when the round has none', () => {
+				vi.setSystemTime(new Date('2026-12-15T00:00:00Z'));
+				const { out, trackEvent } = renderHost(makeApollo({ cacheData: roundsData() }).client);
+
+				expect(out.trackExposure('basket', 'EXP-TEST')).toBe(true);
+				expect(trackEvent).toHaveBeenCalledWith('basket', 'EXP-TEST', 'b', 'tip-copy-dec');
+			});
+
+			it('sends nothing when no round is live', () => {
+				vi.setSystemTime(new Date('2027-02-01T00:00:00Z'));
+				const { out, trackEvent } = renderHost(makeApollo({ cacheData: roundsData() }).client);
+
+				expect(out.trackExposure('basket', 'EXP-TEST')).toBe(false);
+				expect(trackEvent).not.toHaveBeenCalled();
+			});
 		});
 
 		it('sends nothing when the visitor is not assigned', () => {
