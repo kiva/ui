@@ -17,6 +17,7 @@
 				class="md:tw-pt-6"
 			>
 				<summary-card
+					ref="summaryCard"
 					data-testid="bp-summary"
 					class="tw-relative lg:tw--mb-1.5"
 					:class="{
@@ -62,12 +63,15 @@
 		<!-- Bare page container: the band spans the full content width, not the story column -->
 		<kv-page-container
 			v-if="isNewUserBpVariant"
-			class="tw-hidden lg:tw-block lg:tw-mt-6"
+			ref="whyLoansDesktop"
+			class="tw-hidden lg:tw-block lg:tw-mt-5.5"
+			:style="{ paddingTop: `${whyLoansExtraSpace}px` }"
 			data-testid="bp-why-loans-desktop"
 		>
 			<why-loans-banner :loan="loanData" @how-it-works="showHowKivaWorks = true" />
 		</kv-page-container>
 		<div
+			ref="sidebarColumn"
 			:class="inPfp ? 'lg:tw-pt-16 lg:tw-mt-8' : 'lg:tw-pt-8'"
 			class="lg:tw-absolute tw-pointer-events-none lg:tw-w-full lg:tw-h-full lg:tw-top-0 tw-z-docked"
 		>
@@ -77,6 +81,7 @@
 			>
 				<div class="tw-flex tw-flex-col" style="max-height: calc(100vh - 7.5rem)">
 					<lend-cta
+						ref="lendCta"
 						class="tw-pointer-events-auto"
 						:loan-id="loanId"
 						:loan-data="loanData"
@@ -406,9 +411,32 @@ export default {
 			userPreferences: null,
 			isShareLightboxOpen: false,
 			showHowKivaWorks: false,
+			whyLoansExtraSpace: 0,
+			cardsObserver: null,
 		};
 	},
+	mounted() {
+		if (this.isNewUserBpVariant && typeof ResizeObserver !== 'undefined') {
+			this.cardsObserver = new ResizeObserver(() => this.updateWhyLoansSpace());
+			this.cardsObserver.observe(this.$refs.summaryCard.$el);
+			this.cardsObserver.observe(this.$refs.lendCta.$el);
+		}
+	},
+	beforeUnmount() {
+		this.cardsObserver?.disconnect();
+	},
 	methods: {
+		// Adds space above the "Why loans" band when the sticky lend box ends lower than the top card
+		updateWhyLoansSpace() {
+			const column = this.$refs.sidebarColumn;
+			// Measured from its column, since the sticky lend box moves on scroll
+			const lendBoxBottom = column.getBoundingClientRect().top
+				+ parseFloat(getComputedStyle(column).paddingTop)
+				+ parseFloat(getComputedStyle(column.firstElementChild).marginTop)
+				+ this.$refs.lendCta.$el.offsetHeight;
+			const bandTop = this.$refs.whyLoansDesktop.$el.getBoundingClientRect().top;
+			this.whyLoansExtraSpace = Math.max(0, Math.ceil(lendBoxBottom + 32 - bandTop));
+		},
 		openShareLightbox() {
 			this.isShareLightboxOpen = true;
 			// The hidden share button has no trigger to fire this itself

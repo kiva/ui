@@ -131,4 +131,11 @@ describe('LendCta in version b of the new user borrower profile', () => {
 
 		expect(queryByTestId('bp-loan-matching-info')).toBeNull();
 	});
+
+	it('keeps the lend bar fixed at the bottom on mobile and tablet before the visitor scrolls', () => {
+		const lendBar = renderVersionB().getByTestId('bp-lend-cta-select-and-button').closest('.tw-bottom-0');
+
+		expect(lendBar.classList).toContain('tw-fixed');
+		expect(lendBar.classList).not.toContain('md:tw-static');
+	});
 });

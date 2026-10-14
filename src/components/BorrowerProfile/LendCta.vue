@@ -1,7 +1,7 @@
 <template>
 	<div
 		ref="wrapper"
-		:class="['lg:tw-mb-1', { 'md:tw-px-4': isSticky }]"
+		:class="['lg:tw-mb-1', { 'md:tw-px-4': isSticky, 'lg:tw-px-0': newUserBpEnabled }]"
 		:style="wrapperStyle"
 	>
 		<kv-atb-modal-container
@@ -29,10 +29,11 @@
 						'md:tw-border-none': !isSticky,
 						'md:tw-px-3': !isSticky,
 						'md:tw-px-4': isSticky,
-						'tw-bg-transparent md:tw-bg-primary': !isSticky && !newUserBpEnabled,
-						'tw-bg-primary tw--mx-2.5 tw-px-2.5 md:tw-mx-0': !isSticky && newUserBpEnabled,
+						'tw-bg-transparent md:tw-bg-primary': !isSticky,
 						'tw-bg-primary': isSticky,
 						'tw-border-t tw-border-tertiary tw-px-2.5': isSticky,
+						'lg:tw-border-none': newUserBpEnabled,
+						'lg:tw-rounded-b': newUserBpEnabled && !showSupportersRow,
 						'lg:tw-rounded-b-none': showSupportersRow,
 					},
 					'lg:tw-rounded-t',
@@ -47,7 +48,6 @@
 						{
 							'md:tw-pt-0': !isSticky,
 							'md:tw-col-start-2 md:tw-col-span-10': isSticky,
-							'md:tw-pb-2': newUserBpEnabled && !isSticky,
 						},
 						'lg:tw-col-span-12',
 						'lg:tw-pt-1 lg:tw-pb-1',
@@ -600,7 +600,8 @@ export default {
 			loanLoading: !hasData,
 			userLoading: true,
 			hasFreeCredit: false,
-			isSticky: false,
+			// The new user version keeps the lend bar fixed at the bottom below desktop
+			isSticky: this.newUserBpEnabled,
 			wrapperHeight: 0,
 			wrapperObserver: null,
 			name: loan?.name ?? '',
@@ -721,8 +722,9 @@ export default {
 					entries.forEach(entry => {
 						if (entry.target === this.$refs?.wrapper) {
 							if (entry.intersectionRatio > 0) {
-								// Wrapper is in the viewport, so lend cta should NOT be stuck to the bottom
-								this.isSticky = false;
+								// Wrapper is in the viewport, so lend cta should NOT be stuck to the bottom,
+								// except in the new user version, where it always is
+								this.isSticky = this.newUserBpEnabled;
 							} else {
 								// Wrapper is NOT the viewport, so lend cta should be stuck to the bottom
 								this.wrapperHeight = entry.boundingClientRect.height;
