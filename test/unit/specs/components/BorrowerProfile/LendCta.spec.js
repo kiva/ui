@@ -119,9 +119,23 @@ describe('LendCta in version b of the new user borrower profile', () => {
 			.toBe('2x matching by Walton Family Foundation while funds last');
 	});
 
+	it('shows how many others support the borrower instead of "powered by" lenders', () => {
+		const { getByTestId, queryByText } = renderVersionB({ name: 'Rachel', lenders: { totalCount: 2058 } });
+
+		expect(queryByText(/powered by/i)).toBeNull();
+		expect(textOf(getByTestId('bp-loan-supporters-text'))).toBe('2,058 others supporting Rachel');
+	});
+
 	it('leaves no matching text in place for a loan without matching', () => {
 		const { queryByTestId } = renderVersionB();
 
 		expect(queryByTestId('bp-loan-matching-info')).toBeNull();
+	});
+
+	it('keeps the lend bar fixed at the bottom on mobile and tablet before the visitor scrolls', () => {
+		const lendBar = renderVersionB().getByTestId('bp-lend-cta-select-and-button').closest('.tw-bottom-0');
+
+		expect(lendBar.classList).toContain('tw-fixed');
+		expect(lendBar.classList).not.toContain('md:tw-static');
 	});
 });

@@ -17,11 +17,11 @@
 				class="md:tw-pt-6"
 			>
 				<summary-card
+					ref="summaryCard"
 					data-testid="bp-summary"
 					class="tw-relative lg:tw--mb-1.5"
 					:class="{
-						'tw-bg-primary tw--mx-2.5 tw-px-2.5 tw-shadow-lg md:tw-mx-0 md:tw-shadow-transparent':
-							isNewUserBpVariant,
+						'tw-bg-primary tw--mx-2.5 tw-px-2.5 md:tw-mx-0': isNewUserBpVariant,
 					}"
 					:loan="loanData"
 					:is-logged-in="isLoggedIn"
@@ -34,8 +34,13 @@
 						<div class="lg:tw-hidden">
 							<hr class="tw-border-tertiary tw-mt-3">
 							<nonprofit-trust-row class="tw-py-2" />
+							<loan-supporters-row
+								v-if="loanData.id"
+								class="tw--mx-2.5 tw-px-2.5 md:tw--mx-3 md:tw-px-3 md:last:tw--mb-2.5 tw-text-small"
+								:loan="loanData"
+							/>
 							<loan-matching-info
-								class="tw-pb-1"
+								class="tw-py-1"
 								:loan="loanData"
 								tooltip-id="top-card-matching-tooltip"
 							/>
@@ -58,20 +63,25 @@
 		<!-- Bare page container: the band spans the full content width, not the story column -->
 		<kv-page-container
 			v-if="isNewUserBpVariant"
-			class="tw-hidden lg:tw-block lg:tw-mt-6"
+			ref="whyLoansDesktop"
+			class="tw-hidden lg:tw-block lg:tw-mt-5.5"
+			:style="{ paddingTop: `${whyLoansExtraSpace}px` }"
 			data-testid="bp-why-loans-desktop"
 		>
 			<why-loans-banner :loan="loanData" @how-it-works="showHowKivaWorks = true" />
 		</kv-page-container>
 		<div
+			ref="sidebarColumn"
 			:class="inPfp ? 'lg:tw-pt-16 lg:tw-mt-8' : 'lg:tw-pt-8'"
 			class="lg:tw-absolute tw-pointer-events-none lg:tw-w-full lg:tw-h-full lg:tw-top-0 tw-z-docked"
 		>
 			<sidebar-container
-				class="lg:tw-sticky lg:tw-mt-10 lg:tw-pb-8 lg:tw-top-12"
+				class="lg:tw-sticky lg:tw-pb-8 lg:tw-top-12"
+				:class="isNewUserBpVariant ? 'lg:tw-mt-1' : 'lg:tw-mt-10'"
 			>
 				<div class="tw-flex tw-flex-col" style="max-height: calc(100vh - 7.5rem)">
 					<lend-cta
+						ref="lendCta"
 						class="tw-pointer-events-auto"
 						:loan-id="loanId"
 						:loan-data="loanData"
@@ -240,6 +250,7 @@ import LoanDetailsRailToggle from '#src/components/BorrowerProfile/LoanDetailsRa
 import DefinitionsLightbox from '#src/components/BorrowerProfile/DefinitionsLightbox';
 import NonprofitTrustRow from '#src/components/BorrowerProfile/NonprofitTrustRow';
 import LoanMatchingInfo from '#src/components/BorrowerProfile/LoanMatchingInfo';
+import LoanSupportersRow from '#src/components/BorrowerProfile/LoanSupportersRow';
 import smoothScrollMixin from '#src/plugins/smooth-scroll-mixin';
 import HowKivaWorksLightbox from '#src/components/BorrowerProfile/HowKivaWorksLightbox';
 import WhyLoansBanner from '#src/components/BorrowerProfile/WhyLoansBanner';
@@ -321,6 +332,7 @@ export default {
 		DefinitionsLightbox,
 		NonprofitTrustRow,
 		LoanMatchingInfo,
+		LoanSupportersRow,
 		HowKivaWorksLightbox,
 		WhyLoansBanner,
 		KvPageContainer,
@@ -403,9 +415,32 @@ export default {
 			userPreferences: null,
 			isShareLightboxOpen: false,
 			showHowKivaWorks: false,
+			whyLoansExtraSpace: 0,
+			cardsObserver: null,
 		};
 	},
+	mounted() {
+		if (this.isNewUserBpVariant && typeof ResizeObserver !== 'undefined') {
+			this.cardsObserver = new ResizeObserver(() => this.updateWhyLoansSpace());
+			this.cardsObserver.observe(this.$refs.summaryCard.$el);
+			this.cardsObserver.observe(this.$refs.lendCta.$el);
+		}
+	},
+	beforeUnmount() {
+		this.cardsObserver?.disconnect();
+	},
 	methods: {
+		// Adds space above the "Why loans" band when the sticky lend box ends lower than the top card
+		updateWhyLoansSpace() {
+			const column = this.$refs.sidebarColumn;
+			// Measured from its column, since the sticky lend box moves on scroll
+			const lendBoxBottom = column.getBoundingClientRect().top
+				+ parseFloat(getComputedStyle(column).paddingTop)
+				+ parseFloat(getComputedStyle(column.firstElementChild).marginTop)
+				+ this.$refs.lendCta.$el.offsetHeight;
+			const bandTop = this.$refs.whyLoansDesktop.$el.getBoundingClientRect().top;
+			this.whyLoansExtraSpace = Math.max(0, Math.ceil(lendBoxBottom + 32 - bandTop));
+		},
 		openShareLightbox() {
 			this.isShareLightboxOpen = true;
 			// The hidden share button has no trigger to fire this itself

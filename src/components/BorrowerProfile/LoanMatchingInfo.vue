@@ -1,7 +1,7 @@
 <template>
 	<div
 		v-if="partners.length"
-		class="tw-flex tw-items-start tw-justify-center tw-gap-0.5"
+		class="tw-flex tw-items-center tw-justify-center tw-gap-0.5"
 		data-testid="bp-loan-matching-info"
 	>
 		<p class="tw-text-small tw-text-secondary tw-text-center" data-testid="bp-loan-matching-text">

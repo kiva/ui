@@ -1,7 +1,7 @@
 <template>
 	<div
 		ref="wrapper"
-		:class="['lg:tw-mb-1', { 'md:tw-px-4': isSticky }]"
+		:class="['lg:tw-mb-1', { 'md:tw-px-4': isSticky, 'lg:tw-px-0': newUserBpEnabled }]"
 		:style="wrapperStyle"
 	>
 		<kv-atb-modal-container
@@ -31,7 +31,10 @@
 						'md:tw-px-4': isSticky,
 						'tw-bg-transparent md:tw-bg-primary': !isSticky,
 						'tw-bg-primary': isSticky,
-						'tw-border-t tw-border-tertiary tw-px-2.5': isSticky
+						'tw-border-t tw-border-tertiary tw-px-2.5': isSticky,
+						'lg:tw-border-none': newUserBpEnabled,
+						'lg:tw-rounded-b': newUserBpEnabled && !showSupportersRow,
+						'lg:tw-rounded-b-none': showSupportersRow,
 					},
 					'lg:tw-rounded-t',
 					'lg:tw-px-4',
@@ -45,7 +48,6 @@
 						{
 							'md:tw-pt-0': !isSticky,
 							'md:tw-col-start-2 md:tw-col-span-10': isSticky,
-							'md:tw-pb-2': newUserBpEnabled && !isSticky,
 						},
 						'lg:tw-col-span-12',
 						'lg:tw-pt-1 lg:tw-pb-1',
@@ -279,6 +281,12 @@
 				</div>
 			</kv-grid>
 
+			<loan-supporters-row
+				v-if="showSupportersRow"
+				class="tw-hidden lg:tw-flex lg:tw-px-2 lg:tw-rounded-b tw-text-base"
+				:loan="loan"
+			/>
+
 			<transition
 				enter-active-class="tw-transition-transform tw-duration-700 tw-delay-300"
 				:enter-from-class="transitionEnterClasses"
@@ -415,6 +423,7 @@ import CompleteLoanWrapper from '#src/components/BorrowerProfile/CompleteLoanWra
 import SimultaneousMatchingInfo from '#src/components/BorrowerProfile/SimultaneousMatchingInfo';
 import LoanMatchingInfo from '#src/components/BorrowerProfile/LoanMatchingInfo';
 import NonprofitTrustRow from '#src/components/BorrowerProfile/NonprofitTrustRow';
+import LoanSupportersRow from '#src/components/BorrowerProfile/LoanSupportersRow';
 
 import KvIcon from '#src/components/Kv/KvIcon';
 import {
@@ -559,6 +568,7 @@ export default {
 		SimultaneousMatchingInfo,
 		LoanMatchingInfo,
 		NonprofitTrustRow,
+		LoanSupportersRow,
 	},
 	setup() {
 		const { enableMultiMatching, multiMatchingResolved } = useMultiMatching();
@@ -590,7 +600,8 @@ export default {
 			loanLoading: !hasData,
 			userLoading: true,
 			hasFreeCredit: false,
-			isSticky: false,
+			// The new user version keeps the lend bar fixed at the bottom below desktop
+			isSticky: this.newUserBpEnabled,
 			wrapperHeight: 0,
 			wrapperObserver: null,
 			name: loan?.name ?? '',
@@ -711,8 +722,9 @@ export default {
 					entries.forEach(entry => {
 						if (entry.target === this.$refs?.wrapper) {
 							if (entry.intersectionRatio > 0) {
-								// Wrapper is in the viewport, so lend cta should NOT be stuck to the bottom
-								this.isSticky = false;
+								// Wrapper is in the viewport, so lend cta should NOT be stuck to the bottom,
+								// except in the new user version, where it always is
+								this.isSticky = this.newUserBpEnabled;
 							} else {
 								// Wrapper is NOT the viewport, so lend cta should be stuck to the bottom
 								this.wrapperHeight = entry.boundingClientRect.height;
@@ -831,12 +843,13 @@ export default {
 				enableMultiMatching: this.enableMultiMatching,
 			});
 		},
-		// The new user version shows matching in its own line, so it leaves the rotating stats
+		// Shown in the new user version where "powered by X lenders" would show today
+		showSupportersRow() {
+			return this.newUserBpEnabled && !!this.loan && this.possibleStats.includes('lenderCount');
+		},
+		// The new user version shows matching and supporters in their own rows, so nothing rotates
 		rotatingStats() {
-			if (this.newUserBpEnabled) {
-				return this.possibleStats.filter(stat => stat !== 'matchingText');
-			}
-			return this.possibleStats;
+			return this.newUserBpEnabled ? [] : this.possibleStats;
 		},
 		displayedSlotStat() {
 			return getDisplayedStat(this.rotatingStats, this.currentSlotStat);

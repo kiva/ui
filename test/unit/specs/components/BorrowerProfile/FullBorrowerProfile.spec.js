@@ -108,7 +108,7 @@ describe('FullBorrowerProfile updates section visibility', () => {
 });
 
 describe('FullBorrowerProfile new user version', () => {
-	const { openShareLightbox, scrollToLoanDetails } = FullBorrowerProfile.methods;
+	const { openShareLightbox, scrollToLoanDetails, updateWhyLoansSpace } = FullBorrowerProfile.methods;
 
 	describe('openShareLightbox', () => {
 		it('opens the lightbox and keeps the share-lightbox tracking event', () => {
@@ -152,6 +152,41 @@ describe('FullBorrowerProfile new user version', () => {
 			scrollToLoanDetails.call(ctx);
 
 			expect(ctx.smoothScrollTo).toHaveBeenCalledWith({ yPosition: 0, millisecondsToAnimate: 750 });
+		});
+	});
+
+	describe('updateWhyLoansSpace', () => {
+		// The test page has no layout, so positions and heights are faked
+		const fakeElement = ({ top = 0, height = 0, style = '' } = {}) => {
+			const element = document.createElement('div');
+			element.setAttribute('style', style);
+			element.getBoundingClientRect = () => ({ top });
+			Object.defineProperty(element, 'offsetHeight', { value: height });
+			return element;
+		};
+
+		it('pushes the band down to start 32px below a lend box that ends lower than the top card', () => {
+			// Lend box column at 65px, with 64px padding and an 8px margin
+			const sidebarColumn = fakeElement({ top: 65, style: 'padding-top: 64px' });
+			sidebarColumn.appendChild(fakeElement({ style: 'margin-top: 8px' }));
+			// getComputedStyle needs the element on the page
+			document.body.appendChild(sidebarColumn);
+			const ctx = {
+				whyLoansExtraSpace: 0,
+				$refs: {
+					sidebarColumn,
+					// Ends at 65 + 64 + 8 + 427 = 564px
+					lendCta: { $el: fakeElement({ height: 427 }) },
+					// Band starts 32px below a top card ending at 497px
+					whyLoansDesktop: { $el: fakeElement({ top: 529 }) },
+				},
+			};
+
+			updateWhyLoansSpace.call(ctx);
+			sidebarColumn.remove();
+
+			// Needs to start at 564 + 32 = 596px, so 67px lower
+			expect(ctx.whyLoansExtraSpace).toBe(67);
 		});
 	});
 
