@@ -3,6 +3,7 @@ import { enableAutoUnmount, shallowMount } from '@vue/test-utils';
 import FullBorrowerProfile from '#src/components/BorrowerProfile/FullBorrowerProfile';
 import SummaryCard from '#src/components/BorrowerProfile/SummaryCard';
 import ShareButton from '#src/components/BorrowerProfile/ShareButton';
+import WhyLoansBanner from '#src/components/BorrowerProfile/WhyLoansBanner';
 import { NEW_USER_BP_EXP_INJECT_KEY } from '#src/util/newUserBorrowerProfileExp';
 import { globalOptions } from '../../../specUtils';
 
@@ -243,6 +244,33 @@ describe('FullBorrowerProfile new user version', () => {
 			expect(scrollSpy).toHaveBeenCalledTimes(1);
 			expect(wrapper.vm.showDetailsInRail).toBe(false);
 			expect(wrapper.find('[data-testid="bp-rail-details"]').exists()).toBe(false);
+		});
+
+		it('control renders no "Why loans" banner', () => {
+			const wrapper = mountProfile({ isNewUserVariant: false });
+
+			expect(wrapper.findAllComponents(WhyLoansBanner)).toHaveLength(0);
+		});
+
+		it('version b renders the banner below the hero (desktop) and after the story (mobile) with the loan', () => {
+			const wrapper = mountProfile({ isNewUserVariant: true });
+
+			const desktop = wrapper.find('[data-testid="bp-why-loans-desktop"]');
+			const mobile = wrapper.find('[data-testid="bp-why-loans-mobile"]');
+			expect(desktop.classes()).toEqual(expect.arrayContaining(['tw-hidden', 'lg:tw-block']));
+			expect(mobile.classes()).toContain('lg:tw-hidden');
+			expect(desktop.findComponent(WhyLoansBanner).props('loan').name).toBe('Maria');
+			expect(mobile.findComponent(WhyLoansBanner).props('loan').name).toBe('Maria');
+		});
+
+		it.each(['desktop', 'mobile'])('version b: %s banner opens the How Kiva works lightbox', async placement => {
+			const wrapper = mountProfile({ isNewUserVariant: true });
+			const banner = wrapper.find(`[data-testid="bp-why-loans-${placement}"]`).findComponent(WhyLoansBanner);
+
+			banner.vm.$emit('how-it-works');
+			await wrapper.vm.$nextTick();
+
+			expect(wrapper.findComponent({ name: 'HowKivaWorksLightbox' }).props('visible')).toBe(true);
 		});
 	});
 });
