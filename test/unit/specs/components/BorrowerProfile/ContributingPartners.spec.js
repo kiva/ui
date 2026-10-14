@@ -6,7 +6,7 @@ import { flushPromises } from '@vue/test-utils';
 import CookieStore from '#src/util/cookieStore';
 import apolloPlugin from '#src/plugins/apollo-plugin';
 import ContributingPartners from '#src/components/BorrowerProfile/ContributingPartners';
-import { isHiddenByVShow } from '../../../specUtils';
+import { toBeVisible } from '../../../specUtils';
 
 const capitalOne = {
 	managedAccountId: 203995508, displayName: 'Capital One', ratio: 3, logo: null
@@ -66,7 +66,7 @@ describe('ContributingPartners', () => {
 			const button = await findByRole('button', { name: /Contributing partners/ });
 			expect(button.getAttribute('aria-expanded')).toBe('false');
 			expect(getByText('Partners that matched this loan')).toBeTruthy();
-			expect(isHiddenByVShow(getByText('Capital One'))).toBe(true);
+			expect(toBeVisible(getByText('Capital One'))).toBe(false);
 		});
 
 		it('shows the partners once opened', async () => {
@@ -78,7 +78,7 @@ describe('ContributingPartners', () => {
 
 			await user.click(await findByRole('button', { name: /Contributing partners/ }));
 
-			expect(isHiddenByVShow(getByText('Capital One'))).toBe(false);
+			expect(toBeVisible(getByText('Capital One'))).toBe(true);
 		});
 
 		it('hides the row when there are no matched partners', async () => {

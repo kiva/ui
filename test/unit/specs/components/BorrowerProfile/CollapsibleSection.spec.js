@@ -1,7 +1,7 @@
 import { render } from '@testing-library/vue';
 import userEvent from '@testing-library/user-event';
 import CollapsibleSection from '#src/components/BorrowerProfile/CollapsibleSection';
-import { isHiddenByVShow } from '../../../specUtils';
+import { toBeVisible } from '../../../specUtils';
 
 function renderComponent(props = {}, { subtitle } = {}) {
 	return render(CollapsibleSection, {
@@ -22,7 +22,7 @@ describe('CollapsibleSection', () => {
 
 			const button = getByRole('button', { name: /Section title/ });
 			expect(button.getAttribute('aria-expanded')).toBe('false');
-			expect(isHiddenByVShow(getByText('Section body'))).toBe(true);
+			expect(toBeVisible(getByText('Section body'))).toBe(false);
 		});
 
 		it('points the toggle at the body region', () => {
@@ -39,7 +39,7 @@ describe('CollapsibleSection', () => {
 
 			await user.click(button);
 			expect(button.getAttribute('aria-expanded')).toBe('true');
-			expect(isHiddenByVShow(getByText('Section body'))).toBe(false);
+			expect(toBeVisible(getByText('Section body'))).toBe(true);
 
 			await user.click(button);
 			expect(button.getAttribute('aria-expanded')).toBe('false');
@@ -71,7 +71,7 @@ describe('CollapsibleSection', () => {
 
 			expect(getByRole('heading', { level: 2, name: 'Section title' })).toBeTruthy();
 			expect(queryByRole('button')).toBeNull();
-			expect(isHiddenByVShow(getByText('Section body'))).toBe(false);
+			expect(toBeVisible(getByText('Section body'))).toBe(true);
 		});
 
 		it('does not render the subtitle', () => {

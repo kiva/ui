@@ -6,7 +6,7 @@ import { flushPromises } from '@vue/test-utils';
 import CookieStore from '#src/util/cookieStore';
 import apolloPlugin from '#src/plugins/apollo-plugin';
 import MoreAboutLoan from '#src/components/BorrowerProfile/MoreAboutLoan';
-import { isHiddenByVShow } from '../../../specUtils';
+import { toBeVisible } from '../../../specUtils';
 
 const makeData = ({ loanAlertText = 'Partner alert text' } = {}) => ({
 	lend: {
@@ -67,14 +67,14 @@ describe('MoreAboutLoan', () => {
 
 		expect(getByRole('heading', { level: 2, name: 'More about this loan' })).toBeTruthy();
 		expect(queryByRole('button')).toBeNull();
-		expect(isHiddenByVShow(await findByText('More info about this loan'))).toBe(false);
+		expect(toBeVisible(await findByText('More info about this loan'))).toBe(true);
 	});
 
 	it('nests the partner block under its own heading when not collapsible', async () => {
 		const { findByRole, getByText } = renderComponent();
 
 		expect(await findByRole('heading', { level: 3, name: 'About Karif Foundation:' })).toBeTruthy();
-		expect(isHiddenByVShow(getByText('Partner alert text'))).toBe(false);
+		expect(toBeVisible(getByText('Partner alert text'))).toBe(true);
 	});
 
 	describe('when collapsible', () => {
@@ -85,8 +85,8 @@ describe('MoreAboutLoan', () => {
 			const partnerRow = await findByRole('button', { name: 'About Karif Foundation' });
 			expect(loanRow.getAttribute('aria-expanded')).toBe('false');
 			expect(partnerRow.getAttribute('aria-expanded')).toBe('false');
-			expect(isHiddenByVShow(await findByText('More info about this loan'))).toBe(true);
-			expect(isHiddenByVShow(await findByText('Partner alert text'))).toBe(true);
+			expect(toBeVisible(await findByText('More info about this loan'))).toBe(false);
+			expect(toBeVisible(await findByText('Partner alert text'))).toBe(false);
 		});
 
 		it('keeps the partner text out of the loan row', async () => {
@@ -96,8 +96,8 @@ describe('MoreAboutLoan', () => {
 
 			await user.click(getByRole('button', { name: /More about this loan/ }));
 
-			expect(isHiddenByVShow(await findByText('More info about this loan'))).toBe(false);
-			expect(isHiddenByVShow(await findByText('Partner alert text'))).toBe(true);
+			expect(toBeVisible(await findByText('More info about this loan'))).toBe(true);
+			expect(toBeVisible(await findByText('Partner alert text'))).toBe(false);
 		});
 
 		it('opens the partner row on its own', async () => {
@@ -106,8 +106,8 @@ describe('MoreAboutLoan', () => {
 
 			await user.click(await findByRole('button', { name: 'About Karif Foundation' }));
 
-			expect(isHiddenByVShow(await findByText('Partner alert text'))).toBe(false);
-			expect(isHiddenByVShow(await findByText('More info about this loan'))).toBe(true);
+			expect(toBeVisible(await findByText('Partner alert text'))).toBe(true);
+			expect(toBeVisible(await findByText('More info about this loan'))).toBe(false);
 		});
 
 		it('shows no partner row when the partner has no alert text', async () => {

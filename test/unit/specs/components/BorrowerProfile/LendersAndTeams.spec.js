@@ -6,7 +6,7 @@ import { flushPromises } from '@vue/test-utils';
 import CookieStore from '#src/util/cookieStore';
 import apolloPlugin from '#src/plugins/apollo-plugin';
 import LendersAndTeams from '#src/components/BorrowerProfile/LendersAndTeams';
-import { isHiddenByVShow } from '../../../specUtils';
+import { toBeVisible } from '../../../specUtils';
 
 const lender = id => ({
 	id,
@@ -78,7 +78,7 @@ describe('LendersAndTeams', () => {
 			const button = getByRole('button', { name: /Contributing lenders/ });
 			expect(button.getAttribute('aria-expanded')).toBe('false');
 			expect(button.textContent).toContain('Powered by 2 lenders');
-			expect(isHiddenByVShow(getByTestId('bp-lenders-grid'))).toBe(true);
+			expect(toBeVisible(getByTestId('bp-lenders-grid'))).toBe(false);
 		});
 
 		it('shows the lenders once opened', async () => {
@@ -88,7 +88,7 @@ describe('LendersAndTeams', () => {
 
 			await user.click(getByRole('button', { name: /Contributing lenders/ }));
 
-			expect(isHiddenByVShow(getByTestId('bp-lenders-grid'))).toBe(false);
+			expect(toBeVisible(getByTestId('bp-lenders-grid'))).toBe(true);
 		});
 
 		it('opens the see all lightbox from inside the opened row', async () => {
@@ -102,7 +102,7 @@ describe('LendersAndTeams', () => {
 
 			await user.click(getByRole('button', { name: /Contributing lenders/ }));
 			const seeAll = getByTestId('bp-lenders-see-all-link');
-			expect(isHiddenByVShow(seeAll)).toBe(false);
+			expect(toBeVisible(seeAll)).toBe(true);
 			await user.click(seeAll);
 
 			expect(await findByRole('dialog')).toBeTruthy();
@@ -137,7 +137,7 @@ describe('LendersAndTeams', () => {
 			expect(getByRole('heading', { level: 2, name: 'Contributing lenders' })).toBeTruthy();
 			expect(queryByRole('button', { name: /Contributing lenders/ })).toBeNull();
 			expect(getByTestId('bp-powered-by-lenders-message').textContent.trim()).toBe('powered by 2 lenders');
-			expect(isHiddenByVShow(getByTestId('bp-lenders-grid'))).toBe(false);
+			expect(toBeVisible(getByTestId('bp-lenders-grid'))).toBe(true);
 		});
 	});
 });
