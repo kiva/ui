@@ -1,6 +1,10 @@
 /* eslint-disable import/no-extraneous-dependencies */
 import { enableAutoUnmount, shallowMount } from '@vue/test-utils';
 import FullBorrowerProfile from '#src/components/BorrowerProfile/FullBorrowerProfile';
+import BorrowerCountry from '#src/components/BorrowerProfile/BorrowerCountry';
+import ContributingPartners from '#src/components/BorrowerProfile/ContributingPartners';
+import LendersAndTeams from '#src/components/BorrowerProfile/LendersAndTeams';
+import MoreAboutLoan from '#src/components/BorrowerProfile/MoreAboutLoan';
 import SummaryCard from '#src/components/BorrowerProfile/SummaryCard';
 import ShareButton from '#src/components/BorrowerProfile/ShareButton';
 import WhyLoansBanner from '#src/components/BorrowerProfile/WhyLoansBanner';
@@ -271,6 +275,32 @@ describe('FullBorrowerProfile new user version', () => {
 			await wrapper.vm.$nextTick();
 
 			expect(wrapper.findComponent({ name: 'HowKivaWorksLightbox' }).props('visible')).toBe(true);
+		});
+
+		describe('collapsible sections', () => {
+			const collapsibleProps = wrapper => [
+				wrapper.findComponent(MoreAboutLoan),
+				wrapper.findComponent(ContributingPartners),
+				...wrapper.findAllComponents(LendersAndTeams),
+			].map(section => section.props('collapsible'));
+
+			it('version b collapses the sections below the story', () => {
+				const wrapper = mountProfile({ isNewUserVariant: true });
+
+				expect(collapsibleProps(wrapper)).toEqual([true, true, true, true]);
+			});
+
+			it('the control keeps the sections open', () => {
+				const wrapper = mountProfile({ isNewUserVariant: false });
+
+				expect(collapsibleProps(wrapper)).toEqual([false, false, false, false]);
+			});
+
+			it('version b never collapses the country section', () => {
+				const wrapper = mountProfile({ isNewUserVariant: true });
+
+				expect(wrapper.findComponent(BorrowerCountry).props()).not.toHaveProperty('collapsible');
+			});
 		});
 	});
 });

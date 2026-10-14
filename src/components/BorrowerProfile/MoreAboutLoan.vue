@@ -1,103 +1,124 @@
 <template>
 	<section>
-		<h2 data-testid="bp-more-about-header">
-			More about this loan
-		</h2>
-		<div ref="body">
-			<div class="tw-prose tw-break-words">
-				<div v-if="partnerName && !loading">
-					<p v-if="!partnerNameNA" data-testid="bp-more_about-facilitated">
-						This loan is facilitated by our Lending Partner, {{ partnerName }}.
-						Lending Partners are local organizations working in communities to vet
-						borrowers, provide services, and administer loans on the ground.
-					</p>
-
-					<div v-html="moreInfoAboutLoan" data-testid="bp-more-about-info">
-					</div>
-
-					<div v-if="loanAlertText" data-testid="bp-more-about-alert-text">
-						<h3>
-							About {{ partnerName }}:
-						</h3>
-						<p
-							key="storyDescription"
-							v-html="loanAlertText"
-						>
+		<collapsible-section id="bp-more-about" :collapsible="collapsible">
+			<template #heading>
+				<h2 data-testid="bp-more-about-header">
+					More about this loan
+				</h2>
+			</template>
+			<template #title>
+				<span data-testid="bp-more-about-header">More about this loan</span>
+			</template>
+			<div ref="body">
+				<div class="tw-prose tw-break-words">
+					<div v-if="partnerName && !loading">
+						<p v-if="!partnerNameNA" data-testid="bp-more_about-facilitated">
+							This loan is facilitated by our Lending Partner, {{ partnerName }}.
+							Lending Partners are local organizations working in communities to vet
+							borrowers, provide services, and administer loans on the ground.
 						</p>
-					</div>
-					<div v-if="dualStatementNote" data-testid="bp-more-about-dual-statement">
-						<h3>
-							Important Note About This Loan
-						</h3>
-						<div v-html="dualStatementNote">
+
+						<div v-html="moreInfoAboutLoan" data-testid="bp-more-about-info">
+						</div>
+
+						<div v-if="loanAlertText && !collapsible" data-testid="bp-more-about-alert-text">
+							<h3>
+								About {{ partnerName }}:
+							</h3>
+							<p
+								key="storyDescription"
+								v-html="loanAlertText"
+							>
+							</p>
+						</div>
+						<div v-if="dualStatementNote" data-testid="bp-more-about-dual-statement">
+							<h3>
+								Important Note About This Loan
+							</h3>
+							<div v-html="dualStatementNote">
+							</div>
 						</div>
 					</div>
 				</div>
-			</div>
-			<div v-if="!partnerName && !loading">
-				<div class="tw-prose tw-my-2">
-					<h3>
-						Business description
-					</h3>
-					<div data-testid="bp-more-about-direct-description">
-						<p
-							v-for="(paragraph, index) in businessDescriptionParagraphs"
-							:key="`businessDescription-${index}`"
-							v-html="paragraph"
-						>
-						</p>
+				<div v-if="!partnerName && !loading">
+					<div class="tw-prose tw-my-2">
+						<h3>
+							Business description
+						</h3>
+						<div data-testid="bp-more-about-direct-description">
+							<p
+								v-for="(paragraph, index) in businessDescriptionParagraphs"
+								:key="`businessDescription-${index}`"
+								v-html="paragraph"
+							>
+							</p>
+						</div>
+					</div>
+
+					<borrower-business-details
+						class="tw-mb-2"
+						:borrower-business-name="borrowerBusinessName"
+						:sector="sector"
+						:social-links="socialLinks"
+						:years-in-business="yearsInBusiness"
+						:loan-id="loanId"
+					/>
+
+					<div class="tw-prose" data-testid="bp-direct-loan-purpose">
+						<h3>
+							What is the purpose of this loan?
+						</h3>
+						<div data-testid="bp-more-about-purpose">
+							<p
+								v-for="(paragraph, index) in purposeParagraphs"
+								:key="`purpose-${index}`"
+								v-html="paragraph"
+							>
+							</p>
+						</div>
 					</div>
 				</div>
 
-				<borrower-business-details
-					class="tw-mb-2"
-					:borrower-business-name="borrowerBusinessName"
-					:sector="sector"
-					:social-links="socialLinks"
-					:years-in-business="yearsInBusiness"
-					:loan-id="loanId"
-				/>
-
-				<div class="tw-prose" data-testid="bp-direct-loan-purpose">
-					<h3>
-						What is the purpose of this loan?
-					</h3>
-					<div data-testid="bp-more-about-purpose">
-						<p
-							v-for="(paragraph, index) in purposeParagraphs"
-							:key="`purpose-${index}`"
-							v-html="paragraph"
-						>
-						</p>
+				<div
+					v-if="loading"
+				>
+					<kv-loading-placeholder
+						class="tw-mb-2" :style="{width: 60 + (Math.random() * 15) + '%', height: '1.6rem'}"
+					/>
+					<div v-for="i in 5" :key="`${i}pl1`">
+						<kv-loading-placeholder
+							class="tw-w-full tw-mb-1"
+							:style="{width: 80 + (Math.random() * 15) + '%', height: '1rem'}"
+						/>
 					</div>
+					<br>
+					<kv-loading-placeholder
+						class="tw-mb-2" :style="{width: 60 + (Math.random() * 15) + '%', height: '1.6rem'}"
+					/>
+					<div v-for="i in 5" :key="`${i}pl2`">
+						<kv-loading-placeholder
+							class="tw-w-full tw-mb-1"
+							:style="{width: 80 + (Math.random() * 15) + '%', height: '1rem'}"
+						/>
+					</div>
+					<br>
 				</div>
 			</div>
-
-			<div
-				v-if="loading"
-			>
-				<kv-loading-placeholder
-					class="tw-mb-2" :style="{width: 60 + (Math.random() * 15) + '%', height: '1.6rem'}"
-				/>
-				<div v-for="i in 5" :key="`${i}pl1`">
-					<kv-loading-placeholder
-						class="tw-w-full tw-mb-1"
-						:style="{width: 80 + (Math.random() * 15) + '%', height: '1rem'}"
-					/>
-				</div>
-				<br>
-				<kv-loading-placeholder
-					class="tw-mb-2" :style="{width: 60 + (Math.random() * 15) + '%', height: '1.6rem'}"
-				/>
-				<div v-for="i in 5" :key="`${i}pl2`">
-					<kv-loading-placeholder
-						class="tw-w-full tw-mb-1"
-						:style="{width: 80 + (Math.random() * 15) + '%', height: '1rem'}"
-					/>
-				</div>
-				<br>
+		</collapsible-section>
+		<!-- The partner's own row; when not collapsible it stays nested above -->
+		<collapsible-section
+			v-if="collapsible && hasPartnerAlert"
+			id="bp-about-partner"
+			class="tw-mt-2"
+			collapsible
+		>
+			<template #title>
+				<span data-testid="bp-about-partner-header">About {{ partnerName }}</span>
+			</template>
+			<div class="tw-prose tw-break-words" data-testid="bp-more-about-alert-text">
+				<p v-html="loanAlertText"></p>
 			</div>
-		</div>
+		</collapsible-section>
 	</section>
 </template>
 
@@ -105,6 +126,7 @@
 import { toParagraphs } from '#src/util/loanUtils';
 import { gql } from 'graphql-tag';
 import BorrowerBusinessDetails from '#src/components/BorrowerProfile/BorrowerBusinessDetails';
+import CollapsibleSection from '#src/components/BorrowerProfile/CollapsibleSection';
 
 import { KvLoadingPlaceholder } from '@kiva/kv-components';
 
@@ -113,12 +135,17 @@ export default {
 	inject: ['apollo', 'cookieStore'],
 	components: {
 		BorrowerBusinessDetails,
+		CollapsibleSection,
 		KvLoadingPlaceholder,
 	},
 	props: {
 		loanId: {
 			type: Number,
 			default: 0,
+		},
+		collapsible: {
+			type: Boolean,
+			default: false,
 		},
 	},
 	data() {
@@ -146,6 +173,9 @@ export default {
 		};
 	},
 	computed: {
+		hasPartnerAlert() {
+			return !!(this.partnerName && this.loanAlertText && !this.loading);
+		},
 		borrowerBusinessName() {
 			if (this.businessName) {
 				return this.businessName;
