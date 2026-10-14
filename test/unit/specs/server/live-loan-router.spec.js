@@ -161,7 +161,7 @@ describe('live-loan-router bundle-url routes', () => {
 			expect(result.location).toBe('/add-loan-bundle?loanIds=111,222');
 		});
 
-		it('calls fetchLoansByType with FLSS query type', async () => {
+		it('calls fetchLoansByType with the default query type', async () => {
 			const loans = [{ id: 111 }];
 			liveLoanFetch.default.mockResolvedValue(loans);
 
@@ -171,8 +171,24 @@ describe('live-loan-router bundle-url routes', () => {
 			expect(liveLoanFetch.default).toHaveBeenCalledWith(
 				'user',
 				'42',
-				liveLoanFetch.QUERY_TYPE.FLSS,
+				liveLoanFetch.QUERY_TYPE.DEFAULT,
 				4,
+			);
+		});
+
+		it('shares the /u/:id loan cache entry', async () => {
+			const loans = [{ id: 111 }];
+			liveLoanFetch.default.mockResolvedValue(loans);
+
+			const app = createApp(cache);
+			await makeRequest(app, '/live-loan/flss/u/42/bundle-url');
+
+			expect(memJsUtils.getFromCache).toHaveBeenCalledWith('recommendations-by-user-id-42', cache);
+			expect(memJsUtils.setToCache).toHaveBeenCalledWith(
+				'recommendations-by-user-id-42',
+				JSON.stringify(loans),
+				10 * 60,
+				cache,
 			);
 		});
 	});
@@ -283,7 +299,7 @@ describe('live-loan-router bundle-url routes', () => {
 			expect(liveLoanFetch.default).toHaveBeenCalledWith('user', '42', 'default', 4);
 		});
 
-		it('balance=75 on /flss/u/:id/bundle-url returns 3 loans with FLSS query type', async () => {
+		it('balance=75 on /flss/u/:id/bundle-url returns 3 loans with the default query type', async () => {
 			const fresh = [{ id: 1 }, { id: 2 }, { id: 3 }];
 			liveLoanFetch.default.mockResolvedValue(fresh);
 
@@ -292,7 +308,7 @@ describe('live-loan-router bundle-url routes', () => {
 
 			expect(result.statusCode).toBe(302);
 			expect(result.location).toBe('/add-loan-bundle?loanIds=1,2,3');
-			expect(liveLoanFetch.default).toHaveBeenCalledWith('user', '42', 'flss', 3);
+			expect(liveLoanFetch.default).toHaveBeenCalledWith('user', '42', 'default', 3);
 		});
 
 		it('balance=200 on /flss/u/:id/bundle-url redirects to /lend/filter', async () => {
@@ -399,7 +415,7 @@ describe('live-loan-router bundle-url routes', () => {
 			);
 		});
 
-		it('FLSS bundle-img route passes FLSS query type and bundle style', async () => {
+		it('FLSS bundle-img route passes the default query type and bundle style', async () => {
 			liveLoanFetch.default.mockResolvedValue([{ id: 11 }, { id: 22 }]);
 
 			const app = createApp(cache);
@@ -411,7 +427,7 @@ describe('live-loan-router bundle-url routes', () => {
 			expect(liveLoanFetch.default).toHaveBeenCalledWith(
 				'user',
 				'42',
-				liveLoanFetch.QUERY_TYPE.FLSS,
+				liveLoanFetch.QUERY_TYPE.DEFAULT,
 				6,
 			);
 		});
@@ -475,7 +491,7 @@ describe('live-loan-router bundle-url routes', () => {
 			);
 		});
 
-		it('FLSS bundle-img-compact route passes FLSS query type and compact-bundle style', async () => {
+		it('FLSS bundle-img-compact route passes the default query type and compact-bundle style', async () => {
 			liveLoanFetch.default.mockResolvedValue([{ id: 11 }, { id: 22 }]);
 
 			const app = createApp(cache);
@@ -487,7 +503,7 @@ describe('live-loan-router bundle-url routes', () => {
 			expect(liveLoanFetch.default).toHaveBeenCalledWith(
 				'user',
 				'42',
-				liveLoanFetch.QUERY_TYPE.FLSS,
+				liveLoanFetch.QUERY_TYPE.DEFAULT,
 				6,
 			);
 		});
@@ -534,7 +550,7 @@ describe('live-loan-router bundle-url routes', () => {
 			);
 		});
 
-		it('FLSS bundle-img-legacy route passes FLSS query type and bundle-legacy style', async () => {
+		it('FLSS bundle-img-legacy route passes the default query type and bundle-legacy style', async () => {
 			liveLoanFetch.default.mockResolvedValue([{ id: 11 }, { id: 22 }]);
 
 			const app = createApp(cache);
@@ -546,7 +562,7 @@ describe('live-loan-router bundle-url routes', () => {
 			expect(liveLoanFetch.default).toHaveBeenCalledWith(
 				'user',
 				'42',
-				liveLoanFetch.QUERY_TYPE.FLSS,
+				liveLoanFetch.QUERY_TYPE.DEFAULT,
 				6,
 			);
 		});

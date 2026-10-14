@@ -164,19 +164,65 @@ describe('live-loan-fetch', () => {
 		});
 	});
 
-	describe('fetchRecommendationsByFLSS', () => {
-		it('have flss call defined with userId', async () => {
-			fetch.mockClear();
-			fetch.mockResolvedValue({ json: () => { } });
+	describe('fetchRecommendationsByLoginId (default)', () => {
+		const tags = [{ id: 1, name: 'tag', vocabularyId: 2 }];
 
-			await fetchLoansByType('user', '1234', 'flss');
+		function mockGraphQLResponses(fundraisingLoans) {
+			fetch.mockImplementation((url, { body }) => {
+				const { query } = JSON.parse(body);
+				const data = query.includes('fundraisingLoans')
+					? { fundraisingLoans }
+					: { lend: { tag: tags } };
+				return Promise.resolve({ json: () => ({ data }) });
+			});
+		}
+
+		beforeEach(() => {
+			fetch.mockReset();
+		});
+
+		it('queries fundraisingLoans with personalized sort and the user id as a variable', async () => {
+			mockGraphQLResponses({ values: [] });
+
+			await fetchLoansByType('user', '1234');
 
 			const { variables, query } = JSON.parse(fetch.mock.calls[0][1].body);
-			expect(fetch).toBeDefined();
-			expect(variables.userId).toEqual(1234);
-			expect(query).toBeDefined();
-			expect(query).toContain('fundraisingLoans');
-			expect(fetch.mock.results[0].value).toBeDefined();
+			expect(variables).toEqual({ userId: 1234 });
+			expect(query).toMatch(/fundraisingLoans\s*\([^)]*sortBy\s*:\s*personalized/);
+			expect(query).toMatch(/fundraisingLoans\s*\([^)]*userId\s*:\s*\$userId/);
+			expect(query).toMatch(/fundraisingLoans\s*\([^)]*origin\s*:\s*"email:live-loans"/);
+			expect(query).not.toContain('recommendationsByLoginId');
+			expect(query).not.toMatch(/\bml\s*{/);
+		});
+
+		it('returns the fundraisingLoans values with tag data attached', async () => {
+			mockGraphQLResponses({ values: [{ id: 1 }, null, { id: 2 }] });
+
+			const loans = await fetchLoansByType('user', '1234');
+
+			expect(loans).toEqual([
+				{ id: 1, tagsData: tags },
+				{ id: 2, tagsData: tags },
+			]);
+		});
+
+		it('returns an empty array when no loans are returned', async () => {
+			mockGraphQLResponses({ values: [] });
+
+			const loans = await fetchLoansByType('user', '1234');
+
+			expect(loans).toEqual([]);
+		});
+
+		it('logs and returns undefined when the request fails', async () => {
+			const consoleError = vi.spyOn(console, 'error').mockImplementation(vi.fn());
+			fetch.mockRejectedValue(new Error('Network error'));
+
+			const loans = await fetchLoansByType('user', '1234');
+
+			expect(loans).toBeUndefined();
+			expect(consoleError).toHaveBeenCalledWith(expect.stringContaining('Network error'));
+			consoleError.mockRestore();
 		});
 	});
 
@@ -206,16 +252,10 @@ describe('live-loan-fetch', () => {
 			return JSON.parse(fetch.mock.calls[callIndex][1].body).query;
 		}
 
-		it('passes count into recommendationsByLoginId (DEFAULT) limit', async () => {
+		it('passes count into fundraisingLoans (DEFAULT) limit', async () => {
 			await fetchLoansByType('user', 42, 'default', 6);
 			const query = await queryForCall(0);
-			expect(query).toMatch(/recommendationsByLoginId\s*\([^)]*limit\s*:\s*6/);
-		});
-
-		it('passes count into fundraisingLoans (FLSS) limit', async () => {
-			await fetchLoansByType('user', 42, 'flss', 3);
-			const query = await queryForCall(0);
-			expect(query).toMatch(/fundraisingLoans\s*\([^)]*limit\s*:\s*3/);
+			expect(query).toMatch(/fundraisingLoans\s*\([^)]*limit\s*:\s*6/);
 		});
 
 		it('passes count into loanRecommendations limit', async () => {
@@ -227,7 +267,7 @@ describe('live-loan-fetch', () => {
 		it('defaults count to 4 when not provided (DEFAULT)', async () => {
 			await fetchLoansByType('user', 42);
 			const query = await queryForCall(0);
-			expect(query).toMatch(/recommendationsByLoginId\s*\([^)]*limit\s*:\s*4/);
+			expect(query).toMatch(/fundraisingLoans\s*\([^)]*limit\s*:\s*4/);
 		});
 
 		it('passes count into filter (FLSS fundraisingLoans with filters) limit', async () => {
