@@ -72,7 +72,8 @@
 			class="lg:tw-absolute tw-pointer-events-none lg:tw-w-full lg:tw-h-full lg:tw-top-0 tw-z-docked"
 		>
 			<sidebar-container
-				class="lg:tw-sticky lg:tw-mt-10 lg:tw-pb-8 lg:tw-top-12"
+				class="lg:tw-sticky lg:tw-pb-8 lg:tw-top-12"
+				:class="isNewUserBpVariant ? 'lg:tw-mt-1' : 'lg:tw-mt-10'"
 			>
 				<div class="tw-flex tw-flex-col" style="max-height: calc(100vh - 7.5rem)">
 					<lend-cta
