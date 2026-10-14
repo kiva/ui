@@ -19,12 +19,29 @@
 				<summary-card
 					data-testid="bp-summary"
 					class="tw-relative lg:tw--mb-1.5"
+					:class="{
+						'tw-bg-primary tw--mx-2.5 tw-px-2.5 tw-shadow-lg md:tw-mx-0 md:tw-shadow-transparent':
+							isNewUserBpVariant,
+					}"
 					:loan="loanData"
 					:is-logged-in="isLoggedIn"
 					:show-actions="isNewUserBpVariant"
 					@share="openShareLightbox"
 					@loan-details="scrollToLoanDetails"
-				/>
+				>
+					<!-- Below desktop there is no separate lend box, so these show in the top card -->
+					<template v-if="isNewUserBpVariant" #footer>
+						<div class="lg:tw-hidden">
+							<hr class="tw-border-tertiary tw-mt-3">
+							<nonprofit-trust-row class="tw-py-2" />
+							<loan-matching-info
+								class="tw-pb-1"
+								:loan="loanData"
+								tooltip-id="top-card-matching-tooltip"
+							/>
+						</div>
+					</template>
+				</summary-card>
 				<!-- New user version: the share lightbox opens from the top card, so its own trigger is hidden.
 					Lives outside the lend box because that slot is dropped while the lend box is sticky;
 					rendered only once the loan has loaded, as today. -->
@@ -38,6 +55,14 @@
 				/>
 			</content-container>
 		</div>
+		<!-- Bare page container: the band spans the full content width, not the story column -->
+		<kv-page-container
+			v-if="isNewUserBpVariant"
+			class="tw-hidden lg:tw-block lg:tw-mt-6"
+			data-testid="bp-why-loans-desktop"
+		>
+			<why-loans-banner :loan="loanData" @how-it-works="showHowKivaWorks = true" />
+		</kv-page-container>
 		<div
 			:class="inPfp ? 'lg:tw-pt-16 lg:tw-mt-8' : 'lg:tw-pt-8'"
 			class="lg:tw-absolute tw-pointer-events-none lg:tw-w-full lg:tw-h-full lg:tw-top-0 tw-z-docked"
@@ -53,6 +78,7 @@
 						:enable-five-dollars-notes="enableFiveDollarsNotes"
 						:show-details-in-rail="showDetailsInRail"
 						:hide-jump-links="isNewUserBpVariant"
+						:new-user-bp-enabled="isNewUserBpVariant"
 					>
 						<!-- Share button; the new user version shows it in the top card instead -->
 						<template v-if="!isNewUserBpVariant" #sharebutton>
@@ -93,6 +119,13 @@
 				class="tw-mb-5 md:tw-mb-6 lg:tw-mb-8 tw-z-1"
 				:loan="loanData"
 			/>
+			<div
+				v-if="isNewUserBpVariant"
+				class="lg:tw-hidden tw-mb-5 md:tw-mb-6"
+				data-testid="bp-why-loans-mobile"
+			>
+				<why-loans-banner :loan="loanData" @how-it-works="showHowKivaWorks = true" />
+			</div>
 		</content-container>
 		<content-container>
 			<journal-updates
@@ -205,8 +238,11 @@ import LoanTags from '#src/components/BorrowerProfile/LoanTags';
 import LoanComments from '#src/components/BorrowerProfile/LoanComments';
 import LoanDetailsRailToggle from '#src/components/BorrowerProfile/LoanDetailsRailToggle';
 import DefinitionsLightbox from '#src/components/BorrowerProfile/DefinitionsLightbox';
+import NonprofitTrustRow from '#src/components/BorrowerProfile/NonprofitTrustRow';
+import LoanMatchingInfo from '#src/components/BorrowerProfile/LoanMatchingInfo';
 import smoothScrollMixin from '#src/plugins/smooth-scroll-mixin';
 import HowKivaWorksLightbox from '#src/components/BorrowerProfile/HowKivaWorksLightbox';
+import WhyLoansBanner from '#src/components/BorrowerProfile/WhyLoansBanner';
 import {
 	getLocalRailPreference,
 	readAccountRailPreference,
@@ -216,7 +252,7 @@ import {
 import { isActivelyInPfp } from '#src/util/loanUtils';
 import { NEW_USER_BP_EXP_INJECT_KEY } from '#src/util/newUserBorrowerProfileExp';
 import { differenceInCalendarDays, parseISO } from 'date-fns';
-import { KvLoadingPlaceholder } from '@kiva/kv-components';
+import { KvLoadingPlaceholder, KvPageContainer } from '@kiva/kv-components';
 
 export const fullProfileFragment = gql`
 	${summaryCardFragment}
@@ -283,7 +319,11 @@ export default {
 		LoanDetailsRailToggle,
 		KvLoadingPlaceholder,
 		DefinitionsLightbox,
+		NonprofitTrustRow,
+		LoanMatchingInfo,
 		HowKivaWorksLightbox,
+		WhyLoansBanner,
+		KvPageContainer,
 	},
 	mixins: [smoothScrollMixin],
 	inject: {
