@@ -45,6 +45,7 @@
 						{
 							'md:tw-pt-0': !isSticky,
 							'md:tw-col-start-2 md:tw-col-span-10': isSticky,
+							'md:tw-pb-2': newUserBpEnabled && !isSticky,
 						},
 						'lg:tw-col-span-12',
 						'lg:tw-pt-1 lg:tw-pb-1',
@@ -214,6 +215,13 @@
 
 					</span>
 
+					<loan-matching-info
+						v-if="newUserBpEnabled"
+						class="tw-hidden lg:tw-flex tw-mb-2"
+						:loan="loan"
+						tooltip-id="lend-box-matching-tooltip"
+						tooltip-placement="bottom"
+					/>
 					<slot v-if="!isSticky" name="sharebutton"></slot>
 					<p
 						v-if="freeCreditWarning"
@@ -229,6 +237,10 @@
 					>
 						All shares reserved
 					</p>
+					<template v-if="newUserBpEnabled">
+						<hr class="tw-hidden lg:tw-block tw-border-tertiary tw-w-full tw-my-2">
+						<nonprofit-trust-row class="tw-hidden lg:tw-flex tw-mb-2" />
+					</template>
 					<!-- Divider and jump links; the new user version shows these actions in the top card -->
 					<template v-if="!hideJumpLinks">
 						<hr
@@ -401,6 +413,8 @@ import LoanBookmark from '#src/components/BorrowerProfile/LoanBookmark';
 import LendAmountButton from '#src/components/LoanCards/Buttons/LendAmountButton';
 import CompleteLoanWrapper from '#src/components/BorrowerProfile/CompleteLoanWrapper';
 import SimultaneousMatchingInfo from '#src/components/BorrowerProfile/SimultaneousMatchingInfo';
+import LoanMatchingInfo from '#src/components/BorrowerProfile/LoanMatchingInfo';
+import NonprofitTrustRow from '#src/components/BorrowerProfile/NonprofitTrustRow';
 
 import KvIcon from '#src/components/Kv/KvIcon';
 import {
@@ -526,6 +540,10 @@ export default {
 			type: Boolean,
 			default: false,
 		},
+		newUserBpEnabled: {
+			type: Boolean,
+			default: false,
+		},
 	},
 	components: {
 		LendAmountButton,
@@ -539,6 +557,8 @@ export default {
 		CompleteLoanWrapper,
 		KvAtbModalContainer,
 		SimultaneousMatchingInfo,
+		LoanMatchingInfo,
+		NonprofitTrustRow,
 	},
 	setup() {
 		const { enableMultiMatching, multiMatchingResolved } = useMultiMatching();
@@ -635,7 +655,10 @@ export default {
 				this.basketSize = data?.shop?.nonTrivialItemCount || 0;
 				this.userLoading = false;
 
-				this.initializeMatchingHighlightExp();
+				// The new user version shows its own matching text instead of the matching highlight
+				if (!this.newUserBpEnabled) {
+					this.initializeMatchingHighlightExp();
+				}
 			},
 		},
 	],
@@ -713,7 +736,7 @@ export default {
 			);
 		},
 		advanceStatsSlot() {
-			this.currentSlotStat = getNextSlotStat(this.possibleStats, this.currentSlotStat);
+			this.currentSlotStat = getNextSlotStat(this.rotatingStats, this.currentSlotStat);
 		},
 		cycleStatsSlot() {
 			// Function can be skipped if slot machine interval is already set
@@ -792,7 +815,8 @@ export default {
 		simultaneousMatchingVisibility() {
 			return this.enableMultiMatching
 				&& this.simultaneousMatching.length > 0
-				&& this.status === 'fundraising';
+				&& this.status === 'fundraising'
+				&& !this.newUserBpEnabled;
 		},
 		matchingTextVisibility() {
 			return this.possibleStats.includes('matchingText');
@@ -807,8 +831,15 @@ export default {
 				enableMultiMatching: this.enableMultiMatching,
 			});
 		},
+		// The new user version shows matching in its own line, so it leaves the rotating stats
+		rotatingStats() {
+			if (this.newUserBpEnabled) {
+				return this.possibleStats.filter(stat => stat !== 'matchingText');
+			}
+			return this.possibleStats;
+		},
 		displayedSlotStat() {
-			return getDisplayedStat(this.possibleStats, this.currentSlotStat);
+			return getDisplayedStat(this.rotatingStats, this.currentSlotStat);
 		},
 		statsSlotVisibility() {
 			return !!this.displayedSlotStat;
