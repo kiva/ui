@@ -28,7 +28,6 @@ import FundedIcon from '#src/assets/icons/inline/global-impact-funded.svg';
 import ReachedIcon from '#src/assets/icons/inline/global-impact-reached.svg';
 import LendersIcon from '#src/assets/icons/inline/global-impact-lenders.svg';
 
-// Fixed figures: Product confirmed the bar shows static copy, not live stats
 const STATS = [
 	{ icon: ExperienceIcon, text: '20 years of experience' },
 	{ icon: FundedIcon, text: '$2.4 billion loans funded' },

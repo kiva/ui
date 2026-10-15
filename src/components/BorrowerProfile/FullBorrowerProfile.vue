@@ -223,7 +223,6 @@
 			@lightbox-closed="showHowKivaWorks = false"
 		/>
 	</article>
-	<!-- Outside the article: the sticky lend box floats over the article and must never reach the bar -->
 	<global-impact-bar v-if="isNewUserBpVariant" data-testid="bp-global-impact-bar" />
 </template>
 
