@@ -1,4 +1,5 @@
 import KvClassicLoanCardContainer from '#src/components/LoanCards/KvClassicLoanCardContainer';
+import * as Sentry from '@sentry/vue';
 
 vi.mock('@sentry/vue', () => ({ captureException: vi.fn(), captureMessage: vi.fn() }));
 
@@ -80,5 +81,122 @@ describe('KvClassicLoanCardContainer.vue add to basket while a checkout is runni
 		await KvClassicLoanCardContainer.methods.addToBasket.call(createContext(), 25);
 
 		expect(handleInvalidBasket).toHaveBeenCalled();
+	});
+});
+
+// With an empty basket the header basket link is hidden until the header learns about the add,
+// which on prod can land after the mutation resolves. The bubble is cosmetic: it must never turn a
+// successful add into the error toast, the failure analytics event or a Sentry report.
+describe('KvClassicLoanCardContainer.vue add to basket with no visible header basket', () => {
+	const { methods } = KvClassicLoanCardContainer;
+
+	// happy-dom lays nothing out, so an element is "visible" only when given a height here
+	const addHeaderLink = (testId, visible = true) => {
+		const el = document.createElement('a');
+		el.setAttribute('data-testid', testId);
+		Object.defineProperty(el, 'clientHeight', { value: visible ? 20 : 0 });
+		el.getBoundingClientRect = () => ({
+			top: 1, left: 2, width: 3, height: 4,
+		});
+		document.body.appendChild(el);
+		return el;
+	};
+
+	const createContext = () => ({
+		apollo: {},
+		cookieStore: { get: vi.fn(), set: vi.fn(), remove: vi.fn() },
+		loanId: 123,
+		loan: { id: 123, name: 'Test', themes: [] },
+		lessThan25: false,
+		amountLeft: 25,
+		isAdding: false,
+		errorMsg: '',
+		basketCount: 0,
+		showBubble: false,
+		isAnimating: false,
+		targetPosition: {
+			top: 0, left: 0, width: 0, height: 0,
+		},
+		bubbleStyle: {},
+		$refs: {},
+		$nextTick: vi.fn(),
+		$emit: vi.fn(),
+		$showTipMsg: vi.fn(),
+		$kvTrackEvent: vi.fn(),
+		getTargetPosition: methods.getTargetPosition,
+		animateBubble: methods.animateBubble,
+		formatAddedLoan: methods.formatAddedLoan,
+	});
+
+	beforeEach(() => {
+		vi.clearAllMocks();
+		vi.useFakeTimers();
+	});
+
+	afterEach(() => {
+		vi.useRealTimers();
+		document.body.innerHTML = '';
+	});
+
+	it('reports a successful add and schedules the cart modal without any error handling', async () => {
+		const { setLendAmount } = await import('#src/util/basketUtils');
+		setLendAmount.mockResolvedValue();
+		const context = createContext();
+
+		await methods.addToBasket.call(context, 25);
+
+		expect(context.$emit).toHaveBeenCalledWith('add-to-basket', { loanId: 123, name: 'Test', success: true });
+		expect(context.$emit).not.toHaveBeenCalledWith('add-to-basket', { loanId: 123, success: false });
+		expect(context.$showTipMsg).not.toHaveBeenCalled();
+		expect(context.$kvTrackEvent).not.toHaveBeenCalledWith('Lending', 'Add-to-Basket', expect.anything());
+		expect(Sentry.captureException).not.toHaveBeenCalled();
+		expect(context.errorMsg).toBe('');
+		expect(context.isAdding).toBe(false);
+		// Nothing in the header to fly to, so the bubble stays hidden
+		expect(context.showBubble).toBe(false);
+
+		vi.advanceTimersByTime(1000);
+
+		expect(context.$emit).toHaveBeenCalledWith(
+			'show-cart-modal',
+			expect.objectContaining({ id: 123, basketSize: 0 }),
+		);
+	});
+
+	it('flies the bubble to the About link when the basket link is still hidden', async () => {
+		const { setLendAmount } = await import('#src/util/basketUtils');
+		setLendAmount.mockResolvedValue();
+		addHeaderLink('header-basket', false);
+		addHeaderLink('header-about');
+		const context = createContext();
+
+		await methods.addToBasket.call(context, 25);
+
+		expect(context.showBubble).toBe(true);
+		expect(context.targetPosition).toEqual({
+			top: 1, left: 2, width: 3, height: 4,
+		});
+		expect(context.$showTipMsg).not.toHaveBeenCalled();
+	});
+
+	it('still reports a successful add when the bubble animation throws', async () => {
+		const { setLendAmount } = await import('#src/util/basketUtils');
+		setLendAmount.mockResolvedValue();
+		const context = {
+			...createContext(),
+			animateBubble: vi.fn(() => {
+				throw new TypeError('Cannot read properties of undefined');
+			}),
+		};
+
+		await methods.addToBasket.call(context, 25);
+
+		expect(context.$emit).toHaveBeenCalledWith('add-to-basket', { loanId: 123, name: 'Test', success: true });
+		expect(context.$showTipMsg).not.toHaveBeenCalled();
+		expect(Sentry.captureException).not.toHaveBeenCalled();
+
+		vi.advanceTimersByTime(1000);
+
+		expect(context.$emit).toHaveBeenCalledWith('show-cart-modal', expect.anything());
 	});
 });
