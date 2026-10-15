@@ -53,17 +53,24 @@ const decSchedule = (fields = {}) => schedule('tip-copy-dec-setting', { ...DEC, 
 
 describe('experimentCopy.js', () => {
 	describe('selectActiveCopyRound', () => {
-		const NOW = new Date('2026-11-15T12:00:00Z');
+		beforeEach(() => {
+			vi.useFakeTimers();
+			vi.setSystemTime(new Date('2026-11-15T12:00:00Z'));
+		});
+
+		afterEach(() => {
+			vi.useRealTimers();
+		});
 
 		it('returns null for an empty or undefined entry', () => {
-			expect(selectActiveCopyRound(undefined, NOW)).toBeNull();
-			expect(selectActiveCopyRound(null, NOW)).toBeNull();
-			expect(selectActiveCopyRound({}, NOW)).toBeNull();
+			expect(selectActiveCopyRound(undefined)).toBeNull();
+			expect(selectActiveCopyRound(null)).toBeNull();
+			expect(selectActiveCopyRound({})).toBeNull();
 		});
 
 		describe('with blocks that embed no schedule', () => {
 			it('returns the blocks keyed by version as one always-on round named after the entry', () => {
-				const result = selectActiveCopyRound(entry(), NOW);
+				const result = selectActiveCopyRound(entry());
 
 				expect(result.key).toBe('tip-copy');
 				expect(result.trackingAction).toBeNull();
@@ -77,32 +84,32 @@ describe('experimentCopy.js', () => {
 			});
 
 			it('returns the round when now is inside the entry dates', () => {
-				expect(selectActiveCopyRound(entry(NOV), NOW).key).toBe('tip-copy');
+				expect(selectActiveCopyRound(entry(NOV)).key).toBe('tip-copy');
 			});
 
 			it('returns null when the entry is not active', () => {
-				expect(selectActiveCopyRound(entry({ active: false }), NOW)).toBeNull();
-				expect(selectActiveCopyRound(entry({ active: undefined }), NOW)).toBeNull();
+				expect(selectActiveCopyRound(entry({ active: false }))).toBeNull();
+				expect(selectActiveCopyRound(entry({ active: undefined }))).toBeNull();
 			});
 
 			it('returns null outside the entry dates', () => {
-				expect(selectActiveCopyRound(entry(DEC), NOW)).toBeNull();
+				expect(selectActiveCopyRound(entry(DEC))).toBeNull();
 			});
 
 			it('returns null when only one date is set or the dates are backwards', () => {
-				expect(selectActiveCopyRound(entry({ startDate: NOV.startDate }), NOW)).toBeNull();
-				expect(selectActiveCopyRound(entry({ endDate: NOV.endDate }), NOW)).toBeNull();
-				expect(selectActiveCopyRound(entry({ startDate: NOV.endDate, endDate: NOV.startDate }), NOW))
+				expect(selectActiveCopyRound(entry({ startDate: NOV.startDate }))).toBeNull();
+				expect(selectActiveCopyRound(entry({ endDate: NOV.endDate }))).toBeNull();
+				expect(selectActiveCopyRound(entry({ startDate: NOV.endDate, endDate: NOV.startDate })))
 					.toBeNull();
 			});
 
 			it('returns null when the entry has no key', () => {
-				expect(selectActiveCopyRound(entry({ key: undefined }), NOW)).toBeNull();
-				expect(selectActiveCopyRound(entry({ key: '' }), NOW)).toBeNull();
+				expect(selectActiveCopyRound(entry({ key: undefined }))).toBeNull();
+				expect(selectActiveCopyRound(entry({ key: '' }))).toBeNull();
 			});
 
 			it("returns the entry's trackingAction when set", () => {
-				const result = selectActiveCopyRound(entry({ dataObject: { trackingAction: 'EXP-ENTRY' } }), NOW);
+				const result = selectActiveCopyRound(entry({ dataObject: { trackingAction: 'EXP-ENTRY' } }));
 
 				expect(result.trackingAction).toBe('EXP-ENTRY');
 			});
@@ -116,7 +123,7 @@ describe('experimentCopy.js', () => {
 					block('tip-copy-', { headline: 'Bare prefix' }),
 					block('tip-copy-a', { headline: 'Wrong type' }, 'richTextContent'),
 					block('tip-copy-a', { headline: 'A headline' }),
-				]), NOW);
+				]));
 
 				expect(Object.keys(result.variants)).toEqual(['a']);
 				expect(result.variants.a.headline).toBe('A headline');
@@ -126,14 +133,14 @@ describe('experimentCopy.js', () => {
 				const result = selectActiveCopyRound(entry({}, [
 					block('tip-copy-b', { headline: 'First' }),
 					block('tip-copy-b', { headline: 'Second' }),
-				]), NOW);
+				]));
 
 				expect(result.variants.b.headline).toBe('First');
 			});
 
 			it('returns null when no usable block remains', () => {
-				expect(selectActiveCopyRound(entry({}, []), NOW)).toBeNull();
-				expect(selectActiveCopyRound(entry({}, [block('tip-copy-')]), NOW)).toBeNull();
+				expect(selectActiveCopyRound(entry({}, []))).toBeNull();
+				expect(selectActiveCopyRound(entry({}, [block('tip-copy-')]))).toBeNull();
 			});
 		});
 
@@ -142,7 +149,7 @@ describe('experimentCopy.js', () => {
 				const result = selectActiveCopyRound(entry({}, [
 					roundBlock('tip-copy-nov-a', novSchedule()),
 					roundBlock('tip-copy-nov-b', novSchedule()),
-				]), NOW);
+				]));
 
 				expect(result.key).toBe('tip-copy-nov-setting');
 				expect(Object.keys(result.variants)).toEqual(['a', 'b']);
@@ -152,7 +159,7 @@ describe('experimentCopy.js', () => {
 			it('finds a schedule embedded as a block entry too', () => {
 				const result = selectActiveCopyRound(entry({}, [
 					block('tip-copy-nov-a', { bodyCopy: bodyWith(novSchedule(), 'embedded-entry-block') }),
-				]), NOW);
+				]));
 
 				expect(result.key).toBe('tip-copy-nov-setting');
 			});
@@ -164,8 +171,9 @@ describe('experimentCopy.js', () => {
 					roundBlock('tip-copy-dec-b', decSchedule()),
 				]);
 
-				expect(selectActiveCopyRound(parent, NOW).key).toBe('tip-copy-nov-setting');
-				const dec = selectActiveCopyRound(parent, new Date('2026-12-15T00:00:00Z'));
+				expect(selectActiveCopyRound(parent).key).toBe('tip-copy-nov-setting');
+				vi.setSystemTime(new Date('2026-12-15T00:00:00Z'));
+				const dec = selectActiveCopyRound(parent);
 				expect(dec.key).toBe('tip-copy-dec-setting');
 				expect(Object.keys(dec.variants)).toEqual(['a', 'b']);
 			});
@@ -176,7 +184,7 @@ describe('experimentCopy.js', () => {
 					roundBlock('tip-copy-first-a', schedule('first', NOV)),
 				]);
 
-				expect(selectActiveCopyRound(parent, NOW).key).toBe('second');
+				expect(selectActiveCopyRound(parent).key).toBe('second');
 			});
 
 			it('returns null in a gap between rounds', () => {
@@ -185,7 +193,8 @@ describe('experimentCopy.js', () => {
 					roundBlock('tip-copy-dec-a', decSchedule()),
 				]);
 
-				expect(selectActiveCopyRound(parent, new Date('2027-02-01T00:00:00Z'))).toBeNull();
+				vi.setSystemTime(new Date('2027-02-01T00:00:00Z'));
+				expect(selectActiveCopyRound(parent)).toBeNull();
 			});
 
 			it('falls back to blocks without a schedule when no scheduled round is live', () => {
@@ -194,8 +203,9 @@ describe('experimentCopy.js', () => {
 					block('tip-copy-a', { headline: 'Default A' }),
 				]);
 
-				expect(selectActiveCopyRound(parent, NOW).key).toBe('tip-copy-nov-setting');
-				expect(selectActiveCopyRound(parent, new Date('2027-02-01T00:00:00Z')).key).toBe('tip-copy');
+				expect(selectActiveCopyRound(parent).key).toBe('tip-copy-nov-setting');
+				vi.setSystemTime(new Date('2027-02-01T00:00:00Z'));
+				expect(selectActiveCopyRound(parent).key).toBe('tip-copy');
 			});
 
 			it('skips rounds whose schedule is inactive, has broken dates or has no key', () => {
@@ -206,7 +216,7 @@ describe('experimentCopy.js', () => {
 					roundBlock('tip-copy-nov-a', novSchedule()),
 				]);
 
-				expect(selectActiveCopyRound(parent, NOW).key).toBe('tip-copy-nov-setting');
+				expect(selectActiveCopyRound(parent).key).toBe('tip-copy-nov-setting');
 			});
 
 			it('skips blocks whose embedded schedule did not resolve, instead of showing them always', () => {
@@ -216,16 +226,16 @@ describe('experimentCopy.js', () => {
 					block('tip-copy-a', { headline: 'Default A' }),
 				]);
 
-				const result = selectActiveCopyRound(parent, NOW);
+				const result = selectActiveCopyRound(parent);
 				expect(result.key).toBe('tip-copy');
 				expect(result.variants.a.headline).toBe('Default A');
-				expect(selectActiveCopyRound(entry({}, [parent.fields.content[0]]), NOW)).toBeNull();
+				expect(selectActiveCopyRound(entry({}, [parent.fields.content[0]]))).toBeNull();
 			});
 
 			it('ignores embedded entries that are not uiSettings', () => {
 				const result = selectActiveCopyRound(entry({}, [
 					block('tip-copy-a', { bodyCopy: bodyWith(block('some-block')) }),
-				]), NOW);
+				]));
 
 				expect(result.key).toBe('tip-copy');
 			});
@@ -233,13 +243,13 @@ describe('experimentCopy.js', () => {
 			it('returns null when the parent is not active or the round is outside the parent dates', () => {
 				const blocks = [roundBlock('tip-copy-nov-a', novSchedule())];
 
-				expect(selectActiveCopyRound(entry({ active: false }, blocks), NOW)).toBeNull();
-				expect(selectActiveCopyRound(entry(DEC, blocks), NOW)).toBeNull();
+				expect(selectActiveCopyRound(entry({ active: false }, blocks))).toBeNull();
+				expect(selectActiveCopyRound(entry(DEC, blocks))).toBeNull();
 			});
 
 			it("returns the schedule's trackingAction when set", () => {
 				const nov = novSchedule({ dataObject: { trackingAction: 'EXP-MP-1-Nov2026' } });
-				const result = selectActiveCopyRound(entry({}, [roundBlock('tip-copy-nov-a', nov)]), NOW);
+				const result = selectActiveCopyRound(entry({}, [roundBlock('tip-copy-nov-a', nov)]));
 
 				expect(result.trackingAction).toBe('EXP-MP-1-Nov2026');
 			});
@@ -247,23 +257,9 @@ describe('experimentCopy.js', () => {
 			it('returns a null trackingAction when it is missing, blank or not text', () => {
 				[undefined, {}, { trackingAction: '  ' }, { trackingAction: 42 }].forEach(dataObject => {
 					const parent = entry({}, [roundBlock('tip-copy-nov-a', novSchedule({ dataObject }))]);
-					expect(selectActiveCopyRound(parent, NOW).trackingAction).toBeNull();
+					expect(selectActiveCopyRound(parent).trackingAction).toBeNull();
 				});
 			});
-		});
-
-		it('uses the current time when none is given', () => {
-			vi.useFakeTimers();
-			vi.setSystemTime(new Date('2026-12-15T00:00:00Z'));
-			try {
-				const parent = entry({}, [
-					roundBlock('tip-copy-nov-a', novSchedule()),
-					roundBlock('tip-copy-dec-a', decSchedule()),
-				]);
-				expect(selectActiveCopyRound(parent).key).toBe('tip-copy-dec-setting');
-			} finally {
-				vi.useRealTimers();
-			}
 		});
 	});
 

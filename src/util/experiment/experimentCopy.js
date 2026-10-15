@@ -10,14 +10,13 @@ import { settingWithinDateRange } from '#src/util/settingsUtils';
  * both must be set.
  *
  * @param {Object} setting A formatted uiSetting
- * @param {Date} now The time to check
  * @returns {boolean}
  */
-function settingIsLive(setting, now) {
+function settingIsLive(setting) {
 	// Without a key, the round couldn't be named in the exposure event
 	if (!setting.active || !setting.key) return false;
 	const hasSchedule = !!(setting.startDate || setting.endDate);
-	return !hasSchedule || settingWithinDateRange(setting, 'startDate', 'endDate', now);
+	return !hasSchedule || settingWithinDateRange(setting, 'startDate', 'endDate');
 }
 
 /**
@@ -28,15 +27,14 @@ function settingIsLive(setting, now) {
  * Returns null when no round is live, so the page can show its hardcoded copy.
  *
  * @param {Object} uiSettingEntry The uiSetting entry, as returned by getContentfulEntries
- * @param {Date} [now] The time to pick the round for, defaults to the current time
  * @returns {Object|null} The live round as { key, variants, trackingAction }, where variants maps each
  * version to its block, or null
  */
-export function selectActiveCopyRound(uiSettingEntry, now = new Date()) {
+export function selectActiveCopyRound(uiSettingEntry) {
 	if (!uiSettingEntry?.fields) return null;
 
 	const setting = formatUiSetting(uiSettingEntry);
-	if (!settingIsLive(setting, now)) return null;
+	if (!settingIsLive(setting)) return null;
 
 	// A Map keeps linked order, so the first linked round wins
 	const rounds = new Map();
@@ -59,7 +57,7 @@ export function selectActiveCopyRound(uiSettingEntry, now = new Date()) {
 		}
 	});
 
-	const liveRound = [...rounds.values()].find(({ schedule }) => settingIsLive(schedule, now));
+	const liveRound = [...rounds.values()].find(({ schedule }) => settingIsLive(schedule));
 	if (!liveRound) return null;
 
 	// A blank action counts as unset, so the caller's fallback applies

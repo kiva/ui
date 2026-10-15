@@ -33,10 +33,7 @@ export default function useExperimentCopy(operation, experimentKey) {
 	// The variables never change, so the browser uses the same ones as the server
 	const { result, loading, error } = useApolloQuery(operation, operation.preFetchVariables());
 
-	// Picked against the setup time, so the server and the browser agree on the round and a later
-	// result can't switch rounds mid-visit
-	const roundPickedAt = new Date();
-	const activeRound = computed(() => selectActiveCopyRound(getContentfulEntries(result.value)?.[0], roundPickedAt));
+	const activeRound = computed(() => selectActiveCopyRound(getContentfulEntries(result.value)?.[0]));
 	const variants = computed(() => activeRound.value?.variants ?? null);
 	const round = computed(() => activeRound.value?.key ?? null);
 

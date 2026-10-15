@@ -173,7 +173,7 @@ describe('useExperimentCopy', () => {
 			expect(out.copy('headline')).toBe('tip-copy-nov B');
 		});
 
-		it('keeps the round picked at setup when a later result arrives after the round ends', async () => {
+		it('picks the round again when a new result arrives', async () => {
 			const { client, emit } = makeApollo({ cacheData: roundsData() });
 			const { out } = renderHost(client);
 
@@ -181,8 +181,8 @@ describe('useExperimentCopy', () => {
 			emit(roundsData());
 			await nextTick();
 
-			expect(out.round.value).toBe('tip-copy-nov');
-			expect(out.copy('headline')).toBe('tip-copy-nov B');
+			expect(out.round.value).toBe('tip-copy-dec');
+			expect(out.copy('headline')).toBe('tip-copy-dec B');
 		});
 
 		it('picks the round when the copy loads on the client', async () => {
