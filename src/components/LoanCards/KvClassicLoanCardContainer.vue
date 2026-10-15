@@ -321,12 +321,6 @@ export default {
 				apollo: this.apollo,
 				loanId: this.loanId,
 			}).then(() => {
-				this.animateBubble();
-				// Show modal after 1s (Defined in CSS)
-				setTimeout(() => {
-					this.formatAddedLoan();
-				}, 1000);
-
 				this.isAdding = false;
 				this.$emit('add-to-basket', { loanId: this.loanId, name: this.loan?.name, success: true });
 				this.$kvTrackEvent(
@@ -338,6 +332,18 @@ export default {
 				);
 				// Track facebook add to basket
 				trackFBAddToCart(FB_CONTENT_CATEGORY_LOAN, lendAmount);
+				// Show modal after 1s (Defined in CSS)
+				setTimeout(() => {
+					this.formatAddedLoan();
+				}, 1000);
+
+				// The bubble is cosmetic: the loan is already in the basket, so a failure here must
+				// not send a successful add into the error catch below.
+				try {
+					this.animateBubble();
+				} catch (e) {
+					logFormatter('Add to basket bubble animation failed', 'warn', { error: e });
+				}
 			}).catch(e => {
 				this.$emit('add-to-basket', { loanId: this.loanId, success: false });
 				const errorCode = getBasketErrorCode(e?.[0]);
@@ -487,12 +493,25 @@ export default {
 			}
 		},
 		getTargetPosition() {
-			const targets = [...document.querySelectorAll('[data-testid="header-basket"]')];
-			const target = targets.find(t => t?.clientHeight);
-			return target.getBoundingClientRect();
+			let targets = [...document.querySelectorAll('[data-testid="header-basket"]')];
+			let target = targets.find(t => t?.clientHeight);
+
+			if (!target) {
+				// The header basket link stays hidden until the header learns the basket is no
+				// longer empty, which can land after this add resolves. Fall back to the About
+				// link as the closest position, as KvAtbModal does.
+				targets = [...document.querySelectorAll('[data-testid="header-about"]')];
+				target = targets.find(t => t?.clientHeight);
+			}
+
+			return target?.getBoundingClientRect() ?? null;
 		},
 		animateBubble() {
 			const position = this.getTargetPosition();
+			if (!position) {
+				// Nothing visible in the header to fly to, so skip the animation
+				return;
+			}
 			this.targetPosition = {
 				top: position.top,
 				left: position.left,
