@@ -1,7 +1,7 @@
 export default [
 	'auto-deposit',
 	'checkout',
-	'/closed',
+	'closed-beta',
 	'confirm-instant-donation',
 	'instant-donation-thanks',
 	'instant-lending-error',
