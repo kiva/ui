@@ -72,14 +72,14 @@
 							>
 								<label
 									v-if="hideShowLendDropdown && !isLessThan25"
-									for="LoanAmountDropdown"
+									:for="stickyCopy ? 'StickyLoanAmountDropdown' : 'LoanAmountDropdown'"
 									class="tw-sr-only"
 								>
 									Lend amount
 								</label>
 								<kv-ui-select
 									v-if="hideShowLendDropdown && !isLessThan25"
-									id="LoanAmountDropdown"
+									:id="stickyCopy ? 'StickyLoanAmountDropdown' : 'LoanAmountDropdown'"
 									class="tw-mr-2.5 tw-min-w-12"
 									data-testid="bp-lend-cta-amount-dropdown"
 									v-model="selectedOption"
@@ -221,7 +221,7 @@
 						v-if="newUserBpEnabled"
 						class="tw-hidden lg:tw-flex tw-mb-2"
 						:loan="loan"
-						tooltip-id="lend-box-matching-tooltip"
+						:tooltip-id="stickyCopy ? 'sticky-lend-box-matching-tooltip' : 'lend-box-matching-tooltip'"
 						tooltip-placement="bottom"
 					/>
 					<slot v-if="!isSticky" name="sharebutton"></slot>
@@ -553,6 +553,11 @@ export default {
 			type: Boolean,
 			default: false,
 		},
+		// The sticky copy of the lend box: uses its own ids and skips the view tracking
+		stickyCopy: {
+			type: Boolean,
+			default: false,
+		},
 	},
 	components: {
 		LendAmountButton,
@@ -809,7 +814,7 @@ export default {
 			}
 		},
 		isCompleteLoanActive() {
-			if (this.isCompleteLoanActive && this.completeLoanView) {
+			if (this.isCompleteLoanActive && this.completeLoanView && !this.stickyCopy) {
 				// eslint-disable-next-line
 				this.$kvTrackEvent('Borrower profile', 'Complete loan', 'view-amount-left-cta', this.loanId, this.selectedOption);
 				this.completeLoanView = false;
@@ -979,7 +984,8 @@ export default {
 		},
 		wrapperStyle() {
 			return {
-				paddingBottom: this.isSticky ? `${this.wrapperHeight}px` : '0',
+				// Holds the bar's place when it sticks; the new user version's bar is always fixed, so it needs none
+				paddingBottom: this.isSticky && !this.newUserBpEnabled ? `${this.wrapperHeight}px` : '0',
 			};
 		},
 		transitionEnterClasses() {

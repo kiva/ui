@@ -6,6 +6,7 @@ import ContributingPartners from '#src/components/BorrowerProfile/ContributingPa
 import LendersAndTeams from '#src/components/BorrowerProfile/LendersAndTeams';
 import MoreAboutLoan from '#src/components/BorrowerProfile/MoreAboutLoan';
 import SummaryCard from '#src/components/BorrowerProfile/SummaryCard';
+import SidebarContainer from '#src/components/BorrowerProfile/SidebarContainer';
 import ShareButton from '#src/components/BorrowerProfile/ShareButton';
 import WhyLoansBanner from '#src/components/BorrowerProfile/WhyLoansBanner';
 import { NEW_USER_BP_EXP_INJECT_KEY } from '#src/util/newUserBorrowerProfileExp';
@@ -190,21 +191,75 @@ describe('FullBorrowerProfile new user version', () => {
 		});
 	});
 
+	describe('updateStickyLendBox', () => {
+		const { updateStickyLendBox } = FullBorrowerProfile.methods;
+		// The test page has no layout, so positions and heights are faked
+		const fakeBox = ({
+			top = 0, bottom = 0, height = 0, style = '',
+		} = {}) => {
+			const element = document.createElement('div');
+			element.setAttribute('style', style);
+			element.getBoundingClientRect = () => ({ top, bottom });
+			Object.defineProperty(element, 'offsetHeight', { value: height });
+			return element;
+		};
+		let stickyPanel;
+		let innerWidth;
+
+		beforeEach(() => {
+			innerWidth = window.innerWidth;
+			window.innerWidth = 1280;
+			// Sticky line at 96px; getComputedStyle needs the element on the page
+			stickyPanel = fakeBox({ style: 'top: 96px' });
+			document.body.appendChild(stickyPanel);
+		});
+
+		afterEach(() => {
+			window.innerWidth = innerWidth;
+			stickyPanel.remove();
+		});
+
+		// A 400px tall sticky lend box
+		function visibleWith({ bandBottom, endTop = 2000 }) {
+			const ctx = {
+				stickyLendBoxVisible: false,
+				$refs: {
+					stickyPanel,
+					whyLoansDesktop: { $el: fakeBox({ bottom: bandBottom }) },
+					stickyEnd: fakeBox({ top: endTop }),
+					stickyStack: fakeBox({ height: 400 }),
+				},
+			};
+			updateStickyLendBox.call(ctx);
+			return ctx.stickyLendBoxVisible;
+		}
+
+		it('shows the sticky lend box once the "Why loans" band has scrolled past the sticky line', () => {
+			expect(visibleWith({ bandBottom: 90 })).toBe(true);
+		});
+
+		it('fades the sticky lend box out just before it reaches the end of the loan details', () => {
+			// The end is 480px down, but the lend box would end at 96 + 400 = 496px
+			expect(visibleWith({ bandBottom: -500, endTop: 480 })).toBe(false);
+		});
+	});
+
 	describe('template wiring', () => {
 		// Renders the share slot so the control's share button placement can be asserted
 		const LendCtaStub = {
 			name: 'LendCta',
-			props: ['hideJumpLinks'],
+			props: { hideJumpLinks: Boolean, stickyCopy: Boolean },
 			template: '<div data-testid="lend-cta-stub"><slot name="sharebutton" /></div>',
 		};
 
 		// `isNewUserVariant` undefined = the page provides nothing (e.g. Storybook); the inject must default to false
-		function mountProfile({ isNewUserVariant, loading = false } = {}) {
+		function mountProfile({ isNewUserVariant, loading = false, showDetailsInRail = false } = {}) {
 			return shallowMount(FullBorrowerProfile, {
 				props: {
 					loan: { id: 123, name: 'Maria', status: 'fundraising' },
 					lender: {},
 					loading,
+					initialShowDetailsInRail: showDetailsInRail,
 				},
 				global: {
 					...globalOptions,
@@ -283,6 +338,24 @@ describe('FullBorrowerProfile new user version', () => {
 			expect(scrollSpy).toHaveBeenCalledTimes(1);
 			expect(wrapper.vm.showDetailsInRail).toBe(false);
 			expect(wrapper.find('[data-testid="bp-rail-details"]').exists()).toBe(false);
+		});
+
+		it('version b keeps the top lend box in its place and adds a second, sticky lend box', () => {
+			const wrapper = mountProfile({ isNewUserVariant: true });
+			const [topLendBox, stickyLendBox] = wrapper.findAllComponents(LendCtaStub);
+
+			expect(wrapper.findAllComponents(SidebarContainer)[0].classes()).not.toContain('lg:tw-sticky');
+			expect(topLendBox.props('stickyCopy')).toBe(false);
+			expect(stickyLendBox.props('stickyCopy')).toBe(true);
+		});
+
+		it('version b shows the loan details only under the sticky lend box, not beside the top card', () => {
+			const wrapper = mountProfile({ isNewUserVariant: true, showDetailsInRail: true });
+
+			const stickyLendBox = wrapper.find('[data-testid="bp-sticky-lend-box"]');
+
+			expect(wrapper.findAll('[data-testid="bp-rail-details"]')).toHaveLength(1);
+			expect(stickyLendBox.find('[data-testid="bp-rail-details"]').exists()).toBe(true);
 		});
 
 		it('control renders no "Why loans" banner', () => {

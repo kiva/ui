@@ -76,8 +76,8 @@
 			class="lg:tw-absolute tw-pointer-events-none lg:tw-w-full lg:tw-h-full lg:tw-top-0 tw-z-docked"
 		>
 			<sidebar-container
-				class="lg:tw-sticky lg:tw-pb-8 lg:tw-top-12"
-				:class="isNewUserBpVariant ? 'lg:tw-mt-1' : 'lg:tw-mt-10'"
+				class="lg:tw-pb-8 lg:tw-top-12"
+				:class="isNewUserBpVariant ? 'lg:tw-mt-1' : 'lg:tw-sticky lg:tw-mt-10'"
 			>
 				<div class="tw-flex tw-flex-col" style="max-height: calc(100vh - 7.5rem)">
 					<lend-cta
@@ -105,7 +105,7 @@
 					</lend-cta>
 					<transition name="kvfastfade">
 						<div
-							v-if="showDetailsInRail"
+							v-if="showDetailsInRail && !isNewUserBpVariant"
 							data-testid="bp-rail-details"
 							class="tw-hidden lg:tw-block tw-pointer-events-auto
 								tw-bg-primary tw-rounded tw-p-4
@@ -119,6 +119,45 @@
 							/>
 						</div>
 					</transition>
+				</div>
+			</sidebar-container>
+		</div>
+		<!-- New user version on desktop: the lend box above stays in its place, and this second one fades in
+			and sticks while reading. -->
+		<div
+			v-if="isNewUserBpVariant"
+			ref="stickyPanel"
+			class="tw-hidden lg:tw-block lg:tw-fixed lg:tw-inset-x-0 lg:tw-top-12 tw-pointer-events-none tw-z-docked
+				lg:tw-transition-opacity lg:tw-duration-700 lg:tw-ease-in-out"
+			:class="{ 'lg:tw-opacity-0': !stickyLendBoxVisible }"
+			:inert="!stickyLendBoxVisible"
+			data-testid="bp-sticky-lend-box"
+		>
+			<sidebar-container>
+				<div ref="stickyStack" class="tw-flex tw-flex-col" style="max-height: calc(100vh - 7.5rem)">
+					<lend-cta
+						class="tw-pointer-events-auto"
+						:loan-id="loanId"
+						:loan-data="loanData"
+						:enable-five-dollars-notes="enableFiveDollarsNotes"
+						:show-details-in-rail="showDetailsInRail"
+						hide-jump-links
+						new-user-bp-enabled
+						sticky-copy
+					/>
+					<div
+						v-if="showDetailsInRail"
+						data-testid="bp-rail-details"
+						class="tw-mt-1 tw-pointer-events-auto tw-bg-primary tw-rounded tw-p-4
+							tw-shrink tw-overflow-y-auto"
+					>
+						<details-tabs
+							name="bp-rail-details"
+							:loan-id="loanId"
+							:is-privileged="isPrivileged"
+							condensed
+						/>
+					</div>
 				</div>
 			</sidebar-container>
 		</div>
@@ -200,6 +239,7 @@
 		<div class="tw-bg-primary tw-py-4 md:tw-py-6 lg:tw-py-8">
 			<content-container>
 				<details-tabs id="loanDetails" :loan-id="loanId" name="bp-details" :is-privileged="isPrivileged" />
+				<div v-if="isNewUserBpVariant" ref="stickyEnd"></div>
 				<loan-details-rail-toggle class="tw-hidden lg:tw-flex tw-mt-6" v-model="showDetailsInRailModel" />
 			</content-container>
 		</div>
@@ -227,6 +267,8 @@
 
 <script>
 import { gql } from 'graphql-tag';
+import _throttle from 'lodash/throttle';
+import kvTokensPrimitives from '@kiva/kv-tokens';
 import useIsMobile from '#src/composables/useIsMobile';
 import ContentContainer from '#src/components/BorrowerProfile/ContentContainer';
 import SidebarContainer from '#src/components/BorrowerProfile/SidebarContainer';
@@ -417,19 +459,48 @@ export default {
 			showHowKivaWorks: false,
 			whyLoansExtraSpace: 0,
 			cardsObserver: null,
+			stickyLendBoxVisible: false,
+			stickyScrollHandler: null,
 		};
 	},
 	mounted() {
 		if (this.isNewUserBpVariant && typeof ResizeObserver !== 'undefined') {
-			this.cardsObserver = new ResizeObserver(() => this.updateWhyLoansSpace());
+			this.cardsObserver = new ResizeObserver(() => {
+				this.updateWhyLoansSpace();
+				this.updateStickyLendBox();
+			});
 			this.cardsObserver.observe(this.$refs.summaryCard.$el);
 			this.cardsObserver.observe(this.$refs.lendCta.$el);
+			this.cardsObserver.observe(this.$refs.stickyStack);
+		}
+		if (this.isNewUserBpVariant) {
+			this.stickyScrollHandler = _throttle(this.updateStickyLendBox, 100);
+			window.addEventListener('scroll', this.stickyScrollHandler, { passive: true });
+			window.addEventListener('resize', this.stickyScrollHandler);
+			this.updateStickyLendBox();
 		}
 	},
 	beforeUnmount() {
 		this.cardsObserver?.disconnect();
+		if (this.stickyScrollHandler) {
+			window.removeEventListener('scroll', this.stickyScrollHandler);
+			window.removeEventListener('resize', this.stickyScrollHandler);
+			this.stickyScrollHandler.cancel();
+		}
 	},
 	methods: {
+		// Shows the sticky lend box from the end of the "Why loans" band to the end of the loan details
+		updateStickyLendBox() {
+			if (window.innerWidth < kvTokensPrimitives.breakpoints.lg) {
+				this.stickyLendBoxVisible = false;
+				return;
+			}
+			const stickyTop = parseFloat(getComputedStyle(this.$refs.stickyPanel).top);
+			const bandPassed = this.$refs.whyLoansDesktop.$el.getBoundingClientRect().bottom <= stickyTop;
+			// Fades out before its bottom reaches the end of the loan details
+			const endTop = this.$refs.stickyEnd.getBoundingClientRect().top;
+			this.stickyLendBoxVisible = bandPassed && endTop > stickyTop + this.$refs.stickyStack.offsetHeight;
+		},
 		// Adds space above the "Why loans" band when the sticky lend box ends lower than the top card
 		updateWhyLoansSpace() {
 			const column = this.$refs.sidebarColumn;
