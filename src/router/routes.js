@@ -98,6 +98,13 @@ export default [
 		}
 	},
 	{
+		path: '/closed-beta',
+		component: () => import('#src/pages/ClosedAccountPage'),
+		meta: {
+			excludeFromStaticSitemap: true,
+		},
+	},
+	{
 		path: '/confirm-instant-donation/:token/:amount',
 		component: () => import('#src/pages/InstantActions/ConfirmInstantDonation'),
 		meta: {
