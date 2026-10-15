@@ -75,9 +75,11 @@
 			:class="inPfp ? 'lg:tw-pt-16 lg:tw-mt-8' : 'lg:tw-pt-8'"
 			class="lg:tw-absolute tw-pointer-events-none lg:tw-w-full lg:tw-h-full lg:tw-top-0 tw-z-docked"
 		>
+			<!-- While the sticky copy below shows, this one is off screen, so only the copy is read and focused -->
 			<sidebar-container
 				class="lg:tw-pb-8 lg:tw-top-12"
 				:class="isNewUserBpVariant ? 'lg:tw-mt-1' : 'lg:tw-sticky lg:tw-mt-10'"
+				:inert="stickyLendBoxVisible"
 			>
 				<div class="tw-flex tw-flex-col" style="max-height: calc(100vh - 7.5rem)">
 					<lend-cta
@@ -123,9 +125,9 @@
 			</sidebar-container>
 		</div>
 		<!-- New user version on desktop: the lend box above stays in its place, and this second one fades in
-			and sticks while reading. -->
+			and sticks while reading. It's added only on desktop, once the page has loaded. -->
 		<div
-			v-if="isNewUserBpVariant"
+			v-if="isNewUserBpVariant && isLarge"
 			ref="stickyPanel"
 			class="tw-hidden lg:tw-block lg:tw-fixed lg:tw-inset-x-0 lg:tw-top-12 tw-pointer-events-none tw-z-docked
 				lg:tw-transition-opacity lg:tw-duration-700 lg:tw-ease-in-out"
@@ -239,18 +241,20 @@
 		<div class="tw-bg-primary tw-py-4 md:tw-py-6 lg:tw-py-8">
 			<content-container>
 				<details-tabs id="loanDetails" :loan-id="loanId" name="bp-details" :is-privileged="isPrivileged" />
-				<div v-if="isNewUserBpVariant" ref="stickyEnd"></div>
 				<loan-details-rail-toggle class="tw-hidden lg:tw-flex tw-mt-6" v-model="showDetailsInRailModel" />
 			</content-container>
 		</div>
 		<content-container>
-			<loan-tags
-				v-if="showTags"
-				class="tw-my-5 md:tw-my-6 lg:tw-my-8"
-				:loan-id="loanId"
-				:is-logged-in="isLoggedIn"
-				@hide-section="showTags = false"
-			/>
+			<!-- Always rendered, so the sticky lend box knows where to fade out even when a loan has no tags -->
+			<div ref="tagsSection" data-testid="bp-tags-section">
+				<loan-tags
+					v-if="showTags"
+					class="tw-my-5 md:tw-my-6 lg:tw-my-8"
+					:loan-id="loanId"
+					:is-logged-in="isLoggedIn"
+					@hide-section="showTags = false"
+				/>
+			</div>
 			<loan-comments
 				v-if="showAddCommentsSection"
 				class="tw-mb-5 md:tw-mb-6 lg:tw-mb-8"
@@ -269,7 +273,7 @@
 <script>
 import { gql } from 'graphql-tag';
 import _throttle from 'lodash/throttle';
-import kvTokensPrimitives from '@kiva/kv-tokens';
+import useBreakpoints from '#src/composables/useBreakpoints';
 import useIsMobile from '#src/composables/useIsMobile';
 import ContentContainer from '#src/components/BorrowerProfile/ContentContainer';
 import SidebarContainer from '#src/components/BorrowerProfile/SidebarContainer';
@@ -397,7 +401,8 @@ export default {
 	},
 	setup() {
 		const { isMobile } = useIsMobile();
-		return { isMobile };
+		const { isLarge } = useBreakpoints();
+		return { isMobile, isLarge };
 	},
 	apollo: {
 		query: fullProfileQuery,
@@ -466,6 +471,19 @@ export default {
 			stickyScrollHandler: null,
 		};
 	},
+	watch: {
+		// The sticky copy is added once the page is on desktop, so it's measured after it renders
+		isLarge(isLarge) {
+			if (isLarge && this.isNewUserBpVariant) {
+				this.$nextTick(() => {
+					if (this.$refs.stickyStack) {
+						this.cardsObserver?.observe(this.$refs.stickyStack);
+					}
+					this.updateStickyLendBox();
+				});
+			}
+		},
+	},
 	mounted() {
 		if (this.isNewUserBpVariant && typeof ResizeObserver !== 'undefined') {
 			this.cardsObserver = new ResizeObserver(() => {
@@ -474,7 +492,7 @@ export default {
 			});
 			this.cardsObserver.observe(this.$refs.summaryCard.$el);
 			this.cardsObserver.observe(this.$refs.lendCta.$el);
-			this.cardsObserver.observe(this.$refs.stickyStack);
+			this.cardsObserver.observe(this.$refs.tagsSection);
 		}
 		if (this.isNewUserBpVariant) {
 			this.stickyScrollHandler = _throttle(this.updateStickyLendBox, 100);
@@ -492,16 +510,16 @@ export default {
 		}
 	},
 	methods: {
-		// Shows the sticky lend box from the end of the "Why loans" band to the end of the loan details
+		// Shows the sticky lend box from the end of the "Why loans" band to the bottom of the tags section
 		updateStickyLendBox() {
-			if (window.innerWidth < kvTokensPrimitives.breakpoints.lg) {
+			if (!this.isLarge || !this.$refs.stickyPanel) {
 				this.stickyLendBoxVisible = false;
 				return;
 			}
 			const stickyTop = parseFloat(getComputedStyle(this.$refs.stickyPanel).top);
 			const bandPassed = this.$refs.whyLoansDesktop.$el.getBoundingClientRect().bottom <= stickyTop;
-			// Fades out before its bottom reaches the end of the loan details
-			const endTop = this.$refs.stickyEnd.getBoundingClientRect().top;
+			// Fades out when its bottom reaches the bottom of the tags section
+			const endTop = this.$refs.tagsSection.getBoundingClientRect().bottom;
 			this.stickyLendBoxVisible = bandPassed && endTop > stickyTop + this.$refs.stickyStack.offsetHeight;
 		},
 		// Adds space above the "Why loans" band when the sticky lend box ends lower than the top card

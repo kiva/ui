@@ -1,5 +1,5 @@
 /* eslint-disable import/no-extraneous-dependencies */
-import { enableAutoUnmount, shallowMount } from '@vue/test-utils';
+import { enableAutoUnmount, flushPromises, shallowMount } from '@vue/test-utils';
 import FullBorrowerProfile from '#src/components/BorrowerProfile/FullBorrowerProfile';
 import BorrowerCountry from '#src/components/BorrowerProfile/BorrowerCountry';
 import ContributingPartners from '#src/components/BorrowerProfile/ContributingPartners';
@@ -265,29 +265,26 @@ describe('FullBorrowerProfile new user version', () => {
 			return element;
 		};
 		let stickyPanel;
-		let innerWidth;
 
 		beforeEach(() => {
-			innerWidth = window.innerWidth;
-			window.innerWidth = 1280;
 			// Sticky line at 96px; getComputedStyle needs the element on the page
 			stickyPanel = fakeBox({ style: 'top: 96px' });
 			document.body.appendChild(stickyPanel);
 		});
 
 		afterEach(() => {
-			window.innerWidth = innerWidth;
 			stickyPanel.remove();
 		});
 
 		// A 400px tall sticky lend box
-		function visibleWith({ bandBottom, endTop = 2000 }) {
+		function visibleWith({ bandBottom, tagsTop = 2000, tagsBottom = 2160 }) {
 			const ctx = {
 				stickyLendBoxVisible: false,
+				isLarge: true,
 				$refs: {
 					stickyPanel,
 					whyLoansDesktop: { $el: fakeBox({ bottom: bandBottom }) },
-					stickyEnd: fakeBox({ top: endTop }),
+					tagsSection: fakeBox({ top: tagsTop, bottom: tagsBottom }),
 					stickyStack: fakeBox({ height: 400 }),
 				},
 			};
@@ -299,9 +296,14 @@ describe('FullBorrowerProfile new user version', () => {
 			expect(visibleWith({ bandBottom: 90 })).toBe(true);
 		});
 
-		it('fades the sticky lend box out just before it reaches the end of the loan details', () => {
-			// The end is 480px down, but the lend box would end at 96 + 400 = 496px
-			expect(visibleWith({ bandBottom: -500, endTop: 480 })).toBe(false);
+		it('keeps the sticky lend box while its bottom is still above the bottom of the tags section', () => {
+			// The lend box ends at 96 + 400 = 496px, past the tags middle (450px) but above their bottom (600px)
+			expect(visibleWith({ bandBottom: -500, tagsTop: 300, tagsBottom: 600 })).toBe(true);
+		});
+
+		it('fades the sticky lend box out when its bottom reaches the bottom of the tags section', () => {
+			// The tags end 480px down, but the lend box would end at 96 + 400 = 496px
+			expect(visibleWith({ bandBottom: -500, tagsTop: 400, tagsBottom: 480 })).toBe(false);
 		});
 	});
 
@@ -402,8 +404,9 @@ describe('FullBorrowerProfile new user version', () => {
 			expect(wrapper.find('[data-testid="bp-rail-details"]').exists()).toBe(false);
 		});
 
-		it('version b keeps the top lend box in its place and adds a second, sticky lend box', () => {
+		it('version b keeps the top lend box in its place and adds a second, sticky lend box', async () => {
 			const wrapper = mountProfile({ isNewUserVariant: true });
+			await wrapper.vm.$nextTick();
 			const [topLendBox, stickyLendBox] = wrapper.findAllComponents(LendCtaStub);
 
 			expect(wrapper.findAllComponents(SidebarContainer)[0].classes()).not.toContain('lg:tw-sticky');
@@ -411,13 +414,43 @@ describe('FullBorrowerProfile new user version', () => {
 			expect(stickyLendBox.props('stickyCopy')).toBe(true);
 		});
 
-		it('version b shows the loan details only under the sticky lend box, not beside the top card', () => {
+		it('keeps the tags section for a loan without tags, so the sticky lend box can stop there', async () => {
+			const wrapper = mountProfile({ isNewUserVariant: true });
+
+			await wrapper.setData({ showTags: false });
+
+			expect(wrapper.find('[data-testid="bp-tags-section"]').exists()).toBe(true);
+		});
+
+		it('version b shows the loan details only under the sticky lend box, not beside the top card', async () => {
 			const wrapper = mountProfile({ isNewUserVariant: true, showDetailsInRail: true });
+			await wrapper.vm.$nextTick();
 
 			const stickyLendBox = wrapper.find('[data-testid="bp-sticky-lend-box"]');
 
 			expect(wrapper.findAll('[data-testid="bp-rail-details"]')).toHaveLength(1);
 			expect(stickyLendBox.find('[data-testid="bp-rail-details"]').exists()).toBe(true);
+		});
+
+		it('version b adds the sticky lend box only on desktop', async () => {
+			const { innerWidth } = window;
+			window.innerWidth = 800;
+			const wrapper = mountProfile({ isNewUserVariant: true });
+			await wrapper.vm.$nextTick();
+			window.innerWidth = innerWidth;
+
+			expect(wrapper.find('[data-testid="bp-sticky-lend-box"]').exists()).toBe(false);
+		});
+
+		it('version b leaves only the sticky lend box to screen readers and keyboards while it shows', async () => {
+			const wrapper = mountProfile({ isNewUserVariant: true });
+			// Lets the first visibility check after the sticky copy renders finish
+			await flushPromises();
+
+			await wrapper.setData({ stickyLendBoxVisible: true });
+
+			expect(wrapper.findAllComponents(SidebarContainer)[0].attributes('inert')).toBeDefined();
+			expect(wrapper.find('[data-testid="bp-sticky-lend-box"]').attributes('inert')).toBeUndefined();
 		});
 
 		it('control renders no "Why loans" banner', () => {
