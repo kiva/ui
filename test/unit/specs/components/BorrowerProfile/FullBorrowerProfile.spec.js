@@ -9,6 +9,9 @@ import SummaryCard from '#src/components/BorrowerProfile/SummaryCard';
 import ShareButton from '#src/components/BorrowerProfile/ShareButton';
 import WhyLoansBanner from '#src/components/BorrowerProfile/WhyLoansBanner';
 import { NEW_USER_BP_EXP_INJECT_KEY } from '#src/util/newUserBorrowerProfileExp';
+import store2 from 'store2';
+import setUserPreferenceMutation from '#src/graphql/mutation/accountSettings/setUserPreference.graphql';
+import { RAIL_PREF_KEY } from '#src/util/loanDetailsRailPreference';
 import { globalOptions } from '../../../specUtils';
 
 enableAutoUnmount(afterEach);
@@ -41,6 +44,63 @@ function evalShowUpdates({ showUpdates = true, anonymizationLevel = 'none' } = {
 	};
 	return showUpdatesSection.call(context);
 }
+
+describe('FullBorrowerProfile rail preference toggle', () => {
+	const { set: setShowDetailsInRail } = FullBorrowerProfile.computed.showDetailsInRailModel;
+
+	afterEach(() => {
+		store2.remove(RAIL_PREF_KEY);
+	});
+
+	const makeContext = overrides => ({
+		showDetailsInRail: false,
+		loanId: 123,
+		isLoggedIn: true,
+		userPreferences: null,
+		apollo: { mutate: vi.fn().mockResolvedValue({ data: {} }) },
+		$kvTrackEvent: vi.fn(),
+		...overrides,
+	});
+
+	it('persists the account preference for a logged-in lender with no preferences row', async () => {
+		const context = makeContext();
+
+		setShowDetailsInRail.call(context, true);
+		await Promise.resolve();
+
+		expect(context.showDetailsInRail).toBe(true);
+		expect(context.apollo.mutate).toHaveBeenCalledTimes(1);
+		expect(context.apollo.mutate).toHaveBeenCalledWith({
+			mutation: setUserPreferenceMutation,
+			variables: { key: 'showLoanDetailsInRail', value: 'true' },
+		});
+	});
+
+	it('writes only the rail key when the lender already has other preferences', async () => {
+		const context = makeContext({
+			showDetailsInRail: true,
+			userPreferences: { id: 7, preferences: '{"goals":[{"goalName":"g"}]}' },
+		});
+
+		setShowDetailsInRail.call(context, false);
+		await Promise.resolve();
+
+		expect(context.apollo.mutate).toHaveBeenCalledWith({
+			mutation: setUserPreferenceMutation,
+			variables: { key: 'showLoanDetailsInRail', value: 'false' },
+		});
+	});
+
+	it('skips the account write when logged out', async () => {
+		const context = makeContext({ isLoggedIn: false });
+
+		setShowDetailsInRail.call(context, true);
+		await Promise.resolve();
+
+		expect(context.showDetailsInRail).toBe(true);
+		expect(context.apollo.mutate).not.toHaveBeenCalled();
+	});
+});
 
 describe('FullBorrowerProfile comment section visibility', () => {
 	describe('isAnonymized', () => {

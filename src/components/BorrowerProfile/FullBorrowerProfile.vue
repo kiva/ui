@@ -524,11 +524,7 @@ export default {
 					value ? 'on' : 'off',
 					this.loanId,
 				);
-				persistRailPreference(this.apollo, {
-					value,
-					userPreferences: this.userPreferences,
-					isLoggedIn: this.isLoggedIn,
-				});
+				persistRailPreference(this.apollo, { value, isLoggedIn: this.isLoggedIn });
 			},
 		},
 	},

@@ -1,76 +1,6 @@
-import { gql } from 'graphql-tag';
 import setMyKivaGoalMutation from '#src/graphql/mutation/accountSettings/setMyKivaGoal.graphql';
+import setUserPreferenceMutation from '#src/graphql/mutation/accountSettings/setUserPreference.graphql';
 import logReadQueryError from './logReadQueryError';
-
-export const createUserPreferencesMutation = gql`
-	mutation createUserPreferences($preferences: String) {
-		my {
-			createUserPreferences(userPreferences: { preferences: $preferences }) {
-				id
-				preferences
-			}
-		}
-	}
-`;
-
-export const updateUserPreferencesMutation = gql`
-	mutation UpdateUserPreferences(
-		$updateUserPreferencesId: Int!,
-		$preferences: String
-	) {
-		my {
-			updateUserPreferences(id: $updateUserPreferencesId, userPreferences: {
-				preferences: $preferences
-		}) {
-				id
-				preferences
-			}
-		}
-	}
-`;
-
-/**
- * Creates user preferences for the current user
- *
- * @param apollo The current Apollo client
- * @param newPreferences The new preferences to add
- * @returns The results of the mutation
- */
-export const createUserPreferences = async (apollo, newPreferences) => {
-	try {
-		return await apollo.mutate({
-			mutation: createUserPreferencesMutation,
-			variables: { preferences: JSON.stringify(newPreferences) },
-		});
-	} catch (e) {
-		logReadQueryError(e, 'userPreferenceUtils createUserPreferencesMutation');
-	}
-};
-
-/**
- * Updates the user preferences for the current user
- *
- * @param apollo The current Apollo client
- * @param userPreferences The original user preferences
- * @param parsedPreferences The parsed user preferences
- * @param newPreferences The new preferences to add
- * @returns The updated user preferences
- */
-export const updateUserPreferences = async (apollo, userPreferences, parsedPreferences, newPreferences) => {
-	try {
-		const mergedPreferences = { ...parsedPreferences, ...newPreferences };
-		const preferences = JSON.stringify(mergedPreferences);
-		return await apollo.mutate({
-			mutation: updateUserPreferencesMutation,
-			variables: {
-				updateUserPreferencesId: userPreferences.id,
-				preferences,
-			},
-		});
-	} catch (e) {
-		logReadQueryError(e, 'userPreferenceUtils updateUserPreferencesMutation');
-	}
-};
 
 /**
  * Read a single key out of a userPreferences node's JSON `preferences` blob.
@@ -89,27 +19,35 @@ export const getUserPreference = (userPreferences, key) => {
 };
 
 /**
- * Upsert a single preference key for the current user: merge-update when a
- * record exists, otherwise create one.
+ * Set one preference key. The server merges it and creates the row when missing.
  *
  * @param {object} apollo The current Apollo client
- * @param {{id?: number, preferences?: string}|null} userPreferences
  * @param {string} key
- * @param {*} value
- * @returns The result of the underlying create/update mutation
+ * @param {*} value Any JSON-serializable value
+ * @returns The result of the mutation
  */
-export const setUserPreference = async (apollo, userPreferences, key, value) => {
-	if (userPreferences?.id) {
-		let parsed = {};
-		try {
-			parsed = JSON.parse(userPreferences.preferences || '{}');
-		} catch {
-			parsed = {};
-		}
-		return updateUserPreferences(apollo, userPreferences, parsed, { [key]: value });
+export const setUserPreference = async (apollo, key, value) => {
+	try {
+		return await apollo.mutate({
+			mutation: setUserPreferenceMutation,
+			variables: { key, value: JSON.stringify(value) },
+		});
+	} catch (e) {
+		logReadQueryError(e, 'userPreferenceUtils setUserPreferenceMutation');
 	}
-	return createUserPreferences(apollo, { [key]: value });
 };
+
+/**
+ * Set several preference keys one at a time, so the server-side writes cannot race.
+ *
+ * @param {object} apollo The current Apollo client
+ * @param {object} preferences The keys to set and their values
+ * @returns The result of the last mutation
+ */
+export const setUserPreferenceKeys = (apollo, preferences) => Object.entries(preferences).reduce(
+	(chain, [key, value]) => chain.then(() => setUserPreference(apollo, key, value)),
+	Promise.resolve(),
+);
 
 /**
  * Set a My Kiva goal using the setMyKivaGoal mutation
