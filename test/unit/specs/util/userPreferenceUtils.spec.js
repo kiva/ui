@@ -1,125 +1,22 @@
 import {
-	createUserPreferences,
-	updateUserPreferences,
 	getUserPreference,
 	setUserPreference,
-	createUserPreferencesMutation,
-	updateUserPreferencesMutation,
+	setUserPreferenceKeys,
 } from '#src/util/userPreferenceUtils';
+import setUserPreferenceMutation from '#src/graphql/mutation/accountSettings/setUserPreference.graphql';
 
 vi.mock('#src/util/logReadQueryError');
 
-const userPreferenceDataMock = {
+const setPreferenceDataMock = {
 	my: {
-		userPreference: {
+		setUserPreference: {
 			id: 1,
-			preferences: ''
-		}
-	}
+			preferences: '{"test":"test"}',
+		},
+	},
 };
 
-const createPreferenceDataMock = {
-	my: {
-		createUserPreferences: {
-			id: 1,
-			preferences: ''
-		}
-	}
-};
-
-const updatedPreferenceDataMock = {
-	my: {
-		userPreference: {
-			id: 1,
-			preferences: {
-				test: 'test'
-			}
-		}
-	}
-};
-
-describe('userPreferenceUtils.ts', () => {
-	describe('createUserPreferences', () => {
-		it('should create user preferences as expected', async () => {
-			const apolloMock = {
-				mutate: vi.fn().mockReturnValueOnce(Promise.resolve({ data: createPreferenceDataMock }))
-			};
-			const preferences = { test: 'test' };
-
-			const newUserPreference = await createUserPreferences(apolloMock, preferences);
-
-			expect(newUserPreference).toEqual({
-				data: createPreferenceDataMock
-			});
-			expect(apolloMock.mutate).toHaveBeenCalledTimes(1);
-			expect(apolloMock.mutate).toHaveBeenCalledWith({
-				mutation: createUserPreferencesMutation,
-				variables: { preferences: JSON.stringify(preferences) },
-			});
-		});
-
-		it('should handle errors when creating user preferences', async () => {
-			const { default: logReadQueryError } = await import('#src/util/logReadQueryError');
-			const error = new Error('Create failed');
-			const apolloMock = {
-				mutate: vi.fn().mockRejectedValueOnce(error)
-			};
-			const preferences = { test: 'test' };
-
-			const result = await createUserPreferences(apolloMock, preferences);
-
-			expect(result).toBeUndefined();
-			expect(logReadQueryError).toHaveBeenCalledWith(error, 'userPreferenceUtils createUserPreferencesMutation');
-		});
-	});
-
-	describe('updateUserPreferences', () => {
-		it('should update user preferences as expected', async () => {
-			const apolloMock = {
-				mutate: vi.fn()
-					.mockReturnValueOnce(Promise.resolve({ data: updatedPreferenceDataMock }))
-			};
-
-			const newUserPreference = await updateUserPreferences(
-				apolloMock,
-				userPreferenceDataMock.my.userPreference,
-				// Pass existing preferences to ensure they are merged correctly
-				{ test: 'test' },
-				{ new: 'new' },
-			);
-
-			expect(newUserPreference).toEqual({
-				data: updatedPreferenceDataMock
-			});
-			expect(apolloMock.mutate).toHaveBeenCalledTimes(1);
-			expect(apolloMock.mutate).toHaveBeenCalledWith({
-				mutation: updateUserPreferencesMutation,
-				variables: {
-					updateUserPreferencesId: userPreferenceDataMock.my.userPreference.id,
-					preferences: JSON.stringify({ test: 'test', new: 'new' }),
-				},
-			});
-		});
-
-		it('should handle errors when updating user preferences', async () => {
-			const { default: logReadQueryError } = await import('#src/util/logReadQueryError');
-			const error = new Error('Update failed');
-			const apolloMock = {
-				mutate: vi.fn().mockRejectedValueOnce(error)
-			};
-
-			const result = await updateUserPreferences(
-				apolloMock,
-				userPreferenceDataMock.my.userPreference,
-				{ test: 'test' },
-				{ new: 'new' },
-			);
-
-			expect(result).toBeUndefined();
-			expect(logReadQueryError).toHaveBeenCalledWith(error, 'userPreferenceUtils updateUserPreferencesMutation');
-		});
-	});
-
+describe('userPreferenceUtils.js', () => {
 	describe('getUserPreference', () => {
 		it('returns null for a missing node, missing key, or unparseable blob', () => {
 			expect(getUserPreference(null, 'showLoanDetailsInRail')).toBe(null);
@@ -134,30 +31,87 @@ describe('userPreferenceUtils.ts', () => {
 	});
 
 	describe('setUserPreference', () => {
-		it('creates a record (single key) when there is no existing id', async () => {
-			const apolloMock = { mutate: vi.fn().mockResolvedValueOnce({ data: {} }) };
+		it('sends the key with its value JSON-encoded', async () => {
+			const apolloMock = {
+				mutate: vi.fn().mockResolvedValueOnce({ data: setPreferenceDataMock }),
+			};
 
-			await setUserPreference(apolloMock, null, 'showLoanDetailsInRail', true);
+			const result = await setUserPreference(apolloMock, 'test', 'test');
 
+			expect(result).toEqual({ data: setPreferenceDataMock });
+			expect(apolloMock.mutate).toHaveBeenCalledTimes(1);
 			expect(apolloMock.mutate).toHaveBeenCalledWith({
-				mutation: createUserPreferencesMutation,
-				variables: { preferences: JSON.stringify({ showLoanDetailsInRail: true }) },
+				mutation: setUserPreferenceMutation,
+				variables: { key: 'test', value: '"test"' },
 			});
 		});
 
-		it('merge-updates the existing blob when a record id is present', async () => {
-			const apolloMock = { mutate: vi.fn().mockResolvedValueOnce({ data: {} }) };
-			const userPreferences = { id: 7, preferences: '{"goals":[1]}' };
+		it('encodes non-string values', async () => {
+			const apolloMock = { mutate: vi.fn().mockResolvedValue({ data: {} }) };
 
-			await setUserPreference(apolloMock, userPreferences, 'showLoanDetailsInRail', false);
+			await setUserPreference(apolloMock, 'hideGoalCard', false);
+			await setUserPreference(apolloMock, 'goals', [{ goalName: 'g' }]);
 
-			expect(apolloMock.mutate).toHaveBeenCalledWith({
-				mutation: updateUserPreferencesMutation,
-				variables: {
-					updateUserPreferencesId: 7,
-					preferences: JSON.stringify({ goals: [1], showLoanDetailsInRail: false }),
-				},
+			expect(apolloMock.mutate).toHaveBeenNthCalledWith(1, {
+				mutation: setUserPreferenceMutation,
+				variables: { key: 'hideGoalCard', value: 'false' },
 			});
+			expect(apolloMock.mutate).toHaveBeenNthCalledWith(2, {
+				mutation: setUserPreferenceMutation,
+				variables: { key: 'goals', value: '[{"goalName":"g"}]' },
+			});
+		});
+
+		it('logs and resolves undefined when the mutation fails', async () => {
+			const { default: logReadQueryError } = await import('#src/util/logReadQueryError');
+			const error = new Error('Set failed');
+			const apolloMock = { mutate: vi.fn().mockRejectedValueOnce(error) };
+
+			const result = await setUserPreference(apolloMock, 'test', 'test');
+
+			expect(result).toBeUndefined();
+			expect(logReadQueryError).toHaveBeenCalledWith(error, 'userPreferenceUtils setUserPreferenceMutation');
+		});
+	});
+
+	describe('setUserPreferenceKeys', () => {
+		it('sends each key one after the other', async () => {
+			let pending = 0;
+			let overlapped = false;
+			const apolloMock = {
+				mutate: vi.fn(async () => {
+					pending += 1;
+					if (pending > 1) overlapped = true;
+					await Promise.resolve();
+					pending -= 1;
+					return { data: setPreferenceDataMock };
+				}),
+			};
+
+			const result = await setUserPreferenceKeys(apolloMock, { goals: [], hideGoalCard: false });
+
+			expect(overlapped).toBe(false);
+			expect(result).toEqual({ data: setPreferenceDataMock });
+			expect(apolloMock.mutate).toHaveBeenNthCalledWith(1, {
+				mutation: setUserPreferenceMutation,
+				variables: { key: 'goals', value: '[]' },
+			});
+			expect(apolloMock.mutate).toHaveBeenNthCalledWith(2, {
+				mutation: setUserPreferenceMutation,
+				variables: { key: 'hideGoalCard', value: 'false' },
+			});
+		});
+
+		it('keeps sending the remaining keys after one fails', async () => {
+			const apolloMock = {
+				mutate: vi.fn()
+					.mockRejectedValueOnce(new Error('Set failed'))
+					.mockResolvedValueOnce({ data: setPreferenceDataMock }),
+			};
+
+			await setUserPreferenceKeys(apolloMock, { goals: [], hideGoalCard: false });
+
+			expect(apolloMock.mutate).toHaveBeenCalledTimes(2);
 		});
 	});
 });

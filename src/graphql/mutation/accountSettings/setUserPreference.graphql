@@ -1,0 +1,8 @@
+mutation SetUserPreference($key: String!, $value: String!) {
+	my {
+		setUserPreference(key: $key, value: $value) {
+			id
+			preferences
+		}
+	}
+}
