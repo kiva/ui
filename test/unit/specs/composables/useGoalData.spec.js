@@ -19,8 +19,8 @@ vi.mock('#src/util/logFormatter', () => ({
 }));
 
 vi.mock('#src/util/userPreferenceUtils', () => ({
-	createUserPreferences: vi.fn(() => Promise.resolve({ id: 'new-pref-id' })),
-	updateUserPreferences: vi.fn(() => Promise.resolve()),
+	setUserPreference: vi.fn(() => Promise.resolve()),
+	setUserPreferenceKeys: vi.fn(() => Promise.resolve()),
 	setMyKivaGoal: vi.fn(() => Promise.resolve()),
 }));
 
@@ -1022,22 +1022,19 @@ describe('useGoalData', () => {
 	});
 
 	describe('storeGoalPreferences', () => {
-		it('should create preferences if they do not exist', async () => {
-			const {
-				createUserPreferences,
-			} = await import('#src/util/userPreferenceUtils');
+		it('should set the goal without creating preferences first when there is no row', async () => {
+			const { setMyKivaGoal, setUserPreference } = await import('#src/util/userPreferenceUtils');
 
 			mockApollo.query = vi.fn().mockResolvedValue({
 				data: {
 					my: {
-						userPreferences: {
-							id: 'new-pref-id',
-							preferences: JSON.stringify({ goals: [] }),
-						},
+						userPreferences: null,
 						loans: { totalCount: 0 },
 					},
 				},
 			});
+			setMyKivaGoal.mockClear();
+			setUserPreference.mockClear();
 
 			await composable.storeGoalPreferences({
 				goalName: 'new-goal',
@@ -1045,7 +1042,12 @@ describe('useGoalData', () => {
 				target: 5,
 			});
 
-			expect(createUserPreferences).toHaveBeenCalledWith(mockApollo, { goals: [] });
+			expect(mockApollo.query).not.toHaveBeenCalled();
+			expect(setUserPreference).not.toHaveBeenCalled();
+			expect(setMyKivaGoal).toHaveBeenCalledWith(
+				mockApollo,
+				expect.objectContaining({ category: ID_WOMENS_EQUALITY, target: 5 }),
+			);
 		});
 
 		it('should update existing goal via setMyKivaGoal', async () => {
@@ -1275,7 +1277,7 @@ describe('useGoalData', () => {
 
 	describe('removeGoalFromPreferences', () => {
 		it('should remove goal from preferences and update local state', async () => {
-			const { updateUserPreferences } = await import('#src/util/userPreferenceUtils');
+			const { setUserPreferenceKeys } = await import('#src/util/userPreferenceUtils');
 
 			const mockPrefs = {
 				goals: [
@@ -1323,11 +1325,9 @@ describe('useGoalData', () => {
 
 			await composable.removeGoalFromPreferences(mockPrefs.goals[0]);
 
-			expect(updateUserPreferences).toHaveBeenCalledWith(
+			expect(setUserPreferenceKeys).toHaveBeenCalledWith(
 				mockApollo,
-				expect.objectContaining({ id: '1' }),
-				mockPrefs,
-				{ goals: [mockPrefs.goals[1]], hideGoalCard: false }
+				{ goals: [mockPrefs.goals[1]], hideGoalCard: false },
 			);
 		});
 	});
@@ -1497,7 +1497,7 @@ describe('useGoalData', () => {
 	describe('checkCompletedGoal', () => {
 		it('should mark goal as completed and track event without hiding the goal card', async () => {
 			const {
-				updateUserPreferences,
+				setUserPreference,
 			} = await import('#src/util/userPreferenceUtils');
 			const currentYear = new Date().getFullYear();
 			const mockPrefs = {
@@ -1550,10 +1550,10 @@ describe('useGoalData', () => {
 				});
 
 			await composable.loadGoalData();
-			updateUserPreferences.mockClear();
+			setUserPreference.mockClear();
 			await composable.checkCompletedGoal({ currentGoalProgress: 20 });
 
-			expect(updateUserPreferences).not.toHaveBeenCalled();
+			expect(setUserPreference).not.toHaveBeenCalled();
 			expect(mockKvTrackEvent).toHaveBeenCalledWith(
 				'post-checkout',
 				'show',
@@ -1674,7 +1674,7 @@ describe('useGoalData', () => {
 		it('persists hide preference for completed goal without hiding it immediately', async () => {
 			const {
 				setMyKivaGoal,
-				updateUserPreferences,
+				setUserPreference,
 			} = await import('#src/util/userPreferenceUtils');
 
 			const mockPrefs = {
@@ -1725,17 +1725,12 @@ describe('useGoalData', () => {
 				});
 
 			setMyKivaGoal.mockClear();
-			updateUserPreferences.mockClear();
+			setUserPreference.mockClear();
 
 			await composable.loadGoalData({ checkMyKivaCompletedGoalAfterLoad: true });
 
 			expect(setMyKivaGoal).not.toHaveBeenCalled();
-			expect(updateUserPreferences).toHaveBeenCalledWith(
-				mockApollo,
-				expect.objectContaining({ id: 'pref-123' }),
-				mockPrefs,
-				{ hideGoalCard: true },
-			);
+			expect(setUserPreference).toHaveBeenCalledWith(mockApollo, 'hideGoalCard', true);
 			expect(composable.hideGoalCard.value).toBe(false);
 		});
 
@@ -3751,7 +3746,7 @@ describe('useGoalData', () => {
 	describe('setHideGoalCardPreference', () => {
 		it('should set hideGoalCard preference to true', async () => {
 			const {
-				updateUserPreferences,
+				setUserPreference,
 			} = await import('#src/util/userPreferenceUtils');
 
 			mockApollo.query = vi.fn().mockResolvedValue({
@@ -3766,37 +3761,18 @@ describe('useGoalData', () => {
 				},
 			});
 
-			updateUserPreferences.mockClear();
+			setUserPreference.mockClear();
 			await composable.setHideGoalCardPreference(true);
 
-			expect(updateUserPreferences).toHaveBeenCalledWith(
-				mockApollo,
-				{ id: 'hide-goal-id', preferences: '{}' },
-				{},
-				{ hideGoalCard: true },
-			);
+			expect(setUserPreference).toHaveBeenCalledWith(mockApollo, 'hideGoalCard', true);
 		});
 
-		it('should use network-only fetch policy to get fresh preferences', async () => {
-			mockApollo.query = vi.fn().mockResolvedValue({
-				data: {
-					my: {
-						userPreferences: {
-							id: 'hide-goal-id',
-							preferences: JSON.stringify({}),
-						},
-						loans: { totalCount: 0 },
-					},
-				},
-			});
+		it('should write without reloading preferences first', async () => {
+			mockApollo.query = vi.fn();
 
 			await composable.setHideGoalCardPreference(true);
 
-			expect(mockApollo.query).toHaveBeenCalledWith(
-				expect.objectContaining({
-					fetchPolicy: 'network-only',
-				})
-			);
+			expect(mockApollo.query).not.toHaveBeenCalled();
 		});
 	});
 
@@ -4732,31 +4708,31 @@ describe('useGoalData', () => {
 		});
 
 		it('setViewedGoalCompletePreference persists a year-keyed flag', async () => {
-			const { updateUserPreferences } = await import('#src/util/userPreferenceUtils');
-			updateUserPreferences.mockClear();
+			const { setUserPreference } = await import('#src/util/userPreferenceUtils');
+			setUserPreference.mockClear();
 
 			await loadPrefsOnce({ goals: [], hideGoalCard: false });
 			await composable.setViewedGoalCompletePreference(GOALS_CURRENT_YEAR);
 
-			expect(updateUserPreferences).toHaveBeenCalledTimes(1);
-			const [, , , updatedPreference] = updateUserPreferences.mock.calls[0];
-			expect(updatedPreference).toEqual({
+			expect(setUserPreference).toHaveBeenCalledTimes(1);
+			const [, key, value] = setUserPreference.mock.calls[0];
+			expect({ [key]: value }).toEqual({
 				viewedGoalComplete: { [GOALS_CURRENT_YEAR]: true },
 			});
 		});
 
 		it('setViewedGoalCompletePreference merges with existing year entries', async () => {
-			const { updateUserPreferences } = await import('#src/util/userPreferenceUtils');
-			updateUserPreferences.mockClear();
+			const { setUserPreference } = await import('#src/util/userPreferenceUtils');
+			setUserPreference.mockClear();
 
 			await loadPrefsOnce({
 				viewedGoalComplete: { [GOALS_CURRENT_YEAR - 1]: true },
 			});
 			await composable.setViewedGoalCompletePreference(GOALS_CURRENT_YEAR);
 
-			expect(updateUserPreferences).toHaveBeenCalledTimes(1);
-			const [, , , updatedPreference] = updateUserPreferences.mock.calls[0];
-			expect(updatedPreference).toEqual({
+			expect(setUserPreference).toHaveBeenCalledTimes(1);
+			const [, key, value] = setUserPreference.mock.calls[0];
+			expect({ [key]: value }).toEqual({
 				viewedGoalComplete: {
 					[GOALS_CURRENT_YEAR - 1]: true,
 					[GOALS_CURRENT_YEAR]: true,
@@ -4765,22 +4741,22 @@ describe('useGoalData', () => {
 		});
 
 		it('setViewedGoalCompletePreference is idempotent — no write when year already set', async () => {
-			const { updateUserPreferences } = await import('#src/util/userPreferenceUtils');
-			updateUserPreferences.mockClear();
+			const { setUserPreference } = await import('#src/util/userPreferenceUtils');
+			setUserPreference.mockClear();
 
 			await loadPrefsOnce({ viewedGoalComplete: { [GOALS_CURRENT_YEAR]: true } });
 			await composable.setViewedGoalCompletePreference(GOALS_CURRENT_YEAR);
 
-			expect(updateUserPreferences).not.toHaveBeenCalled();
+			expect(setUserPreference).not.toHaveBeenCalled();
 		});
 
 		it('setViewedGoalCompletePreference is a no-op when called with a falsy year', async () => {
-			const { updateUserPreferences } = await import('#src/util/userPreferenceUtils');
-			updateUserPreferences.mockClear();
+			const { setUserPreference } = await import('#src/util/userPreferenceUtils');
+			setUserPreference.mockClear();
 
 			await composable.setViewedGoalCompletePreference(0);
 
-			expect(updateUserPreferences).not.toHaveBeenCalled();
+			expect(setUserPreference).not.toHaveBeenCalled();
 		});
 	});
 
@@ -4821,31 +4797,31 @@ describe('useGoalData', () => {
 		});
 
 		it('setGoalFeedbackSubmittedPreference persists a year-keyed flag', async () => {
-			const { updateUserPreferences } = await import('#src/util/userPreferenceUtils');
-			updateUserPreferences.mockClear();
+			const { setUserPreference } = await import('#src/util/userPreferenceUtils');
+			setUserPreference.mockClear();
 
 			await loadPrefsOnce({ goals: [], hideGoalCard: false });
 			await composable.setGoalFeedbackSubmittedPreference(GOALS_CURRENT_YEAR);
 
-			expect(updateUserPreferences).toHaveBeenCalledTimes(1);
-			const [, , , updatedPreference] = updateUserPreferences.mock.calls[0];
-			expect(updatedPreference).toEqual({
+			expect(setUserPreference).toHaveBeenCalledTimes(1);
+			const [, key, value] = setUserPreference.mock.calls[0];
+			expect({ [key]: value }).toEqual({
 				goalFeedbackSubmitted: { [GOALS_CURRENT_YEAR]: true },
 			});
 		});
 
 		it('setGoalFeedbackSubmittedPreference merges with existing year entries', async () => {
-			const { updateUserPreferences } = await import('#src/util/userPreferenceUtils');
-			updateUserPreferences.mockClear();
+			const { setUserPreference } = await import('#src/util/userPreferenceUtils');
+			setUserPreference.mockClear();
 
 			await loadPrefsOnce({
 				goalFeedbackSubmitted: { [GOALS_CURRENT_YEAR - 1]: true },
 			});
 			await composable.setGoalFeedbackSubmittedPreference(GOALS_CURRENT_YEAR);
 
-			expect(updateUserPreferences).toHaveBeenCalledTimes(1);
-			const [, , , updatedPreference] = updateUserPreferences.mock.calls[0];
-			expect(updatedPreference).toEqual({
+			expect(setUserPreference).toHaveBeenCalledTimes(1);
+			const [, key, value] = setUserPreference.mock.calls[0];
+			expect({ [key]: value }).toEqual({
 				goalFeedbackSubmitted: {
 					[GOALS_CURRENT_YEAR - 1]: true,
 					[GOALS_CURRENT_YEAR]: true,
@@ -4854,22 +4830,22 @@ describe('useGoalData', () => {
 		});
 
 		it('setGoalFeedbackSubmittedPreference is idempotent — no write when year already set', async () => {
-			const { updateUserPreferences } = await import('#src/util/userPreferenceUtils');
-			updateUserPreferences.mockClear();
+			const { setUserPreference } = await import('#src/util/userPreferenceUtils');
+			setUserPreference.mockClear();
 
 			await loadPrefsOnce({ goalFeedbackSubmitted: { [GOALS_CURRENT_YEAR]: true } });
 			await composable.setGoalFeedbackSubmittedPreference(GOALS_CURRENT_YEAR);
 
-			expect(updateUserPreferences).not.toHaveBeenCalled();
+			expect(setUserPreference).not.toHaveBeenCalled();
 		});
 
 		it('setGoalFeedbackSubmittedPreference is a no-op when called with a falsy year', async () => {
-			const { updateUserPreferences } = await import('#src/util/userPreferenceUtils');
-			updateUserPreferences.mockClear();
+			const { setUserPreference } = await import('#src/util/userPreferenceUtils');
+			setUserPreference.mockClear();
 
 			await composable.setGoalFeedbackSubmittedPreference(0);
 
-			expect(updateUserPreferences).not.toHaveBeenCalled();
+			expect(setUserPreference).not.toHaveBeenCalled();
 		});
 	});
 
@@ -5710,6 +5686,276 @@ describe('useGoalData', () => {
 			// These objects belong to the Apollo cache, which is frozen in production —
 			// writing optimistic progress back into them would throw during SSR.
 			expect(cachedAchievements).toEqual(achievements);
+		});
+	});
+	describe('preference writes', () => {
+		const prefsResponse = (prefs, achievements = []) => ({
+			data: {
+				my: {
+					userPreferences: { id: 'pref-writes', preferences: JSON.stringify(prefs) },
+					loans: { totalCount: 0 },
+				},
+				userAchievementProgress: { tieredLendingAchievements: achievements },
+			},
+		});
+
+		const womenGoal = {
+			goalName: 'goal-women-2026',
+			category: ID_WOMENS_EQUALITY,
+			target: 5,
+			status: GOAL_STATUS.IN_PROGRESS,
+			dateStarted: '2026-03-01T00:00:00.000Z',
+		};
+		const basicNeedsGoal = {
+			goalName: 'goal-basic-needs-2026',
+			category: ID_BASIC_NEEDS,
+			target: 3,
+			status: GOAL_STATUS.IN_PROGRESS,
+			dateStarted: '2026-02-01T00:00:00.000Z',
+		};
+
+		let setUserPreference;
+		let setUserPreferenceKeys;
+		let setMyKivaGoal;
+
+		beforeEach(async () => {
+			({
+				setUserPreference,
+				setUserPreferenceKeys,
+				setMyKivaGoal,
+			} = await import('#src/util/userPreferenceUtils'));
+			setUserPreference.mockClear();
+			setUserPreferenceKeys.mockClear();
+			setMyKivaGoal.mockClear();
+		});
+
+		describe('removeGoalFromPreferences', () => {
+			it('still resets hideGoalCard and keeps the goals array when the goal is not stored', async () => {
+				mockApollo.query = vi.fn().mockResolvedValue(prefsResponse({ goals: [womenGoal] }));
+
+				await composable.removeGoalFromPreferences({ goalName: 'not-stored' });
+
+				expect(setUserPreferenceKeys).toHaveBeenCalledTimes(1);
+				expect(setUserPreferenceKeys).toHaveBeenCalledWith(
+					mockApollo,
+					{ goals: [womenGoal], hideGoalCard: false },
+				);
+			});
+
+			it('sends goals before hideGoalCard', async () => {
+				mockApollo.query = vi.fn().mockResolvedValue(prefsResponse({ goals: [womenGoal] }));
+
+				await composable.removeGoalFromPreferences(womenGoal);
+
+				expect(Object.keys(setUserPreferenceKeys.mock.calls[0][1])).toEqual(['goals', 'hideGoalCard']);
+			});
+
+			it('removes from the freshly reloaded goals, not the goals loaded at page load', async () => {
+				mockApollo.query = vi.fn()
+					.mockResolvedValueOnce(prefsResponse({ goals: [womenGoal] }))
+					.mockResolvedValueOnce(prefsResponse({ goals: [womenGoal] }))
+					.mockResolvedValue(prefsResponse({ goals: [womenGoal, basicNeedsGoal] }));
+
+				await composable.loadGoalData();
+				await composable.removeGoalFromPreferences(womenGoal);
+
+				expect(setUserPreferenceKeys).toHaveBeenCalledWith(mockApollo, {
+					goals: [basicNeedsGoal],
+					hideGoalCard: false,
+				});
+			});
+
+			it('never touches the whole blob through the single-key helper', async () => {
+				mockApollo.query = vi.fn().mockResolvedValue(prefsResponse({ goals: [womenGoal] }));
+
+				await composable.removeGoalFromPreferences(womenGoal);
+
+				expect(setUserPreference).not.toHaveBeenCalled();
+			});
+		});
+
+		describe('updateCurrentGoal', () => {
+			it('writes only the goals key, with the edited goal keeping its stored dateStarted', async () => {
+				mockApollo.query = vi.fn().mockResolvedValue(prefsResponse({ goals: [womenGoal, basicNeedsGoal] }));
+				await composable.loadGoalData();
+
+				await composable.updateCurrentGoal(womenGoal, {
+					...womenGoal,
+					target: 9,
+					dateStarted: '2026-08-01T00:00:00.000Z',
+				});
+
+				expect(setUserPreference).toHaveBeenCalledTimes(1);
+				expect(setUserPreferenceKeys).not.toHaveBeenCalled();
+				const [apollo, key, goals] = setUserPreference.mock.calls[0];
+				expect(apollo).toBe(mockApollo);
+				expect(key).toBe('goals');
+				expect(goals).toHaveLength(2);
+				expect(goals[0]).toEqual({
+					...womenGoal,
+					target: 9,
+					updatedAt: expect.any(String),
+				});
+				expect(goals[1]).toEqual(basicNeedsGoal);
+			});
+
+			it('writes the goals array unchanged when the previous goal is not stored', async () => {
+				mockApollo.query = vi.fn().mockResolvedValue(prefsResponse({ goals: [womenGoal] }));
+				await composable.loadGoalData();
+
+				await composable.updateCurrentGoal({ goalName: 'not-stored' }, { ...womenGoal, target: 9 });
+
+				expect(setUserPreference).toHaveBeenCalledWith(mockApollo, 'goals', [womenGoal]);
+			});
+		});
+
+		describe('storeGoalPreferences', () => {
+			it('persists through setMyKivaGoal only, never the goals key', async () => {
+				mockApollo.query = vi.fn().mockResolvedValue(prefsResponse({ goals: [womenGoal] }));
+				await composable.loadGoalData();
+
+				await composable.storeGoalPreferences({ ...womenGoal, target: 7 });
+
+				expect(setMyKivaGoal).toHaveBeenCalledTimes(1);
+				expect(setUserPreference).not.toHaveBeenCalled();
+				expect(setUserPreferenceKeys).not.toHaveBeenCalled();
+			});
+		});
+
+		describe('setHideGoalCardPreference', () => {
+			it('writes false when asked to show the card again', async () => {
+				await composable.setHideGoalCardPreference(false);
+
+				expect(setUserPreference).toHaveBeenCalledWith(mockApollo, 'hideGoalCard', false);
+			});
+
+			it('defaults to hiding the card', async () => {
+				await composable.setHideGoalCardPreference();
+
+				expect(setUserPreference).toHaveBeenCalledWith(mockApollo, 'hideGoalCard', true);
+			});
+		});
+
+		describe('goalRecapViewed flag', () => {
+			it('setGoalRecapViewedPreference persists a year-keyed flag', async () => {
+				mockApollo.query = vi.fn().mockResolvedValue(prefsResponse({ goals: [] }));
+
+				await composable.setGoalRecapViewedPreference(GOALS_CURRENT_YEAR);
+
+				expect(setUserPreference).toHaveBeenCalledWith(
+					mockApollo,
+					'goalRecapViewed',
+					{ [GOALS_CURRENT_YEAR]: true },
+				);
+			});
+
+			it('setGoalRecapViewedPreference merges with other years and skips a year already set', async () => {
+				mockApollo.query = vi.fn().mockResolvedValue(prefsResponse({
+					goalRecapViewed: { [GOALS_CURRENT_YEAR - 1]: true },
+				}));
+
+				await composable.setGoalRecapViewedPreference(GOALS_CURRENT_YEAR - 1);
+				expect(setUserPreference).not.toHaveBeenCalled();
+
+				await composable.setGoalRecapViewedPreference(GOALS_CURRENT_YEAR);
+				expect(setUserPreference).toHaveBeenCalledWith(mockApollo, 'goalRecapViewed', {
+					[GOALS_CURRENT_YEAR - 1]: true,
+					[GOALS_CURRENT_YEAR]: true,
+				});
+			});
+		});
+
+		describe('backfillExpiredGoalProgress (via loadGoalData)', () => {
+			const expiredGoal = {
+				goalName: 'goal-women-2025',
+				category: ID_WOMENS_EQUALITY,
+				target: 5,
+				status: GOAL_STATUS.EXPIRED,
+				dateStarted: '2025-03-01T00:00:00.000Z',
+			};
+
+			it('writes the goals key with loansTowardGoal filled for a prior-year expired goal', async () => {
+				mockApollo.query = vi.fn().mockResolvedValue(prefsResponse(
+					{ goals: [expiredGoal, womenGoal] },
+					[{ id: ID_WOMENS_EQUALITY, progressForYear: 3, totalProgressToAchievement: 3 }],
+				));
+
+				await composable.loadGoalData();
+
+				expect(setUserPreference).toHaveBeenCalledWith(mockApollo, 'goals', [
+					{ ...expiredGoal, loansTowardGoal: 3 },
+					womenGoal,
+				]);
+			});
+
+			it('does not write when the backfilled progress is zero', async () => {
+				mockApollo.query = vi.fn().mockResolvedValue(prefsResponse(
+					{ goals: [expiredGoal] },
+					[{ id: ID_WOMENS_EQUALITY, progressForYear: 0, totalProgressToAchievement: 0 }],
+				));
+
+				await composable.loadGoalData();
+
+				expect(setUserPreference).not.toHaveBeenCalled();
+				expect(setUserPreferenceKeys).not.toHaveBeenCalled();
+			});
+
+			it('does not write when the expired goal already has loansTowardGoal', async () => {
+				mockApollo.query = vi.fn().mockResolvedValue(prefsResponse(
+					{ goals: [{ ...expiredGoal, loansTowardGoal: 2 }] },
+					[{ id: ID_WOMENS_EQUALITY, progressForYear: 3, totalProgressToAchievement: 3 }],
+				));
+
+				await composable.loadGoalData();
+
+				expect(setUserPreference).not.toHaveBeenCalled();
+				expect(setUserPreferenceKeys).not.toHaveBeenCalled();
+			});
+		});
+
+		describe('renewAnnualGoal', () => {
+			const lastYearGoal = {
+				goalName: 'goal-women-2025',
+				category: ID_WOMENS_EQUALITY,
+				target: 5,
+				status: GOAL_STATUS.IN_PROGRESS,
+				dateStarted: '2025-01-01T00:00:00.000Z',
+			};
+			const today = new Date('2026-01-15T00:00:00Z');
+
+			it('writes the expired goals and goalsRenewedDate together, after setMyKivaGoal', async () => {
+				mockApollo.query = vi.fn().mockResolvedValue(prefsResponse(
+					{ goals: [lastYearGoal, womenGoal] },
+					[{ id: ID_WOMENS_EQUALITY, progressForYear: 2, totalProgressToAchievement: 2 }],
+				));
+
+				await composable.renewAnnualGoal(today);
+
+				expect(setMyKivaGoal).toHaveBeenCalledWith(mockApollo, {
+					category: lastYearGoal.category,
+					target: lastYearGoal.target,
+					dateStarted: lastYearGoal.dateStarted,
+					status: GOAL_STATUS.EXPIRED,
+				});
+				expect(setUserPreferenceKeys).toHaveBeenCalledTimes(1);
+				expect(setUserPreferenceKeys).toHaveBeenCalledWith(mockApollo, {
+					goals: [{ ...lastYearGoal, status: GOAL_STATUS.EXPIRED, loansTowardGoal: 2 }, womenGoal],
+					goalsRenewedDate: today.toISOString(),
+				});
+				expect(setMyKivaGoal.mock.invocationCallOrder[0])
+					.toBeLessThan(setUserPreferenceKeys.mock.invocationCallOrder[0]);
+				expect(setUserPreference).not.toHaveBeenCalled();
+			});
+
+			it('writes nothing when no goal expires', async () => {
+				mockApollo.query = vi.fn().mockResolvedValue(prefsResponse({ goals: [womenGoal] }));
+
+				await composable.renewAnnualGoal(today);
+
+				expect(setMyKivaGoal).not.toHaveBeenCalled();
+				expect(setUserPreference).not.toHaveBeenCalled();
+				expect(setUserPreferenceKeys).not.toHaveBeenCalled();
+			});
 		});
 	});
 });

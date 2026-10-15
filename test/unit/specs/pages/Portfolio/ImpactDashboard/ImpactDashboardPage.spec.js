@@ -60,6 +60,25 @@ describe('ImpactDashboardPage', () => {
 		});
 	});
 
+	describe('mounted', () => {
+		it('ignores a goal_saved query param instead of writing a goal preference', () => {
+			const context = {
+				$route: { query: { goal_saved: 'women' } },
+				apollo: { mutate: vi.fn() },
+				$showTipMsg: vi.fn(),
+				loadEducationPost: vi.fn(),
+				openGoalRecapIfDue: vi.fn(),
+			};
+
+			ImpactDashboardPage.mounted.call(context);
+
+			expect(context.loadEducationPost).toHaveBeenCalled();
+			expect(context.openGoalRecapIfDue).toHaveBeenCalled();
+			expect(context.apollo.mutate).not.toHaveBeenCalled();
+			expect(context.$showTipMsg).not.toHaveBeenCalled();
+		});
+	});
+
 	describe('handleGoalInReviewFeedbackSubmitted', () => {
 		it('persists the feedback-submitted preference for the recap year', async () => {
 			const setGoalFeedbackSubmittedPreference = vi.fn().mockResolvedValue();
