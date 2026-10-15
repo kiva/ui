@@ -3,7 +3,6 @@ import { warn, error } from '../log.js';
 
 export const QUERY_TYPE = {
 	DEFAULT: 'default',
-	FLSS: 'flss',
 	RECOMMENDATIONS: 'recommendations'
 };
 
@@ -89,7 +88,7 @@ async function fetchLoansFromGraphQL(request, resultPath) {
 	}
 }
 
-// Get per-user recommended loans from the ML service
+// Get per-user recommended loans
 async function fetchRecommendationsByLoginId(id, queryType = QUERY_TYPE.DEFAULT, count = DEFAULT_LOAN_COUNT) {
 	if (queryType === QUERY_TYPE.RECOMMENDATIONS) {
 		return fetchLoansFromGraphQL(
@@ -109,42 +108,25 @@ async function fetchRecommendationsByLoginId(id, queryType = QUERY_TYPE.DEFAULT,
 			},
 			'data.loanRecommendations.values'
 		);
-	} if (queryType === QUERY_TYPE.FLSS) {
-		return fetchLoansFromGraphQL(
-			{
-				query: `query($userId: Int) {
-					fundraisingLoans(
-						pageNumber: 0,
-						limit: ${count},
-						userId: $userId,
-						origin: "email:live-loans"
-					) {
-						${loanValues}
-					}
-				}`,
-				variables: {
-					userId: Number(id),
-				}
-			},
-			'data.fundraisingLoans.values'
-		);
 	}
 	return fetchLoansFromGraphQL(
 		{
-			query: `{
-				ml {
-					recommendationsByLoginId(
-						segment: all
-							loginId: ${id}
-							offset: 0
-							limit: ${count}
-					) {
-						${loanValues}
-					}
+			query: `query($userId: Int) {
+				fundraisingLoans(
+					sortBy: personalized,
+					pageNumber: 0,
+					limit: ${count},
+					userId: $userId,
+					origin: "email:live-loans"
+				) {
+					${loanValues}
 				}
 			}`,
+			variables: {
+				userId: Number(id),
+			}
 		},
-		'data.ml.recommendationsByLoginId.values'
+		'data.fundraisingLoans.values'
 	);
 }
 
