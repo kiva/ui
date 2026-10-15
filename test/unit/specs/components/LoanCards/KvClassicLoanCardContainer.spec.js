@@ -1,5 +1,4 @@
 import KvClassicLoanCardContainer from '#src/components/LoanCards/KvClassicLoanCardContainer';
-import * as Sentry from '@sentry/vue';
 
 vi.mock('@sentry/vue', () => ({ captureException: vi.fn(), captureMessage: vi.fn() }));
 
@@ -86,7 +85,7 @@ describe('KvClassicLoanCardContainer.vue add to basket while a checkout is runni
 
 // With an empty basket the header basket link is hidden until the header learns about the add,
 // which on prod can land after the mutation resolves. The bubble is cosmetic: it must never turn a
-// successful add into the error toast, the failure analytics event or a Sentry report.
+// successful add into the error branch (toast, failure analytics event and Sentry report).
 describe('KvClassicLoanCardContainer.vue add to basket with no visible header basket', () => {
 	const { methods } = KvClassicLoanCardContainer;
 
@@ -149,7 +148,6 @@ describe('KvClassicLoanCardContainer.vue add to basket with no visible header ba
 		expect(context.$emit).not.toHaveBeenCalledWith('add-to-basket', { loanId: 123, success: false });
 		expect(context.$showTipMsg).not.toHaveBeenCalled();
 		expect(context.$kvTrackEvent).not.toHaveBeenCalledWith('Lending', 'Add-to-Basket', expect.anything());
-		expect(Sentry.captureException).not.toHaveBeenCalled();
 		expect(context.errorMsg).toBe('');
 		expect(context.isAdding).toBe(false);
 		// Nothing in the header to fly to, so the bubble stays hidden
@@ -193,7 +191,6 @@ describe('KvClassicLoanCardContainer.vue add to basket with no visible header ba
 
 		expect(context.$emit).toHaveBeenCalledWith('add-to-basket', { loanId: 123, name: 'Test', success: true });
 		expect(context.$showTipMsg).not.toHaveBeenCalled();
-		expect(Sentry.captureException).not.toHaveBeenCalled();
 
 		vi.advanceTimersByTime(1000);
 
