@@ -8,6 +8,7 @@ import MoreAboutLoan from '#src/components/BorrowerProfile/MoreAboutLoan';
 import SummaryCard from '#src/components/BorrowerProfile/SummaryCard';
 import ShareButton from '#src/components/BorrowerProfile/ShareButton';
 import WhyLoansBanner from '#src/components/BorrowerProfile/WhyLoansBanner';
+import GlobalImpactBar from '#src/components/BorrowerProfile/GlobalImpactBar';
 import { NEW_USER_BP_EXP_INJECT_KEY } from '#src/util/newUserBorrowerProfileExp';
 import { globalOptions } from '../../../specUtils';
 
@@ -223,7 +224,7 @@ describe('FullBorrowerProfile new user version', () => {
 		it.each([
 			['nothing provided', undefined],
 			['false provided', false],
-		])('%s keeps the control: no card actions, share button in the lend box', (_, isNewUserVariant) => {
+		])('%s keeps the control: no card actions, share button in the lend box, no bar', (_, isNewUserVariant) => {
 			const wrapper = mountProfile({ isNewUserVariant });
 
 			expect(wrapper.findComponent(SummaryCard).props('showActions')).toBe(false);
@@ -232,6 +233,7 @@ describe('FullBorrowerProfile new user version', () => {
 			expect(shareButtons).toHaveLength(1);
 			expect(shareButtons[0].props('variant')).not.toBe('hidden');
 			expect(wrapper.find('[data-testid="lend-cta-stub"]').findComponent(ShareButton).exists()).toBe(true);
+			expect(wrapper.findComponent(GlobalImpactBar).exists()).toBe(false);
 		});
 
 		it('version b shows the card actions and moves the single share button out of the lend box, hidden', () => {
@@ -310,6 +312,14 @@ describe('FullBorrowerProfile new user version', () => {
 			await wrapper.vm.$nextTick();
 
 			expect(wrapper.findComponent({ name: 'HowKivaWorksLightbox' }).props('visible')).toBe(true);
+		});
+
+		it('version b renders the global impact bar once, after the profile article', () => {
+			const wrapper = mountProfile({ isNewUserVariant: true });
+
+			const bars = wrapper.findAllComponents(GlobalImpactBar);
+			expect(bars).toHaveLength(1);
+			expect(bars[0].element.previousElementSibling).toBe(wrapper.find('article').element);
 		});
 
 		describe('collapsible sections', () => {

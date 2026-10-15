@@ -223,6 +223,8 @@
 			@lightbox-closed="showHowKivaWorks = false"
 		/>
 	</article>
+	<!-- Outside the article: the sticky lend box floats over the article and must never reach the bar -->
+	<global-impact-bar v-if="isNewUserBpVariant" data-testid="bp-global-impact-bar" />
 </template>
 
 <script>
@@ -254,6 +256,7 @@ import LoanSupportersRow from '#src/components/BorrowerProfile/LoanSupportersRow
 import smoothScrollMixin from '#src/plugins/smooth-scroll-mixin';
 import HowKivaWorksLightbox from '#src/components/BorrowerProfile/HowKivaWorksLightbox';
 import WhyLoansBanner from '#src/components/BorrowerProfile/WhyLoansBanner';
+import GlobalImpactBar from '#src/components/BorrowerProfile/GlobalImpactBar';
 import {
 	getLocalRailPreference,
 	readAccountRailPreference,
@@ -335,6 +338,7 @@ export default {
 		LoanSupportersRow,
 		HowKivaWorksLightbox,
 		WhyLoansBanner,
+		GlobalImpactBar,
 		KvPageContainer,
 	},
 	mixins: [smoothScrollMixin],
