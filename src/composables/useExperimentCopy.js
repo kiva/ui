@@ -3,7 +3,7 @@ import useApolloQuery from '#src/composables/useApolloQuery';
 import contentfulEntriesQuery from '#src/graphql/query/contentfulEntries.graphql';
 import experimentVersionFragment from '#src/graphql/fragments/experimentVersion.graphql';
 import { getContentfulEntries } from '#src/util/contentfulUtils';
-import { formatExperimentCopy, getExperimentCopy } from '#src/util/experiment/experimentCopy';
+import { getExperimentCopy, selectActiveCopyRound } from '#src/util/experiment/experimentCopy';
 import { trackExperimentVersion } from '#src/util/experiment/experimentUtils';
 
 /**
@@ -22,7 +22,7 @@ export function createExperimentCopyOperation(contentKey) {
 }
 
 /**
- * Reads a Contentful copy set and the visitor's experiment version.
+ * Reads the live round of a Contentful copy set and the visitor's experiment version.
  *
  * @param {Object} operation The operation from createExperimentCopyOperation
  * @param {string} experimentKey The experiment key in Kiva Admin
@@ -33,7 +33,9 @@ export default function useExperimentCopy(operation, experimentKey) {
 	// The variables never change, so the browser uses the same ones as the server
 	const { result, loading, error } = useApolloQuery(operation, operation.preFetchVariables());
 
-	const variants = computed(() => formatExperimentCopy(getContentfulEntries(result.value)?.[0]));
+	const activeRound = computed(() => selectActiveCopyRound(getContentfulEntries(result.value)?.[0]));
+	const variants = computed(() => activeRound.value?.variants ?? null);
+	const round = computed(() => activeRound.value?.key ?? null);
 
 	// Read once, so the server and the browser show the same version
 	const experiment = apollo?.readFragment({
@@ -59,19 +61,22 @@ export default function useExperimentCopy(operation, experimentKey) {
 
 	/**
 	 * Sends the exposure event, but only if the visitor's version has copy.
+	 * Sends the round key as the property, so results can be split by round.
 	 *
 	 * @param {string} category The tracking category, e.g. 'basket'
-	 * @param {string} action The tracking action, e.g. 'EXP-MP-1234-Oct2026'
+	 * @param {string} fallbackAction The action for rounds that set none, e.g. 'EXP-MP-1234-Oct2026'
 	 * @returns {boolean} Whether the event was sent
 	 */
-	function trackExposure(category, action) {
+	function trackExposure(category, fallbackAction) {
 		if (!variants.value?.[version.value]) return false;
-		trackExperimentVersion(apollo, kvTrackEvent, category, experimentKey, action);
+		const action = activeRound.value.trackingAction ?? fallbackAction;
+		trackExperimentVersion(apollo, kvTrackEvent, category, experimentKey, action, round.value);
 		return true;
 	}
 
 	return {
 		variants,
+		round,
 		version,
 		loading,
 		error,

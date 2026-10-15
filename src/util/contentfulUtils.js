@@ -1,4 +1,5 @@
 import { camelCase } from 'change-case';
+import { BLOCKS, INLINES } from '@contentful/rich-text-types';
 import kvTokensPrimitives from '@kiva/kv-tokens';
 
 /**
@@ -177,6 +178,44 @@ export function formatUiSetting(contentfulContent) {
 		contents: formatContentTypes(contentfulContent.fields?.content),
 		dataObject: contentfulContent.fields?.dataObject,
 	};
+}
+
+const EMBEDDED_ENTRY_NODE_TYPES = [BLOCKS.EMBEDDED_ENTRY, INLINES.EMBEDDED_ENTRY];
+
+/**
+ * Finds the first entry embedded in rich text (as a block or inline, at any depth) that passes `matches`.
+ *
+ * @param {object} node A rich text node
+ * @param {function} matches Called with each embedded entry
+ * @returns {object|null} The raw embedded entry, or null
+ */
+function findRichTextEmbedded(node, matches) {
+	const target = node?.data?.target;
+	if (EMBEDDED_ENTRY_NODE_TYPES.includes(node?.nodeType) && target && matches(target)) {
+		return target;
+	}
+	return node?.content?.reduce((found, child) => found ?? findRichTextEmbedded(child, matches), null) ?? null;
+}
+
+/**
+ * Finds the first entry of a content type embedded in rich text, as a block or inline, at any depth.
+ *
+ * @param {object} node A rich text node, e.g. a genericContentBlock's bodyCopy
+ * @param {string} contentTypeId The content type id, e.g. 'uiSetting'
+ * @returns {object|null} The raw embedded entry, or null
+ */
+export function findRichTextEmbeddedEntry(node, contentTypeId) {
+	return findRichTextEmbedded(node, target => target.sys?.contentType?.sys?.id === contentTypeId);
+}
+
+/**
+ * Whether rich text embeds an entry that came back as a bare link, e.g. an unpublished one.
+ *
+ * @param {object} node A rich text node, e.g. a genericContentBlock's bodyCopy
+ * @returns {boolean}
+ */
+export function hasUnresolvedRichTextEntry(node) {
+	return !!findRichTextEmbedded(node, target => target.sys?.type === 'Link');
 }
 
 /**
