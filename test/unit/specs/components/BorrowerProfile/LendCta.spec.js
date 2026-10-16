@@ -133,10 +133,10 @@ describe('LendCta in version b of the new user borrower profile', () => {
 		expect(queryByTestId('bp-loan-matching-info')).toBeNull();
 	});
 
-	it('gives the sticky copy its own matching tooltip id, so the tooltip in each lend box works', () => {
+	it('gives the sticky clone its own matching tooltip id, so the tooltip in each lend box works', () => {
 		const { container } = renderVersionB({
 			simultaneousMatching: [{ managedAccountId: 1, displayName: 'Walton Family Foundation', ratio: 1 }],
-		}, { stickyCopy: true });
+		}, { stickyClone: true });
 
 		expect(container.querySelector('#sticky-lend-box-matching-tooltip')).not.toBeNull();
 		expect(container.querySelector('#lend-box-matching-tooltip')).toBeNull();

@@ -252,66 +252,11 @@ describe('FullBorrowerProfile new user version', () => {
 		});
 	});
 
-	describe('updateStickyLendBox', () => {
-		const { updateStickyLendBox } = FullBorrowerProfile.methods;
-		// The test page has no layout, so positions and heights are faked
-		const fakeBox = ({
-			top = 0, bottom = 0, height = 0, style = '',
-		} = {}) => {
-			const element = document.createElement('div');
-			element.setAttribute('style', style);
-			element.getBoundingClientRect = () => ({ top, bottom });
-			Object.defineProperty(element, 'offsetHeight', { value: height });
-			return element;
-		};
-		let stickyPanel;
-
-		beforeEach(() => {
-			// Sticky line at 96px; getComputedStyle needs the element on the page
-			stickyPanel = fakeBox({ style: 'top: 96px' });
-			document.body.appendChild(stickyPanel);
-		});
-
-		afterEach(() => {
-			stickyPanel.remove();
-		});
-
-		// A 400px tall sticky lend box
-		function visibleWith({ bandBottom, tagsTop = 2000, tagsBottom = 2160 }) {
-			const ctx = {
-				stickyLendBoxVisible: false,
-				isLarge: true,
-				$refs: {
-					stickyPanel,
-					whyLoansDesktop: { $el: fakeBox({ bottom: bandBottom }) },
-					tagsSection: fakeBox({ top: tagsTop, bottom: tagsBottom }),
-					stickyStack: fakeBox({ height: 400 }),
-				},
-			};
-			updateStickyLendBox.call(ctx);
-			return ctx.stickyLendBoxVisible;
-		}
-
-		it('shows the sticky lend box once the "Why loans" band has scrolled past the sticky line', () => {
-			expect(visibleWith({ bandBottom: 90 })).toBe(true);
-		});
-
-		it('keeps the sticky lend box while its bottom is still above the bottom of the tags section', () => {
-			// The lend box ends at 96 + 400 = 496px, past the tags middle (450px) but above their bottom (600px)
-			expect(visibleWith({ bandBottom: -500, tagsTop: 300, tagsBottom: 600 })).toBe(true);
-		});
-
-		it('fades the sticky lend box out when its bottom reaches the bottom of the tags section', () => {
-			// The tags end 480px down, but the lend box would end at 96 + 400 = 496px
-			expect(visibleWith({ bandBottom: -500, tagsTop: 400, tagsBottom: 480 })).toBe(false);
-		});
-	});
-
 	describe('template wiring', () => {
 		// Renders the share slot so the control's share button placement can be asserted
 		const LendCtaStub = {
 			name: 'LendCta',
-			props: { hideJumpLinks: Boolean, stickyCopy: Boolean },
+			props: { hideJumpLinks: Boolean, stickyClone: Boolean },
 			template: '<div data-testid="lend-cta-stub"><slot name="sharebutton" /></div>',
 		};
 
@@ -410,8 +355,8 @@ describe('FullBorrowerProfile new user version', () => {
 			const [topLendBox, stickyLendBox] = wrapper.findAllComponents(LendCtaStub);
 
 			expect(wrapper.findAllComponents(SidebarContainer)[0].classes()).not.toContain('lg:tw-sticky');
-			expect(topLendBox.props('stickyCopy')).toBe(false);
-			expect(stickyLendBox.props('stickyCopy')).toBe(true);
+			expect(topLendBox.props('stickyClone')).toBe(false);
+			expect(stickyLendBox.props('stickyClone')).toBe(true);
 		});
 
 		it('keeps the tags section for a loan without tags, so the sticky lend box can stop there', async () => {
@@ -444,10 +389,11 @@ describe('FullBorrowerProfile new user version', () => {
 
 		it('version b leaves only the sticky lend box to screen readers and keyboards while it shows', async () => {
 			const wrapper = mountProfile({ isNewUserVariant: true });
-			// Lets the first visibility check after the sticky copy renders finish
+			// Lets the first visibility check after the sticky clone renders finish
 			await flushPromises();
 
-			await wrapper.setData({ stickyLendBoxVisible: true });
+			wrapper.vm.stickyLendBoxVisible = true;
+			await wrapper.vm.$nextTick();
 
 			expect(wrapper.findAllComponents(SidebarContainer)[0].attributes('inert')).toBeDefined();
 			expect(wrapper.find('[data-testid="bp-sticky-lend-box"]').attributes('inert')).toBeUndefined();

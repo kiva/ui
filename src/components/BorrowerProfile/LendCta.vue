@@ -72,14 +72,14 @@
 							>
 								<label
 									v-if="hideShowLendDropdown && !isLessThan25"
-									:for="stickyCopy ? 'StickyLoanAmountDropdown' : 'LoanAmountDropdown'"
+									:for="stickyClone ? 'StickyLoanAmountDropdown' : 'LoanAmountDropdown'"
 									class="tw-sr-only"
 								>
 									Lend amount
 								</label>
 								<kv-ui-select
 									v-if="hideShowLendDropdown && !isLessThan25"
-									:id="stickyCopy ? 'StickyLoanAmountDropdown' : 'LoanAmountDropdown'"
+									:id="stickyClone ? 'StickyLoanAmountDropdown' : 'LoanAmountDropdown'"
 									class="tw-mr-2.5 tw-min-w-12"
 									data-testid="bp-lend-cta-amount-dropdown"
 									v-model="selectedOption"
@@ -221,7 +221,7 @@
 						v-if="newUserBpEnabled"
 						class="tw-hidden lg:tw-flex tw-mb-2"
 						:loan="loan"
-						:tooltip-id="stickyCopy ? 'sticky-lend-box-matching-tooltip' : 'lend-box-matching-tooltip'"
+						:tooltip-id="stickyClone ? 'sticky-lend-box-matching-tooltip' : 'lend-box-matching-tooltip'"
 						tooltip-placement="bottom"
 					/>
 					<slot v-if="!isSticky" name="sharebutton"></slot>
@@ -553,8 +553,8 @@ export default {
 			type: Boolean,
 			default: false,
 		},
-		// The sticky copy of the lend box: uses its own ids and skips the view tracking
-		stickyCopy: {
+		// The sticky clone of the lend box: uses its own ids and skips the view tracking
+		stickyClone: {
 			type: Boolean,
 			default: false,
 		},
@@ -814,7 +814,7 @@ export default {
 			}
 		},
 		isCompleteLoanActive() {
-			if (this.isCompleteLoanActive && this.completeLoanView && !this.stickyCopy) {
+			if (this.isCompleteLoanActive && this.completeLoanView && !this.stickyClone) {
 				// eslint-disable-next-line
 				this.$kvTrackEvent('Borrower profile', 'Complete loan', 'view-amount-left-cta', this.loanId, this.selectedOption);
 				this.completeLoanView = false;

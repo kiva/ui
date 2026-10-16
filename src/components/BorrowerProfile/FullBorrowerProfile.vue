@@ -75,7 +75,7 @@
 			:class="inPfp ? 'lg:tw-pt-16 lg:tw-mt-8' : 'lg:tw-pt-8'"
 			class="lg:tw-absolute tw-pointer-events-none lg:tw-w-full lg:tw-h-full lg:tw-top-0 tw-z-docked"
 		>
-			<!-- While the sticky copy below shows, this one is off screen, so only the copy is read and focused -->
+			<!-- While the sticky clone below shows, this one is off screen, so only the clone is read and focused -->
 			<sidebar-container
 				class="lg:tw-pb-8 lg:tw-top-12"
 				:class="isNewUserBpVariant ? 'lg:tw-mt-1' : 'lg:tw-sticky lg:tw-mt-10'"
@@ -145,7 +145,7 @@
 						:show-details-in-rail="showDetailsInRail"
 						hide-jump-links
 						new-user-bp-enabled
-						sticky-copy
+						sticky-clone
 					/>
 					<div
 						v-if="showDetailsInRail"
@@ -272,9 +272,8 @@
 
 <script>
 import { gql } from 'graphql-tag';
-import _throttle from 'lodash/throttle';
-import useBreakpoints from '#src/composables/useBreakpoints';
 import useIsMobile from '#src/composables/useIsMobile';
+import useStickyLendBoxClone from '#src/composables/useStickyLendBoxClone';
 import ContentContainer from '#src/components/BorrowerProfile/ContentContainer';
 import SidebarContainer from '#src/components/BorrowerProfile/SidebarContainer';
 import HeroBackground from '#src/components/BorrowerProfile/HeroBackground';
@@ -401,8 +400,7 @@ export default {
 	},
 	setup() {
 		const { isMobile } = useIsMobile();
-		const { isLarge } = useBreakpoints();
-		return { isMobile, isLarge };
+		return { isMobile, ...useStickyLendBoxClone() };
 	},
 	apollo: {
 		query: fullProfileQuery,
@@ -467,22 +465,7 @@ export default {
 			showHowKivaWorks: false,
 			whyLoansExtraSpace: 0,
 			cardsObserver: null,
-			stickyLendBoxVisible: false,
-			stickyScrollHandler: null,
 		};
-	},
-	watch: {
-		// The sticky copy is added once the page is on desktop, so it's measured after it renders
-		isLarge(isLarge) {
-			if (isLarge && this.isNewUserBpVariant) {
-				this.$nextTick(() => {
-					if (this.$refs.stickyStack) {
-						this.cardsObserver?.observe(this.$refs.stickyStack);
-					}
-					this.updateStickyLendBox();
-				});
-			}
-		},
 	},
 	mounted() {
 		if (this.isNewUserBpVariant && typeof ResizeObserver !== 'undefined') {
@@ -492,36 +475,12 @@ export default {
 			});
 			this.cardsObserver.observe(this.$refs.summaryCard.$el);
 			this.cardsObserver.observe(this.$refs.lendCta.$el);
-			this.cardsObserver.observe(this.$refs.tagsSection);
-		}
-		if (this.isNewUserBpVariant) {
-			this.stickyScrollHandler = _throttle(this.updateStickyLendBox, 100);
-			window.addEventListener('scroll', this.stickyScrollHandler, { passive: true });
-			window.addEventListener('resize', this.stickyScrollHandler);
-			this.updateStickyLendBox();
 		}
 	},
 	beforeUnmount() {
 		this.cardsObserver?.disconnect();
-		if (this.stickyScrollHandler) {
-			window.removeEventListener('scroll', this.stickyScrollHandler);
-			window.removeEventListener('resize', this.stickyScrollHandler);
-			this.stickyScrollHandler.cancel();
-		}
 	},
 	methods: {
-		// Shows the sticky lend box from the end of the "Why loans" band to the bottom of the tags section
-		updateStickyLendBox() {
-			if (!this.isLarge || !this.$refs.stickyPanel) {
-				this.stickyLendBoxVisible = false;
-				return;
-			}
-			const stickyTop = parseFloat(getComputedStyle(this.$refs.stickyPanel).top);
-			const bandPassed = this.$refs.whyLoansDesktop.$el.getBoundingClientRect().bottom <= stickyTop;
-			// Fades out when its bottom reaches the bottom of the tags section
-			const endTop = this.$refs.tagsSection.getBoundingClientRect().bottom;
-			this.stickyLendBoxVisible = bandPassed && endTop > stickyTop + this.$refs.stickyStack.offsetHeight;
-		},
 		// Adds space above the "Why loans" band when the sticky lend box ends lower than the top card
 		updateWhyLoansSpace() {
 			const column = this.$refs.sidebarColumn;
