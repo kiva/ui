@@ -197,6 +197,13 @@ export default [
 		}
 	},
 	{
+		path: '/teams/playbook-beta',
+		component: () => import('#src/pages/LendingTeams/TeamPlaybook'),
+		meta: {
+			excludeFromStaticSitemap: true,
+		},
+	},
+	{
 		path: '/lend-beta/:id',
 		redirect: '/lend/:id'
 	},
