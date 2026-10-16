@@ -1,7 +1,6 @@
 import flssLoanQuery from '#src/graphql/query/flssLoansQuery.graphql';
 import loanRecommendationsQuery from '#src/graphql/query/loanRecommendationsQuery.graphql';
 import flssLoanFacetsQuery from '#src/graphql/query/flssLoanFacetsQuery.graphql';
-import flssLoanChannelQuery from '#src/graphql/query/flssLoanChannel.graphql';
 import logReadQueryError from '#src/util/logReadQueryError';
 import filterConfig from '#src/util/loanSearch/filterConfig';
 
@@ -137,81 +136,5 @@ export async function fetchRecommendedLoans(
 		return result.data?.loanRecommendations;
 	} catch (e) {
 		logReadQueryError(e, 'flssUtils fetchRecommendedLoans');
-	}
-}
-
-/**
- * Gets the variables for the loan channel query
- *
- * @param {Array} queryMapFLSS The query map entry for the channel
- * @param {Object} loanQueryVars The loan channel query variables
- * @returns {Object} The variables for the loan channel query
- */
-export function getLoanChannelVariables(queryMapFLSS, loanQueryVars) {
-	return {
-		ids: [...loanQueryVars.ids],
-		filterObject: getFlssFilters({ ...queryMapFLSS, ...loanQueryVars }),
-		sortBy: loanQueryVars.sortBy || queryMapFLSS.sortBy || null,
-		pageNumber: loanQueryVars.offset / loanQueryVars.limit,
-		pageLimit: loanQueryVars.limit,
-		basketId: loanQueryVars.basketId,
-		origin: loanQueryVars?.origin ?? FLSS_ORIGIN_NOT_SPECIFIED
-	};
-}
-
-/**
- * 	Fetches the data for the loan channel from FLSS
- *
- * @param {Object} apollo The Apollo client instance
- * @param {Array} queryMapFLSS The query map entry for the channel
- * @param {Object} loanQueryVars The loan channel query variables
- * @returns {Object} The loan channel data
- */
-export async function fetchLoanChannel(apollo, queryMapFLSS, loanQueryVars) {
-	try {
-		return (await apollo.query({
-			query: flssLoanChannelQuery,
-			variables: getLoanChannelVariables(queryMapFLSS, loanQueryVars),
-		})).data;
-	} catch (e) {
-		logReadQueryError(e, 'flssUtils fetchLoanChannel flssLoanChannelQuery');
-	}
-}
-
-/**
- * Gets the cached data for the loan channel
- *
- * @param {Object} apollo The Apollo client instance
- * @param {Array} queryMapFLSS The query map entry for the channel
- * @param {Object} loanQueryVars The loan channel query variables
- * @returns {Object} The loan channel data
- */
-export function getCachedLoanChannel(apollo, queryMapFLSS, loanQueryVars) {
-	try {
-		return apollo.readQuery({
-			query: flssLoanChannelQuery,
-			variables: getLoanChannelVariables(queryMapFLSS, loanQueryVars),
-		});
-	} catch (e) {
-		logReadQueryError(e, 'flssUtils getCachedLoanChannel flssLoanChannelQuery');
-	}
-}
-
-/**
- * Watches the loan channel query
- *
- * @param {Object} apollo The Apollo client instance
- * @param {Array} queryMapFLSS The query map entry for the channel
- * @param {Object} loanQueryVars The loan channel query variables
- * @returns {Object} The Apollo observer
- */
-export function watchLoanChannel(apollo, queryMapFLSS, loanQueryVars) {
-	try {
-		return apollo.watchQuery({
-			query: flssLoanChannelQuery,
-			variables: getLoanChannelVariables(queryMapFLSS, loanQueryVars),
-		});
-	} catch (e) {
-		logReadQueryError(e, 'flssUtils watchLoanChannel flssLoanChannelQuery');
 	}
 }
