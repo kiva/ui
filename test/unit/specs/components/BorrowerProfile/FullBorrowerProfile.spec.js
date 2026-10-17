@@ -1,11 +1,12 @@
 /* eslint-disable import/no-extraneous-dependencies */
-import { enableAutoUnmount, shallowMount } from '@vue/test-utils';
+import { enableAutoUnmount, flushPromises, shallowMount } from '@vue/test-utils';
 import FullBorrowerProfile from '#src/components/BorrowerProfile/FullBorrowerProfile';
 import BorrowerCountry from '#src/components/BorrowerProfile/BorrowerCountry';
 import ContributingPartners from '#src/components/BorrowerProfile/ContributingPartners';
 import LendersAndTeams from '#src/components/BorrowerProfile/LendersAndTeams';
 import MoreAboutLoan from '#src/components/BorrowerProfile/MoreAboutLoan';
 import SummaryCard from '#src/components/BorrowerProfile/SummaryCard';
+import SidebarContainer from '#src/components/BorrowerProfile/SidebarContainer';
 import ShareButton from '#src/components/BorrowerProfile/ShareButton';
 import WhyLoansBanner from '#src/components/BorrowerProfile/WhyLoansBanner';
 import GlobalImpactBar from '#src/components/BorrowerProfile/GlobalImpactBar';
@@ -255,17 +256,18 @@ describe('FullBorrowerProfile new user version', () => {
 		// Renders the share slot so the control's share button placement can be asserted
 		const LendCtaStub = {
 			name: 'LendCta',
-			props: ['hideJumpLinks'],
+			props: { hideJumpLinks: Boolean, stickyClone: Boolean },
 			template: '<div data-testid="lend-cta-stub"><slot name="sharebutton" /></div>',
 		};
 
 		// `isNewUserVariant` undefined = the page provides nothing (e.g. Storybook); the inject must default to false
-		function mountProfile({ isNewUserVariant, loading = false } = {}) {
+		function mountProfile({ isNewUserVariant, loading = false, showDetailsInRail = false } = {}) {
 			return shallowMount(FullBorrowerProfile, {
 				props: {
 					loan: { id: 123, name: 'Maria', status: 'fundraising' },
 					lender: {},
 					loading,
+					initialShowDetailsInRail: showDetailsInRail,
 				},
 				global: {
 					...globalOptions,
@@ -345,6 +347,56 @@ describe('FullBorrowerProfile new user version', () => {
 			expect(scrollSpy).toHaveBeenCalledTimes(1);
 			expect(wrapper.vm.showDetailsInRail).toBe(false);
 			expect(wrapper.find('[data-testid="bp-rail-details"]').exists()).toBe(false);
+		});
+
+		it('version b keeps the top lend box in its place and adds a second, sticky lend box', async () => {
+			const wrapper = mountProfile({ isNewUserVariant: true });
+			await wrapper.vm.$nextTick();
+			const [topLendBox, stickyLendBox] = wrapper.findAllComponents(LendCtaStub);
+
+			expect(wrapper.findAllComponents(SidebarContainer)[0].classes()).not.toContain('lg:tw-sticky');
+			expect(topLendBox.props('stickyClone')).toBe(false);
+			expect(stickyLendBox.props('stickyClone')).toBe(true);
+		});
+
+		it('keeps the tags section for a loan without tags, so the sticky lend box can stop there', async () => {
+			const wrapper = mountProfile({ isNewUserVariant: true });
+
+			await wrapper.setData({ showTags: false });
+
+			expect(wrapper.find('[data-testid="bp-tags-section"]').exists()).toBe(true);
+		});
+
+		it('version b shows the loan details only under the sticky lend box, not beside the top card', async () => {
+			const wrapper = mountProfile({ isNewUserVariant: true, showDetailsInRail: true });
+			await wrapper.vm.$nextTick();
+
+			const stickyLendBox = wrapper.find('[data-testid="bp-sticky-lend-box"]');
+
+			expect(wrapper.findAll('[data-testid="bp-rail-details"]')).toHaveLength(1);
+			expect(stickyLendBox.find('[data-testid="bp-rail-details"]').exists()).toBe(true);
+		});
+
+		it('version b adds the sticky lend box only on desktop', async () => {
+			const { innerWidth } = window;
+			window.innerWidth = 800;
+			const wrapper = mountProfile({ isNewUserVariant: true });
+			await wrapper.vm.$nextTick();
+			window.innerWidth = innerWidth;
+
+			expect(wrapper.find('[data-testid="bp-sticky-lend-box"]').exists()).toBe(false);
+		});
+
+		it('version b leaves only the sticky lend box to screen readers and keyboards while it shows', async () => {
+			const wrapper = mountProfile({ isNewUserVariant: true });
+			// Lets the first visibility check after the sticky clone renders finish
+			await flushPromises();
+
+			wrapper.vm.stickyLendBoxVisible = true;
+			await wrapper.vm.$nextTick();
+
+			expect(wrapper.findAllComponents(SidebarContainer)[0].attributes('inert')).toBeDefined();
+			expect(wrapper.find('[data-testid="bp-sticky-lend-box"]').attributes('inert')).toBeUndefined();
 		});
 
 		it('control renders no "Why loans" banner', () => {

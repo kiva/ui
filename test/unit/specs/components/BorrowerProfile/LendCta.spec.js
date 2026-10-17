@@ -59,12 +59,13 @@ describe('LendCta jump links', () => {
 const textOf = element => element.textContent.replace(/\s+/g, ' ').trim();
 
 // Mounted the way FullBorrowerProfile mounts the lend box in the new user version
-function renderVersionB(loan = {}) {
+function renderVersionB(loan = {}, props = {}) {
 	return render(LendCta, {
 		props: {
 			loanData: { id: 1, status: 'fundraising', ...loan },
 			newUserBpEnabled: true,
 			hideJumpLinks: true,
+			...props,
 		},
 		global: { ...globalOptions, stubs: { KvAtbModalContainer: true } },
 	});
@@ -130,6 +131,15 @@ describe('LendCta in version b of the new user borrower profile', () => {
 		const { queryByTestId } = renderVersionB();
 
 		expect(queryByTestId('bp-loan-matching-info')).toBeNull();
+	});
+
+	it('gives the sticky clone its own matching tooltip id, so the tooltip in each lend box works', () => {
+		const { container } = renderVersionB({
+			simultaneousMatching: [{ managedAccountId: 1, displayName: 'Walton Family Foundation', ratio: 1 }],
+		}, { stickyClone: true });
+
+		expect(container.querySelector('#sticky-lend-box-matching-tooltip')).not.toBeNull();
+		expect(container.querySelector('#lend-box-matching-tooltip')).toBeNull();
 	});
 
 	it('keeps the lend bar fixed at the bottom on mobile and tablet before the visitor scrolls', () => {

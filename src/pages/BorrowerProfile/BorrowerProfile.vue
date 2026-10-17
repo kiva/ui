@@ -2,6 +2,7 @@
 	<www-page
 		id="borrower-profile"
 		:data-testid="loanType"
+		:class="{ 'tw-pb-12 lg:tw-pb-0': showFullView }"
 	>
 		<full-borrower-profile
 			v-if="showFullView"
