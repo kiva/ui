@@ -20,8 +20,11 @@
 						As they repay, you can lend that money again.
 					</p>
 				</div>
-				<!-- Mounted only while open so the animation starts from the beginning each time -->
-				<revolving-fund-animation v-if="visible" class="tw-mx-auto" />
+				<!-- Mounted only while open so the animation starts from the beginning each time.
+					The animation stays while the modal fades out (300ms), so the modal doesn't shrink. -->
+				<transition :duration="300">
+					<revolving-fund-animation v-if="visible" class="tw-mx-auto" />
+				</transition>
 			</div>
 		</kv-lightbox>
 	</Teleport>

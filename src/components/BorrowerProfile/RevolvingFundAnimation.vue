@@ -385,6 +385,8 @@ onBeforeUnmount(() => {
 }
 
 .arrow-flash {
+	/* Arrows stay faded until their turn, so only one is highlighted when the modal opens */
+	opacity: 0.2;
 	animation: arrowFlash 4.8s ease-in-out infinite;
 }
 
@@ -409,6 +411,10 @@ onBeforeUnmount(() => {
 	.arrow-flash,
 	.borrower-fade-in {
 		animation: none;
+	}
+
+	.arrow-flash {
+		opacity: 1;
 	}
 }
 
