@@ -414,7 +414,7 @@ onBeforeUnmount(() => {
 	}
 
 	.arrow-flash {
-		opacity: 1;
+		@apply tw-opacity-full;
 	}
 }
 
