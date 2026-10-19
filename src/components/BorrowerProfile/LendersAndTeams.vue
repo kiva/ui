@@ -2,7 +2,11 @@
 	<section>
 		<!-- Display Content -->
 		<div>
-			<collapsible-section :id="`bp-${displayType}`" :collapsible="collapsible">
+			<collapsible-section
+				:id="`bp-${displayType}`"
+				:collapsible="collapsible"
+				:tracking-property="displayType === 'teams' ? 'contributing-lending-teams' : 'contributing-lenders'"
+			>
 				<template #heading>
 					<h2 :data-testid="`bp-${displayType}-header`">
 						{{ sectionTitle }}

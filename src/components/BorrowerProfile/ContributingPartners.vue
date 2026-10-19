@@ -1,6 +1,10 @@
 <template>
 	<section v-if="showSection">
-		<collapsible-section id="bp-contributing-partners" :collapsible="collapsible">
+		<collapsible-section
+			id="bp-contributing-partners"
+			:collapsible="collapsible"
+			tracking-property="contributing-partners"
+		>
 			<template #heading>
 				<h2 class="tw-mb-4">
 					Contributing partners

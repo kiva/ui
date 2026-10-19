@@ -4,6 +4,7 @@
 		v-if="collapsible"
 		:id="id"
 		class="!tw-border-b"
+		@toggle="trackExpand"
 	>
 		<template #header>
 			<!-- Not an h2: the header sits inside the toggle button, which can only hold phrasing content -->
@@ -50,6 +51,20 @@ export default {
 		collapsible: {
 			type: Boolean,
 			default: false,
+		},
+		/**
+		 * Tracking event property sent on expand
+		 */
+		trackingProperty: {
+			type: String,
+			default: '',
+		},
+	},
+	methods: {
+		trackExpand({ open }) {
+			if (open && this.trackingProperty) {
+				this.$kvTrackEvent('borrower-profile', 'click', 'expand', this.trackingProperty);
+			}
 		},
 	},
 };
