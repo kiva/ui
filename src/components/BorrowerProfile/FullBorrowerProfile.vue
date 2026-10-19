@@ -75,9 +75,11 @@
 			:class="inPfp ? 'lg:tw-pt-16 lg:tw-mt-8' : 'lg:tw-pt-8'"
 			class="lg:tw-absolute tw-pointer-events-none lg:tw-w-full lg:tw-h-full lg:tw-top-0 tw-z-docked"
 		>
+			<!-- While the sticky clone below shows, this one is off screen, so only the clone is read and focused -->
 			<sidebar-container
-				class="lg:tw-sticky lg:tw-pb-8 lg:tw-top-12"
-				:class="isNewUserBpVariant ? 'lg:tw-mt-1' : 'lg:tw-mt-10'"
+				class="lg:tw-pb-8 lg:tw-top-12"
+				:class="isNewUserBpVariant ? 'lg:tw-mt-1' : 'lg:tw-sticky lg:tw-mt-10'"
+				:inert="stickyLendBoxVisible"
 			>
 				<div class="tw-flex tw-flex-col" style="max-height: calc(100vh - 7.5rem)">
 					<lend-cta
@@ -105,7 +107,7 @@
 					</lend-cta>
 					<transition name="kvfastfade">
 						<div
-							v-if="showDetailsInRail"
+							v-if="showDetailsInRail && !isNewUserBpVariant"
 							data-testid="bp-rail-details"
 							class="tw-hidden lg:tw-block tw-pointer-events-auto
 								tw-bg-primary tw-rounded tw-p-4
@@ -119,6 +121,45 @@
 							/>
 						</div>
 					</transition>
+				</div>
+			</sidebar-container>
+		</div>
+		<!-- New user version on desktop: the lend box above stays in its place, and this second one fades in
+			and sticks while reading. It's added only on desktop, once the page has loaded. -->
+		<div
+			v-if="isNewUserBpVariant && isLarge"
+			ref="stickyPanel"
+			class="tw-hidden lg:tw-block lg:tw-fixed lg:tw-inset-x-0 lg:tw-top-12 tw-pointer-events-none tw-z-docked
+				lg:tw-transition-opacity lg:tw-duration-700 lg:tw-ease-in-out"
+			:class="{ 'lg:tw-opacity-0': !stickyLendBoxVisible }"
+			:inert="!stickyLendBoxVisible"
+			data-testid="bp-sticky-lend-box"
+		>
+			<sidebar-container>
+				<div ref="stickyStack" class="tw-flex tw-flex-col" style="max-height: calc(100vh - 7.5rem)">
+					<lend-cta
+						class="tw-pointer-events-auto"
+						:loan-id="loanId"
+						:loan-data="loanData"
+						:enable-five-dollars-notes="enableFiveDollarsNotes"
+						:show-details-in-rail="showDetailsInRail"
+						hide-jump-links
+						new-user-bp-enabled
+						sticky-clone
+					/>
+					<div
+						v-if="showDetailsInRail"
+						data-testid="bp-rail-details"
+						class="tw-mt-1 tw-pointer-events-auto tw-bg-primary tw-rounded tw-p-4
+							tw-shrink tw-overflow-y-auto"
+					>
+						<details-tabs
+							name="bp-rail-details"
+							:loan-id="loanId"
+							:is-privileged="isPrivileged"
+							condensed
+						/>
+					</div>
 				</div>
 			</sidebar-container>
 		</div>
@@ -204,13 +245,16 @@
 			</content-container>
 		</div>
 		<content-container>
-			<loan-tags
-				v-if="showTags"
-				class="tw-my-5 md:tw-my-6 lg:tw-my-8"
-				:loan-id="loanId"
-				:is-logged-in="isLoggedIn"
-				@hide-section="showTags = false"
-			/>
+			<!-- Always rendered, so the sticky lend box knows where to fade out even when a loan has no tags -->
+			<div ref="tagsSection" data-testid="bp-tags-section">
+				<loan-tags
+					v-if="showTags"
+					class="tw-my-5 md:tw-my-6 lg:tw-my-8"
+					:loan-id="loanId"
+					:is-logged-in="isLoggedIn"
+					@hide-section="showTags = false"
+				/>
+			</div>
 			<loan-comments
 				v-if="showAddCommentsSection"
 				class="tw-mb-5 md:tw-mb-6 lg:tw-mb-8"
@@ -229,6 +273,7 @@
 <script>
 import { gql } from 'graphql-tag';
 import useIsMobile from '#src/composables/useIsMobile';
+import useStickyLendBoxClone from '#src/composables/useStickyLendBoxClone';
 import ContentContainer from '#src/components/BorrowerProfile/ContentContainer';
 import SidebarContainer from '#src/components/BorrowerProfile/SidebarContainer';
 import HeroBackground from '#src/components/BorrowerProfile/HeroBackground';
@@ -355,7 +400,7 @@ export default {
 	},
 	setup() {
 		const { isMobile } = useIsMobile();
-		return { isMobile };
+		return { isMobile, ...useStickyLendBoxClone() };
 	},
 	apollo: {
 		query: fullProfileQuery,
@@ -424,7 +469,10 @@ export default {
 	},
 	mounted() {
 		if (this.isNewUserBpVariant && typeof ResizeObserver !== 'undefined') {
-			this.cardsObserver = new ResizeObserver(() => this.updateWhyLoansSpace());
+			this.cardsObserver = new ResizeObserver(() => {
+				this.updateWhyLoansSpace();
+				this.updateStickyLendBox();
+			});
 			this.cardsObserver.observe(this.$refs.summaryCard.$el);
 			this.cardsObserver.observe(this.$refs.lendCta.$el);
 		}
