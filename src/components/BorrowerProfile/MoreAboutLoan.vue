@@ -1,6 +1,6 @@
 <template>
 	<section>
-		<collapsible-section id="bp-more-about" :collapsible="collapsible">
+		<collapsible-section id="bp-more-about" :collapsible="collapsible" tracking-property="more-about-this-loan">
 			<template #heading>
 				<h2 data-testid="bp-more-about-header">
 					More about this loan
@@ -111,6 +111,7 @@
 			id="bp-about-partner"
 			class="tw-mt-2"
 			collapsible
+			tracking-property="about-partner"
 		>
 			<template #title>
 				<span data-testid="bp-about-partner-header">About {{ partnerName }}</span>

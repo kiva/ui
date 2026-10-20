@@ -3,9 +3,10 @@ import userEvent from '@testing-library/user-event';
 import CollapsibleSection from '#src/components/BorrowerProfile/CollapsibleSection';
 import { toBeVisible } from '../../../specUtils';
 
-function renderComponent(props = {}, { subtitle } = {}) {
+function renderComponent(props = {}, { subtitle, kvTrackEvent = () => {} } = {}) {
 	return render(CollapsibleSection, {
 		props: { id: 'bp-test', ...props },
+		global: { mocks: { $kvTrackEvent: kvTrackEvent } },
 		slots: {
 			heading: '<h2>Section title</h2>',
 			title: 'Section title',
@@ -56,6 +57,21 @@ describe('CollapsibleSection', () => {
 
 			await user.keyboard(' ');
 			expect(button.getAttribute('aria-expanded')).toBe('false');
+		});
+
+		it('tracks expanding the section', async () => {
+			const user = userEvent.setup();
+			const kvTrackEvent = vi.fn();
+			const { getByRole } = renderComponent(
+				{ collapsible: true, trackingProperty: 'contributing-partners' },
+				{ kvTrackEvent },
+			);
+
+			await user.click(getByRole('button'));
+			await user.click(getByRole('button'));
+
+			expect(kvTrackEvent).toHaveBeenCalledTimes(1);
+			expect(kvTrackEvent).toHaveBeenCalledWith('borrower-profile', 'click', 'expand', 'contributing-partners');
 		});
 
 		it('shows the subtitle in the collapsed row', () => {

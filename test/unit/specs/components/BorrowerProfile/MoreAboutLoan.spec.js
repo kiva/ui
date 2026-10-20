@@ -44,6 +44,7 @@ function renderComponent(props = {}, dataOptions = {}) {
 				apollo: makeApollo(dataOptions),
 				cookieStore: new CookieStore(),
 			},
+			mocks: { $kvTrackEvent: () => {} },
 		},
 		props: { loanId: 1, ...props },
 	});
