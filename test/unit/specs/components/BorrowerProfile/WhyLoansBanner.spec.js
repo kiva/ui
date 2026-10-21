@@ -28,15 +28,11 @@ describe('WhyLoansBanner', () => {
 		const wrapper = mountBanner();
 		const copy = wrapper.findAll('[data-testid="bp-why-loans-point"] p').map(p => p.text());
 
-		expect(copy[0]).toBe(
-			'A loan goes beyond one-time support, helping Areefa invest in their own plans and shape their future.',
-		);
+		expect(copy[0]).toBe('A loan goes beyond one-time support, helping Areefa invest in their own plans.');
 		expect(copy[1]).toBe(
-			'These loans prioritize social impact through fair, non-predatory lending that supports long-term success.',
+			'These loans prioritize social impact through fair, non-predatory lending for long-term success.',
 		);
-		expect(copy[2]).toBe(
-			'96% of Kiva loans are repaid. As Areefa repays, you can relend your money to support someone else.',
-		);
+		expect(copy[2]).toBe('96% of Kiva loans are repaid. As Areefa repays, you can relend your money.');
 	});
 
 	it.each([
