@@ -3,6 +3,7 @@ import { ref } from 'vue';
 import { render } from '@testing-library/vue';
 import { enableAutoUnmount, shallowMount } from '@vue/test-utils';
 import LendCta from '#src/components/BorrowerProfile/LendCta';
+import { BASE_CAMPAIGN, ERL_COOKIE_NAME } from '#src/util/loanUtils';
 import { globalOptions } from '../../../specUtils';
 
 const multiMatching = vi.hoisted(() => ({ enabled: true }));
@@ -17,7 +18,7 @@ afterEach(() => {
 	multiMatching.enabled = true;
 });
 
-function mountLendCta(props = {}) {
+function mountLendCta(props = {}, query = {}) {
 	return shallowMount(LendCta, {
 		props: {
 			loanId: 123,
@@ -35,7 +36,7 @@ function mountLendCta(props = {}) {
 		global: {
 			...globalOptions,
 			renderStubDefaultSlot: true,
-			mocks: { ...globalOptions.mocks, $route: { params: { id: '123' }, query: {} } },
+			mocks: { ...globalOptions.mocks, $route: { params: { id: '123' }, query } },
 		},
 	});
 }
@@ -162,6 +163,70 @@ describe('LendCta default lend amount', () => {
 
 	it('opens on $25 without a preference', async () => {
 		expect(dropdown(await mountLoaded()).props('modelValue')).toBe('25');
+	});
+
+	const loanWithAmountLeft = unreservedAmount => ({
+		id: 123,
+		status: 'fundraising',
+		loanAmount: '500',
+		unreservedAmount,
+		minNoteSize: '25',
+		loanFundraisingInfo: {
+			fundedAmount: String(500 - unreservedAmount),
+			reservedAmount: '0',
+			isExpiringSoon: false,
+		},
+	});
+
+	it('opens on the amount left for a loan with $50 or less left', async () => {
+		expect(dropdown(await mountLoaded({ loanData: loanWithAmountLeft('40') })).props('modelValue')).toBe('40');
+	});
+
+	it('waits for user data before defaulting to the amount left', async () => {
+		const wrapper = mountLendCta({ loanData: {} });
+		// The loan query result lands before the user query result
+		await wrapper.setData({
+			status: 'fundraising', unreservedAmount: '40', minNoteSize: '25', loanLoading: false,
+		});
+		expect(wrapper.text()).not.toContain('almost funded');
+
+		await wrapper.setData({ userLoading: false });
+		expect(wrapper.text()).toContain('almost funded');
+	});
+
+	it('opens on $25 for a loan with more than $50 left', async () => {
+		expect(dropdown(await mountLoaded({ loanData: loanWithAmountLeft('60') })).props('modelValue')).toBe('25');
+	});
+
+	it('applies the balance campaign default once the lender\'s balance loads', async () => {
+		const wrapper = mountLendCta({ enableFiveDollarsNotes: true }, { utm_campaign: BASE_CAMPAIGN });
+		// What the user query result sets
+		await wrapper.setData({ userBalance: 10, userLoading: false });
+
+		expect(dropdown(wrapper).props('modelValue')).toBe('10');
+		globalOptions.provide.cookieStore.remove(ERL_COOKIE_NAME);
+	});
+
+	it('opens on the amount left when the loan arrives after mount', async () => {
+		const wrapper = mountLendCta({ loanData: {} });
+		// What the loan and user query results set
+		await wrapper.setData({
+			status: 'fundraising',
+			unreservedAmount: '40',
+			minNoteSize: '25',
+			loanLoading: false,
+			userLoading: false,
+		});
+
+		expect(dropdown(wrapper).props('modelValue')).toBe('40');
+	});
+
+	it('keeps the amount the lender picked when the loan and user data update', async () => {
+		const wrapper = await mountLoaded({ loanData: loanWithAmountLeft('40') });
+		await dropdown(wrapper).vm.$emit('update:modelValue', '25');
+		await wrapper.setData({ unreservedAmount: '35', userBalance: 100 });
+
+		expect(dropdown(wrapper).props('modelValue')).toBe('25');
 	});
 
 	it('opens on the preferred amount', async () => {

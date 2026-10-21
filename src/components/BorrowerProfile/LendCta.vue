@@ -750,6 +750,19 @@ export default {
 				this.wrapperObserver.disconnect();
 			}
 		},
+		applyDefaultSelectedOption() {
+			if (this.hasLenderSelectedAmount || this.userLoading || this.unreservedAmount === '') {
+				return;
+			}
+			const selectedOption = getLendCtaSelectedOption(
+				this.cookieStore,
+				this.enableFiveDollarsNotes,
+				this.$route.query.utm_campaign,
+				this.unreservedAmount,
+				this.userBalance,
+			);
+			this.selectedOption = this.defaultLoanShareOption ?? selectedOption;
+		},
 		trackLendAmountSelection(selectedDollarAmount) {
 			this.hasLenderSelectedAmount = true;
 			this.$kvTrackEvent(
@@ -808,26 +821,9 @@ export default {
 				this.cycleStatsSlot();
 			}
 		},
-		unreservedAmount(newValue, previousValue) {
-			if (newValue !== previousValue && previousValue === '') {
-				const selectedOption = getLendCtaSelectedOption(
-					this.cookieStore,
-					this.enableFiveDollarsNotes,
-					this.$route.query.utm_campaign,
-					newValue,
-					this.userBalance,
-				);
-				this.selectedOption = this.defaultLoanShareOption ?? selectedOption;
-			}
-		},
-		defaultLoanShareOption: {
-			handler(option) {
-				if (option && !this.hasLenderSelectedAmount) {
-					this.selectedOption = option;
-				}
-			},
-			immediate: true,
-		},
+		unreservedAmount: 'applyDefaultSelectedOption',
+		userLoading: 'applyDefaultSelectedOption',
+		defaultLoanShareOption: 'applyDefaultSelectedOption',
 		isCompleteLoanActive() {
 			if (this.isCompleteLoanActive && this.completeLoanView && !this.stickyClone) {
 				// eslint-disable-next-line
