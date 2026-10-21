@@ -29,6 +29,7 @@
 			:custom-href="customHref"
 			:custom-callouts="customCallouts"
 			:enable-multi-matching="enableMultiMatching"
+			:default-loan-share-amount="defaultLoanShareAmount"
 			@toggle-bookmark="toggleBookmark"
 			@jump-filter-page="jumpFilterPage"
 			@add-to-basket="addToBasket"
@@ -67,6 +68,7 @@ import logFormatter from '#src/util/logFormatter';
 import { createIntersectionObserver } from '#src/util/observerUtils';
 import percentRaisedMixin from '#src/plugins/loan/percent-raised-mixin';
 import useMultiMatching from '#src/composables/useMultiMatching';
+import useDefaultLoanShareAmount from '#src/composables/useDefaultLoanShareAmount';
 import loanCardFieldsExtendedFragment from '#src/graphql/fragments/loanCardFieldsExtended.graphql';
 import loanActivitiesQuery from '#src/graphql/query/loanActivities.graphql';
 import _isEqual from 'lodash/isEqual';
@@ -182,7 +184,7 @@ export default {
 	inject: ['apollo', 'cookieStore'],
 	mixins: [percentRaisedMixin],
 	setup() {
-		return useMultiMatching();
+		return { ...useMultiMatching(), ...useDefaultLoanShareAmount() };
 	},
 	components: {
 		KvClassicLoanCard,

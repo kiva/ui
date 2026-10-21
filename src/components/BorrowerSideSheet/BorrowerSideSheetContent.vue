@@ -61,6 +61,7 @@
 				:external-links="true"
 				:unreserved-amount="unreservedAmount"
 				:is-visitor="isGuest"
+				:default-loan-share-amount="defaultLoanShareAmount"
 				@add-to-basket="addToBasket"
 			/>
 		</div>
@@ -80,6 +81,7 @@ import {
 import { useRouter } from 'vue-router';
 import { KvLendCta } from '@kiva/kv-components';
 import useBorrowerProfileData from '#src/composables/useBorrowerProfileData';
+import useDefaultLoanShareAmount from '#src/composables/useDefaultLoanShareAmount';
 import logFormatter from '#src/util/logFormatter';
 import { fetchAiLoanPills } from '#src/util/aiLoanPillsUtils';
 import { addMonths, differenceInWeeks } from 'date-fns';
@@ -147,6 +149,7 @@ export default {
 		const currentRoute = useRouter().currentRoute.value;
 
 		const borrowerProfile = useBorrowerProfileData(apollo, cookieStore);
+		const { defaultLoanShareAmount } = useDefaultLoanShareAmount();
 		// Provide borrower profile data to child components
 		provide('borrowerProfile', borrowerProfile);
 
@@ -229,6 +232,7 @@ export default {
 			cookieStore,
 			currentRoute,
 			currentStep,
+			defaultLoanShareAmount,
 			fundraisingPercent,
 			inPfp,
 			isRepaid,
