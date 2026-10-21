@@ -149,3 +149,53 @@ describe('LendCta in version b of the new user borrower profile', () => {
 		expect(lendBar.classList).not.toContain('md:tw-static');
 	});
 });
+
+describe('LendCta default lend amount', () => {
+	const dropdown = wrapper => wrapper.findComponent('[data-testid="bp-lend-cta-amount-dropdown"]');
+
+	// The user query result is what shows the dropdown; the apollo block does not run in specs
+	async function mountLoaded(props) {
+		const wrapper = mountLendCta(props);
+		await wrapper.setData({ userLoading: false });
+		return wrapper;
+	}
+
+	it('opens on $25 without a preference', async () => {
+		expect(dropdown(await mountLoaded()).props('modelValue')).toBe('25');
+	});
+
+	it('opens on the preferred amount', async () => {
+		expect(dropdown(await mountLoaded({ defaultLoanShareAmount: 100 })).props('modelValue')).toBe('100');
+	});
+
+	it('opens on the amount left when the loan needs less than the preferred amount', async () => {
+		const wrapper = await mountLoaded({
+			defaultLoanShareAmount: 100,
+			loanData: {
+				id: 123,
+				status: 'fundraising',
+				loanAmount: '500',
+				unreservedAmount: '60',
+				minNoteSize: '25',
+				loanFundraisingInfo: { fundedAmount: '440', reservedAmount: '0', isExpiringSoon: false },
+			},
+		});
+
+		expect(dropdown(wrapper).props('modelValue')).toBe('60');
+	});
+
+	it('applies a preference that arrives after mount', async () => {
+		const wrapper = await mountLoaded();
+		await wrapper.setProps({ defaultLoanShareAmount: 100 });
+
+		expect(dropdown(wrapper).props('modelValue')).toBe('100');
+	});
+
+	it('keeps the amount the lender picked when the preference arrives later', async () => {
+		const wrapper = await mountLoaded();
+		await dropdown(wrapper).vm.$emit('update:modelValue', '50');
+		await wrapper.setProps({ defaultLoanShareAmount: 100 });
+
+		expect(dropdown(wrapper).props('modelValue')).toBe('50');
+	});
+});

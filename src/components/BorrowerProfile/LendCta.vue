@@ -427,7 +427,7 @@ import LoanSupportersRow from '#src/components/BorrowerProfile/LoanSupportersRow
 
 import KvIcon from '#src/components/Kv/KvIcon';
 import {
-	KvSelect as KvUiSelect, KvMaterialIcon, KvButton as KvUiButton, KvGrid
+	KvSelect as KvUiSelect, KvMaterialIcon, KvButton as KvUiButton, KvGrid, getDefaultLoanShareOption,
 } from '@kiva/kv-components';
 import basketModalMixin from '#src/plugins/basket-modal-mixin';
 import KvAtbModalContainer from '#src/components/WwwFrame/Header/KvAtbModalContainer';
@@ -558,6 +558,10 @@ export default {
 			type: Boolean,
 			default: false,
 		},
+		defaultLoanShareAmount: {
+			type: Number,
+			default: undefined,
+		},
 	},
 	components: {
 		LendAmountButton,
@@ -588,6 +592,7 @@ export default {
 			mdiLightningBolt,
 			defaultSelectorAmount: 25,
 			selectedOption: '25',
+			hasLenderSelectedAmount: false,
 			loanAmount: loan?.loanAmount ?? '',
 			isExpiringSoon: loan?.loanFundraisingInfo?.isExpiringSoon ?? false,
 			fundedAmount: loan?.loanFundraisingInfo?.fundedAmount ?? '',
@@ -746,6 +751,7 @@ export default {
 			}
 		},
 		trackLendAmountSelection(selectedDollarAmount) {
+			this.hasLenderSelectedAmount = true;
 			this.$kvTrackEvent(
 				'Lending',
 				'Modify lend amount',
@@ -804,14 +810,23 @@ export default {
 		},
 		unreservedAmount(newValue, previousValue) {
 			if (newValue !== previousValue && previousValue === '') {
-				this.selectedOption = getLendCtaSelectedOption(
+				const selectedOption = getLendCtaSelectedOption(
 					this.cookieStore,
 					this.enableFiveDollarsNotes,
 					this.$route.query.utm_campaign,
 					newValue,
 					this.userBalance,
 				);
+				this.selectedOption = this.defaultLoanShareOption ?? selectedOption;
 			}
+		},
+		defaultLoanShareOption: {
+			handler(option) {
+				if (option && !this.hasLenderSelectedAmount) {
+					this.selectedOption = option;
+				}
+			},
+			immediate: true,
 		},
 		isCompleteLoanActive() {
 			if (this.isCompleteLoanActive && this.completeLoanView && !this.stickyClone) {
@@ -885,6 +900,9 @@ export default {
 				priceArray.push(Number(this.unreservedAmount).toFixed());
 			}
 			return priceArray;
+		},
+		defaultLoanShareOption() {
+			return getDefaultLoanShareOption(this.defaultLoanShareAmount, this.prices);
 		},
 		lgScreenheadline() {
 			if (this.showSparkles) {

@@ -1,4 +1,15 @@
+/* eslint-disable import/no-extraneous-dependencies */
+import { computed } from 'vue';
+import { shallowMount } from '@vue/test-utils';
+import { KvClassicLoanCard } from '@kiva/kv-components';
 import KvClassicLoanCardContainer from '#src/components/LoanCards/KvClassicLoanCardContainer';
+import { globalOptions } from '../../../specUtils';
+
+const preference = vi.hoisted(() => ({ amount: undefined }));
+
+vi.mock('#src/composables/useDefaultLoanShareAmount', () => ({
+	default: () => ({ defaultLoanShareAmount: computed(() => preference.amount) }),
+}));
 
 vi.mock('@sentry/vue', () => ({ captureException: vi.fn(), captureMessage: vi.fn() }));
 
@@ -195,5 +206,26 @@ describe('KvClassicLoanCardContainer.vue add to basket with no visible header ba
 		vi.advanceTimersByTime(1000);
 
 		expect(context.$emit).toHaveBeenCalledWith('show-cart-modal', expect.anything());
+	});
+});
+
+describe('KvClassicLoanCardContainer.vue default loan share amount', () => {
+	afterEach(() => {
+		preference.amount = undefined;
+	});
+
+	const mountContainer = () => shallowMount(KvClassicLoanCardContainer, {
+		props: { loanId: 123 },
+		global: { ...globalOptions, mocks: { ...globalOptions.mocks, $route: { query: {} } } },
+	});
+
+	it('passes the lender\'s preferred amount to the card', () => {
+		preference.amount = 100;
+
+		expect(mountContainer().findComponent(KvClassicLoanCard).props('defaultLoanShareAmount')).toBe(100);
+	});
+
+	it('passes no amount when the lender has no preference', () => {
+		expect(mountContainer().findComponent(KvClassicLoanCard).props('defaultLoanShareAmount')).toBeUndefined();
 	});
 });

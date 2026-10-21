@@ -91,6 +91,7 @@
 						:show-details-in-rail="showDetailsInRail"
 						:hide-jump-links="isNewUserBpVariant"
 						:new-user-bp-enabled="isNewUserBpVariant"
+						:default-loan-share-amount="defaultLoanShareAmount"
 					>
 						<!-- Share button; the new user version shows it in the top card instead -->
 						<template v-if="!isNewUserBpVariant" #sharebutton>
@@ -146,6 +147,7 @@
 						hide-jump-links
 						new-user-bp-enabled
 						sticky-clone
+						:default-loan-share-amount="defaultLoanShareAmount"
 					/>
 					<div
 						v-if="showDetailsInRail"
@@ -307,6 +309,7 @@ import {
 	resolveRailPreference,
 	persistRailPreference,
 } from '#src/util/loanDetailsRailPreference';
+import { readDefaultLoanShareAmount } from '#src/util/defaultLoanShareAmount';
 import { isActivelyInPfp } from '#src/util/loanUtils';
 import { NEW_USER_BP_EXP_INJECT_KEY } from '#src/util/newUserBorrowerProfileExp';
 import { differenceInCalendarDays, parseISO } from 'date-fns';
@@ -507,6 +510,9 @@ export default {
 	computed: {
 		loanId() {
 			return Number(this.$route?.params?.id ?? 0);
+		},
+		defaultLoanShareAmount() {
+			return readDefaultLoanShareAmount(this.userPreferences);
 		},
 		inPfp() {
 			return isActivelyInPfp(this.loanData);

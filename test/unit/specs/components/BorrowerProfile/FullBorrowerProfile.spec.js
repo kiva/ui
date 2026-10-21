@@ -256,7 +256,7 @@ describe('FullBorrowerProfile new user version', () => {
 		// Renders the share slot so the control's share button placement can be asserted
 		const LendCtaStub = {
 			name: 'LendCta',
-			props: { hideJumpLinks: Boolean, stickyClone: Boolean },
+			props: { hideJumpLinks: Boolean, stickyClone: Boolean, defaultLoanShareAmount: Number },
 			template: '<div data-testid="lend-cta-stub"><slot name="sharebutton" /></div>',
 		};
 
@@ -357,6 +357,22 @@ describe('FullBorrowerProfile new user version', () => {
 			expect(wrapper.findAllComponents(SidebarContainer)[0].classes()).not.toContain('lg:tw-sticky');
 			expect(topLendBox.props('stickyClone')).toBe(false);
 			expect(stickyLendBox.props('stickyClone')).toBe(true);
+		});
+
+		it('passes the default loan share amount preference to the top and sticky lend boxes', async () => {
+			const wrapper = mountProfile({ isNewUserVariant: true });
+			await wrapper.setData({ userPreferences: { id: 7, preferences: '{"defaultLoanShareAmount":100}' } });
+
+			expect(wrapper.findAllComponents(LendCtaStub).map(lendBox => lendBox.props('defaultLoanShareAmount')))
+				.toEqual([100, 100]);
+		});
+
+		it('leaves the lend boxes without a default amount when the lender has no preference', async () => {
+			const wrapper = mountProfile({ isNewUserVariant: true });
+			await wrapper.setData({ userPreferences: { id: 7, preferences: '{}' } });
+
+			expect(wrapper.findAllComponents(LendCtaStub).map(lendBox => lendBox.props('defaultLoanShareAmount')))
+				.toEqual([undefined, undefined]);
 		});
 
 		it('keeps the tags section for a loan without tags, so the sticky lend box can stop there', async () => {
