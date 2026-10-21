@@ -81,20 +81,18 @@ export default {
 				{
 					icon: DignityIcon,
 					title: 'Dignity through lending',
-					copy: `A loan goes beyond one-time support, helping ${this.displayName} invest in their own plans `
-						+ 'and shape their future.',
+					copy: `A loan goes beyond one-time support, helping ${this.displayName} invest in their own plans.`,
 				},
 				{
 					icon: QualityOfLifeIcon,
 					title: '90% improved their quality of life',
-					copy: 'These loans prioritize social impact through fair, non-predatory lending that supports '
-						+ 'long-term success.',
+					copy: 'These loans prioritize social impact through fair, non-predatory lending '
+						+ 'for long-term success.',
 				},
 				{
 					icon: RelendIcon,
 					title: 'Your loan can help again',
-					copy: `96% of Kiva loans are repaid. As ${this.displayName} repays, you can relend your money `
-						+ 'to support someone else.',
+					copy: `96% of Kiva loans are repaid. As ${this.displayName} repays, you can relend your money.`,
 				},
 			];
 		},
