@@ -420,7 +420,7 @@ describe('CheckoutPage completeTransaction', () => {
 
 	beforeEach(() => {
 		trackMetaEvent.mockClear();
-		formatTransactionData.mockReturnValue({ itemTotal: '25.00', loans: [] });
+		formatTransactionData.mockReturnValue({ itemTotal: '25.00', loans: [], depositTotal: '5.00' });
 		getTransactionAnalyticsData.mockResolvedValue({
 			isFTD: true,
 			lifecycleStage: null,
@@ -471,7 +471,10 @@ describe('CheckoutPage completeTransaction', () => {
 		});
 		await trackingComplete;
 
-		expect(getTransactionAnalyticsData).toHaveBeenCalledWith(context.apollo, lifecycleDataPromise);
+		expect(getTransactionAnalyticsData).toHaveBeenCalledWith(context.apollo, lifecycleDataPromise, {
+			cookieStore: context.cookieStore,
+			depositTotal: '5.00',
+		});
 		expect(context.$kvTrackTransaction).toHaveBeenCalledWith(expect.objectContaining({
 			lifecycleStage: 'lapsedChurned',
 			reEngagementEvent: 'lapsedLenderReEngaged',

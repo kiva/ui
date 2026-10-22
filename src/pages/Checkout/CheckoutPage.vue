@@ -1155,7 +1155,10 @@ export default {
 				);
 			};
 
-			const trackingComplete = getTransactionAnalyticsData(this.apollo, this.lifecycleDataPromise)
+			const trackingComplete = getTransactionAnalyticsData(this.apollo, this.lifecycleDataPromise, {
+				cookieStore: this.cookieStore,
+				depositTotal: transactionData.depositTotal,
+			})
 				.then(analyticsData => {
 					Object.assign(transactionData, analyticsData);
 				})
