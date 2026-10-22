@@ -102,6 +102,7 @@
 							Build impact beyond your loan
 						</h2>
 						<section class="badges-section tw-grid tw-grid-cols-1 tw-gap-4">
+							<HolidayFundraiserNextStep v-if="isHolidayFundraisersEnabled && !isMobile" />
 							<template v-if="latestLoan !== null && !isMobile">
 								<MyKivaEmailUpdatesTransition
 									v-if="showEmailInBuildSection"
@@ -159,6 +160,7 @@
 								:latest-loan="latestLoan"
 								:user-info="userInfo"
 								:enable-slide-limit="false"
+								:show-holiday-fundraiser-card="isHolidayFundraisersEnabled"
 								@open-impact-insight-modal="showImpactInsightsModal = true"
 							/>
 						</section>
@@ -319,6 +321,7 @@ import MyKivaFeaturedSlot from '#src/components/MyKiva/MyKivaFeaturedSlot';
 import MyKivaRegionExperience from '#src/components/MyKiva/MyKivaRegionExperience';
 import AlmostFundedNextStep from '#src/components/MyKiva/AlmostFundedNextStep';
 import ColombiaReliefNextStep from '#src/components/MyKiva/ColombiaReliefNextStep';
+import HolidayFundraiserNextStep from '#src/components/MyKiva/HolidayFundraiserNextStep';
 import MyKivaCard from '#src/components/MyKiva/MyKivaCard';
 import MyKivaEmailUpdatesTransition from '#src/components/MyKiva/MyKivaEmailUpdatesTransition';
 import MyKivaLatestLoanCard from '#src/components/MyKiva/MyKivaLatestLoanCard';
@@ -355,8 +358,11 @@ import {
 	checkPostLendingCardCookie, removePostLendingCardCookie, TRANSACTION_LOANS_KEY, MY_KIVA_CARD_HEIGHT
 } from '#src/util/myKivaUtils';
 import useBreakpoints from '#src/composables/useBreakpoints';
+import useHolidayFundraisersEnabled from '#src/composables/useHolidayFundraisersEnabled';
 
 defineOptions({ name: 'MyKivaNextStepsContent' });
+
+const { isHolidayFundraisersEnabled } = useHolidayFundraisersEnabled();
 
 const TRANSACTION_DAYS_LIMIT = 30;
 
@@ -627,7 +633,7 @@ const showSurveyInBuildSection = computed(
 // "Build impact beyond your loan" header never renders with an empty grid underneath,
 // whether that's because no card is eligible or because Contentful returned no slides.
 const showBuildImpactSection = computed(() => {
-	if (nonBadgesSlides.value.length > 0) return true;
+	if (isHolidayFundraisersEnabled.value || nonBadgesSlides.value.length > 0) return true;
 
 	if (isMobile.value && !showPostLendingNextStepsCards.value) {
 		return shouldShowEmailMarketingCard.value || showLatestLoan.value || showSurveyCard.value;
