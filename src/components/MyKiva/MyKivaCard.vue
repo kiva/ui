@@ -286,12 +286,6 @@ const hasSingleBorrowerImage = computed(() => props?.loans && props.loans.length
 .journey-card {
 	box-shadow: 0 4px 12px 0 rgb(0 0 0 / 8%);
 	min-height: 340px;
-
-	@screen md {
-		.journey-card {
-			min-height: 382px;
-		}
-	}
 }
 
 .slide-gradient {
