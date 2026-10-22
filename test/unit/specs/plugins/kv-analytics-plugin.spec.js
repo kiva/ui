@@ -1,15 +1,25 @@
 import { createApp } from 'vue';
+import {
+	initAnalytics,
+	trackEvent,
+	trackSelfDescribingEvent,
+	trackTransaction,
+} from '@kiva/kv-analytics';
 import kvAnalyticsPlugin from '#src/plugins/kv-analytics-plugin';
 
-const { mockTrackFBTransaction } = vi.hoisted(() => ({ mockTrackFBTransaction: vi.fn() }));
-
-// The Meta transaction behavior (Purchase gating, content_type, kivaCard/FTD signals) belongs to
-// @kiva/kv-analytics and is tested there; here only the delegation is asserted. Everything else
-// (trackFBPageView, trackFBCustomEvent) runs the real package code against the mocked window.fbq.
-vi.mock('@kiva/kv-analytics', async importOriginal => ({
-	...(await importOriginal()),
-	trackFBTransaction: mockTrackFBTransaction,
-}));
+// The tracking itself belongs to @kiva/kv-analytics and is tested there; here we check what the plugin
+// adds around it. trackTransaction still runs the package code against the mocked window, so the
+// transaction tests below can check what reaches each tracker.
+vi.mock('@kiva/kv-analytics', async importOriginal => {
+	const actual = await importOriginal();
+	return {
+		...actual,
+		initAnalytics: vi.fn(() => Promise.resolve(true)),
+		trackEvent: vi.fn(),
+		trackSelfDescribingEvent: vi.fn(),
+		trackTransaction: vi.fn(actual.trackTransaction),
+	};
+});
 
 describe('kv-analytics-plugin', () => {
 	let app;
@@ -18,7 +28,7 @@ describe('kv-analytics-plugin', () => {
 	let mockCookieStore;
 
 	beforeEach(() => {
-		mockTrackFBTransaction.mockClear();
+		vi.clearAllMocks();
 		// Create a fresh app instance for each test
 		app = createApp({
 			name: 'TestApp'
@@ -100,12 +110,6 @@ describe('kv-analytics-plugin', () => {
 			app.use(kvAnalyticsPlugin);
 			expect(app.config.globalProperties.$fireQueuedEvents).toBeDefined();
 			expect(typeof app.config.globalProperties.$fireQueuedEvents).toBe('function');
-		});
-
-		it('should add $kvSetCustomUrl to global properties', () => {
-			app.use(kvAnalyticsPlugin);
-			expect(app.config.globalProperties.$kvSetCustomUrl).toBeDefined();
-			expect(typeof app.config.globalProperties.$kvSetCustomUrl).toBe('function');
 		});
 
 		it('should add $kvTrackEvent to global properties', () => {
@@ -347,23 +351,11 @@ describe('kv-analytics-plugin', () => {
 			const result2 = app.config.globalProperties.$setKvAnalyticsData(null);
 			expect(result2).toBeInstanceOf(Promise);
 		});
-	});
 
-	describe('$kvSetCustomUrl', () => {
-		beforeEach(() => {
-			app.use(kvAnalyticsPlugin);
-		});
+		it('still finishes when starting the trackers fails, so the first pageview goes out', async () => {
+			initAnalytics.mockRejectedValueOnce(new Error('Snowplow stub failed'));
 
-		it('should be callable with custom URL', () => {
-			expect(() => {
-				app.config.globalProperties.$kvSetCustomUrl('https://www.kiva.org/custom');
-			}).not.toThrow();
-		});
-
-		it('should be callable without URL provided', () => {
-			expect(() => {
-				app.config.globalProperties.$kvSetCustomUrl();
-			}).not.toThrow();
+			await expect(app.config.globalProperties.$setKvAnalyticsData('user123')).resolves.toBeUndefined();
 		});
 	});
 
@@ -393,8 +385,8 @@ describe('kv-analytics-plugin', () => {
 
 			app.config.globalProperties.$kvTrackTransaction(transactionData);
 
-			// Facebook tracking is delegated to the shared package
-			expect(mockTrackFBTransaction).toHaveBeenCalledExactlyOnceWith(transactionData);
+			// Handed to the shared package, which tracks it with Meta, Google Analytics and Optimizely
+			expect(trackTransaction).toHaveBeenCalledExactlyOnceWith(transactionData);
 
 			// Google Analytics tracking
 			expect(mockWindow.gtag).toHaveBeenCalledWith('event', 'purchase', {
@@ -473,7 +465,7 @@ describe('kv-analytics-plugin', () => {
 
 			app.config.globalProperties.$kvTrackTransaction(transactionData);
 
-			expect(mockTrackFBTransaction).not.toHaveBeenCalled();
+			expect(trackTransaction).not.toHaveBeenCalled();
 			expect(mockWindow.gtag).not.toHaveBeenCalled();
 		});
 
@@ -494,7 +486,7 @@ describe('kv-analytics-plugin', () => {
 			};
 
 			expect(() => app.config.globalProperties.$kvTrackTransaction(transactionData)).not.toThrow();
-			expect(mockTrackFBTransaction).toHaveBeenCalledExactlyOnceWith(transactionData);
+			expect(trackTransaction).toHaveBeenCalledExactlyOnceWith(transactionData);
 		});
 
 		it('should not track when transaction ID is empty', () => {
@@ -507,7 +499,7 @@ describe('kv-analytics-plugin', () => {
 
 			app.config.globalProperties.$kvTrackTransaction(transactionData);
 
-			expect(mockTrackFBTransaction).not.toHaveBeenCalled();
+			expect(trackTransaction).not.toHaveBeenCalled();
 			expect(mockWindow.gtag).not.toHaveBeenCalled();
 		});
 
@@ -794,6 +786,55 @@ describe('kv-analytics-plugin', () => {
 			directive.beforeMount(el, binding);
 
 			expect(el.addEventListener).toBeDefined();
+		});
+	});
+
+	describe('during server render', () => {
+		beforeEach(() => {
+			// The plugin checks for window when it is installed
+			global.window = undefined;
+			app.use(kvAnalyticsPlugin);
+		});
+
+		afterEach(() => {
+			global.window = mockWindow;
+		});
+
+		it('does not hand events to the package, whose queue is shared by every request', () => {
+			app.config.globalProperties.$kvTrackEvent('basket', 'show', 'loans', null, 2);
+			app.config.globalProperties.$kvTrackSelfDescribingEvent({ schema: 'https://example.com/schema', data: {} });
+
+			expect(trackEvent).not.toHaveBeenCalled();
+			expect(trackSelfDescribingEvent).not.toHaveBeenCalled();
+		});
+	});
+
+	describe('$setKvAnalyticsData when Google Analytics never loads', () => {
+		beforeEach(() => {
+			vi.useFakeTimers();
+			// Run the plugin's timer on the fake clock
+			mockWindow.setTimeout = setTimeout;
+			app.use(kvAnalyticsPlugin);
+		});
+
+		afterEach(() => {
+			vi.useRealTimers();
+		});
+
+		it('stops waiting after 3 seconds so the first pageview is not delayed', async () => {
+			// Without gtag, initAnalytics keeps waiting until its 5 second timeout
+			initAnalytics.mockImplementationOnce(() => new Promise(resolve => {
+				setTimeout(() => resolve(false), 5000);
+			}));
+			const finishedWaiting = vi.fn();
+
+			app.config.globalProperties.$setKvAnalyticsData('user123').then(finishedWaiting);
+
+			await vi.advanceTimersByTimeAsync(2999);
+			expect(finishedWaiting).not.toHaveBeenCalled();
+
+			await vi.advanceTimersByTimeAsync(1);
+			expect(finishedWaiting).toHaveBeenCalledOnce();
 		});
 	});
 
