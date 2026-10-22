@@ -98,13 +98,6 @@ export default [
 		}
 	},
 	{
-		path: '/closed-beta',
-		component: () => import('#src/pages/ClosedAccountPage'),
-		meta: {
-			excludeFromStaticSitemap: true,
-		},
-	},
-	{
 		path: '/confirm-instant-donation/:token/:amount',
 		component: () => import('#src/pages/InstantActions/ConfirmInstantDonation'),
 		meta: {
@@ -195,13 +188,6 @@ export default [
 		meta: {
 			authenticationRequired: true,
 		}
-	},
-	{
-		path: '/teams/playbook-beta',
-		component: () => import('#src/pages/LendingTeams/TeamPlaybook'),
-		meta: {
-			excludeFromStaticSitemap: true,
-		},
 	},
 	{
 		path: '/lend-beta/:id',
