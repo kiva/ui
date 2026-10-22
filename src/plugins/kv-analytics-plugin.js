@@ -1,160 +1,40 @@
 /* eslint-disable no-underscore-dangle */
 import logFormatter from '#src/util/logFormatter';
-import SimpleQueue from '#src/util/simpleQueue';
 import {
+	fireQueuedEvents,
 	getUserTypeFromCookies,
+	initAnalytics,
 	trackDonationMetaEvent,
+	trackEvent,
 	trackFBCustomEvent,
 	trackFBPageView,
-	trackFBTransaction,
+	trackPageView,
 	trackReEngagementEvent,
+	trackSelfDescribingEvent,
+	trackTransaction,
 } from '@kiva/kv-analytics';
 
 // install method for plugin
 export default {
 	install: (app, { cookieStore } = {}) => {
 		const inBrowser = typeof window !== 'undefined';
-		let snowplowLoaded;
-		let gtagLoaded;
-		let optimizelyLoaded;
-		const queue = new SimpleQueue();
 
 		const kvActions = {
-			checkLibs: () => {
-				gtagLoaded = inBrowser && typeof window.gtag === 'function';
-				snowplowLoaded = inBrowser && typeof window.snowplow === 'function';
-				optimizelyLoaded = inBrowser && typeof window.optimizely?.push === 'function';
-
-				if (typeof window.gtag === 'function' && typeof window.snowplow === 'function') {
-					return true;
-				}
-				return false;
-			},
 			pageview: (to, from) => {
 				if (!inBrowser) return false;
-				kvActions.checkLibs();
 
-				let toUrl = typeof to === 'string' ? to : window.location.href;
-				let fromUrl = typeof from === 'string' ? from : document.referrer;
-
-				// update urls for async page changes
-				if (to && to.matched && to.matched.length) {
-					toUrl = window.location.origin + to.fullPath;
-				}
-				if (from && from.matched && from.matched.length) {
-					fromUrl = window.location.origin + from.fullPath;
-				}
-
-				// Snowplow pageview
-				if (snowplowLoaded) {
-					// - snowplow seems to know better than the path rewriting performed by vue-router
-					window.snowplow('setCustomUrl', toUrl);
-					// set referrer for async page transitions
-					if (from && from.matched && from.path !== '') {
-						window.snowplow('setReferrerUrl', fromUrl); // asyncFromUrl
-					}
-					window.snowplow('trackPageView');
-				}
-
-				// Google Analytics gtag.js pageview
-				if (gtagLoaded) {
-					let gaPath = `${window.location.pathname}${window.location.search || ''}`;
-					if (to && to.matched && to.matched.length) {
-						gaPath = to.fullPath;
-					}
-					window.gtag('event', 'page_view', {
-						page_path: gaPath
-					});
-				}
+				// Snowplow and Google Analytics pageview
+				trackPageView(to, from);
 
 				// Facebook pixel pageview
 				const userType = getUserTypeFromCookies(name => cookieStore?.get(name));
 				trackFBPageView(userType);
 			},
-			setCustomUrl: url => {
-				if (snowplowLoaded) {
-					window.snowplow('setCustomUrl', url);
-				}
-			},
-			trackEvent: (category, action, label, property, value, callback = () => {}) => {
-				const eventLabel = (label !== undefined && label !== null) ? String(label) : undefined;
-				const eventValue = (value !== undefined && value !== null) ? parseInt(value, 10) : undefined;
-				const eventProperty = (property !== undefined && property !== null) ? String(property) : undefined;
-
-				// Attempt gtag event
-				if (gtagLoaded) {
-					window.gtag('event', String(action), {
-						event_category: String(category),
-						event_label: eventLabel,
-						value: eventValue
-					});
-				}
-
-				// Attempt Snowplow event
-				if (snowplowLoaded) {
-					kvActions.trackSnowplowEvent({
-						category,
-						action,
-						eventLabel,
-						eventProperty,
-						eventValue,
-						callback
-					});
-				} else {
-					callback({ error: 'not loaded' });
-					// add missed snowplow event to queue
-					queue.add({
-						eventType: 'trackSnowplowEvent',
-						eventLib: 'snowplow',
-						eventData: {
-							category,
-							action,
-							eventLabel,
-							eventProperty,
-							eventValue,
-							callback
-						}
-					});
-				}
-
-				return true;
-			},
-			trackSnowplowEvent: eventData => {
-				kvActions.checkLibs();
-				if (!snowplowLoaded) return false;
-
-				// In case there is a problem with the tracking event ensure that the callback gets called after 500ms
-				let callbackCalled = false;
-				const callbackTimeout = setTimeout(() => {
-					if (!callbackCalled) {
-						callbackCalled = true;
-						eventData.callback({ error: 'timeout' });
-					}
-				}, 500);
-
-				// Snowplow API
-				/* eslint-disable max-len */
-				// https://docs.snowplowanalytics.com/docs/collecting-data/collecting-from-own-applications/javascript-tracker/tracking-specific-events/#tracking-custom-structured-events
-				// https://docs.snowplowanalytics.com/docs/collecting-data/collecting-from-own-applications/javascript-tracker/tracking-specific-events/#callback-after-track-2-15-0
-				/* eslint-eable max-len */
-				// snowplow('trackStructEvent', 'category', 'action', 'label', 'property', 'value', context, timestamp, afterTrack);
-				window.snowplow(
-					'trackStructEvent',
-					eventData.category,
-					eventData.action,
-					eventData.eventLabel,
-					eventData.eventProperty,
-					eventData.eventValue,
-					undefined,
-					undefined,
-					payload => {
-						if (!callbackCalled) {
-							callbackCalled = true;
-							clearTimeout(callbackTimeout);
-							eventData.callback({ payload });
-						}
-					}
-				);
+			trackEvent: (category, action, label, property, value, callback) => {
+				// The package holds events in a queue until the trackers load. On the server that queue
+				// is shared by every request and never sent, so only track in the browser.
+				if (!inBrowser) return;
+				trackEvent(category, action, label, property, value, callback);
 			},
 			trackSelfDescribingEvent: eventData => {
 				// the data passed into this should be a JSON object similar to the following
@@ -167,57 +47,30 @@ export default {
 				//			...
 				//     }
 				// });
-				if (snowplowLoaded) {
-					window.snowplow('trackSelfDescribingEvent', eventData);
-				} else {
-					// add missed snowplow event to queue
-					queue.add({
-						eventType: 'trackSelfDescribingEvent',
-						eventLib: 'snowplow',
-						eventData,
-					});
-				}
-
-				return true;
-			},
-			fireQueuedEvents() {
-				kvActions.checkLibs();
-
-				while (!queue.isEmpty()) {
-					const item = queue.remove();
-					const method = item.eventType;
-					const { eventData } = item;
-					if (inBrowser && typeof kvActions[method] === 'function') {
-						// Wrapping the event call in a setTimeout ensures that this while loop
-						// completes before the event functions are called. This is needed because
-						// the event functions can add more events to this queue, and we only want
-						// to process this queue once.
-						window.setTimeout(() => {
-							kvActions[method](eventData, true);
-						});
-					}
-				}
+				// Browser only, for the same reason as trackEvent
+				if (!inBrowser) return;
+				trackSelfDescribingEvent(eventData);
 			},
 			parseEventProperties: eventValue => {
 				// Ensure we have a non-empty array to begin with
 				if (Array.isArray(eventValue) && eventValue.length) {
 					// Handle multiple events being pass as an array
 					if (Array.isArray(eventValue[0])) {
-						eventValue.forEach(params => kvActions.trackEvent.apply(this, params));
+						eventValue.forEach(params => kvActions.trackEvent(...params));
 					} else {
-						kvActions.trackEvent.apply(this, eventValue);
+						kvActions.trackEvent(...eventValue);
 					}
 				} else {
 					throw new TypeError(`Expected non-empty array, but got ${eventValue}`);
 				}
 			},
 			trackTransaction: transactionData => {
-				kvActions.checkLibs();
 				if (!transactionData.transactionId) {
 					return false;
 				}
 
-				trackFBTransaction(transactionData);
+				// Meta purchase, Google Analytics and Optimizely
+				trackTransaction(transactionData);
 				// Fires only when the lender was idle or lapsed and the transaction contains loans
 				trackReEngagementEvent(transactionData);
 
@@ -229,80 +82,7 @@ export default {
 				if (!loans?.length && !kivaCards?.length) {
 					trackDonationMetaEvent(donationTotal);
 				}
-				if (gtagLoaded) {
-					kvActions.trackGATransaction(transactionData);
-				}
-				if (optimizelyLoaded) {
-					kvActions.trackOPTransaction(transactionData);
-				}
 			},
-			trackGATransaction: transactionData => {
-				// push to dataLayer
-				if (typeof window.dataLayer === 'object') {
-					window.dataLayer.push({
-						event: 'setTransactionData',
-						...transactionData
-					});
-				}
-
-				// Add each purchased item to the tracker
-				const allItems = transactionData.loans
-					.concat(transactionData.donations)
-					.concat(transactionData.kivaCards);
-
-				// Setup purchased items
-				const purchasedItems = allItems.map(item => {
-					return {
-						id: item.id,
-						name: item.__typename,
-						price: item.price,
-						quantity: 1
-					};
-				});
-
-				// Post transaction information to GA
-				window.gtag('event', 'purchase', {
-					transaction_id: transactionData.transactionId,
-					value: transactionData.itemTotal,
-					currency: 'USD',
-					items: purchasedItems,
-					non_interaction: true
-				});
-			},
-			trackOPTransaction: transactionData => {
-				if (transactionData.depositTotal > 0) {
-					window.optimizely.push({
-						type: 'event',
-						eventName: 'deposit',
-						tags: {
-							revenue: transactionData.depositTotal * 100,
-							deposit_amount: transactionData.depositTotal
-						}
-					});
-				}
-
-				if (transactionData.loanTotal > 0) {
-					window.optimizely.push({
-						type: 'event',
-						eventName: 'loan_share_purchase',
-						tags: {
-							revenue: transactionData.loanTotal * 100,
-							loan_share_purchase_amount: transactionData.loanTotal
-						}
-					});
-				}
-
-				if (transactionData.donationTotal > 0) {
-					window.optimizely.push({
-						type: 'event',
-						eventName: 'donation',
-						tags: {
-							revenue: transactionData.donationTotal * 100,
-							donation_amount: transactionData.donationTotal
-						}
-					});
-				}
-			}
 		};
 
 		app.directive('kv-track-event', {
@@ -322,43 +102,17 @@ export default {
 
 		// eslint-disable-next-line no-param-reassign
 		app.config.globalProperties.$setKvAnalyticsData = (userId = null) => {
-			return new Promise(resolve => {
-				let readyStateTimeout;
-				const readyStateInterval = window.setInterval(() => {
-					if (kvActions.checkLibs()) {
-						clearInterval(readyStateInterval);
-						clearTimeout(readyStateTimeout);
-						// Setup Global Snowplow
-						if (snowplowLoaded) {
-							window.snowplow('setUserId', userId);
-						}
-						// Setup Global GA Data
-						if (userId && gtagLoaded && window.__KV_CONFIG__ && window.__KV_CONFIG__.gaId) {
-							window.gtag('config', window.__KV_CONFIG__.gaId, {
-								user_id: userId,
-								dimension1: userId,
-								send_page_view: false
-							});
-						}
-						// set id on dataLayer
-						if (userId && typeof window.dataLayer === 'object') {
-							window.dataLayer.push({
-								kvuid: userId
-							});
-						}
-						// resovle for next steps
-						resolve();
-					}
-				}, 100);
-
-				readyStateTimeout = window.setTimeout(() => {
-					// clean up interval and timeout
-					clearInterval(readyStateInterval);
-					clearTimeout(readyStateTimeout);
-					// resolve the promise
-					resolve();
-				}, 3000);
+			// The first pageview is sent once this finishes. If a visitor declined advertising cookies or opted
+			// out, Google Analytics never loads and initAnalytics waits its full 5s. Keep our existing 3s limit so
+			// fewer short visits lose their pageview.
+			const threeSecondWait = new Promise(resolve => {
+				window.setTimeout(resolve, 3000);
 			});
+			// Log a tracker error instead of rejecting, so the first pageview still goes out
+			const startTrackers = initAnalytics(userId, window.__KV_CONFIG__?.gaId).catch(error => {
+				logFormatter('Failed to start analytics trackers', 'error', { error });
+			});
+			return Promise.race([startTrackers, threeSecondWait]);
 		};
 
 		// eslint-disable-next-line no-param-reassign
@@ -390,12 +144,7 @@ export default {
 
 		// eslint-disable-next-line no-param-reassign
 		app.config.globalProperties.$fireQueuedEvents = () => {
-			kvActions.fireQueuedEvents();
-		};
-
-		// eslint-disable-next-line no-param-reassign
-		app.config.globalProperties.$kvSetCustomUrl = (url = window.location.href) => {
-			kvActions.setCustomUrl(url);
+			fireQueuedEvents();
 		};
 
 		// eslint-disable-next-line no-param-reassign
