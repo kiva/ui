@@ -1,0 +1,1 @@
+import{l as o}from"./entry-loan-data-mock-B1RgYuoN0n.js";function m(n){return[].concat(...Array(n).fill(o)).map(e=>{let a=Object.assign({},e);a.id=Math.floor(Math.random()*1e5);let t=new Date,r=Math.floor(Math.random()*61);return t.setDate(t.getDate()+r),a.plannedExpirationDate=t.toISOString(),a.fundraisingTimeLeft=r+" days",a})}export{m};

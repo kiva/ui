@@ -1,0 +1,7 @@
+import{q as t,w as u,k as s}from"./entry-vue.esm-bundler-DN41AgNdM7.js";import{d as l}from"./entry-defaultLoanShareAmount-BmKhwEgAOm.js";import{l as d}from"./entry-logReadQueryError-BL2yt7MPC5.js";import{u as m}from"./entry-useApolloQuery-DzwiBjTbWW.js";const c=`query DefaultLoanShareAmount {
+	my {
+		id
+		userPreference(key: "defaultLoanShareAmount")
+	}
+}
+`,f={kind:"Document",definitions:[{kind:"OperationDefinition",operation:"query",name:{kind:"Name",value:"DefaultLoanShareAmount"},variableDefinitions:[],directives:[],selectionSet:{kind:"SelectionSet",selections:[{kind:"Field",name:{kind:"Name",value:"my"},arguments:[],directives:[],selectionSet:{kind:"SelectionSet",selections:[{kind:"Field",name:{kind:"Name",value:"id"},arguments:[],directives:[]},{kind:"Field",name:{kind:"Name",value:"userPreference"},arguments:[{kind:"Argument",name:{kind:"Name",value:"key"},value:{kind:"StringValue",value:"defaultLoanShareAmount",block:!1}}],directives:[]}]}}]}}],loc:{start:0,end:133,source:{name:"GraphQL request",locationOffset:{line:1,column:1},body:c}}},r=e=>!!(e!=null&&e.getKivaId()),i={query:f,shouldPreFetch:(e,{kvAuth0:a})=>r(a)},S=[i];function v(){if(!r(s("kvAuth0",null)))return{defaultLoanShareAmount:t(()=>{})};const{result:e,error:a}=m(i);return u(a,n=>{n&&d(n,"useDefaultLoanShareAmount DefaultLoanShareAmount")}),{defaultLoanShareAmount:t(()=>{var n,o;return l((o=(n=e.value)==null?void 0:n.my)==null?void 0:o.userPreference)})}}const y=[...S];export{y as _,v as u};
