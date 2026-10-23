@@ -283,6 +283,7 @@ describe('JourneyCardCarousel', () => {
 				...props,
 			},
 			global: {
+				// eslint-disable-next-line max-len
 				provide: { apollo: { readFragment: () => null }, cookieStore: new CookieStore({}), $kvTrackEvent: vi.fn() },
 				directives: { kvTrackEvent: () => ({}) },
 				stubs: {
@@ -357,6 +358,7 @@ describe('JourneyCardCarousel', () => {
 				...props,
 			},
 			global: {
+				// eslint-disable-next-line max-len
 				provide: { apollo: { readFragment: () => null }, cookieStore: new CookieStore({}), $kvTrackEvent: vi.fn() },
 				directives: { kvTrackEvent: () => ({}) },
 				stubs: {
@@ -447,6 +449,7 @@ describe('JourneyCardCarousel', () => {
 					userInfo: { userPreferences: { preferences: '{}' } },
 				},
 				global: {
+					// eslint-disable-next-line max-len
 					provide: { apollo: { readFragment: () => null }, cookieStore: new CookieStore({}), $kvTrackEvent: vi.fn() },
 					directives: { kvTrackEvent: () => ({}) },
 					stubs: {
