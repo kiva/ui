@@ -50,7 +50,7 @@ const mountSlot = ({ goalData = buildGoalData(), props = {}, trackEvent = vi.fn(
 		},
 		global: {
 			provide: {
-				apollo: {},
+				apollo: { readFragment: () => null },
 				goalData,
 				$kvTrackEvent: trackEvent,
 			},

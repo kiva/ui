@@ -211,9 +211,16 @@ import GoalProgressRing from '#src/components/MyKiva/GoalProgressRing';
 import GoalCustomAmountInput from '#src/components/MyKiva/GoalSetting/GoalCustomAmountInput';
 import useGoalData, { LAST_YEAR_KEY, GOAL_STATUS } from '#src/composables/useGoalData';
 import goalCopy, { GOAL_SIGNUP_COPY_NO_GOAL_YET } from '#src/util/goalCopy';
+import { trackExperimentVersion } from '#src/util/experiment/experimentUtils';
+import {
+	GOAL_DEFAULT_CATEGORY_EXP_ACTION,
+	GOAL_DEFAULT_CATEGORY_EXP_CATEGORY,
+	GOAL_DEFAULT_CATEGORY_EXP_KEY,
+} from '#src/util/goalSignupCopyVariant';
 
 const CUSTOM_LOAN_NUMBER_INDEX = 3;
 
+const apollo = inject('apollo');
 const $kvTrackEvent = inject('$kvTrackEvent');
 
 const { getCategoryLoansLastYear, getCategoryLoanCountByYear, getSupportAllLoanCountByYear } = useGoalData();
@@ -704,6 +711,17 @@ const handleEditGoalFromSettings = () => {
 };
 
 onMounted(async () => {
+	// Only a new goal sign up is exposed to the default category experiment [EXP-MP 3259]
+	if (!props.isUpdatingGoal && !props.isGoalSet) {
+		trackExperimentVersion(
+			apollo,
+			$kvTrackEvent,
+			GOAL_DEFAULT_CATEGORY_EXP_CATEGORY,
+			GOAL_DEFAULT_CATEGORY_EXP_KEY,
+			GOAL_DEFAULT_CATEGORY_EXP_ACTION,
+		);
+	}
+
 	await loadLoansThisYear();
 	updateGoalOptions();
 
