@@ -1,6 +1,6 @@
 import numeral from 'numeral';
 import myFTD from '#src/graphql/query/myFTD.graphql';
-import { getReEngagementEvent } from '@kiva/kv-analytics';
+import { getReEngagementEvent, resolveFTDStatus } from '@kiva/kv-analytics';
 import removeCreditByTypeMutation from '#src/graphql/mutation/shopRemoveCreditByType.graphql';
 
 /** Format Transaction Data for Analtyics events
@@ -108,6 +108,12 @@ export function myFTDQuery(apollo) {
 	// Fetch FTD Status
 	return apollo.query({
 		query: myFTD,
+		// A guest's lookup comes back as an authentication error, which is how a guest is recognized
+		// when resolving FTD status, so it must arrive as data rather than be thrown. The error is
+		// never cached, and the page has usually cached a guest's `my` as null already, so the
+		// lookup always goes to the network.
+		errorPolicy: 'all',
+		fetchPolicy: 'network-only',
 	});
 }
 
@@ -119,9 +125,12 @@ export function myFTDQuery(apollo) {
  * @param {Object} apollo Apollo Client instance
  * @param {Promise<Object|null>|null} lifecycleDataPromise The lookup started on checkout
  *   entry, since the purchase being tracked is what moves a lender out of idle or lapsed
+ * @param {Object} [checkout] What a guest's FTD status is resolved from
+ * @param {Object} [checkout.cookieStore] ui cookie accessor, for the deposited-before cookie
+ * @param {String|Number} [checkout.depositTotal] This checkout's deposit total
  * @returns {Promise<Object>}
  */
-export async function getTransactionAnalyticsData(apollo, lifecycleDataPromise) {
+export async function getTransactionAnalyticsData(apollo, lifecycleDataPromise, { cookieStore, depositTotal } = {}) {
 	// Only the FTD query starts here; the lifecycle request began at checkout entry and
 	// is usually settled already. They are awaited together so neither blocks the other,
 	// and a failed FTD lookup does not discard the lifecycle stage.
@@ -131,8 +140,7 @@ export async function getTransactionAnalyticsData(apollo, lifecycleDataPromise) 
 	]);
 
 	return {
-		// undefined when the lookup failed, so no content_type is asserted downstream
-		isFTD: ftdResponse?.data?.my?.userAccount?.isFirstTimeDepositor,
+		isFTD: resolveFTDStatus(ftdResponse, name => cookieStore?.get(name), depositTotal),
 		lifecycleStage: lifecycleData?.stage ?? null,
 		daysSinceLastLoan: lifecycleData?.daysSinceLastLoan ?? null,
 		reEngagementEvent: getReEngagementEvent(lifecycleData?.stage),
