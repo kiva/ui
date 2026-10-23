@@ -42,6 +42,12 @@ import useGoalData, {
 	COMPLETED_GOAL_THRESHOLD,
 } from '#src/composables/useGoalData';
 import logReadQueryError from '#src/util/logReadQueryError';
+import { trackExperimentVersion } from '#src/util/experiment/experimentUtils';
+import {
+	GOAL_DEFAULT_CATEGORY_EXP_ACTION,
+	GOAL_DEFAULT_CATEGORY_EXP_CATEGORY,
+	GOAL_DEFAULT_CATEGORY_EXP_KEY,
+} from '#src/util/goalSignupCopyVariant';
 import { getGoalYear } from '#src/util/goalInReview';
 import { useGoalRecapEntryPoint, useHideGoalSignup } from '#src/composables/useGoalInReview';
 import { KvLoadingPlaceholder } from '@kiva/kv-components';
@@ -78,6 +84,7 @@ const emit = defineEmits(['set-goal-click', 'cta-click', 'edit-click', 'view-goa
 
 const router = useRouter();
 const goalData = inject('goalData');
+const apollo = inject('apollo');
 const $kvTrackEvent = inject('$kvTrackEvent');
 const { getCategoryLoansLastYear } = useGoalData();
 
@@ -178,6 +185,13 @@ watch(
 		if (!shouldRender.value) return;
 		if (!goalStatus.value) {
 			$kvTrackEvent?.('portfolio', 'view', 'set-annual-goal');
+			trackExperimentVersion(
+				apollo,
+				$kvTrackEvent,
+				GOAL_DEFAULT_CATEGORY_EXP_CATEGORY,
+				GOAL_DEFAULT_CATEGORY_EXP_KEY,
+				GOAL_DEFAULT_CATEGORY_EXP_ACTION,
+			);
 			hasFiredImpressionEvent.value = true;
 			return;
 		}

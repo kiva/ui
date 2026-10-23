@@ -46,6 +46,7 @@ function mountComponent({
 	routeQuery = query;
 
 	const apollo = {
+		readFragment: () => null,
 		query: vi.fn().mockResolvedValue({
 			data: {
 				userAchievementProgress: {

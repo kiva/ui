@@ -73,6 +73,8 @@ import { GOAL_STATUS, GOALS_CURRENT_YEAR } from '#src/composables/useGoalData';
 import useGoalInReview, { getGoalInReviewNow } from '#src/composables/useGoalInReview';
 import GoalInReviewModal from '#src/components/MyKiva/GoalInReview/GoalInReviewModal';
 import portfolioQuery from '#src/graphql/query/portfolioQuery.graphql';
+import experimentAssignmentQuery from '#src/graphql/query/experimentAssignment.graphql';
+import { GOAL_DEFAULT_CATEGORY_EXP_KEY } from '#src/util/goalSignupCopyVariant';
 import { hasLoanFunFactFootnote } from '#src/util/myKivaUtils';
 import { isDisasterReliefFundOnlySupporter } from '#src/util/givingFundUtils';
 import { KvGrid, KvPageContainer } from '@kiva/kv-components';
@@ -163,7 +165,13 @@ export default {
 	},
 	apollo: {
 		preFetch(config, client) {
-			return client.query({ query: portfolioQuery });
+			return Promise.all([
+				client.query({ query: portfolioQuery }),
+				client.query({
+					query: experimentAssignmentQuery,
+					variables: { id: GOAL_DEFAULT_CATEGORY_EXP_KEY },
+				}),
+			]);
 		},
 	},
 	computed: {
