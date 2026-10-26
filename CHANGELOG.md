@@ -1,3 +1,86 @@
+## [3.98.0](https://github.com/kiva/ui/compare/v3.97.0...v3.98.0) (2026-10-26)
+
+### 🎉 New Features
+
+* [MP-3314] - cleaning branch and commits (new branch) ([#7327](https://github.com/kiva/ui/issues/7327)) ([3cc5637](https://github.com/kiva/ui/commit/3cc5637a4b8d7f0f3879637471d8a10e14e5bcd0))
+* [MP-3319] - new how it works section in bp page ([#7330](https://github.com/kiva/ui/issues/7330)) ([32ed27a](https://github.com/kiva/ui/commit/32ed27aeeda879dfad445c09050f2edd2310b106))
+* [MP-3322] collapsible sections below the borrower story ([#7329](https://github.com/kiva/ui/issues/7329)) ([fd08b88](https://github.com/kiva/ui/commit/fd08b88ef83fdee1b908dc110b2d2271ef08be36))
+* [MP-3323] - new global impact bar on bp page ([#7337](https://github.com/kiva/ui/issues/7337)) ([ca203dd](https://github.com/kiva/ui/commit/ca203ddb0c9749e67e9805989b2faa9e0b1af499))
+* [MP-3355] schedule checkout tip copy rounds in contentful ([#7332](https://github.com/kiva/ui/issues/7332)) ([19039b7](https://github.com/kiva/ui/commit/19039b7e70dee756bc004e817f9fa28af819e112))
+* [MP-3442] - done persist cta current behaviour ([#7352](https://github.com/kiva/ui/issues/7352)) ([adf9283](https://github.com/kiva/ui/commit/adf9283fdcd39cc8c992f7877fb2041dc72c3bde))
+* add holiday fundraiser card to MyKiva next steps ([#7353](https://github.com/kiva/ui/issues/7353)) ([faca5c9](https://github.com/kiva/ui/commit/faca5c9bb83217311cbed22e25e5e0a6e823a0fb))
+* additional fixes ([2bcec12](https://github.com/kiva/ui/commit/2bcec12a98bc10dd355c240e03ebcd6a00ca6512))
+* additional styling + copy fixes (plus added spec test for this modal version) ([e6aecd5](https://github.com/kiva/ui/commit/e6aecd5a9c84031fc823abf5976c9b7589496170))
+* cit-5094 read default loan share amount user preference ([597c082](https://github.com/kiva/ui/commit/597c082a91d565aec2ee0ab4d47fb97c788cb0a0))
+* cit-5454 default lend amounts to the lender's preferred loan share ([834f7e8](https://github.com/kiva/ui/commit/834f7e83180ffd8b1a275ddef65fbf4486a68116))
+* creating /teams/playbook-beta page + url route ([5534ce2](https://github.com/kiva/ui/commit/5534ce2cb6f8ab32e0fcc1e0ea5fc9ec10c959b8))
+* initial implementation ([58d35e5](https://github.com/kiva/ui/commit/58d35e5be096a4ae33ee5492598e41ee49afa130))
+* migrated pages and routes deletion ([d3b69ff](https://github.com/kiva/ui/commit/d3b69ff06f4d17df4e34e08ebfed36df81299fd4))
+* migrating /closed (closed account page) to ui ([46a1f2c](https://github.com/kiva/ui/commit/46a1f2c81cecfa72f89e05941e13370a16324cff))
+* mp-3315 nonprofit row and matching tooltip in new user lend box ([#7328](https://github.com/kiva/ui/issues/7328)) ([80bf329](https://github.com/kiva/ui/commit/80bf3293effb68ddea31ce7a716eddeb813579e3))
+* mp-3318 people supporting row with lender avatars in new user bp ([#7331](https://github.com/kiva/ui/issues/7331)) ([ff75cc2](https://github.com/kiva/ui/commit/ff75cc2223eb9fbfa2e5a36158a243cc0bf19197))
+* mp-3321 how kiva works modal with lending cycle animation ([#7326](https://github.com/kiva/ui/issues/7326)) ([a734938](https://github.com/kiva/ui/commit/a7349387460a9d4dcab22ec81bdd6c308426cf2f))
+* mp-3324 sticky lend box on desktop for new user bp experiment ([#7341](https://github.com/kiva/ui/issues/7341)) ([79b9596](https://github.com/kiva/ui/commit/79b9596dc747427b48991b1b52a9c3f87781d019))
+* mp-3342 write user preferences per key with setUserPreference ([#7334](https://github.com/kiva/ui/issues/7334)) ([56c0ebe](https://github.com/kiva/ui/commit/56c0ebe8b8a735264b3f76b1b7552d66d729bafa))
+* mp-3402 track expanding the new accordions on the new borrower profie ([#7343](https://github.com/kiva/ui/issues/7343)) ([161b9b5](https://github.com/kiva/ui/commit/161b9b578b49b4fa61e0f787ab0ae8c3a20a45a1))
+* refined implementation (edits to match design mock better) ([623d06d](https://github.com/kiva/ui/commit/623d06dadad98c348a83a64e03b3fd3c1db7dff5))
+* removed lifetimeStatsError flag, revised styling on share button ([ee39714](https://github.com/kiva/ui/commit/ee39714d9a3b0fb8221bfc49e3fb71db5aa497d2))
+* replace live loans ML recommendations with personalized FLSS sort ([#7333](https://github.com/kiva/ui/issues/7333)) ([3edf2dd](https://github.com/kiva/ui/commit/3edf2dd4cf01dcd6fa4f2c53310d1d2a884b8721))
+
+### 🐛 Bugfixes
+
+* cit-5483 apply the lend cta default amount once loan and user data load ([929be46](https://github.com/kiva/ui/commit/929be465d3c6479afbc52c65f1090836a025c4a8))
+* mp-3352 skip basket bubble when header basket link is hidden ([#7338](https://github.com/kiva/ui/issues/7338)) ([6913f62](https://github.com/kiva/ui/commit/6913f623cbfe308628700084a708607db0a1e3d1))
+* mp-3401 highlight one arrow at a time and keep the modal size wh… ([#7342](https://github.com/kiva/ui/issues/7342)) ([114d711](https://github.com/kiva/ui/commit/114d7115c5208709af003495d667bb5e77ba2373))
+* mp-3441 update the why loans copy on the new borrower profile ([#7346](https://github.com/kiva/ui/issues/7346)) ([2e35a94](https://github.com/kiva/ui/commit/2e35a94dd005862ab5d1d33fc0193f585d30e426))
+* slash removal ([09b9ba3](https://github.com/kiva/ui/commit/09b9ba3e8ff119ced2edde69d2b30e5961cb6abc))
+
+### 🧹 Chores
+
+* **loan-channels:** delete the dead loan channel query map fork and single-category carousel ([a7a80ac](https://github.com/kiva/ui/commit/a7a80acd5fc621fdd5647e715f45b5fdeeda34b5))
+* **release:** 3.98.0-rc.1 [skip ci] ([4c77777](https://github.com/kiva/ui/commit/4c77777d38631eed0d0c6fd3d511f83ee77b6d48)), closes [#7327](https://github.com/kiva/ui/issues/7327) [#7330](https://github.com/kiva/ui/issues/7330) [#7329](https://github.com/kiva/ui/issues/7329) [#7337](https://github.com/kiva/ui/issues/7337) [#7332](https://github.com/kiva/ui/issues/7332) [#7352](https://github.com/kiva/ui/issues/7352) [#7353](https://github.com/kiva/ui/issues/7353) [#7328](https://github.com/kiva/ui/issues/7328) [#7331](https://github.com/kiva/ui/issues/7331) [#7326](https://github.com/kiva/ui/issues/7326) [#7341](https://github.com/kiva/ui/issues/7341) [#7334](https://github.com/kiva/ui/issues/7334) [#7343](https://github.com/kiva/ui/issues/7343) [#7333](https://github.com/kiva/ui/issues/7333) [#7338](https://github.com/kiva/ui/issues/7338) [#7342](https://github.com/kiva/ui/issues/7342) [#7346](https://github.com/kiva/ui/issues/7346)
+
+## [3.98.0-rc.1](https://github.com/kiva/ui/compare/v3.97.0...v3.98.0-rc.1) (2026-10-22)
+
+### 🎉 New Features
+
+* [MP-3314] - cleaning branch and commits (new branch) ([#7327](https://github.com/kiva/ui/issues/7327)) ([3cc5637](https://github.com/kiva/ui/commit/3cc5637a4b8d7f0f3879637471d8a10e14e5bcd0))
+* [MP-3319] - new how it works section in bp page ([#7330](https://github.com/kiva/ui/issues/7330)) ([32ed27a](https://github.com/kiva/ui/commit/32ed27aeeda879dfad445c09050f2edd2310b106))
+* [MP-3322] collapsible sections below the borrower story ([#7329](https://github.com/kiva/ui/issues/7329)) ([fd08b88](https://github.com/kiva/ui/commit/fd08b88ef83fdee1b908dc110b2d2271ef08be36))
+* [MP-3323] - new global impact bar on bp page ([#7337](https://github.com/kiva/ui/issues/7337)) ([ca203dd](https://github.com/kiva/ui/commit/ca203ddb0c9749e67e9805989b2faa9e0b1af499))
+* [MP-3355] schedule checkout tip copy rounds in contentful ([#7332](https://github.com/kiva/ui/issues/7332)) ([19039b7](https://github.com/kiva/ui/commit/19039b7e70dee756bc004e817f9fa28af819e112))
+* [MP-3442] - done persist cta current behaviour ([#7352](https://github.com/kiva/ui/issues/7352)) ([adf9283](https://github.com/kiva/ui/commit/adf9283fdcd39cc8c992f7877fb2041dc72c3bde))
+* add holiday fundraiser card to MyKiva next steps ([#7353](https://github.com/kiva/ui/issues/7353)) ([faca5c9](https://github.com/kiva/ui/commit/faca5c9bb83217311cbed22e25e5e0a6e823a0fb))
+* additional fixes ([2bcec12](https://github.com/kiva/ui/commit/2bcec12a98bc10dd355c240e03ebcd6a00ca6512))
+* additional styling + copy fixes (plus added spec test for this modal version) ([e6aecd5](https://github.com/kiva/ui/commit/e6aecd5a9c84031fc823abf5976c9b7589496170))
+* cit-5094 read default loan share amount user preference ([597c082](https://github.com/kiva/ui/commit/597c082a91d565aec2ee0ab4d47fb97c788cb0a0))
+* cit-5454 default lend amounts to the lender's preferred loan share ([834f7e8](https://github.com/kiva/ui/commit/834f7e83180ffd8b1a275ddef65fbf4486a68116))
+* creating /teams/playbook-beta page + url route ([5534ce2](https://github.com/kiva/ui/commit/5534ce2cb6f8ab32e0fcc1e0ea5fc9ec10c959b8))
+* initial implementation ([58d35e5](https://github.com/kiva/ui/commit/58d35e5be096a4ae33ee5492598e41ee49afa130))
+* migrated pages and routes deletion ([d3b69ff](https://github.com/kiva/ui/commit/d3b69ff06f4d17df4e34e08ebfed36df81299fd4))
+* migrating /closed (closed account page) to ui ([46a1f2c](https://github.com/kiva/ui/commit/46a1f2c81cecfa72f89e05941e13370a16324cff))
+* mp-3315 nonprofit row and matching tooltip in new user lend box ([#7328](https://github.com/kiva/ui/issues/7328)) ([80bf329](https://github.com/kiva/ui/commit/80bf3293effb68ddea31ce7a716eddeb813579e3))
+* mp-3318 people supporting row with lender avatars in new user bp ([#7331](https://github.com/kiva/ui/issues/7331)) ([ff75cc2](https://github.com/kiva/ui/commit/ff75cc2223eb9fbfa2e5a36158a243cc0bf19197))
+* mp-3321 how kiva works modal with lending cycle animation ([#7326](https://github.com/kiva/ui/issues/7326)) ([a734938](https://github.com/kiva/ui/commit/a7349387460a9d4dcab22ec81bdd6c308426cf2f))
+* mp-3324 sticky lend box on desktop for new user bp experiment ([#7341](https://github.com/kiva/ui/issues/7341)) ([79b9596](https://github.com/kiva/ui/commit/79b9596dc747427b48991b1b52a9c3f87781d019))
+* mp-3342 write user preferences per key with setUserPreference ([#7334](https://github.com/kiva/ui/issues/7334)) ([56c0ebe](https://github.com/kiva/ui/commit/56c0ebe8b8a735264b3f76b1b7552d66d729bafa))
+* mp-3402 track expanding the new accordions on the new borrower profie ([#7343](https://github.com/kiva/ui/issues/7343)) ([161b9b5](https://github.com/kiva/ui/commit/161b9b578b49b4fa61e0f787ab0ae8c3a20a45a1))
+* refined implementation (edits to match design mock better) ([623d06d](https://github.com/kiva/ui/commit/623d06dadad98c348a83a64e03b3fd3c1db7dff5))
+* removed lifetimeStatsError flag, revised styling on share button ([ee39714](https://github.com/kiva/ui/commit/ee39714d9a3b0fb8221bfc49e3fb71db5aa497d2))
+* replace live loans ML recommendations with personalized FLSS sort ([#7333](https://github.com/kiva/ui/issues/7333)) ([3edf2dd](https://github.com/kiva/ui/commit/3edf2dd4cf01dcd6fa4f2c53310d1d2a884b8721))
+
+### 🐛 Bugfixes
+
+* cit-5483 apply the lend cta default amount once loan and user data load ([929be46](https://github.com/kiva/ui/commit/929be465d3c6479afbc52c65f1090836a025c4a8))
+* mp-3352 skip basket bubble when header basket link is hidden ([#7338](https://github.com/kiva/ui/issues/7338)) ([6913f62](https://github.com/kiva/ui/commit/6913f623cbfe308628700084a708607db0a1e3d1))
+* mp-3401 highlight one arrow at a time and keep the modal size wh… ([#7342](https://github.com/kiva/ui/issues/7342)) ([114d711](https://github.com/kiva/ui/commit/114d7115c5208709af003495d667bb5e77ba2373))
+* mp-3441 update the why loans copy on the new borrower profile ([#7346](https://github.com/kiva/ui/issues/7346)) ([2e35a94](https://github.com/kiva/ui/commit/2e35a94dd005862ab5d1d33fc0193f585d30e426))
+* slash removal ([09b9ba3](https://github.com/kiva/ui/commit/09b9ba3e8ff119ced2edde69d2b30e5961cb6abc))
+
+### 🧹 Chores
+
+* **loan-channels:** delete the dead loan channel query map fork and single-category carousel ([a7a80ac](https://github.com/kiva/ui/commit/a7a80acd5fc621fdd5647e715f45b5fdeeda34b5))
+
 ## [3.97.0](https://github.com/kiva/ui/compare/v3.96.0...v3.97.0) (2026-10-13)
 
 ### 🎉 New Features
