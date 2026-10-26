@@ -70,6 +70,16 @@ describe('usePriorityMyKivaContent', () => {
 		expect(content).toEqual(defaults);
 	});
 
+	it('fills the defaults when an empty object comes back as an empty list', async () => {
+		const { content } = await renderContent('[]');
+		expect(content).toEqual(defaults);
+	});
+
+	it('fills the defaults when the preference is true', async () => {
+		const { content } = await renderContent('true');
+		expect(content).toEqual(defaults);
+	});
+
 	it('ignores fields of the wrong type', async () => {
 		const { content } = await renderContent(JSON.stringify({
 			bdayCardName: 5,
@@ -84,7 +94,7 @@ describe('usePriorityMyKivaContent', () => {
 		expect(content).toBe('unset');
 	});
 
-	it.each(['true', '[]', 'not json'])('stays unset when the preference is %s', async raw => {
+	it.each(['false', '"yes"', '[1]', 'not json'])('stays unset when the preference is %s', async raw => {
 		const { content } = await renderContent(raw);
 		expect(content).toBe('unset');
 	});

@@ -15,15 +15,21 @@ export const preFetchOperations = [operation];
 
 const readString = value => (typeof value === 'string' ? value : '');
 
+const isPlainObject = value => !!value && typeof value === 'object' && !Array.isArray(value);
+
+// The API stores preferences as PHP arrays, so a stored `{}` reads back as `[]`
+const isEmptyList = value => Array.isArray(value) && value.length === 0;
+
 const decodePriorityContent = raw => {
 	if (typeof raw !== 'string') return undefined;
-	let value;
+	let parsed;
 	try {
-		value = JSON.parse(raw);
+		parsed = JSON.parse(raw);
 	} catch {
 		return undefined;
 	}
-	if (!value || typeof value !== 'object' || Array.isArray(value)) return undefined;
+	if (parsed !== true && !isEmptyList(parsed) && !isPlainObject(parsed)) return undefined;
+	const value = isPlainObject(parsed) ? parsed : {};
 	return {
 		bdayCardName: readString(value.bdayCardName),
 		bdayCardLinkOverride: readString(value.bdayCardLinkOverride),
