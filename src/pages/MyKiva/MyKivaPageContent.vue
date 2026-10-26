@@ -14,7 +14,7 @@
 			/>
 		</section>
 		<MyKivaFeaturedSlot
-			v-if="goalsRowEnabled && shouldRenderFeaturedSlot"
+			v-if="showFeaturedSlot"
 			:key="`featured-slot-${goalRefreshKey}`"
 			:user-first-name="userInfo?.userAccount?.firstName"
 			:hero-tiered-achievements="heroTieredAchievements"
@@ -454,6 +454,9 @@ export default {
 	computed: {
 		showNextStepsRow() {
 			return !this.priorityContent || this.priorityContent.showNextStepsOverride;
+		},
+		showFeaturedSlot() {
+			return this.goalsRowEnabled && this.shouldRenderFeaturedSlot && this.showNextStepsRow;
 		},
 		userBalance() {
 			return this.userInfo.userAccount?.balance ?? '';

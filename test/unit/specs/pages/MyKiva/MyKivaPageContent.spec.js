@@ -49,6 +49,31 @@ describe('MyKivaPageContent', () => {
 		});
 	});
 
+	describe('showFeaturedSlot', () => {
+		const callComputed = overrides => MyKivaPageContent.computed.showFeaturedSlot.call({
+			goalsRowEnabled: true,
+			shouldRenderFeaturedSlot: true,
+			showNextStepsRow: true,
+			...overrides,
+		});
+
+		it('shows the slot when the goals row is enabled and the slot should render', () => {
+			expect(callComputed()).toBe(true);
+		});
+
+		it('hides the slot outside the goals row experiment', () => {
+			expect(callComputed({ goalsRowEnabled: false })).toBe(false);
+		});
+
+		it('hides the slot when it has nothing to show', () => {
+			expect(callComputed({ shouldRenderFeaturedSlot: false })).toBe(false);
+		});
+
+		it('hides the slot along with the next steps row', () => {
+			expect(callComputed({ showNextStepsRow: false })).toBe(false);
+		});
+	});
+
 	describe('allBadgesCompleted', () => {
 		const callComputed = heroBadgeData => {
 			const context = {
