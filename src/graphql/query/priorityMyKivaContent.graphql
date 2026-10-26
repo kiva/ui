@@ -1,0 +1,6 @@
+query PriorityMyKivaContent {
+	my {
+		id
+		userPreference(key: "showPriorityMyKivaContent")
+	}
+}

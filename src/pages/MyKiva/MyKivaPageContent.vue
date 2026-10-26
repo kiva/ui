@@ -24,7 +24,15 @@
 			@edit-click="openEditGoalSettingModal"
 			@view-goal-recap="openGoalRecapFromCard"
 		/>
-		<section class="!tw-mt-2">
+		<ForYourFamilySection
+			v-if="priorityContent"
+			class="tw-mt-4"
+			:bday-card-name="priorityContent.bdayCardName"
+			:bday-card-link-override="priorityContent.bdayCardLinkOverride"
+			:lend-link-override="priorityContent.lendLinkOverride"
+			:impact-link-override="priorityContent.impactLinkOverride"
+		/>
+		<section v-if="showNextStepsRow" class="!tw-mt-2">
 			<LendingStats
 				ref="lendingStatsRef"
 				:hero-slides="heroSlides"
@@ -248,6 +256,8 @@ import { withAiPills } from '#src/util/aiLoanPillsUtils';
 import { formatPossessiveName } from '#src/util/stringParserUtils';
 import BadgesSectionV2 from '#src/components/MyKiva/BadgesSectionV2';
 import FundraisersSection from '#src/components/MyKiva/FundraisersSection';
+import ForYourFamilySection from '#src/components/MyKiva/ForYourFamilySection';
+import usePriorityMyKivaContent from '#src/composables/usePriorityMyKivaContent';
 import { getContentfulEntries } from '#src/util/contentfulUtils';
 
 const IMPACT_THRESHOLD = 25;
@@ -280,6 +290,7 @@ export default {
 		BailoutChips,
 		BadgesSectionV2,
 		FundraisersSection,
+		ForYourFamilySection,
 		GoalInReviewModal,
 		KvMaterialIcon,
 		KvTooltip,
@@ -391,6 +402,8 @@ export default {
 			isTieredAchievementComplete,
 		} = useBadgeData();
 
+		const { priorityContent } = usePriorityMyKivaContent();
+
 		return {
 			getFinishGoalHref,
 			getLoanFindingUrl,
@@ -405,6 +418,7 @@ export default {
 			hasSubmittedGoalFeedbackForYear: goalData.hasSubmittedGoalFeedbackForYear,
 			setGoalFeedbackSubmittedPreference: goalData.setGoalFeedbackSubmittedPreference,
 			loadGoalPreferences: goalData.loadPreferences,
+			priorityContent,
 		};
 	},
 	data() {
@@ -438,6 +452,9 @@ export default {
 		};
 	},
 	computed: {
+		showNextStepsRow() {
+			return !this.priorityContent || this.priorityContent.showNextStepsOverride;
+		},
 		userBalance() {
 			return this.userInfo.userAccount?.balance ?? '';
 		},

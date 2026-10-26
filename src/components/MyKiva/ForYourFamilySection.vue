@@ -47,6 +47,7 @@
 </template>
 
 <script setup>
+import { computed } from 'vue';
 import { KvButton } from '@kiva/kv-components';
 import birthdayCandlesImg from '#src/assets/images/my-kiva/for-your-family/birthday-candles.jpg';
 import handsHeartSvg from '#src/assets/images/my-kiva/for-your-family/hands-heart.svg?url';
@@ -56,13 +57,32 @@ import personAmanSvg from '#src/assets/images/my-kiva/for-your-family/person-ama
 
 defineOptions({ name: 'ForYourFamilySection' });
 
-const cards = [
+const props = defineProps({
+	bdayCardName: {
+		type: String,
+		default: '',
+	},
+	bdayCardLinkOverride: {
+		type: String,
+		default: '',
+	},
+	lendLinkOverride: {
+		type: String,
+		default: '',
+	},
+	impactLinkOverride: {
+		type: String,
+		default: '',
+	},
+});
+
+const cards = computed(() => [
 	{
 		key: 'birthday',
-		title: 'Happy birthday Tanya!',
+		title: props.bdayCardName ? `Happy birthday ${props.bdayCardName}!` : 'Happy birthday!',
 		body: 'You have funds ready to lend.',
 		ctaText: 'Get started',
-		href: '/lend',
+		href: props.bdayCardLinkOverride || '/lend',
 		variant: 'primary',
 		trackingLabel: 'for-your-family-birthday',
 	},
@@ -71,7 +91,7 @@ const cards = [
 		title: 'Involve the whole family.',
 		body: 'Discuss how the borrower’s life differs from yours.',
 		ctaText: 'Browse loans',
-		href: '/lend',
+		href: props.lendLinkOverride || '/lend',
 		variant: 'secondary',
 		trackingLabel: 'for-your-family-browse-loans',
 	},
@@ -79,11 +99,11 @@ const cards = [
 		key: 'impact',
 		title: 'See who you helped anytime.',
 		ctaText: 'View your impact',
-		href: '/portfolio',
+		href: props.impactLinkOverride || '/portfolio',
 		variant: 'secondary',
 		trackingLabel: 'for-your-family-view-impact',
 	},
-];
+]);
 </script>
 
 <style lang="postcss" scoped>

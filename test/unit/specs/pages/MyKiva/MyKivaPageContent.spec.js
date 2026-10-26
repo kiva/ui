@@ -33,6 +33,22 @@ describe('MyKivaPageContent', () => {
 		});
 	});
 
+	describe('showNextStepsRow', () => {
+		const callComputed = priorityContent => MyKivaPageContent.computed.showNextStepsRow.call({ priorityContent });
+
+		it('shows the row when the lender has no priority content', () => {
+			expect(callComputed(undefined)).toBe(true);
+		});
+
+		it('hides the row behind priority content', () => {
+			expect(callComputed({ showNextStepsOverride: false })).toBe(false);
+		});
+
+		it('shows the row alongside priority content when overridden', () => {
+			expect(callComputed({ showNextStepsOverride: true })).toBe(true);
+		});
+	});
+
 	describe('allBadgesCompleted', () => {
 		const callComputed = heroBadgeData => {
 			const context = {
