@@ -1,6 +1,6 @@
 {
 	"name": "kvue",
-	"version": "3.97.0",
+	"version": "3.98.0",
 	"description": "The Kiva ui",
 	"author": "braincrave",
 	"private": true,
@@ -46,7 +46,7 @@
 		"@graphql-tools/url-loader": "^7.17.18",
 		"@kiva/kv-analytics": "^1.6.0",
 		"@kiva/kv-components": "^11.1.0",
-		"@kiva/kv-shop": "^3.10.3",
+		"@kiva/kv-shop": "^3.11.2",
 		"@kiva/kv-tokens": "^5.0.1",
 		"@mdi/js": "^7.4.47",
 		"@opentelemetry/api": "^1.7.0",

@@ -345,6 +345,79 @@ describe('JourneyCardCarousel', () => {
 		});
 	});
 
+	describe('Holiday fundraiser next step', () => {
+		const mountForHolidayFundraiser = props => mount(JourneyCardCarousel, {
+			props: {
+				inLendingStats: true,
+				slidesNumber: 3,
+				slides: [],
+				heroTieredAchievements: [],
+				heroBadgeData: [],
+				userInfo: { userPreferences: { preferences: '{}' } },
+				...props,
+			},
+			global: {
+				provide: { apollo: {}, cookieStore: new CookieStore({}), $kvTrackEvent: vi.fn() },
+				directives: { kvTrackEvent: () => ({}) },
+				stubs: {
+					MyKivaCard: true,
+					MyKivaSharingModal: true,
+					NextYearGoalCard: true,
+					MyKivaEmailUpdatesTransition: true,
+					MyKivaLatestLoanCard: true,
+					MyKivaSurveyCard: true,
+					AlmostFundedNextStep: true,
+					ColombiaReliefNextStep: true,
+					HolidayFundraiserNextStep: true,
+				},
+			},
+		});
+
+		const slotOrder = wrapper => wrapper.findAll('.kv-carousel-stub > *')
+			.map(el => el.element.tagName.toLowerCase());
+
+		it('does not render when showHolidayFundraiserCard is false', () => {
+			const wrapper = mountForHolidayFundraiser({ showHolidayFundraiserCard: false });
+			expect(wrapper.findComponent({ name: 'HolidayFundraiserNextStep' }).exists()).toBe(false);
+		});
+
+		it('takes the slot right after the goal card, ahead of the other next steps', () => {
+			const wrapper = mountForHolidayFundraiser({
+				showHolidayFundraiserCard: true,
+				showCoRecoveryFundCard: true,
+				showLendingNextStepsCards: true,
+				userGoal: { category: ID_WOMENS_EQUALITY, target: 5 },
+				goalProgressLoading: false,
+			});
+
+			expect(slotOrder(wrapper)).toEqual([
+				'next-year-goal-card-stub',
+				'holiday-fundraiser-next-step-stub',
+				'colombia-relief-next-step-stub',
+			]);
+		});
+
+		it('leads a row with no slide limit, which skips the other priority cards', () => {
+			const wrapper = mountForHolidayFundraiser({
+				showHolidayFundraiserCard: true,
+				slidesNumber: 0,
+				hideGoalCard: true,
+			});
+
+			expect(slotOrder(wrapper)[0]).toBe('holiday-fundraiser-next-step-stub');
+		});
+
+		it('comes first when there is no goal card', () => {
+			const wrapper = mountForHolidayFundraiser({
+				showHolidayFundraiserCard: true,
+				showLendingNextStepsCards: true,
+				hideGoalCard: true,
+			});
+
+			expect(slotOrder(wrapper)[0]).toBe('holiday-fundraiser-next-step-stub');
+		});
+	});
+
 	describe('goal recap entry point', () => {
 		const GOAL_YEAR = new Date().getFullYear();
 

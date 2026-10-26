@@ -4,6 +4,10 @@ import {
 	myFTDQuery,
 	removeCredit
 } from '#src/util/checkoutUtils';
+import CookieStore from '#src/util/cookieStore';
+import {
+	ApolloClient, ApolloLink, InMemoryCache, Observable, gql,
+} from '@apollo/client/core';
 
 describe('checkoutUtils.js', () => {
 	describe('formatTransactionData', () => {
@@ -191,7 +195,9 @@ describe('checkoutUtils.js', () => {
 
 			expect(mockApollo.query).toHaveBeenCalledTimes(1);
 			expect(mockApollo.query).toHaveBeenCalledWith({
-				query: expect.any(Object)
+				query: expect.any(Object),
+				errorPolicy: 'all',
+				fetchPolicy: 'network-only',
 			});
 			expect(result.data.my.userAccount.firstName).toBe('John');
 			expect(result.data.my.userAccount.hasEverLoggedIn).toBe(true);
@@ -291,6 +297,83 @@ describe('checkoutUtils.js', () => {
 				lifecycleStage: 'lapsedChurned',
 				daysSinceLastLoan: 900,
 				reEngagementEvent: 'lapsedLenderReEngaged',
+			});
+		});
+
+		describe('guest checkout', () => {
+			// What the API returns for a guest's `my`
+			const guestLookup = {
+				data: { my: null },
+				errors: [{
+					message: 'You must be authenticated',
+					extensions: { code: 'api.authenticationRequired' },
+				}],
+			};
+			const guestApollo = () => ({ query: vi.fn().mockResolvedValue(guestLookup) });
+
+			it('marks a guest deposit from a browser that has not deposited before as FTD', async () => {
+				const result = await getTransactionAnalyticsData(guestApollo(), null, {
+					cookieStore: new CookieStore({}),
+					depositTotal: '5.00',
+				});
+
+				expect(result.isFTD).toBe(true);
+			});
+
+			it('leaves FTD unknown for a guest whose browser has deposited before', async () => {
+				const result = await getTransactionAnalyticsData(guestApollo(), null, {
+					cookieStore: new CookieStore({ kvu_db: 'true' }),
+					depositTotal: '5.00',
+				});
+
+				expect(result.isFTD).toBeUndefined();
+			});
+
+			it('leaves FTD unknown for a guest checkout with no deposit', async () => {
+				const result = await getTransactionAnalyticsData(guestApollo(), null, {
+					cookieStore: new CookieStore({}),
+					depositTotal: 0,
+				});
+
+				expect(result.isFTD).toBeUndefined();
+			});
+
+			// The checkout page queries `my` on load, which leaves `my: null` in the cache for a guest
+			it('marks a guest as FTD when an earlier query already cached their `my` as null', async () => {
+				let requests = 0;
+				const apollo = new ApolloClient({
+					cache: new InMemoryCache(),
+					link: new ApolloLink(() => {
+						requests += 1;
+						return Observable.of(guestLookup);
+					}),
+					defaultOptions: { query: { errorPolicy: 'all' } },
+				});
+				await apollo.query({ query: gql`query initializeCheckout { my { id userAccount { id } } }` });
+
+				const result = await getTransactionAnalyticsData(apollo, null, {
+					cookieStore: new CookieStore({}),
+					depositTotal: '5.00',
+				});
+
+				expect(requests).toBe(2);
+				expect(result.isFTD).toBe(true);
+			});
+
+			it('never applies the guest rule to a lookup that failed for another reason', async () => {
+				const failedApollo = {
+					query: vi.fn().mockResolvedValue({
+						data: { my: null },
+						errors: [{ message: 'Internal error', extensions: { code: 'api.error' } }],
+					}),
+				};
+
+				const result = await getTransactionAnalyticsData(failedApollo, null, {
+					cookieStore: new CookieStore({}),
+					depositTotal: '5.00',
+				});
+
+				expect(result.isFTD).toBeUndefined();
 			});
 		});
 

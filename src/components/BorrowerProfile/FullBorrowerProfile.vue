@@ -125,19 +125,21 @@
 				</div>
 			</sidebar-container>
 		</div>
-		<!-- New user version on desktop: the lend box above stays in its place, and this second one fades in
-			and sticks while reading. It's added only on desktop, once the page has loaded. -->
+		<!-- New user version, desktop after load: a second lend box that fades in and sticks like the control's -->
 		<div
 			v-if="isNewUserBpVariant && isLarge"
-			ref="stickyPanel"
-			class="tw-hidden lg:tw-block lg:tw-fixed lg:tw-inset-x-0 lg:tw-top-12 tw-pointer-events-none tw-z-docked
-				lg:tw-transition-opacity lg:tw-duration-700 lg:tw-ease-in-out"
-			:class="{ 'lg:tw-opacity-0': !stickyLendBoxVisible }"
+			class="tw-hidden lg:tw-block lg:tw-absolute lg:tw-top-0 lg:tw-h-full lg:tw-w-full
+				tw-pointer-events-none tw-z-docked"
 			:inert="!stickyLendBoxVisible"
 			data-testid="bp-sticky-lend-box"
 		>
-			<sidebar-container>
-				<div ref="stickyStack" class="tw-flex tw-flex-col" style="max-height: calc(100vh - 7.5rem)">
+			<sidebar-container
+				ref="stickyBox"
+				class="lg:tw-sticky lg:tw-top-12 lg:tw-pb-8
+					lg:tw-transition-opacity lg:tw-duration-700 lg:tw-ease-in-out"
+				:class="{ 'lg:tw-opacity-0': !stickyLendBoxVisible }"
+			>
+				<div class="tw-flex tw-flex-col" style="max-height: calc(100vh - 7.5rem)">
 					<lend-cta
 						class="tw-pointer-events-auto"
 						:loan-id="loanId"
@@ -247,16 +249,13 @@
 			</content-container>
 		</div>
 		<content-container>
-			<!-- Always rendered, so the sticky lend box knows where to fade out even when a loan has no tags -->
-			<div ref="tagsSection" data-testid="bp-tags-section">
-				<loan-tags
-					v-if="showTags"
-					class="tw-my-5 md:tw-my-6 lg:tw-my-8"
-					:loan-id="loanId"
-					:is-logged-in="isLoggedIn"
-					@hide-section="showTags = false"
-				/>
-			</div>
+			<loan-tags
+				v-if="showTags"
+				class="tw-my-5 md:tw-my-6 lg:tw-my-8"
+				:loan-id="loanId"
+				:is-logged-in="isLoggedIn"
+				@hide-section="showTags = false"
+			/>
 			<loan-comments
 				v-if="showAddCommentsSection"
 				class="tw-mb-5 md:tw-mb-6 lg:tw-mb-8"

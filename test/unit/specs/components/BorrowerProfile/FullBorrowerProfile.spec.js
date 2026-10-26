@@ -375,12 +375,32 @@ describe('FullBorrowerProfile new user version', () => {
 				.toEqual([undefined, undefined]);
 		});
 
-		it('keeps the tags section for a loan without tags, so the sticky lend box can stop there', async () => {
+		it('version b sticks the second lend box in its own article-high column, beside the top one', async () => {
 			const wrapper = mountProfile({ isNewUserVariant: true });
+			await wrapper.vm.$nextTick();
+			const stickyColumn = wrapper.find('[data-testid="bp-sticky-lend-box"]');
+			const topColumn = wrapper.findAllComponents(SidebarContainer)[0].element.parentElement;
 
-			await wrapper.setData({ showTags: false });
+			expect(stickyColumn.classes())
+				.toEqual(expect.arrayContaining(['lg:tw-absolute', 'lg:tw-top-0', 'lg:tw-h-full']));
+			expect(stickyColumn.element.parentElement).toBe(topColumn.parentElement);
+			expect(stickyColumn.findComponent(SidebarContainer).classes())
+				.toEqual(expect.arrayContaining(['lg:tw-sticky', 'lg:tw-top-12', 'lg:tw-pb-8']));
+		});
 
-			expect(wrapper.find('[data-testid="bp-tags-section"]').exists()).toBe(true);
+		it('version b fades the sticky lend box itself, not its article-high column', async () => {
+			const wrapper = mountProfile({ isNewUserVariant: true });
+			await flushPromises();
+			const column = wrapper.find('[data-testid="bp-sticky-lend-box"]');
+			const box = column.findComponent(SidebarContainer);
+
+			expect(box.classes()).toEqual(expect.arrayContaining(['lg:tw-transition-opacity', 'lg:tw-opacity-0']));
+			expect(column.classes()).not.toContain('lg:tw-opacity-0');
+
+			wrapper.vm.stickyLendBoxVisible = true;
+			await wrapper.vm.$nextTick();
+
+			expect(box.classes()).not.toContain('lg:tw-opacity-0');
 		});
 
 		it('version b shows the loan details only under the sticky lend box, not beside the top card', async () => {
