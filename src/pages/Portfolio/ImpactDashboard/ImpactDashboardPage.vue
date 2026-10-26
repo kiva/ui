@@ -73,7 +73,6 @@ import { GOAL_STATUS, GOALS_CURRENT_YEAR } from '#src/composables/useGoalData';
 import useGoalInReview, { getGoalInReviewNow } from '#src/composables/useGoalInReview';
 import GoalInReviewModal from '#src/components/MyKiva/GoalInReview/GoalInReviewModal';
 import portfolioQuery from '#src/graphql/query/portfolioQuery.graphql';
-import badgeGoalMixin from '#src/plugins/badge-goal-mixin';
 import { hasLoanFunFactFootnote } from '#src/util/myKivaUtils';
 import { isDisasterReliefFundOnlySupporter } from '#src/util/givingFundUtils';
 import { KvGrid, KvPageContainer } from '@kiva/kv-components';
@@ -162,7 +161,6 @@ export default {
 			userId: null,
 		};
 	},
-	mixins: [badgeGoalMixin],
 	apollo: {
 		preFetch(config, client) {
 			return client.query({ query: portfolioQuery });
@@ -281,24 +279,9 @@ export default {
 		});
 		this.isEmptyGoal = !goalInProgress && !goalAchieved;
 	},
-	async mounted() {
+	mounted() {
 		this.loadEducationPost();
 		this.openGoalRecapIfDue();
-
-		if (this.$route?.query?.goal_saved) {
-			const badgeName = this.$route?.query?.goal_saved ?? '';
-
-			if (!this.userPreferences?.id) {
-				const createPreferences = await this.createUserPreferences();
-				this.userPreferences = createPreferences?.data?.my?.createUserPreferences ?? {};
-			}
-
-			this.storeGoal({ userPreferences: this.userPreferences, badgeName }).then(() => {
-				this.$showTipMsg('Goal saved');
-			}).catch(() => {
-				this.$showTipMsg('There was a problem saving your goal', 'error');
-			});
-		}
 	}
 };
 </script>

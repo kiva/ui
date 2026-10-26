@@ -1,7 +1,7 @@
 <template>
 	<div
 		ref="wrapper"
-		:class="['lg:tw-mb-1', { 'md:tw-px-4': isSticky }]"
+		:class="['lg:tw-mb-1', { 'md:tw-px-4': isSticky, 'lg:tw-px-0': newUserBpEnabled }]"
 		:style="wrapperStyle"
 	>
 		<kv-atb-modal-container
@@ -31,7 +31,10 @@
 						'md:tw-px-4': isSticky,
 						'tw-bg-transparent md:tw-bg-primary': !isSticky,
 						'tw-bg-primary': isSticky,
-						'tw-border-t tw-border-tertiary tw-px-2.5': isSticky
+						'tw-border-t tw-border-tertiary tw-px-2.5': isSticky,
+						'lg:tw-border-none': newUserBpEnabled,
+						'lg:tw-rounded-b': newUserBpEnabled && !showSupportersRow,
+						'lg:tw-rounded-b-none': showSupportersRow,
 					},
 					'lg:tw-rounded-t',
 					'lg:tw-px-4',
@@ -69,14 +72,14 @@
 							>
 								<label
 									v-if="hideShowLendDropdown && !isLessThan25"
-									for="LoanAmountDropdown"
+									:for="stickyClone ? 'StickyLoanAmountDropdown' : 'LoanAmountDropdown'"
 									class="tw-sr-only"
 								>
 									Lend amount
 								</label>
 								<kv-ui-select
 									v-if="hideShowLendDropdown && !isLessThan25"
-									id="LoanAmountDropdown"
+									:id="stickyClone ? 'StickyLoanAmountDropdown' : 'LoanAmountDropdown'"
 									class="tw-mr-2.5 tw-min-w-12"
 									data-testid="bp-lend-cta-amount-dropdown"
 									v-model="selectedOption"
@@ -214,6 +217,13 @@
 
 					</span>
 
+					<loan-matching-info
+						v-if="newUserBpEnabled"
+						class="tw-hidden lg:tw-flex tw-mb-2"
+						:loan="loan"
+						:tooltip-id="stickyClone ? 'sticky-lend-box-matching-tooltip' : 'lend-box-matching-tooltip'"
+						tooltip-placement="bottom"
+					/>
 					<slot v-if="!isSticky" name="sharebutton"></slot>
 					<p
 						v-if="freeCreditWarning"
@@ -229,40 +239,53 @@
 					>
 						All shares reserved
 					</p>
-					<hr
-						class="lg:tw-block tw-border-tertiary tw-w-full tw-my-2"
-						:class="[
-							{
-								'lg:tw-hidden': showDetailsInRail,
-								'tw-hidden': isSticky,
-								'tw-block': !isSticky,
-							}
-						]"
-					>
-					<div
-						class="lg:tw-block tw-flex lg:tw-justify-center tw-w-full"
-						:class="[
-							{
-								'tw-justify-between': isLoggedIn,
-								'tw-justify-end': !isLoggedIn,
-								'tw-hidden': isSticky,
-								'lg:tw-hidden': showDetailsInRail,
-							}
-						]"
-					>
-						<loan-bookmark
-							v-if="isLoggedIn"
-							data-testid="bp-lend-cta-loan-bookmark"
-							:loan-id="loanId"
-							class="tw-inline-block lg:tw-hidden"
-						/>
-						<jump-links
-							class="tw-block lg:tw-mb-1.5 md:tw-mb-3"
-							data-testid="bp-lend-cta-jump-links"
-						/>
-					</div>
+					<template v-if="newUserBpEnabled">
+						<hr class="tw-hidden lg:tw-block tw-border-tertiary tw-w-full tw-my-2">
+						<nonprofit-trust-row class="tw-hidden lg:tw-flex tw-mb-2" />
+					</template>
+					<!-- Divider and jump links; the new user version shows these actions in the top card -->
+					<template v-if="!hideJumpLinks">
+						<hr
+							class="lg:tw-block tw-border-tertiary tw-w-full tw-my-2"
+							:class="[
+								{
+									'lg:tw-hidden': showDetailsInRail,
+									'tw-hidden': isSticky,
+									'tw-block': !isSticky,
+								}
+							]"
+						>
+						<div
+							class="lg:tw-block tw-flex lg:tw-justify-center tw-w-full"
+							:class="[
+								{
+									'tw-justify-between': isLoggedIn,
+									'tw-justify-end': !isLoggedIn,
+									'tw-hidden': isSticky,
+									'lg:tw-hidden': showDetailsInRail,
+								}
+							]"
+						>
+							<loan-bookmark
+								v-if="isLoggedIn"
+								data-testid="bp-lend-cta-loan-bookmark"
+								:loan-id="loanId"
+								class="tw-inline-block lg:tw-hidden"
+							/>
+							<jump-links
+								class="tw-block lg:tw-mb-1.5 md:tw-mb-3"
+								data-testid="bp-lend-cta-jump-links"
+							/>
+						</div>
+					</template>
 				</div>
 			</kv-grid>
+
+			<loan-supporters-row
+				v-if="showSupportersRow"
+				class="tw-hidden lg:tw-flex lg:tw-px-2 lg:tw-rounded-b tw-text-base"
+				:loan="loan"
+			/>
 
 			<transition
 				enter-active-class="tw-transition-transform tw-duration-700 tw-delay-300"
@@ -398,10 +421,13 @@ import LoanBookmark from '#src/components/BorrowerProfile/LoanBookmark';
 import LendAmountButton from '#src/components/LoanCards/Buttons/LendAmountButton';
 import CompleteLoanWrapper from '#src/components/BorrowerProfile/CompleteLoanWrapper';
 import SimultaneousMatchingInfo from '#src/components/BorrowerProfile/SimultaneousMatchingInfo';
+import LoanMatchingInfo from '#src/components/BorrowerProfile/LoanMatchingInfo';
+import NonprofitTrustRow from '#src/components/BorrowerProfile/NonprofitTrustRow';
+import LoanSupportersRow from '#src/components/BorrowerProfile/LoanSupportersRow';
 
 import KvIcon from '#src/components/Kv/KvIcon';
 import {
-	KvSelect as KvUiSelect, KvMaterialIcon, KvButton as KvUiButton, KvGrid
+	KvSelect as KvUiSelect, KvMaterialIcon, KvButton as KvUiButton, KvGrid, getDefaultLoanShareOption,
 } from '@kiva/kv-components';
 import basketModalMixin from '#src/plugins/basket-modal-mixin';
 import KvAtbModalContainer from '#src/components/WwwFrame/Header/KvAtbModalContainer';
@@ -518,6 +544,24 @@ export default {
 			type: Boolean,
 			default: false,
 		},
+		// New user version: the top card holds "Loan details" and "Share", so the lend box drops its jump links
+		hideJumpLinks: {
+			type: Boolean,
+			default: false,
+		},
+		newUserBpEnabled: {
+			type: Boolean,
+			default: false,
+		},
+		// The sticky clone of the lend box: uses its own ids and skips the view tracking
+		stickyClone: {
+			type: Boolean,
+			default: false,
+		},
+		defaultLoanShareAmount: {
+			type: Number,
+			default: undefined,
+		},
 	},
 	components: {
 		LendAmountButton,
@@ -531,6 +575,9 @@ export default {
 		CompleteLoanWrapper,
 		KvAtbModalContainer,
 		SimultaneousMatchingInfo,
+		LoanMatchingInfo,
+		NonprofitTrustRow,
+		LoanSupportersRow,
 	},
 	setup() {
 		const { enableMultiMatching, multiMatchingResolved } = useMultiMatching();
@@ -545,6 +592,7 @@ export default {
 			mdiLightningBolt,
 			defaultSelectorAmount: 25,
 			selectedOption: '25',
+			hasLenderSelectedAmount: false,
 			loanAmount: loan?.loanAmount ?? '',
 			isExpiringSoon: loan?.loanFundraisingInfo?.isExpiringSoon ?? false,
 			fundedAmount: loan?.loanFundraisingInfo?.fundedAmount ?? '',
@@ -562,7 +610,8 @@ export default {
 			loanLoading: !hasData,
 			userLoading: true,
 			hasFreeCredit: false,
-			isSticky: false,
+			// The new user version keeps the lend bar fixed at the bottom below desktop
+			isSticky: this.newUserBpEnabled,
 			wrapperHeight: 0,
 			wrapperObserver: null,
 			name: loan?.name ?? '',
@@ -627,7 +676,10 @@ export default {
 				this.basketSize = data?.shop?.nonTrivialItemCount || 0;
 				this.userLoading = false;
 
-				this.initializeMatchingHighlightExp();
+				// The new user version shows its own matching text instead of the matching highlight
+				if (!this.newUserBpEnabled) {
+					this.initializeMatchingHighlightExp();
+				}
 			},
 		},
 	],
@@ -680,8 +732,9 @@ export default {
 					entries.forEach(entry => {
 						if (entry.target === this.$refs?.wrapper) {
 							if (entry.intersectionRatio > 0) {
-								// Wrapper is in the viewport, so lend cta should NOT be stuck to the bottom
-								this.isSticky = false;
+								// Wrapper is in the viewport, so lend cta should NOT be stuck to the bottom,
+								// except in the new user version, where it always is
+								this.isSticky = this.newUserBpEnabled;
 							} else {
 								// Wrapper is NOT the viewport, so lend cta should be stuck to the bottom
 								this.wrapperHeight = entry.boundingClientRect.height;
@@ -697,7 +750,21 @@ export default {
 				this.wrapperObserver.disconnect();
 			}
 		},
+		applyDefaultSelectedOption() {
+			if (this.hasLenderSelectedAmount || this.userLoading || this.unreservedAmount === '') {
+				return;
+			}
+			const selectedOption = getLendCtaSelectedOption(
+				this.cookieStore,
+				this.enableFiveDollarsNotes,
+				this.$route.query.utm_campaign,
+				this.unreservedAmount,
+				this.userBalance,
+			);
+			this.selectedOption = this.defaultLoanShareOption ?? selectedOption;
+		},
 		trackLendAmountSelection(selectedDollarAmount) {
+			this.hasLenderSelectedAmount = true;
 			this.$kvTrackEvent(
 				'Lending',
 				'Modify lend amount',
@@ -705,7 +772,7 @@ export default {
 			);
 		},
 		advanceStatsSlot() {
-			this.currentSlotStat = getNextSlotStat(this.possibleStats, this.currentSlotStat);
+			this.currentSlotStat = getNextSlotStat(this.rotatingStats, this.currentSlotStat);
 		},
 		cycleStatsSlot() {
 			// Function can be skipped if slot machine interval is already set
@@ -754,19 +821,11 @@ export default {
 				this.cycleStatsSlot();
 			}
 		},
-		unreservedAmount(newValue, previousValue) {
-			if (newValue !== previousValue && previousValue === '') {
-				this.selectedOption = getLendCtaSelectedOption(
-					this.cookieStore,
-					this.enableFiveDollarsNotes,
-					this.$route.query.utm_campaign,
-					newValue,
-					this.userBalance,
-				);
-			}
-		},
+		unreservedAmount: 'applyDefaultSelectedOption',
+		userLoading: 'applyDefaultSelectedOption',
+		defaultLoanShareOption: 'applyDefaultSelectedOption',
 		isCompleteLoanActive() {
-			if (this.isCompleteLoanActive && this.completeLoanView) {
+			if (this.isCompleteLoanActive && this.completeLoanView && !this.stickyClone) {
 				// eslint-disable-next-line
 				this.$kvTrackEvent('Borrower profile', 'Complete loan', 'view-amount-left-cta', this.loanId, this.selectedOption);
 				this.completeLoanView = false;
@@ -784,7 +843,8 @@ export default {
 		simultaneousMatchingVisibility() {
 			return this.enableMultiMatching
 				&& this.simultaneousMatching.length > 0
-				&& this.status === 'fundraising';
+				&& this.status === 'fundraising'
+				&& !this.newUserBpEnabled;
 		},
 		matchingTextVisibility() {
 			return this.possibleStats.includes('matchingText');
@@ -799,8 +859,16 @@ export default {
 				enableMultiMatching: this.enableMultiMatching,
 			});
 		},
+		// Shown in the new user version where "powered by X lenders" would show today
+		showSupportersRow() {
+			return this.newUserBpEnabled && !!this.loan && this.possibleStats.includes('lenderCount');
+		},
+		// The new user version shows matching and supporters in their own rows, so nothing rotates
+		rotatingStats() {
+			return this.newUserBpEnabled ? [] : this.possibleStats;
+		},
 		displayedSlotStat() {
-			return getDisplayedStat(this.possibleStats, this.currentSlotStat);
+			return getDisplayedStat(this.rotatingStats, this.currentSlotStat);
 		},
 		statsSlotVisibility() {
 			return !!this.displayedSlotStat;
@@ -828,6 +896,9 @@ export default {
 				priceArray.push(Number(this.unreservedAmount).toFixed());
 			}
 			return priceArray;
+		},
+		defaultLoanShareOption() {
+			return getDefaultLoanShareOption(this.defaultLoanShareAmount, this.prices);
 		},
 		lgScreenheadline() {
 			if (this.showSparkles) {
@@ -927,7 +998,8 @@ export default {
 		},
 		wrapperStyle() {
 			return {
-				paddingBottom: this.isSticky ? `${this.wrapperHeight}px` : '0',
+				// Holds the bar's place when it sticks; the new user version's bar is always fixed, so it needs none
+				paddingBottom: this.isSticky && !this.newUserBpEnabled ? `${this.wrapperHeight}px` : '0',
 			};
 		},
 		transitionEnterClasses() {

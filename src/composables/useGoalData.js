@@ -12,7 +12,7 @@ import goalSummaryQuery from '#src/graphql/query/goalSummary.graphql';
 import loanStatsByYearQuery from '#src/graphql/query/loanStatsByYear.graphql';
 import logFormatter from '#src/util/logFormatter';
 import { getTransactionTimestamp } from '#src/util/myKivaUtils';
-import { createUserPreferences, updateUserPreferences, setMyKivaGoal } from '#src/util/userPreferenceUtils';
+import { setUserPreference, setUserPreferenceKeys, setMyKivaGoal } from '#src/util/userPreferenceUtils';
 import { runLoansQuery } from '#src/util/loanSearch/dataUtils';
 import { FLSS_ORIGIN_GOAL_RECOMMENDED_LOAN } from '#src/util/flssUtils';
 
@@ -762,12 +762,7 @@ export default function useGoalData({ apollo } = {}) {
 			goals = goals.filter((_, index) => index !== goalIndex);
 		}
 
-		await updateUserPreferences(
-			apolloClient,
-			userPreferences.value,
-			parsedPrefs,
-			{ goals, hideGoalCard: false } // Reset goal card visibility when removing goal
-		);
+		await setUserPreferenceKeys(apolloClient, { goals, hideGoalCard: false });
 	};
 
 	/**
@@ -800,12 +795,7 @@ export default function useGoalData({ apollo } = {}) {
 			yearlyLoanCount.value = stats?.count || 0;
 		}
 
-		await updateUserPreferences(
-			apolloClient,
-			userPreferences.value,
-			parsedPrefs,
-			{ goals }
-		);
+		await setUserPreference(apolloClient, 'goals', goals);
 		loading.value = false;
 
 		setGoalState({ goals }); // Refresh local state after update
@@ -835,10 +825,6 @@ export default function useGoalData({ apollo } = {}) {
 	 *   Set to false when you want to delay the UI update (e.g., until modal closes)
 	 */
 	async function storeGoalPreferences(updates, updateLocalState = true) {
-		if (!userPreferences.value?.id) {
-			await createUserPreferences(apolloClient, { goals: [] });
-			await loadPreferences('network-only'); // Reload after create
-		}
 		const parsedPrefs = JSON.parse(userPreferences.value?.preferences || '{}');
 		const goals = parsedPrefs.goals || [];
 		const goalIndex = goals.findIndex(g => g.goalName === updates.goalName);
@@ -898,14 +884,7 @@ export default function useGoalData({ apollo } = {}) {
 	});
 
 	async function setHideGoalCardPreference(hide = true) {
-		const parsedPrefs = await loadPreferences('network-only');
-		const updatedPreference = { hideGoalCard: hide };
-		await updateUserPreferences(
-			apolloClient,
-			userPreferences.value,
-			parsedPrefs,
-			updatedPreference
-		);
+		await setUserPreference(apolloClient, 'hideGoalCard', hide);
 		// Persist only; do not copy the hidden preference into local state.
 		// MyKiva renders the completed card once, then hides it on the next page load.
 	}
@@ -932,13 +911,7 @@ export default function useGoalData({ apollo } = {}) {
 			const parsedPrefs = await loadPreferences('network-only');
 			const prev = parsedPrefs?.[preferenceKey] || {};
 			if (prev[year]) return;
-			const updatedPreference = { [preferenceKey]: { ...prev, [year]: true } };
-			await updateUserPreferences(
-				apolloClient,
-				userPreferences.value,
-				parsedPrefs,
-				updatedPreference
-			);
+			await setUserPreference(apolloClient, preferenceKey, { ...prev, [year]: true });
 		}
 
 		return { byYear, hasForYear, setForYear };
@@ -1083,12 +1056,7 @@ export default function useGoalData({ apollo } = {}) {
 			...userPreferences.value,
 			preferences: JSON.stringify({ ...parsedPrefs, goals: patched }),
 		};
-		await updateUserPreferences(
-			apolloClient,
-			userPreferences.value,
-			parsedPrefs,
-			{ goals: patched },
-		);
+		await setUserPreference(apolloClient, 'goals', patched);
 	}
 
 	/**
@@ -1299,13 +1267,7 @@ export default function useGoalData({ apollo } = {}) {
 				dateStarted: firstExpired.dateStarted,
 				status: firstExpired.status,
 			});
-			const fresh = await loadPreferences('network-only');
-			await updateUserPreferences(
-				apolloClient,
-				userPreferences.value,
-				fresh,
-				{ goals: renewedGoals, goalsRenewedDate: today.toISOString() },
-			);
+			await setUserPreferenceKeys(apolloClient, { goals: renewedGoals, goalsRenewedDate: today.toISOString() });
 			setGoalState({ goals: renewedGoals });
 		}
 

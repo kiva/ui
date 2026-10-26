@@ -259,42 +259,42 @@ export default function liveLoanRouter(cache) {
 	// User URL Router FLSS
 	router.use('/flss/u/:id(\\d{0,})/url/:offset(\\d{0,})', async (req, res) => {
 		await trace('live-loan.flss.user.redirectToUrl', { resource: req.path }, async () => {
-			await redirectToUrl('user', cache, req, res, QUERY_TYPE.FLSS);
+			await redirectToUrl('user', cache, req, res, QUERY_TYPE.DEFAULT);
 		});
 	});
 
 	// User IMG Router FLSS (Legacy)
 	router.use('/flss/u/:id(\\d{0,})/img/:offset(\\d{0,})', async (req, res) => {
 		await trace('live-loan.flss.user.serveImg', { resource: req.path }, async () => {
-			await serveImg('user', 'legacy', cache, req, res, QUERY_TYPE.FLSS);
+			await serveImg('user', 'legacy', cache, req, res, QUERY_TYPE.DEFAULT);
 		});
 	});
 
 	// User IMG Router FLSS (Kiva Classic)
 	router.use('/flss/u/:id(\\d{0,})/img2/:offset(\\d{0,})', async (req, res) => {
 		await trace('live-loan.flss.user.serveImg', { resource: req.path }, async () => {
-			await serveImg('user', 'classic', cache, req, res, QUERY_TYPE.FLSS);
+			await serveImg('user', 'classic', cache, req, res, QUERY_TYPE.DEFAULT);
 		});
 	});
 
 	// User IMG Router FLSS (Bundle - no CTA)
 	router.use('/flss/u/:id(\\d{0,})/bundle-img/:offset(\\d{0,})', async (req, res) => {
 		await trace('live-loan.flss.user.serveImg', { resource: req.path }, async () => {
-			await serveImg('user', 'bundle', cache, req, res, QUERY_TYPE.FLSS, MAX_BUNDLE_COUNT);
+			await serveImg('user', 'bundle', cache, req, res, QUERY_TYPE.DEFAULT, MAX_BUNDLE_COUNT);
 		});
 	});
 
 	// User IMG Router FLSS (Bundle Legacy - no CTA)
 	router.use('/flss/u/:id(\\d{0,})/bundle-img-legacy/:offset(\\d{0,})', async (req, res) => {
 		await trace('live-loan.flss.user.serveImg', { resource: req.path }, async () => {
-			await serveImg('user', 'bundle-legacy', cache, req, res, QUERY_TYPE.FLSS, MAX_BUNDLE_COUNT);
+			await serveImg('user', 'bundle-legacy', cache, req, res, QUERY_TYPE.DEFAULT, MAX_BUNDLE_COUNT);
 		});
 	});
 
 	// User IMG Router FLSS (Compact Bundle - no CTA)
 	router.use('/flss/u/:id(\\d{0,})/bundle-img-compact/:offset(\\d{0,})', async (req, res) => {
 		await trace('live-loan.flss.user.serveImg', { resource: req.path }, async () => {
-			await serveImg('user', 'compact-bundle', cache, req, res, QUERY_TYPE.FLSS, MAX_BUNDLE_COUNT);
+			await serveImg('user', 'compact-bundle', cache, req, res, QUERY_TYPE.DEFAULT, MAX_BUNDLE_COUNT);
 		});
 	});
 
@@ -429,7 +429,7 @@ export default function liveLoanRouter(cache) {
 	// Balance > 150: /live-loan/flss/u/12345/bundle-url?balance=500 -> redirects to /lend/filter
 	router.use('/flss/u/:id(\\d{0,})/bundle-url', async (req, res) => {
 		await trace('live-loan.flss.user.redirectToBundleUrl', { resource: req.path }, async () => {
-			await redirectToBundleUrl('user', cache, req, res, QUERY_TYPE.FLSS);
+			await redirectToBundleUrl('user', cache, req, res, QUERY_TYPE.DEFAULT);
 		});
 	});
 

@@ -2,6 +2,7 @@
 	<www-page
 		id="borrower-profile"
 		:data-testid="loanType"
+		:class="{ 'tw-pb-12 lg:tw-pb-0': showFullView }"
 	>
 		<full-borrower-profile
 			v-if="showFullView"
@@ -178,8 +179,9 @@ export default {
 	},
 	provide() {
 		return {
-			// 'a', 'b', or null when the visitor isn't in the experiment
-			[NEW_USER_BP_EXP_INJECT_KEY]: computed(() => this.newUserBpExpVersion),
+			// Whether the visitor sees the new user version
+			// (false for version a and for visitors outside the experiment)
+			[NEW_USER_BP_EXP_INJECT_KEY]: computed(() => this.newUserBpExpVersion === 'b'),
 		};
 	},
 	head() {

@@ -2,15 +2,10 @@ import {
 	fetchFacets,
 	fetchLoans,
 	getFlssFilters,
-	getLoanChannelVariables,
-	fetchLoanChannel,
-	getCachedLoanChannel,
-	watchLoanChannel,
 	fetchRecommendedLoans,
 } from '#src/util/flssUtils';
 import flssLoanQuery from '#src/graphql/query/flssLoansQuery.graphql';
 import flssLoanFacetsQuery from '#src/graphql/query/flssLoanFacetsQuery.graphql';
-import flssLoanChannelQuery from '#src/graphql/query/flssLoanChannel.graphql';
 import filterConfig from '#src/util/loanSearch/filterConfig';
 import loanRecommendationsQuery from '#src/graphql/query/loanRecommendationsQuery.graphql';
 
@@ -95,142 +90,6 @@ describe('flssUtils.js', () => {
 		});
 	});
 
-	describe('getLoanChannelVariables', () => {
-		it('should return variables', () => {
-			const queryMap = { sector: [1, 2, 3], sortBy: 'expiringSoon' };
-			const loanQueryVars = {
-				ids: [3],
-				offset: 10,
-				limit: 5,
-				basketId: 'asd'
-			};
-
-			const result = getLoanChannelVariables(queryMap, loanQueryVars);
-
-			expect(result.ids).toEqual(loanQueryVars.ids);
-			expect(result.filterObject).toEqual(getFlssFilters(queryMap));
-			expect(result.sortBy).toEqual(queryMap.sortBy);
-			expect(result.pageNumber).toBe(loanQueryVars.offset / loanQueryVars.limit);
-			expect(result.pageLimit).toBe(loanQueryVars.limit);
-			expect(result.basketId).toBe(loanQueryVars.basketId);
-		});
-
-		it('should use loanQueryVars as override', () => {
-			const queryMap = { sector: [1, 2, 3], sortBy: 'expiringSoon' };
-			const loanQueryVars = {
-				ids: [3],
-				offset: 10,
-				limit: 5,
-				basketId: 'asd',
-				sector: [1],
-				sortBy: 'personalized'
-			};
-
-			const result = getLoanChannelVariables(queryMap, loanQueryVars);
-
-			expect(result.ids).toEqual(loanQueryVars.ids);
-			expect(result.filterObject).toEqual(getFlssFilters(queryMap, loanQueryVars));
-			expect(result.sortBy).toEqual(loanQueryVars.sortBy);
-			expect(result.pageNumber).toBe(loanQueryVars.offset / loanQueryVars.limit);
-			expect(result.pageLimit).toBe(loanQueryVars.limit);
-			expect(result.basketId).toBe(loanQueryVars.basketId);
-		});
-
-		it('should use correct sortBy fallback', () => {
-			const queryMap = { sector: [1, 2, 3], sortBy: 'expiringSoon' };
-			const loanQueryVars = {
-				ids: [3],
-				offset: 10,
-				limit: 5,
-				basketId: 'asd',
-				sector: [1],
-				sortBy: null
-			};
-
-			const result = getLoanChannelVariables(queryMap, loanQueryVars);
-
-			expect(result.ids).toEqual(loanQueryVars.ids);
-			expect(result.filterObject).toEqual(getFlssFilters(queryMap, loanQueryVars));
-			expect(result.sortBy).toEqual(queryMap.sortBy);
-			expect(result.pageNumber).toBe(loanQueryVars.offset / loanQueryVars.limit);
-			expect(result.pageLimit).toBe(loanQueryVars.limit);
-			expect(result.basketId).toBe(loanQueryVars.basketId);
-		});
-	});
-
-	describe('fetchLoanChannel', () => {
-		const result = {};
-		const dataObj = { data: result };
-		const apollo = { query: vi.fn(() => Promise.resolve(dataObj)) };
-		const queryMap = { sector: [1, 2, 3] };
-		const loanQueryVars = {
-			ids: [3],
-			offset: 10,
-			limit: 5,
-			basketId: 'asd'
-		};
-		const variables = getLoanChannelVariables(queryMap, loanQueryVars);
-		const apolloVariables = { query: flssLoanChannelQuery, variables };
-
-		it('should pass the correct query variables to apollo', async () => {
-			await fetchLoanChannel(apollo, queryMap, loanQueryVars);
-			expect(apollo.query).toHaveBeenCalledWith(apolloVariables);
-		});
-
-		it('should return the expected data', async () => {
-			const data = await fetchLoanChannel(apollo, queryMap, loanQueryVars);
-			expect(data).toBe(result);
-		});
-	});
-
-	describe('getCachedLoanChannel', () => {
-		const result = {};
-		const apollo = { readQuery: vi.fn(() => result) };
-		const queryMap = { sector: [1, 2, 3] };
-		const loanQueryVars = {
-			ids: [3],
-			offset: 10,
-			limit: 5,
-			basketId: 'asd'
-		};
-		const variables = getLoanChannelVariables(queryMap, loanQueryVars);
-		const apolloVariables = { query: flssLoanChannelQuery, variables };
-
-		it('should pass the correct query variables to apollo', () => {
-			getCachedLoanChannel(apollo, queryMap, loanQueryVars);
-			expect(apollo.readQuery).toHaveBeenCalledWith(apolloVariables);
-		});
-
-		it('should return the expected data', () => {
-			const data = getCachedLoanChannel(apollo, queryMap, loanQueryVars);
-			expect(data).toBe(result);
-		});
-	});
-
-	describe('watchLoanChannel', () => {
-		const result = {};
-		const apollo = { watchQuery: vi.fn(() => result) };
-		const queryMap = { sector: [1, 2, 3] };
-		const loanQueryVars = {
-			ids: [3],
-			offset: 10,
-			limit: 5,
-			basketId: 'asd'
-		};
-		const variables = getLoanChannelVariables(queryMap, loanQueryVars);
-		const apolloVariables = { query: flssLoanChannelQuery, variables };
-
-		it('should pass the correct query variables to apollo', () => {
-			watchLoanChannel(apollo, queryMap, loanQueryVars);
-			expect(apollo.watchQuery).toHaveBeenCalledWith(apolloVariables);
-		});
-
-		it('should return the expected observer', () => {
-			const observer = watchLoanChannel(apollo, queryMap, loanQueryVars);
-			expect(observer).toBe(result);
-		});
-	});
-
 	describe('fetchRecommendedLoans', () => {
 		const result = { values: [], totalCount: 0 };
 		const dataObj = { data: { loanRecommendations: result } };
@@ -298,69 +157,6 @@ describe('flssUtils.js', () => {
 			const apolloWithError = { query: vi.fn().mockRejectedValue(new Error('Query failed')) };
 			const data = await fetchLoans(apolloWithError, {});
 			expect(data).toBeUndefined();
-		});
-
-		it('fetchLoanChannel should handle apollo query errors', async () => {
-			const apolloWithError = { query: vi.fn().mockRejectedValue(new Error('Query failed')) };
-			const data = await fetchLoanChannel(apolloWithError, {}, {
-				ids: [], offset: 0, limit: 5
-			});
-			expect(data).toBeUndefined();
-		});
-
-		it('getCachedLoanChannel should handle readQuery errors', () => {
-			const apolloWithError = {
-				readQuery: vi.fn().mockImplementation(() => {
-					throw new Error('Cache miss');
-				})
-			};
-			const data = getCachedLoanChannel(apolloWithError, {}, {
-				ids: [], offset: 0, limit: 5
-			});
-			expect(data).toBeUndefined();
-		});
-
-		it('watchLoanChannel should handle watchQuery errors', () => {
-			const apolloWithError = {
-				watchQuery: vi.fn().mockImplementation(() => {
-					throw new Error('Watch failed');
-				})
-			};
-			const data = watchLoanChannel(apolloWithError, {}, {
-				ids: [], offset: 0, limit: 5
-			});
-			expect(data).toBeUndefined();
-		});
-	});
-
-	describe('getLoanChannelVariables edge cases', () => {
-		it('should handle missing origin and use default', () => {
-			const queryMap = { sector: [1] };
-			const loanQueryVars = {
-				ids: [],
-				offset: 0,
-				limit: 5,
-				basketId: 'test'
-			};
-
-			const vars = getLoanChannelVariables(queryMap, loanQueryVars);
-
-			expect(vars.origin).toBe('web:no-context');
-		});
-
-		it('should use provided origin from loanQueryVars', () => {
-			const queryMap = { sector: [1] };
-			const loanQueryVars = {
-				ids: [],
-				offset: 0,
-				limit: 5,
-				basketId: 'test',
-				origin: 'web:custom-context'
-			};
-
-			const vars = getLoanChannelVariables(queryMap, loanQueryVars);
-
-			expect(vars.origin).toBe('web:custom-context');
 		});
 	});
 });

@@ -65,18 +65,16 @@ describe('loanDetailsRailPreference', () => {
 
 	describe('persistRailPreference', () => {
 		it('always writes localStorage and skips the account when not logged in', async () => {
-			await persistRailPreference(null, { value: true, userPreferences: null, isLoggedIn: false });
+			await persistRailPreference(null, { value: true, isLoggedIn: false });
 			expect(getLocalRailPreference()).toBe(true);
 			expect(userPreferenceUtils.setUserPreference).not.toHaveBeenCalled();
 		});
 
 		it('delegates the account write to setUserPreference when logged in', async () => {
 			const apollo = {};
-			const userPreferences = { id: 7, preferences: '{"goals":[1]}' };
-			await persistRailPreference(apollo, { value: false, userPreferences, isLoggedIn: true });
+			await persistRailPreference(apollo, { value: false, isLoggedIn: true });
 			expect(getLocalRailPreference()).toBe(false);
-			expect(userPreferenceUtils.setUserPreference)
-				.toHaveBeenCalledWith(apollo, userPreferences, RAIL_PREF_KEY, false);
+			expect(userPreferenceUtils.setUserPreference).toHaveBeenCalledWith(apollo, RAIL_PREF_KEY, false);
 		});
 	});
 });

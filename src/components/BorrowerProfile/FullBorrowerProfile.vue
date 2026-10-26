@@ -17,49 +17,98 @@
 				class="md:tw-pt-6"
 			>
 				<summary-card
+					ref="summaryCard"
 					data-testid="bp-summary"
 					class="tw-relative lg:tw--mb-1.5"
+					:class="{
+						'tw-bg-primary tw--mx-2.5 tw-px-2.5 md:tw-mx-0': isNewUserBpVariant,
+					}"
 					:loan="loanData"
 					:is-logged-in="isLoggedIn"
+					:show-actions="isNewUserBpVariant"
+					@share="openShareLightbox"
+					@loan-details="scrollToLoanDetails"
+				>
+					<!-- Below desktop there is no separate lend box, so these show in the top card -->
+					<template v-if="isNewUserBpVariant" #footer>
+						<div class="lg:tw-hidden">
+							<hr class="tw-border-tertiary tw-mt-3">
+							<nonprofit-trust-row class="tw-py-2" />
+							<loan-supporters-row
+								v-if="loanData.id"
+								class="tw--mx-2.5 tw-px-2.5 md:tw--mx-3 md:tw-px-3 md:last:tw--mb-2.5 tw-text-small"
+								:loan="loanData"
+							/>
+							<loan-matching-info
+								class="tw-py-1"
+								:loan="loanData"
+								tooltip-id="top-card-matching-tooltip"
+							/>
+						</div>
+					</template>
+				</summary-card>
+				<!-- New user version: the share lightbox opens from the top card, so its own trigger is hidden.
+					Lives outside the lend box because that slot is dropped while the lend box is sticky;
+					rendered only once the loan has loaded, as today. -->
+				<share-button
+					v-if="isNewUserBpVariant && !loading"
+					v-bind="shareButtonProps"
+					variant="hidden"
+					data-testid="bp-summary-share-lightbox"
+					:open-lightbox="isShareLightboxOpen"
+					@lightbox-closed="isShareLightboxOpen = false"
 				/>
 			</content-container>
 		</div>
+		<!-- Bare page container: the band spans the full content width, not the story column -->
+		<kv-page-container
+			v-if="isNewUserBpVariant"
+			ref="whyLoansDesktop"
+			class="tw-hidden lg:tw-block lg:tw-mt-5.5"
+			:style="{ paddingTop: `${whyLoansExtraSpace}px` }"
+			data-testid="bp-why-loans-desktop"
+		>
+			<why-loans-banner :loan="loanData" @how-it-works="showHowKivaWorks = true" />
+		</kv-page-container>
 		<div
+			ref="sidebarColumn"
 			:class="inPfp ? 'lg:tw-pt-16 lg:tw-mt-8' : 'lg:tw-pt-8'"
 			class="lg:tw-absolute tw-pointer-events-none lg:tw-w-full lg:tw-h-full lg:tw-top-0 tw-z-docked"
 		>
+			<!-- While the sticky clone below shows, this one is off screen, so only the clone is read and focused -->
 			<sidebar-container
-				class="lg:tw-sticky lg:tw-mt-10 lg:tw-pb-8 lg:tw-top-12"
+				class="lg:tw-pb-8 lg:tw-top-12"
+				:class="isNewUserBpVariant ? 'lg:tw-mt-1' : 'lg:tw-sticky lg:tw-mt-10'"
+				:inert="stickyLendBoxVisible"
 			>
 				<div class="tw-flex tw-flex-col" style="max-height: calc(100vh - 7.5rem)">
 					<lend-cta
+						ref="lendCta"
 						class="tw-pointer-events-auto"
 						:loan-id="loanId"
 						:loan-data="loanData"
 						:enable-five-dollars-notes="enableFiveDollarsNotes"
 						:show-details-in-rail="showDetailsInRail"
+						:hide-jump-links="isNewUserBpVariant"
+						:new-user-bp-enabled="isNewUserBpVariant"
+						:default-loan-share-amount="defaultLoanShareAmount"
 					>
-						<template #sharebutton>
-							<!-- Share button -->
+						<!-- Share button; the new user version shows it in the top card instead -->
+						<template v-if="!isNewUserBpVariant" #sharebutton>
 							<template v-if="loading">
 								<kv-loading-placeholder style="height: 2rem; width: 100%;" />
 							</template>
 							<share-button
 								v-else
+								v-bind="shareButtonProps"
 								class="tw-block lg:tw-mb-1.5"
-								:loan="loanData"
 								:variant="shareBtnVariant"
-								:lender="lender"
-								:campaign="shareCampaign"
-								:in-pfp="inPfp"
-								:pfp-min-lenders="pfpMinLenders"
-								:num-lenders="numLenders"
 							/>
 						</template>
 					</lend-cta>
 					<transition name="kvfastfade">
 						<div
-							v-if="showDetailsInRail"
+							v-if="showDetailsInRail && !isNewUserBpVariant"
 							data-testid="bp-rail-details"
 							class="tw-hidden lg:tw-block tw-pointer-events-auto
 								tw-bg-primary tw-rounded tw-p-4
@@ -76,6 +125,48 @@
 				</div>
 			</sidebar-container>
 		</div>
+		<!-- New user version, desktop after load: a second lend box that fades in and sticks like the control's -->
+		<div
+			v-if="isNewUserBpVariant && isLarge"
+			class="tw-hidden lg:tw-block lg:tw-absolute lg:tw-top-0 lg:tw-h-full lg:tw-w-full
+				tw-pointer-events-none tw-z-docked"
+			:inert="!stickyLendBoxVisible"
+			data-testid="bp-sticky-lend-box"
+		>
+			<sidebar-container
+				ref="stickyBox"
+				class="lg:tw-sticky lg:tw-top-12 lg:tw-pb-8
+					lg:tw-transition-opacity lg:tw-duration-700 lg:tw-ease-in-out"
+				:class="{ 'lg:tw-opacity-0': !stickyLendBoxVisible }"
+			>
+				<div class="tw-flex tw-flex-col" style="max-height: calc(100vh - 7.5rem)">
+					<lend-cta
+						class="tw-pointer-events-auto"
+						:loan-id="loanId"
+						:loan-data="loanData"
+						:enable-five-dollars-notes="enableFiveDollarsNotes"
+						:show-details-in-rail="showDetailsInRail"
+						hide-jump-links
+						new-user-bp-enabled
+						sticky-clone
+						:default-loan-share-amount="defaultLoanShareAmount"
+					/>
+					<div
+						v-if="showDetailsInRail"
+						data-testid="bp-rail-details"
+						class="tw-mt-1 tw-pointer-events-auto tw-bg-primary tw-rounded tw-p-4
+							tw-shrink tw-overflow-y-auto"
+					>
+						<details-tabs
+							name="bp-rail-details"
+							:loan-id="loanId"
+							:is-privileged="isPrivileged"
+							condensed
+						/>
+					</div>
+				</div>
+			</sidebar-container>
+		</div>
 		<content-container class="tw-mt-4 md:tw-mt-3 lg:tw-mt-6">
 			<loan-story
 				id="loanStory"
@@ -83,6 +174,13 @@
 				class="tw-mb-5 md:tw-mb-6 lg:tw-mb-8 tw-z-1"
 				:loan="loanData"
 			/>
+			<div
+				v-if="isNewUserBpVariant"
+				class="lg:tw-hidden tw-mb-5 md:tw-mb-6"
+				data-testid="bp-why-loans-mobile"
+			>
+				<why-loans-banner :loan="loanData" @how-it-works="showHowKivaWorks = true" />
+			</div>
 		</content-container>
 		<content-container>
 			<journal-updates
@@ -112,22 +210,25 @@
 		<content-container>
 			<more-about-loan
 				data-testid="bp-more-about"
-				class="tw-mb-5 md:tw-mb-6 lg:tw-mb-8"
+				:collapsible="isNewUserBpVariant"
+				:class="isNewUserBpVariant ? 'tw-mb-4' : 'tw-mb-5 md:tw-mb-6 lg:tw-mb-8'"
 				:loan-id="loanId"
 			/>
 			<borrower-country data-testid="bp-country" class="tw-mb-4" :loan-id="loanId" />
 			<contributing-partners
 				data-testid="bp-contributing-partners"
-				class="tw-mb-4"
+				:collapsible="isNewUserBpVariant"
+				:class="isNewUserBpVariant ? 'tw-mb-2' : 'tw-mb-4'"
 				:loan-id="loanId"
 			/>
 			<lenders-and-teams
 				v-if="showLenders"
 				data-testid="bp-lenders"
 				key="lenders"
-				class="tw-mb-4"
+				:class="isNewUserBpVariant ? 'tw-mb-2' : 'tw-mb-4'"
 				:loan-id="loanId"
 				display-type="lenders"
+				:collapsible="isNewUserBpVariant"
 				@hide-section="showLenders = false"
 			/>
 			<lenders-and-teams
@@ -137,6 +238,7 @@
 				class="tw-mb-4"
 				:loan-id="loanId"
 				display-type="teams"
+				:collapsible="isNewUserBpVariant"
 				@hide-section="showTeams = false"
 			/>
 		</content-container>
@@ -161,12 +263,18 @@
 			/>
 		</content-container>
 		<definitions-lightbox ref="definitionsLightbox" />
+		<how-kiva-works-lightbox
+			:visible="showHowKivaWorks"
+			@lightbox-closed="showHowKivaWorks = false"
+		/>
 	</article>
+	<global-impact-bar v-if="isNewUserBpVariant" data-testid="bp-global-impact-bar" />
 </template>
 
 <script>
 import { gql } from 'graphql-tag';
 import useIsMobile from '#src/composables/useIsMobile';
+import useStickyLendBoxClone from '#src/composables/useStickyLendBoxClone';
 import ContentContainer from '#src/components/BorrowerProfile/ContentContainer';
 import SidebarContainer from '#src/components/BorrowerProfile/SidebarContainer';
 import HeroBackground from '#src/components/BorrowerProfile/HeroBackground';
@@ -187,15 +295,24 @@ import LoanTags from '#src/components/BorrowerProfile/LoanTags';
 import LoanComments from '#src/components/BorrowerProfile/LoanComments';
 import LoanDetailsRailToggle from '#src/components/BorrowerProfile/LoanDetailsRailToggle';
 import DefinitionsLightbox from '#src/components/BorrowerProfile/DefinitionsLightbox';
+import NonprofitTrustRow from '#src/components/BorrowerProfile/NonprofitTrustRow';
+import LoanMatchingInfo from '#src/components/BorrowerProfile/LoanMatchingInfo';
+import LoanSupportersRow from '#src/components/BorrowerProfile/LoanSupportersRow';
+import smoothScrollMixin from '#src/plugins/smooth-scroll-mixin';
+import HowKivaWorksLightbox from '#src/components/BorrowerProfile/HowKivaWorksLightbox';
+import WhyLoansBanner from '#src/components/BorrowerProfile/WhyLoansBanner';
+import GlobalImpactBar from '#src/components/BorrowerProfile/GlobalImpactBar';
 import {
 	getLocalRailPreference,
 	readAccountRailPreference,
 	resolveRailPreference,
 	persistRailPreference,
 } from '#src/util/loanDetailsRailPreference';
+import { readDefaultLoanShareAmount } from '#src/util/defaultLoanShareAmount';
 import { isActivelyInPfp } from '#src/util/loanUtils';
+import { NEW_USER_BP_EXP_INJECT_KEY } from '#src/util/newUserBorrowerProfileExp';
 import { differenceInCalendarDays, parseISO } from 'date-fns';
-import { KvLoadingPlaceholder } from '@kiva/kv-components';
+import { KvLoadingPlaceholder, KvPageContainer } from '@kiva/kv-components';
 
 export const fullProfileFragment = gql`
 	${summaryCardFragment}
@@ -262,8 +379,21 @@ export default {
 		LoanDetailsRailToggle,
 		KvLoadingPlaceholder,
 		DefinitionsLightbox,
+		NonprofitTrustRow,
+		LoanMatchingInfo,
+		LoanSupportersRow,
+		HowKivaWorksLightbox,
+		WhyLoansBanner,
+		GlobalImpactBar,
+		KvPageContainer,
 	},
-	inject: ['apollo', 'cookieStore'],
+	mixins: [smoothScrollMixin],
+	inject: {
+		apollo: { from: 'apollo' },
+		cookieStore: { from: 'cookieStore' },
+		// Provided by the page; false wherever the page does not provide it (Storybook, specs)
+		isNewUserBpVariant: { from: NEW_USER_BP_EXP_INJECT_KEY, default: false },
+	},
 	provide() {
 		return {
 			// One definitions lightbox for the BP page; children call this with their cid/sfid.
@@ -272,7 +402,7 @@ export default {
 	},
 	setup() {
 		const { isMobile } = useIsMobile();
-		return { isMobile };
+		return { isMobile, ...useStickyLendBoxClone() };
 	},
 	apollo: {
 		query: fullProfileQuery,
@@ -333,11 +463,55 @@ export default {
 			// Initialize from the SSR-resolved prop so logged-in opted-in renders without flash.
 			showDetailsInRail: this.initialShowDetailsInRail,
 			userPreferences: null,
+			isShareLightboxOpen: false,
+			showHowKivaWorks: false,
+			whyLoansExtraSpace: 0,
+			cardsObserver: null,
 		};
+	},
+	mounted() {
+		if (this.isNewUserBpVariant && typeof ResizeObserver !== 'undefined') {
+			this.cardsObserver = new ResizeObserver(() => {
+				this.updateWhyLoansSpace();
+				this.updateStickyLendBox();
+			});
+			this.cardsObserver.observe(this.$refs.summaryCard.$el);
+			this.cardsObserver.observe(this.$refs.lendCta.$el);
+		}
+	},
+	beforeUnmount() {
+		this.cardsObserver?.disconnect();
+	},
+	methods: {
+		// Adds space above the "Why loans" band when the sticky lend box ends lower than the top card
+		updateWhyLoansSpace() {
+			const column = this.$refs.sidebarColumn;
+			// Measured from its column, since the sticky lend box moves on scroll
+			const lendBoxBottom = column.getBoundingClientRect().top
+				+ parseFloat(getComputedStyle(column).paddingTop)
+				+ parseFloat(getComputedStyle(column.firstElementChild).marginTop)
+				+ this.$refs.lendCta.$el.offsetHeight;
+			const bandTop = this.$refs.whyLoansDesktop.$el.getBoundingClientRect().top;
+			this.whyLoansExtraSpace = Math.max(0, Math.ceil(lendBoxBottom + 32 - bandTop));
+		},
+		openShareLightbox() {
+			this.isShareLightboxOpen = true;
+			// The hidden share button has no trigger to fire this itself
+			this.$kvTrackEvent('borrower-profile', 'show', 'share-lightbox', this.shareCampaign);
+		},
+		scrollToLoanDetails() {
+			// Same target and timing as the lend box jump link; the rail toggle is left untouched
+			const section = document.querySelector('#loanDetails');
+			this.smoothScrollTo({ yPosition: section?.offsetTop ?? 0, millisecondsToAnimate: 750 });
+			this.$kvTrackEvent('Borrower profile', 'click-jump-link', 'Loan details');
+		},
 	},
 	computed: {
 		loanId() {
 			return Number(this.$route?.params?.id ?? 0);
+		},
+		defaultLoanShareAmount() {
+			return readDefaultLoanShareAmount(this.userPreferences);
 		},
 		inPfp() {
 			return isActivelyInPfp(this.loanData);
@@ -382,6 +556,17 @@ export default {
 		shareBtnVariant() {
 			return this.isMobile ? 'secondary' : 'caution';
 		},
+		// Bound to the share button wherever it renders (lend box in the control, hidden in the new user version)
+		shareButtonProps() {
+			return {
+				loan: this.loanData,
+				lender: this.lender,
+				campaign: this.shareCampaign,
+				inPfp: this.inPfp,
+				pfpMinLenders: this.pfpMinLenders,
+				numLenders: this.numLenders,
+			};
+		},
 		showDetailsInRailModel: {
 			get() {
 				return this.showDetailsInRail;
@@ -395,11 +580,7 @@ export default {
 					value ? 'on' : 'off',
 					this.loanId,
 				);
-				persistRailPreference(this.apollo, {
-					value,
-					userPreferences: this.userPreferences,
-					isLoggedIn: this.isLoggedIn,
-				});
+				persistRailPreference(this.apollo, { value, isLoggedIn: this.isLoggedIn });
 			},
 		},
 	},

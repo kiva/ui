@@ -48,6 +48,9 @@
 					v-else-if="slide?.isCoRecoveryFund"
 					class="tw-h-full"
 				/>
+				<HolidayFundraiserNextStep
+					v-else-if="slide?.isHolidayFundraiser"
+				/>
 				<MyKivaCard
 					v-else-if="isCustomCard(slide)"
 					class="kiva-card"
@@ -113,6 +116,7 @@ import MyKivaSurveyCard from '#src/components/MyKiva/MyKivaSurveyCard';
 import { useHideGoalSignup } from '#src/composables/useGoalInReview';
 import AlmostFundedNextStep from '#src/components/MyKiva/AlmostFundedNextStep';
 import ColombiaReliefNextStep from '#src/components/MyKiva/ColombiaReliefNextStep';
+import HolidayFundraiserNextStep from '#src/components/MyKiva/HolidayFundraiserNextStep';
 import {
 	getSlideTitle,
 	getSlideSubTitle,
@@ -253,6 +257,10 @@ const props = defineProps({
 		type: Boolean,
 		default: false
 	},
+	showHolidayFundraiserCard: {
+		type: Boolean,
+		default: false,
+	},
 	preBuiltAchievementSlides: {
 		type: Array,
 		default: null,
@@ -364,6 +372,10 @@ const dynamicOrderedSlides = computed(() => {
 		priorityCards.push({}); // Empty object placeholder for goal card component
 	}
 
+	if (props.showHolidayFundraiserCard) {
+		priorityCards.push({ isHolidayFundraiser: true });
+	}
+
 	// Colombia earthquake recovery fund next step: takes the slot right after the goal card,
 	// but never jumps ahead of the post-lending next steps, which keep their existing order.
 	const coRecoveryFundCard = props.showCoRecoveryFundCard ? { isCoRecoveryFund: true } : null;
@@ -403,6 +415,9 @@ const dynamicOrderedSlides = computed(() => {
 		sortedSlides = [...priorityCards, ...achievementSlides].slice(0, props.slidesNumber);
 	} else if (props.slidesNumber) {
 		sortedSlides = [...priorityCards, ...sortedSlides].slice(0, props.slidesNumber);
+	} else if (props.showHolidayFundraiserCard) {
+		// Rows without a slide limit skip the priority cards above, so the holiday card leads on its own
+		sortedSlides = [{ isHolidayFundraiser: true }, ...sortedSlides];
 	}
 
 	return sortedSlides;

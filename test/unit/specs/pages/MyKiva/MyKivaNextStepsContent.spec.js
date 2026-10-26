@@ -20,6 +20,14 @@ vi.mock('#src/composables/useBreakpoints', () => ({
 	}),
 }));
 
+const holidayFundraisersEnabled = ref(false);
+
+vi.mock('#src/composables/useHolidayFundraisersEnabled', () => ({
+	default: () => ({
+		isHolidayFundraisersEnabled: holidayFundraisersEnabled,
+	}),
+}));
+
 const MyKivaContainerStub = defineComponent({
 	name: 'MyKivaContainer',
 	setup(_, { slots }) {
@@ -101,6 +109,7 @@ const createWrapper = ({
 				MyKivaRegionExperience: true,
 				AlmostFundedNextStep: true,
 				ColombiaReliefNextStep: true,
+				HolidayFundraiserNextStep: true,
 				GoalSettingModal: true,
 				MyKivaImpactInsightModal: true,
 				MyKivaSharingModal: true,
@@ -155,6 +164,7 @@ describe('MyKivaNextStepsContent', () => {
 	beforeEach(() => {
 		vi.clearAllMocks();
 		routeRef.value = { query: {} };
+		holidayFundraisersEnabled.value = false;
 	});
 
 	it('shows both Almost Funded and the region card in "Keep your impact going" for post-lending lenders', () => {
@@ -237,6 +247,49 @@ describe('MyKivaNextStepsContent', () => {
 			expect(wrapper.findComponent({ name: 'ColombiaReliefNextStep' }).exists()).toBe(true);
 			// The Almost Funded / region pairing stays post-lending only
 			expect(wrapper.findComponent({ name: 'AlmostFundedNextStep' }).exists()).toBe(false);
+		});
+	});
+
+	describe('Holiday fundraiser next step', () => {
+		it('is absent when holiday fundraisers are switched off', () => {
+			const { wrapper } = createWrapper({ cookieValue: 'true' });
+
+			expect(wrapper.findComponent({ name: 'HolidayFundraiserNextStep' }).exists()).toBe(false);
+		});
+
+		it('is the first card in "Build impact beyond your loan"', () => {
+			holidayFundraisersEnabled.value = true;
+			const { wrapper } = createWrapper({
+				cookieValue: 'true',
+				props: { heroSlides: [buildNonBadgeSlide('invite-friends')] },
+			});
+
+			const cards = wrapper.findAll('section.badges-section > *')
+				.map(el => el.element.tagName.toLowerCase());
+
+			expect(cards[0]).toBe('holiday-fundraiser-next-step-stub');
+			expect(cards.length).toBeGreaterThan(1);
+		});
+
+		it('shows "Build impact beyond your loan" even when it has no other cards', () => {
+			holidayFundraisersEnabled.value = true;
+			const { wrapper } = createWrapper({
+				cookieValue: 'true',
+				props: { heroSlides: [], latestLoan: null },
+			});
+
+			expect(wrapper.text()).toContain('Build impact beyond your loan');
+			expect(wrapper.findComponent({ name: 'HolidayFundraiserNextStep' }).exists()).toBe(true);
+		});
+
+		it('stays out of "Keep your impact going"', () => {
+			holidayFundraisersEnabled.value = true;
+			const { wrapper } = createWrapper({ cookieValue: 'true' });
+
+			const keepImpactTiles = wrapper.findAll('section.tw-grid.md\\:tw-grid-cols-3 > *')
+				.map(el => el.element.tagName.toLowerCase());
+
+			expect(keepImpactTiles).not.toContain('holiday-fundraiser-next-step-stub');
 		});
 	});
 

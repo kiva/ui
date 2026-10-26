@@ -6,6 +6,9 @@
 		md:tw-pb-2.5
 		tw-py-2.5 md:tw-p-3 lg:tw-p-4
 		md:tw-rounded-t lg:tw-rounded"
+		:class="{
+			'md:!tw-pt-2 md:!tw-pb-1': showActions,
+		}"
 	>
 		<div class="tw-flex">
 			<div
@@ -49,6 +52,49 @@
 							loanId
 						]"
 					/>
+					<!-- New user version, small screens: the card's actions live in a kebab menu -->
+					<div
+						v-if="showActions"
+						class="tw-ml-auto tw-shrink-0 md:tw-hidden"
+						data-testid="bp-summary-actions-menu"
+					>
+						<kv-utility-menu
+							ref="actionsMenu"
+							button-size="small"
+							button-radius-class="tw-rounded-full"
+							menu-position="right-aligned"
+							menu-border-class=""
+							menu-radius-class="tw-rounded-sm"
+							analytics-category="borrower-profile"
+						>
+							<div class="tw-flex tw-flex-col tw-gap-1 tw-py-1 tw-px-2 tw-whitespace-nowrap">
+								<button
+									type="button"
+									class="
+										tw-flex tw-items-center tw-gap-1 tw-w-full tw-min-h-4 tw-px-1 tw-py-0.5
+										tw-rounded-sm tw-text-label tw-text-primary hover:tw-bg-secondary
+									"
+									data-testid="bp-loan-actions-menu-loan-details"
+									@click="$emit('loan-details')"
+								>
+									<kv-material-icon class="tw-w-2 tw-h-2 tw-shrink-0" :icon="mdiFormatListBulleted" />
+									Loan details
+								</button>
+								<button
+									type="button"
+									class="
+										tw-flex tw-items-center tw-gap-1 tw-w-full tw-min-h-4 tw-px-1 tw-py-0.5
+										tw-rounded-sm tw-text-label tw-text-primary hover:tw-bg-secondary
+									"
+									data-testid="bp-loan-actions-menu-share"
+									@click="$emit('share')"
+								>
+									<kv-material-icon class="tw-w-2 tw-h-2 tw-shrink-0" :icon="mdiExportVariant" />
+									Share
+								</button>
+							</div>
+						</kv-utility-menu>
+					</div>
 				</div>
 				<template v-if="isLoading">
 					<div class="tw-flex tw-flex-wrap tw-mb-3">
@@ -141,16 +187,30 @@
 				data-testid="bp-summary-bookmark"
 			/>
 		</div>
+		<!-- New user version, tablet and desktop: "Loan details" and "Share" under the loan use -->
+		<div
+			v-if="showActions"
+			class="tw-hidden md:tw-block tw-mt-2.5"
+			data-testid="bp-summary-actions"
+		>
+			<loan-action-links
+				@share="$emit('share')"
+				@loan-details="$emit('loan-details')"
+			/>
+		</div>
 		<slot name="sharebutton"></slot>
+		<slot name="footer"></slot>
 	</section>
 </template>
 
 <script>
 import { gql } from 'graphql-tag';
-import { mdiMapMarker, mdiInformationOutline } from '@mdi/js';
+import {
+	mdiExportVariant, mdiFormatListBulleted, mdiInformationOutline, mdiMapMarker,
+} from '@mdi/js';
 import HeartComment from '#src/assets/icons/inline/heart-comment.svg';
 import {
-	KvMaterialIcon, KvLoadingPlaceholder, KvIconButton, KvTextLink,
+	KvMaterialIcon, KvLoadingPlaceholder, KvIconButton, KvTextLink, KvUtilityMenu,
 } from '@kiva/kv-components';
 import { isActivelyInPfp } from '#src/util/loanUtils';
 import BorrowerImage from './BorrowerImage';
@@ -158,6 +218,7 @@ import BorrowerName from './BorrowerName';
 import LoanProgress from './LoanProgress';
 import SummaryTag from './SummaryTag';
 import LoanBookmark from './LoanBookmark';
+import LoanActionLinks from './LoanActionLinks';
 
 export const summaryCardFragment = gql`fragment summaryCardFields on LoanBasic {
 	id
@@ -235,15 +296,23 @@ export default {
 		LoanProgress,
 		SummaryTag,
 		LoanBookmark,
+		LoanActionLinks,
+		KvUtilityMenu,
 		KvLoadingPlaceholder,
 		HeartComment,
 	},
+	emits: ['share', 'loan-details'],
 	props: {
 		loan: {
 			type: Object,
 			default: () => ({}),
 		},
 		isLoggedIn: {
+			type: Boolean,
+			default: false,
+		},
+		// New user version: show "Loan details" and "Share" inside the card
+		showActions: {
 			type: Boolean,
 			default: false,
 		},
@@ -260,6 +329,8 @@ export default {
 			fundraisingPercent: hasLoanData ? (this.loan?.fundraisingPercent ?? 0) : 0,
 			mdiMapMarker,
 			mdiInformationOutline,
+			mdiExportVariant,
+			mdiFormatListBulleted,
 			timeLeft: this.loan?.fundraisingTimeLeft ?? '',
 			unreservedAmount: this.loan?.unreservedAmount ?? '0',
 			distributionModel: this.loan?.distributionModel ?? '',
@@ -333,6 +404,20 @@ export default {
 			if (newId && newId !== oldId) {
 				this.isLoading = true;
 			}
+		},
+		showActions() {
+			this.$nextTick(this.labelActionsMenu);
+		},
+	},
+	mounted() {
+		this.labelActionsMenu();
+	},
+	methods: {
+		// The shared menu has no prop for its trigger's accessible name,
+		// so the rendered button is labelled here
+		labelActionsMenu() {
+			const trigger = this.$refs.actionsMenu?.$el?.querySelector('.menu-trigger');
+			trigger?.setAttribute('aria-label', 'More loan options');
 		},
 	},
 	apollo: {

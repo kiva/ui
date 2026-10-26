@@ -2,87 +2,114 @@
 	<section>
 		<!-- Display Content -->
 		<div>
-			<h2 :data-testid="`bp-${displayType}-header`">
-				{{ sectionTitle }}
-			</h2>
+			<collapsible-section
+				:id="`bp-${displayType}`"
+				:collapsible="collapsible"
+				:tracking-property="displayType === 'teams' ? 'contributing-lending-teams' : 'contributing-lenders'"
+			>
+				<template #heading>
+					<h2 :data-testid="`bp-${displayType}-header`">
+						{{ sectionTitle }}
+					</h2>
 
-			<div class="tw-mb-3">
-				<kv-material-icon
-					class="tw-w-2.5 tw-h-2.5 tw-pointer-events-none tw-inline-block tw-align-middle"
-					:icon="mdiLightningBolt"
-				/>
+					<div class="tw-mb-3">
+						<kv-material-icon
+							class="tw-w-2.5 tw-h-2.5 tw-pointer-events-none tw-inline-block tw-align-middle"
+							:icon="mdiLightningBolt"
+						/>
 
-				<kv-loading-placeholder
-					v-if="loading"
-					:style="{width: 20 + (Math.random() * 15) + '%', height: '14px'}"
-					class="tw-ml-1 tw-inline-block tw-align-middle"
-				/>
-				<span
-					v-else
-					class="tw-text-upper"
-					:data-testid="`bp-powered-by-${displayType}-message`"
-				>
-					{{ poweredByText }}
-				</span>
-			</div>
-
-			<div v-if="loading" class="tw-grid tw-grid-cols-2 tw-gap-2">
-				<!-- Loading placeholder for team or lender item elements -->
-				<div v-for="i in 5" :key="i" class="tw-flex tw-flex-col md:tw-flex-row md:tw-items-center tw-mb-3">
-					<kv-loading-placeholder
-						class="tw-rounded md:tw-hidden tw-mb-1.5" :style="{width: '135px', height: '101px'}"
-					/>
-					<kv-loading-placeholder
-						class="tw-rounded md:tw-block tw-hidden tw-mr-2" :style="{width: '96px', height: '96px'}"
-					/>
-					<div :style="{display: 'block', height: 'auto', width: '50%'}">
-						<kv-loading-placeholder class="tw-mb-1 tw-flex-shrink-0 tw-w-full" :style="{height: '14px'}" />
-						<kv-loading-placeholder :style="{width: 40 + (Math.random() * 15) + '%', height: '14px'}" />
+						<kv-loading-placeholder
+							v-if="loading"
+							:style="{width: 20 + (Math.random() * 15) + '%', height: '14px'}"
+							class="tw-ml-1 tw-inline-block tw-align-middle"
+						/>
+						<span
+							v-else
+							class="tw-text-upper"
+							:data-testid="`bp-powered-by-${displayType}-message`"
+						>
+							{{ poweredByText }}
+						</span>
+					</div>
+				</template>
+				<template #title>
+					<span :data-testid="`bp-${displayType}-header`">{{ sectionTitle }}</span>
+				</template>
+				<template #subtitle>
+					<!--
+						A span rather than the placeholder component's div, since this sits inside the toggle button.
+						Fixed width: the header re-renders on every toggle, so a random width would jump.
+					-->
+					<span
+						v-if="loading"
+						class="tw-inline-block tw-align-middle tw-bg-tertiary tw-rounded-xs"
+						style="width: 25%; height: 14px;"
+					></span>
+					<span v-else :data-testid="`bp-powered-by-${displayType}-message`">
+						Powered by {{ totalItemCount }} {{ countAwareName }}
+					</span>
+				</template>
+				<div v-if="loading" class="tw-grid tw-grid-cols-2 tw-gap-2">
+					<!-- Loading placeholder for team or lender item elements -->
+					<div v-for="i in 5" :key="i" class="tw-flex tw-flex-col md:tw-flex-row md:tw-items-center tw-mb-3">
+						<kv-loading-placeholder
+							class="tw-rounded md:tw-hidden tw-mb-1.5" :style="{width: '135px', height: '101px'}"
+						/>
+						<kv-loading-placeholder
+							class="tw-rounded md:tw-block tw-hidden tw-mr-2" :style="{width: '96px', height: '96px'}"
+						/>
+						<div :style="{display: 'block', height: 'auto', width: '50%'}">
+							<kv-loading-placeholder
+								class="tw-mb-1 tw-flex-shrink-0 tw-w-full"
+								:style="{height: '14px'}"
+							/>
+							<kv-loading-placeholder :style="{width: 40 + (Math.random() * 15) + '%', height: '14px'}" />
+						</div>
 					</div>
 				</div>
-			</div>
 
-			<div
-				v-if="!loading"
-				class="section-items tw-grid tw-grid-cols-2 tw-gap-2 tw-mb-3"
-				:data-testid="`bp-${displayType}-grid`"
-			>
-				<supporter-details
-					v-if="supporterOfLoan"
-					:data-testid="`bp-${displayType}-support-details-supporter`"
-					display-type="lenders"
-					:hash="userImageHash"
-					:name="userName"
-					:whereabouts="userWhereabouts"
-					:supporter-page-url="lenderPageUrl"
-				/>
-				<supporter-details
-					v-for="(item, index) in truncatedItemList" :key="index"
-					:data-testid="`bp-${displayType}-support-details-${index}`"
-					:name="item.name"
-					:hash="item.image && item.image.hash ? item.image.hash : ''"
-					:item-data="item"
-					:display-type="displayType"
-					:public-id="`${ displayType === 'lenders' ? item.publicId : item.teamPublicId}`"
-					:whereabouts="`${ displayType === 'lenders' ? item.lenderPage.whereabouts : ''}`"
-				/>
-				<supporter-details
-					v-if="hasAnonymousSupporters && displayType === 'lenders'"
-					:data-testid="`bp-${displayType}-support-details-anonymous`"
-					name="+ Anonymous lenders"
-					display-type="lenders"
-					:has-anonymous-supporters="hasAnonymousSupporters"
-				/>
-			</div>
+				<div
+					v-if="!loading"
+					class="section-items tw-grid tw-grid-cols-2 tw-gap-2 tw-mb-3"
+					:data-testid="`bp-${displayType}-grid`"
+				>
+					<supporter-details
+						v-if="supporterOfLoan"
+						:data-testid="`bp-${displayType}-support-details-supporter`"
+						display-type="lenders"
+						:hash="userImageHash"
+						:name="userName"
+						:whereabouts="userWhereabouts"
+						:supporter-page-url="lenderPageUrl"
+					/>
+					<supporter-details
+						v-for="(item, index) in truncatedItemList" :key="index"
+						:data-testid="`bp-${displayType}-support-details-${index}`"
+						:name="item.name"
+						:hash="item.image && item.image.hash ? item.image.hash : ''"
+						:item-data="item"
+						:display-type="displayType"
+						:public-id="`${ displayType === 'lenders' ? item.publicId : item.teamPublicId}`"
+						:whereabouts="`${ displayType === 'lenders' ? item.lenderPage.whereabouts : ''}`"
+					/>
+					<supporter-details
+						v-if="hasAnonymousSupporters && displayType === 'lenders'"
+						:data-testid="`bp-${displayType}-support-details-anonymous`"
+						name="+ Anonymous lenders"
+						display-type="lenders"
+						:has-anonymous-supporters="hasAnonymousSupporters"
+					/>
+				</div>
 
-			<kv-text-link
-				v-if="totalItemCount > initialItemLimit"
-				class="tw-uppercase"
-				:data-testid="`bp-${displayType}-see-all-link`"
-				@click="openLightbox"
-			>
-				{{ seeAllLinkText }}
-			</kv-text-link>
+				<kv-text-link
+					v-if="totalItemCount > initialItemLimit"
+					class="tw-uppercase"
+					:data-testid="`bp-${displayType}-see-all-link`"
+					@click="openLightbox"
+				>
+					{{ seeAllLinkText }}
+				</kv-text-link>
+			</collapsible-section>
 		</div>
 
 		<kv-lightbox
@@ -158,6 +185,7 @@ import {
 	KvLoadingPlaceholder, KvButton, KvLightbox, KvMaterialIcon, KvTextLink
 } from '@kiva/kv-components';
 import SupporterDetails from './SupporterDetails';
+import CollapsibleSection from './CollapsibleSection';
 
 const teamsQuery = gql`query teamsQuery($loanId: Int!, $limit: Int, $offset: Int, $sortBy: TeamSearchSortByEnum) {
 	lend {
@@ -229,6 +257,7 @@ const userQuery = gql`query userQuery {
 export default {
 	name: 'LendersAndTeams',
 	components: {
+		CollapsibleSection,
 		KvButton,
 		KvLightbox,
 		KvLoadingPlaceholder,
@@ -249,6 +278,10 @@ export default {
 		loanId: {
 			type: Number,
 			default: 0,
+		},
+		collapsible: {
+			type: Boolean,
+			default: false,
 		},
 	},
 	// Select the correct items query based on displayType before the apollo plugin processes it.

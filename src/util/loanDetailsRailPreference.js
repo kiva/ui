@@ -51,16 +51,15 @@ export function resolveRailPreference({ accountPref = null, local = null } = {})
 
 /**
  * Persist the preference: always localStorage; additionally the account
- * userPreferences blob when logged in.
+ * preference when logged in.
  *
  * @param {object} apollo Apollo client
  * @param {object} opts
  * @param {boolean} opts.value
- * @param {{id?: number, preferences?: string}|null} opts.userPreferences
  * @param {boolean} opts.isLoggedIn
  */
-export async function persistRailPreference(apollo, { value, userPreferences, isLoggedIn }) {
+export async function persistRailPreference(apollo, { value, isLoggedIn }) {
 	setLocalRailPreference(value);
 	if (!isLoggedIn) return;
-	await setUserPreference(apollo, userPreferences, RAIL_PREF_KEY, value);
+	await setUserPreference(apollo, RAIL_PREF_KEY, value);
 }
