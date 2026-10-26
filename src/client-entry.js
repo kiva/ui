@@ -126,7 +126,7 @@ async function setupAnalytics(app, apolloClient) {
 	await app.config.globalProperties.$setKvAnalyticsData(userId);
 	app.config.globalProperties.$fireServerPageView();
 	app.config.globalProperties.$fireQueuedEvents();
-	const { default: collectWebVitals } = await import('#src/util/webVitals');
+	const { collectWebVitals } = await import('@kiva/kv-analytics');
 	collectWebVitals(app.config.globalProperties.$kvTrackEvent);
 }
 
