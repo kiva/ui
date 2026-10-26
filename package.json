@@ -44,7 +44,7 @@
 		"@godaddy/terminus": "^4.12.1",
 		"@graphql-tools/load": "^7.7.0",
 		"@graphql-tools/url-loader": "^7.17.18",
-		"@kiva/kv-analytics": "^1.4.2",
+		"@kiva/kv-analytics": "^1.6.0",
 		"@kiva/kv-components": "^11.1.0",
 		"@kiva/kv-shop": "^3.10.3",
 		"@kiva/kv-tokens": "^5.0.1",
@@ -137,7 +137,6 @@
 		"vue-smooth-reflow": "^0.1.12",
 		"vue3-touch-events": "^5.0.15",
 		"vuelidate": "^0.7.6",
-		"web-vitals": "^6.0.0",
 		"whatwg-fetch": "^3.6.20",
 		"winston": "^3.19.0"
 	},
