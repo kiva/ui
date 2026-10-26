@@ -9,9 +9,8 @@ function getSPCookieSession(cookieStore) {
 		return '';
 	}
 	const spCookieArray = sp.split('.');
-	// get last item in the array, our session id
-	const sessionId = spCookieArray[spCookieArray.length - 1];
-	return sessionId;
+	// the session id is the 6th field, newer Snowplow trackers add more fields after it
+	return spCookieArray[5] || '';
 }
 
 export default ({ cookieStore }) => {
