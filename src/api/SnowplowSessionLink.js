@@ -1,6 +1,9 @@
 import { setContext } from '@apollo/client/link/context/index';
 import _set from 'lodash/set';
 
+// newer Snowplow trackers add fields after the session id
+const SESSION_ID_FIELD_INDEX = 5;
+
 function getSPCookieSession(cookieStore) {
 	// kiva specific sp cookie
 	const sp = cookieStore.get('_sp_id.6d5c');
@@ -9,9 +12,7 @@ function getSPCookieSession(cookieStore) {
 		return '';
 	}
 	const spCookieArray = sp.split('.');
-	// get last item in the array, our session id
-	const sessionId = spCookieArray[spCookieArray.length - 1];
-	return sessionId;
+	return spCookieArray[SESSION_ID_FIELD_INDEX] || '';
 }
 
 export default ({ cookieStore }) => {
