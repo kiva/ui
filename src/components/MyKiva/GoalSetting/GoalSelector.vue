@@ -710,18 +710,24 @@ const handleEditGoalFromSettings = () => {
 	emit('edit-goal-from-settings');
 };
 
-onMounted(async () => {
-	// Only a new goal sign up is exposed to the default category experiment [EXP-MP 3259]
-	if (!props.isUpdatingGoal && !props.isGoalSet) {
-		trackExperimentVersion(
-			apollo,
-			$kvTrackEvent,
-			GOAL_DEFAULT_CATEGORY_EXP_CATEGORY,
-			GOAL_DEFAULT_CATEGORY_EXP_KEY,
-			GOAL_DEFAULT_CATEGORY_EXP_ACTION,
-		);
-	}
+// Default category experiment tracking
+// Only a new goal sign up sees the default, and a goal set later must not re-fire or un-fire it
+const readyForExposure = computed(() => !props.isUpdatingGoal && !props.isGoalSet);
+const exposureTracked = ref(false);
 
+watch(readyForExposure, ready => {
+	if (typeof window === 'undefined' || !ready || exposureTracked.value) return;
+	exposureTracked.value = true;
+	trackExperimentVersion(
+		apollo,
+		$kvTrackEvent,
+		GOAL_DEFAULT_CATEGORY_EXP_CATEGORY,
+		GOAL_DEFAULT_CATEGORY_EXP_KEY,
+		GOAL_DEFAULT_CATEGORY_EXP_ACTION,
+	);
+}, { immediate: true });
+
+onMounted(async () => {
 	await loadLoansThisYear();
 	updateGoalOptions();
 

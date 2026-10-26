@@ -147,7 +147,7 @@ describe('JourneyCardCarousel', () => {
 			},
 			global: {
 				provide: {
-					apollo: { readFragment: () => null },
+					apollo: {},
 					cookieStore: new CookieStore({}),
 					$kvTrackEvent: vi.fn(),
 				},
@@ -209,7 +209,7 @@ describe('JourneyCardCarousel', () => {
 			},
 			global: {
 				provide: {
-					apollo: { readFragment: () => null },
+					apollo: {},
 					cookieStore: new CookieStore({}),
 					$kvTrackEvent: vi.fn(),
 				},
@@ -247,7 +247,7 @@ describe('JourneyCardCarousel', () => {
 			userInfo: { userPreferences: { preferences: '{}' } },
 		},
 		global: {
-			provide: { apollo: { readFragment: () => null }, cookieStore: new CookieStore({}), $kvTrackEvent: vi.fn() },
+			provide: { apollo: {}, cookieStore: new CookieStore({}), $kvTrackEvent: vi.fn() },
 			directives: { kvTrackEvent: () => ({}) },
 			stubs: {
 				MyKivaCard: true,
@@ -283,8 +283,7 @@ describe('JourneyCardCarousel', () => {
 				...props,
 			},
 			global: {
-				// eslint-disable-next-line max-len
-				provide: { apollo: { readFragment: () => null }, cookieStore: new CookieStore({}), $kvTrackEvent: vi.fn() },
+				provide: { apollo: {}, cookieStore: new CookieStore({}), $kvTrackEvent: vi.fn() },
 				directives: { kvTrackEvent: () => ({}) },
 				stubs: {
 					MyKivaCard: true,
@@ -358,8 +357,7 @@ describe('JourneyCardCarousel', () => {
 				...props,
 			},
 			global: {
-				// eslint-disable-next-line max-len
-				provide: { apollo: { readFragment: () => null }, cookieStore: new CookieStore({}), $kvTrackEvent: vi.fn() },
+				provide: { apollo: {}, cookieStore: new CookieStore({}), $kvTrackEvent: vi.fn() },
 				directives: { kvTrackEvent: () => ({}) },
 				stubs: {
 					MyKivaCard: true,
@@ -449,8 +447,7 @@ describe('JourneyCardCarousel', () => {
 					userInfo: { userPreferences: { preferences: '{}' } },
 				},
 				global: {
-					// eslint-disable-next-line max-len
-					provide: { apollo: { readFragment: () => null }, cookieStore: new CookieStore({}), $kvTrackEvent: vi.fn() },
+					provide: { apollo: {}, cookieStore: new CookieStore({}), $kvTrackEvent: vi.fn() },
 					directives: { kvTrackEvent: () => ({}) },
 					stubs: {
 						MyKivaCard: true,
@@ -512,7 +509,7 @@ describe('JourneyCardCarousel', () => {
 				},
 				global: {
 					provide: {
-						apollo: { readFragment: () => null },
+						apollo: {},
 						cookieStore: new CookieStore({}),
 						$kvTrackEvent: trackEvent,
 						goalData: { goalProgressPercentage: ref(goalProgressPercentage) },

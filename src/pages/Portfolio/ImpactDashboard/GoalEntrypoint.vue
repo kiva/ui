@@ -41,11 +41,7 @@ import { useRoute, useRouter } from 'vue-router';
 import userAchievementProgressQuery from '#src/graphql/query/userAchievementProgress.graphql';
 import useGoalData, { LAST_YEAR_KEY } from '#src/composables/useGoalData';
 import goalCopy from '#src/util/goalCopy';
-import { trackExperimentVersion } from '#src/util/experiment/experimentUtils';
 import {
-	GOAL_DEFAULT_CATEGORY_EXP_ACTION,
-	GOAL_DEFAULT_CATEGORY_EXP_CATEGORY,
-	GOAL_DEFAULT_CATEGORY_EXP_KEY,
 	GOAL_SIGNUP_DATE_QUERY_PARAM,
 	parseGoalSignupDateParam,
 } from '#src/util/goalSignupCopyVariant';
@@ -93,13 +89,6 @@ const fetchUserAchievementProgress = async () => {
 
 onMounted(() => {
 	$kvTrackEvent('portfolio', 'view', 'set-a-goal-portfolio');
-	trackExperimentVersion(
-		apollo,
-		$kvTrackEvent,
-		GOAL_DEFAULT_CATEGORY_EXP_CATEGORY,
-		GOAL_DEFAULT_CATEGORY_EXP_KEY,
-		GOAL_DEFAULT_CATEGORY_EXP_ACTION,
-	);
 });
 </script>
 

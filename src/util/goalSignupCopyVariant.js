@@ -15,7 +15,7 @@ export const GOAL_SIGNUP_COPY_VARIANT = {
 
 export const GOAL_SIGNUP_DATE_QUERY_PARAM = 'goalSignupDate';
 
-// [EXP-MP 3259] `a`: keeps Women as the default category
+// `a`: keeps Women as the default category
 // `b`: defaults to Choose as I go
 export const GOAL_DEFAULT_CATEGORY_EXP_KEY = 'goal_default_category';
 export const GOAL_DEFAULT_CATEGORY_EXP_CATEGORY = 'experiment-tracking';

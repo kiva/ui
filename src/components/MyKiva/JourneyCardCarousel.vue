@@ -110,12 +110,6 @@ import MyKivaSharingModal from '#src/components/MyKiva/MyKivaSharingModal';
 import MyKivaCard from '#src/components/MyKiva/MyKivaCard';
 import NextYearGoalCard from '#src/components/MyKiva/NextYearGoalCard';
 import useGoalData, { COMPLETED_GOAL_THRESHOLD } from '#src/composables/useGoalData';
-import { trackExperimentVersion } from '#src/util/experiment/experimentUtils';
-import {
-	GOAL_DEFAULT_CATEGORY_EXP_ACTION,
-	GOAL_DEFAULT_CATEGORY_EXP_CATEGORY,
-	GOAL_DEFAULT_CATEGORY_EXP_KEY,
-} from '#src/util/goalSignupCopyVariant';
 import MyKivaEmailUpdatesTransition from '#src/components/MyKiva/MyKivaEmailUpdatesTransition';
 import MyKivaLatestLoanCard from '#src/components/MyKiva/MyKivaLatestLoanCard';
 import MyKivaSurveyCard from '#src/components/MyKiva/MyKivaSurveyCard';
@@ -323,13 +317,6 @@ watch(() => [shouldShowGoalCard.value, props.goalProgressLoading], () => {
 	if (!shouldShowGoalCard.value || props.goalProgressLoading) return;
 	if (!hasGoal(props.userGoal)) {
 		$kvTrackEvent('portfolio', 'view', 'set-annual-goal');
-		trackExperimentVersion(
-			apollo,
-			$kvTrackEvent,
-			GOAL_DEFAULT_CATEGORY_EXP_CATEGORY,
-			GOAL_DEFAULT_CATEGORY_EXP_KEY,
-			GOAL_DEFAULT_CATEGORY_EXP_ACTION,
-		);
 		hasTrackedGoalCardImpression.value = true;
 		return;
 	}

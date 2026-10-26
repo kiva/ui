@@ -775,4 +775,62 @@ describe('GoalSelector', () => {
 		expect(apolloQueryMock).toHaveBeenCalled();
 		expect(getLoanNumbers()).toEqual(getExpectedGoalOptions({ lastYear: 0, ytd: 10 }));
 	});
+
+	describe('default category experiment exposure', () => {
+		const renderSelector = (props = {}) => {
+			const trackEvent = vi.fn();
+			const result = render(GoalSelector, {
+				global: {
+					...globalOptions,
+					provide: {
+						...globalOptions.provide,
+						apollo: {
+							...globalOptions.provide.apollo,
+							readFragment: () => ({ id: 'goal_default_category', version: 'b' }),
+						},
+						$kvTrackEvent: trackEvent,
+					},
+					stubs: { GoalProgressRing: true },
+				},
+				props: {
+					isGoalSet: false,
+					categoriesLoanCount: {},
+					selectedCategoryId: ID_WOMENS_EQUALITY,
+					selectedCategoryName: 'Women',
+					...props,
+				},
+			});
+			const exposureCalls = () => trackEvent.mock.calls
+				.filter(([category, action]) => category === 'experiment-tracking' && action === 'EXP-MP-3259-Jan2027');
+			return { ...result, exposureCalls };
+		};
+
+		it('tracks exposure once for a new goal sign up', async () => {
+			const { exposureCalls, rerender } = renderSelector();
+			await flushPromises();
+
+			expect(exposureCalls()).toEqual([['experiment-tracking', 'EXP-MP-3259-Jan2027', 'b', undefined]]);
+
+			// Setting the goal and re-rendering must not track again
+			await rerender({ isGoalSet: true });
+			await rerender({ isGoalSet: false });
+			await flushPromises();
+
+			expect(exposureCalls()).toHaveLength(1);
+		});
+
+		it('does not track exposure when a goal is already set', async () => {
+			const { exposureCalls } = renderSelector({ isGoalSet: true });
+			await flushPromises();
+
+			expect(exposureCalls()).toHaveLength(0);
+		});
+
+		it('does not track exposure when updating an existing goal', async () => {
+			const { exposureCalls } = renderSelector({ isUpdatingGoal: true });
+			await flushPromises();
+
+			expect(exposureCalls()).toHaveLength(0);
+		});
+	});
 });
