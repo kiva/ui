@@ -1,0 +1,6 @@
+query UserPreference($key: String!) {
+	my {
+		id
+		userPreference(key: $key)
+	}
+}

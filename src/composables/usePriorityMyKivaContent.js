@@ -1,14 +1,17 @@
 import { computed, inject, watch } from 'vue';
 import isPlainObject from 'lodash/isPlainObject';
-import priorityMyKivaContentQuery from '#src/graphql/query/priorityMyKivaContent.graphql';
+import userPreferenceQuery from '#src/graphql/query/userPreference.graphql';
 import logReadQueryError from '#src/util/logReadQueryError';
 import useApolloQuery from '#src/composables/useApolloQuery';
 
 // The browser's kvAuth0 has no user until its first authenticated request, so the login sync cookie stands in there
 const isLoggedIn = kvAuth0 => !!kvAuth0?.getKivaId() || (!kvAuth0?.isServer && !!kvAuth0?.isNotedLoggedIn?.());
 
+const variables = { key: 'showPriorityMyKivaContent' };
+
 const operation = {
-	query: priorityMyKivaContentQuery,
+	query: userPreferenceQuery,
+	preFetchVariables: () => variables,
 	shouldPreFetch: (_operation, { kvAuth0 }) => isLoggedIn(kvAuth0),
 };
 
@@ -56,10 +59,10 @@ export default function usePriorityMyKivaContent() {
 		return { priorityContent: computed(() => undefined) };
 	}
 
-	const { result, error } = useApolloQuery(operation);
+	const { result, error } = useApolloQuery(operation, variables);
 	watch(error, e => {
 		if (e) {
-			logReadQueryError(e, 'usePriorityMyKivaContent PriorityMyKivaContent');
+			logReadQueryError(e, 'usePriorityMyKivaContent UserPreference');
 		}
 	});
 

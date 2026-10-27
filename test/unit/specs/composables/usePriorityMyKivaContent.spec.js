@@ -25,7 +25,7 @@ const defaults = {
 function makeClient(respond) {
 	const requests = [];
 	const link = new ApolloLink(operation => {
-		requests.push(operation.operationName);
+		requests.push({ name: operation.operationName, variables: operation.variables });
 		return new Observable(observer => {
 			respond(observer);
 		});
@@ -65,6 +65,11 @@ describe('usePriorityMyKivaContent', () => {
 		};
 		const { content } = await renderContent(JSON.stringify(stored));
 		expect(content).toEqual(stored);
+	});
+
+	it('requests the preference by key', async () => {
+		const { requests } = await renderContent('{}');
+		expect(requests).toEqual([{ name: 'UserPreference', variables: { key: 'showPriorityMyKivaContent' } }]);
 	});
 
 	it('fills the defaults when the preference is an empty object', async () => {
@@ -113,6 +118,7 @@ describe('usePriorityMyKivaContent', () => {
 		const { client } = makeClient(() => {});
 		client.writeQuery({
 			query: preFetchOperations[0].query,
+			variables: { key: 'showPriorityMyKivaContent' },
 			data: { my: { __typename: 'My', id: 1, userPreference: '[]' } },
 		});
 		const { getByTestId } = render(UsesPriorityMyKivaContent, {
