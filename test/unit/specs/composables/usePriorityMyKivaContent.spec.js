@@ -99,6 +99,34 @@ describe('usePriorityMyKivaContent', () => {
 		expect(content).toBe('unset');
 	});
 
+	it('resolves for a lender the browser has noted as logged in before their session loads', async () => {
+		const notedLoggedIn = { ...globalOptions.provide.kvAuth0, isNotedLoggedIn: () => true };
+		const { content } = await renderContent('[]', notedLoggedIn);
+		expect(content).toEqual(defaults);
+	});
+
+	it('renders the server-prefetched value on the first browser render', () => {
+		const notedLoggedIn = { ...globalOptions.provide.kvAuth0, isNotedLoggedIn: () => true };
+		const { client } = makeClient(() => {});
+		client.writeQuery({
+			query: preFetchOperations[0].query,
+			data: { my: { __typename: 'My', id: 1, userPreference: '[]' } },
+		});
+		const { getByTestId } = render(UsesPriorityMyKivaContent, {
+			global: {
+				...globalOptions,
+				provide: { ...globalOptions.provide, apollo: client, kvAuth0: notedLoggedIn },
+			},
+		});
+		expect(JSON.parse(getByTestId('content').textContent)).toEqual(defaults);
+	});
+
+	it('prefetches on the server only on a loaded session, not on the noted login alone', () => {
+		const [operation] = preFetchOperations;
+		const serverNotedLoggedIn = { ...globalOptions.provide.kvAuth0, isServer: true, isNotedLoggedIn: () => true };
+		expect(operation.shouldPreFetch(operation, { kvAuth0: serverNotedLoggedIn })).toBe(false);
+	});
+
 	it('issues no request for a visitor', async () => {
 		const { content, requests } = await renderContent('{}', globalOptions.provide.kvAuth0);
 		expect(requests).toEqual([]);

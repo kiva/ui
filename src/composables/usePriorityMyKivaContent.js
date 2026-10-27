@@ -3,7 +3,8 @@ import priorityMyKivaContentQuery from '#src/graphql/query/priorityMyKivaContent
 import logReadQueryError from '#src/util/logReadQueryError';
 import useApolloQuery from '#src/composables/useApolloQuery';
 
-const isLoggedIn = kvAuth0 => !!kvAuth0?.getKivaId();
+// The browser's kvAuth0 has no user until its first authenticated request, so the login sync cookie stands in there
+const isLoggedIn = kvAuth0 => !!kvAuth0?.getKivaId() || (!kvAuth0?.isServer && !!kvAuth0?.isNotedLoggedIn?.());
 
 const operation = {
 	query: priorityMyKivaContentQuery,

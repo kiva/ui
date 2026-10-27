@@ -26,7 +26,7 @@
 		/>
 		<ForYourFamilySection
 			v-if="priorityContent"
-			class="tw-mt-4"
+			class="!tw-mt-2 !tw-mb-2"
 			:bday-card-name="priorityContent.bdayCardName"
 			:bday-card-link-override="priorityContent.bdayCardLinkOverride"
 			:lend-link-override="priorityContent.lendLinkOverride"
