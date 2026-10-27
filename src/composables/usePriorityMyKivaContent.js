@@ -1,4 +1,5 @@
 import { computed, inject, watch } from 'vue';
+import isPlainObject from 'lodash/isPlainObject';
 import priorityMyKivaContentQuery from '#src/graphql/query/priorityMyKivaContent.graphql';
 import logReadQueryError from '#src/util/logReadQueryError';
 import useApolloQuery from '#src/composables/useApolloQuery';
@@ -16,11 +17,6 @@ export const preFetchOperations = [operation];
 
 const readString = value => (typeof value === 'string' ? value : '');
 
-const isPlainObject = value => !!value && typeof value === 'object' && !Array.isArray(value);
-
-// The API stores preferences as PHP arrays, so a stored `{}` reads back as `[]`
-const isEmptyList = value => Array.isArray(value) && value.length === 0;
-
 const decodePriorityContent = raw => {
 	if (typeof raw !== 'string') return undefined;
 	let parsed;
@@ -29,8 +25,9 @@ const decodePriorityContent = raw => {
 	} catch {
 		return undefined;
 	}
-	if (parsed !== true && !isEmptyList(parsed) && !isPlainObject(parsed)) return undefined;
-	const value = isPlainObject(parsed) ? parsed : {};
+	// The API stores preferences as PHP arrays, so a stored `{}` reads back as `[]`
+	const value = parsed === true || (Array.isArray(parsed) && !parsed.length) ? {} : parsed;
+	if (!isPlainObject(value)) return undefined;
 	return {
 		bdayCardName: readString(value.bdayCardName),
 		bdayCardLinkOverride: readString(value.bdayCardLinkOverride),
