@@ -38,6 +38,15 @@ describe('ForYourFamilySection', () => {
 		expect(getByRole('heading', { name: 'Happy birthday Tanya!' })).toBeTruthy();
 	});
 
+	it('hides the birthday card when asked', () => {
+		const { queryByRole, getByRole } = renderComponent({ hideBdayCard: true });
+
+		expect(queryByRole('heading', { name: /Happy birthday/ })).toBeNull();
+		expect(queryByRole('link', { name: 'Get started' })).toBeNull();
+		expect(getByRole('link', { name: 'Browse loans' })).toBeTruthy();
+		expect(getByRole('link', { name: 'View your impact' })).toBeTruthy();
+	});
+
 	it('links each card button to its destination', () => {
 		const { getByRole } = renderComponent();
 

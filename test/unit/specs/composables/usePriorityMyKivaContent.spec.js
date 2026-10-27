@@ -19,6 +19,7 @@ const defaults = {
 	lendLinkOverride: '',
 	impactLinkOverride: '',
 	showNextStepsOverride: false,
+	hideBdayCard: false,
 };
 
 function makeClient(respond) {
@@ -60,6 +61,7 @@ describe('usePriorityMyKivaContent', () => {
 			lendLinkOverride: '/lend-by-category/education',
 			impactLinkOverride: '/portfolio/lending-stats',
 			showNextStepsOverride: true,
+			hideBdayCard: true,
 		};
 		const { content } = await renderContent(JSON.stringify(stored));
 		expect(content).toEqual(stored);
@@ -85,6 +87,7 @@ describe('usePriorityMyKivaContent', () => {
 			bdayCardName: 5,
 			lendLinkOverride: null,
 			showNextStepsOverride: 'true',
+			hideBdayCard: 'true',
 		}));
 		expect(content).toEqual(defaults);
 	});

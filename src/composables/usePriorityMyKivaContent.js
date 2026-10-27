@@ -37,6 +37,7 @@ const decodePriorityContent = raw => {
 		lendLinkOverride: readString(value.lendLinkOverride),
 		impactLinkOverride: readString(value.impactLinkOverride),
 		showNextStepsOverride: value.showNextStepsOverride === true,
+		hideBdayCard: value.hideBdayCard === true,
 	};
 };
 
@@ -50,6 +51,7 @@ const decodePriorityContent = raw => {
  *   lendLinkOverride: string,
  *   impactLinkOverride: string,
  *   showNextStepsOverride: boolean,
+ *   hideBdayCard: boolean,
  * }|undefined> }} undefined when the preference is not set or invalid.
  */
 export default function usePriorityMyKivaContent() {

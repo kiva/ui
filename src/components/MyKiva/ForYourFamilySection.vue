@@ -3,7 +3,10 @@
 		<h2 class="tw-text-primary tw-mb-2 !tw-text-title">
 			For your family
 		</h2>
-		<div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-3 tw-gap-2 lg:tw-gap-4">
+		<div
+			class="tw-grid tw-grid-cols-1 tw-gap-2 lg:tw-gap-4"
+			:class="hideBdayCard ? 'md:tw-grid-cols-2' : 'md:tw-grid-cols-3'"
+		>
 			<div
 				v-for="card in cards"
 				:key="card.key"
@@ -74,10 +77,14 @@ const props = defineProps({
 		type: String,
 		default: '',
 	},
+	hideBdayCard: {
+		type: Boolean,
+		default: false,
+	},
 });
 
 const cards = computed(() => [
-	{
+	!props.hideBdayCard && {
 		key: 'birthday',
 		title: props.bdayCardName ? `Happy birthday ${props.bdayCardName}!` : 'Happy birthday!',
 		body: 'You have funds ready to lend.',
@@ -103,7 +110,7 @@ const cards = computed(() => [
 		variant: 'secondary',
 		trackingLabel: 'for-your-family-view-impact',
 	},
-]);
+].filter(Boolean));
 </script>
 
 <style lang="postcss" scoped>

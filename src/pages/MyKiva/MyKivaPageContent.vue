@@ -31,6 +31,7 @@
 			:bday-card-link-override="priorityContent.bdayCardLinkOverride"
 			:lend-link-override="priorityContent.lendLinkOverride"
 			:impact-link-override="priorityContent.impactLinkOverride"
+			:hide-bday-card="priorityContent.hideBdayCard"
 		/>
 		<section v-if="showNextStepsRow" class="!tw-mt-2">
 			<LendingStats
