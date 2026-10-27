@@ -4,6 +4,7 @@
 import { WITHDRAW_ROUTE, WITHDRAW_PROCESS } from '../util/withdraw/withdrawConstants.js';
 import { DEPOSIT_ROUTE } from '../util/deposit/depositConstants.js';
 import { ESTIMATED_REPAYMENTS_ROUTE } from '../util/estimatedRepayments/estimatedRepaymentsConstants.js';
+import { INVITES_ROUTE } from '../util/invites/invitesConstants.js';
 /* eslint-enable import/extensions */
 
 export default [
@@ -376,6 +377,14 @@ export default [
 	{
 		path: ESTIMATED_REPAYMENTS_ROUTE,
 		component: () => import('#src/pages/Portfolio/EstimatedRepayments/EstimatedRepaymentsPage'),
+		meta: {
+			authenticationRequired: true,
+			excludeFromStaticSitemap: true,
+		}
+	},
+	{
+		path: INVITES_ROUTE,
+		component: () => import('#src/pages/Portfolio/Invites/InvitesPage'),
 		meta: {
 			authenticationRequired: true,
 			excludeFromStaticSitemap: true,
