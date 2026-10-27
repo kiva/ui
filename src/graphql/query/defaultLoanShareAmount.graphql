@@ -1,6 +1,0 @@
-query DefaultLoanShareAmount {
-	my {
-		id
-		userPreference(key: "defaultLoanShareAmount")
-	}
-}

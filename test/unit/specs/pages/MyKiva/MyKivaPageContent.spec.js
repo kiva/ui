@@ -33,6 +33,47 @@ describe('MyKivaPageContent', () => {
 		});
 	});
 
+	describe('showNextStepsRow', () => {
+		const callComputed = priorityContent => MyKivaPageContent.computed.showNextStepsRow.call({ priorityContent });
+
+		it('shows the row when the lender has no priority content', () => {
+			expect(callComputed(undefined)).toBe(true);
+		});
+
+		it('hides the row behind priority content', () => {
+			expect(callComputed({ showNextStepsOverride: false })).toBe(false);
+		});
+
+		it('shows the row alongside priority content when overridden', () => {
+			expect(callComputed({ showNextStepsOverride: true })).toBe(true);
+		});
+	});
+
+	describe('showFeaturedSlot', () => {
+		const callComputed = overrides => MyKivaPageContent.computed.showFeaturedSlot.call({
+			goalsRowEnabled: true,
+			shouldRenderFeaturedSlot: true,
+			showNextStepsRow: true,
+			...overrides,
+		});
+
+		it('shows the slot when the goals row is enabled and the slot should render', () => {
+			expect(callComputed()).toBe(true);
+		});
+
+		it('hides the slot outside the goals row experiment', () => {
+			expect(callComputed({ goalsRowEnabled: false })).toBe(false);
+		});
+
+		it('hides the slot when it has nothing to show', () => {
+			expect(callComputed({ shouldRenderFeaturedSlot: false })).toBe(false);
+		});
+
+		it('hides the slot along with the next steps row', () => {
+			expect(callComputed({ showNextStepsRow: false })).toBe(false);
+		});
+	});
+
 	describe('allBadgesCompleted', () => {
 		const callComputed = heroBadgeData => {
 			const context = {
