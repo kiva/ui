@@ -65,7 +65,7 @@ const renderHeader = (props = {}, renderConfig = {}, {
 	},
 );
 
-const MAJOR_GIFTS_EXP_KEY = 'major_gifts_header';
+const MAJOR_GIFTS_EXP_KEY = 'v2_major_gifts_header';
 
 // Passing request cookies keeps the assignment on the instance instead of jsdom's shared
 // document.cookie, so one spec's assignment can't leak into the next.
@@ -201,7 +201,7 @@ describe('TheHeader', () => {
 
 			await waitFor(() => expect($kvTrackEvent).toHaveBeenCalledWith(
 				'event-tracking',
-				'EXP-CIT-5148-Sept2026',
+				'EXP-CIT-5498-Oct2026',
 				'b',
 				undefined,
 			));
