@@ -3,10 +3,7 @@
 		<h2 class="tw-text-primary tw-mb-2 !tw-text-title">
 			For your family
 		</h2>
-		<div
-			class="tw-grid tw-grid-cols-1 tw-gap-2 lg:tw-gap-4"
-			:class="hideBdayCard ? 'md:tw-grid-cols-2' : 'md:tw-grid-cols-3'"
-		>
+		<div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-3 tw-gap-2 lg:tw-gap-4">
 			<div
 				v-for="card in cards"
 				:key="card.key"
