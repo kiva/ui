@@ -2,6 +2,7 @@ import { render } from '@testing-library/vue';
 import userEvent from '@testing-library/user-event';
 import GoalSelector from '#src/components/MyKiva/GoalSetting/GoalSelector';
 import goalCopy from '#src/util/goalCopy';
+import { GOAL_DEFAULT_CATEGORY_EXPOSURE } from '#src/util/goalSignupCopyVariant';
 import {
 	ID_BASIC_NEEDS,
 	ID_CLIMATE_ACTION,
@@ -777,8 +778,7 @@ describe('GoalSelector', () => {
 	});
 
 	describe('default category experiment exposure', () => {
-		const renderSelector = (props = {}) => {
-			const trackEvent = vi.fn();
+		const renderSelector = (props = {}, { trackEvent = vi.fn(), provide = {} } = {}) => {
 			const result = render(GoalSelector, {
 				global: {
 					...globalOptions,
@@ -789,6 +789,7 @@ describe('GoalSelector', () => {
 							readFragment: () => ({ id: 'goal_default_category', version: 'b' }),
 						},
 						$kvTrackEvent: trackEvent,
+						...provide,
 					},
 					stubs: { GoalProgressRing: true },
 				},
@@ -814,6 +815,20 @@ describe('GoalSelector', () => {
 			// Setting the goal and re-rendering must not track again
 			await rerender({ isGoalSet: true });
 			await rerender({ isGoalSet: false });
+			await flushPromises();
+
+			expect(exposureCalls()).toHaveLength(1);
+		});
+
+		it('tracks exposure once per page load when the selector remounts under a page flag', async () => {
+			const trackEvent = vi.fn();
+			const provide = { [GOAL_DEFAULT_CATEGORY_EXPOSURE]: { tracked: false } };
+
+			// Opening and closing the goal modal twice mounts a new selector each time
+			const first = renderSelector({}, { trackEvent, provide });
+			await flushPromises();
+			first.unmount();
+			const { exposureCalls } = renderSelector({}, { trackEvent, provide });
 			await flushPromises();
 
 			expect(exposureCalls()).toHaveLength(1);

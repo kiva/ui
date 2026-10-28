@@ -61,7 +61,10 @@ import { gql } from 'graphql-tag';
 import borrowerProfileSideSheetQuery from '#src/graphql/query/borrowerProfileSideSheet.graphql';
 import experimentAssignmentQuery from '#src/graphql/query/experimentAssignment.graphql';
 import { initializeExperiment } from '#src/util/experiment/experimentUtils';
-import { GOAL_DEFAULT_CATEGORY_EXP_KEY } from '#src/util/goalSignupCopyVariant';
+import {
+	GOAL_DEFAULT_CATEGORY_EXP_KEY,
+	GOAL_DEFAULT_CATEGORY_EXPOSURE,
+} from '#src/util/goalSignupCopyVariant';
 import { readBoolSetting, readDateSetting } from '#src/util/settingsUtils';
 import useGoalData, { LAST_YEAR_KEY } from '#src/composables/useGoalData';
 import {
@@ -98,6 +101,8 @@ export default {
 		const goalDataComposable = useGoalData({ apollo });
 		const { combineBadgeData } = useBadgeData();
 		provide('goalData', goalDataComposable);
+		// One flag per page load, so reopening the goal modal does not log the exposure again
+		provide(GOAL_DEFAULT_CATEGORY_EXPOSURE, { tracked: false });
 
 		return {
 			combineBadgeData,

@@ -216,6 +216,7 @@ import {
 	GOAL_DEFAULT_CATEGORY_EXP_ACTION,
 	GOAL_DEFAULT_CATEGORY_EXP_CATEGORY,
 	GOAL_DEFAULT_CATEGORY_EXP_KEY,
+	GOAL_DEFAULT_CATEGORY_EXPOSURE,
 } from '#src/util/goalSignupCopyVariant';
 
 const CUSTOM_LOAN_NUMBER_INDEX = 3;
@@ -713,11 +714,12 @@ const handleEditGoalFromSettings = () => {
 // Default category experiment tracking
 // Only a new goal sign up sees the default, and a goal set later must not re-fire or un-fire it
 const readyForExposure = computed(() => !props.isUpdatingGoal && !props.isGoalSet);
-const exposureTracked = ref(false);
+// Pages that host the goal modal provide one flag for the page load; elsewhere it's per selector
+const exposure = inject(GOAL_DEFAULT_CATEGORY_EXPOSURE, () => ({ tracked: false }), true);
 
 watch(readyForExposure, ready => {
-	if (typeof window === 'undefined' || !ready || exposureTracked.value) return;
-	exposureTracked.value = true;
+	if (typeof window === 'undefined' || !ready || exposure.tracked) return;
+	exposure.tracked = true;
 	trackExperimentVersion(
 		apollo,
 		$kvTrackEvent,

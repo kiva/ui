@@ -75,7 +75,10 @@ import borrowerProfileExpMixin from '#src/plugins/borrower-profile-exp-mixin';
 import experimentAssignmentQuery from '#src/graphql/query/experimentAssignment.graphql';
 import { initializeExperiment } from '#src/util/experiment/experimentUtils';
 import { EXPRESS_CHECKOUT_EXP_KEY } from '#src/util/thanksPage/expressCheckoutUtils';
-import { GOAL_DEFAULT_CATEGORY_EXP_KEY } from '#src/util/goalSignupCopyVariant';
+import {
+	GOAL_DEFAULT_CATEGORY_EXP_KEY,
+	GOAL_DEFAULT_CATEGORY_EXPOSURE,
+} from '#src/util/goalSignupCopyVariant';
 
 // Thanks views
 const DONATION_ONLY_VIEW = 'donation_only';
@@ -127,6 +130,8 @@ export default {
 				isAdding: computed(() => this.isAdding),
 				resetIsAdding: () => { this.isAdding = false; },
 			},
+			// One flag per page load, so reopening the goal modal does not log the exposure again
+			[GOAL_DEFAULT_CATEGORY_EXPOSURE]: { tracked: false },
 		};
 	},
 	head() {
