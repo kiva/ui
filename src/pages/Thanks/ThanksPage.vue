@@ -77,7 +77,8 @@ import { initializeExperiment } from '#src/util/experiment/experimentUtils';
 import { EXPRESS_CHECKOUT_EXP_KEY } from '#src/util/thanksPage/expressCheckoutUtils';
 import {
 	GOAL_DEFAULT_CATEGORY_EXP_KEY,
-	GOAL_DEFAULT_CATEGORY_EXPOSURE,
+	GOAL_DEFAULT_CATEGORY_EXP_STATE,
+	createGoalDefaultCategoryExpState,
 } from '#src/util/goalSignupCopyVariant';
 
 // Thanks views
@@ -130,8 +131,8 @@ export default {
 				isAdding: computed(() => this.isAdding),
 				resetIsAdding: () => { this.isAdding = false; },
 			},
-			// One flag per page load, so reopening the goal modal does not log the exposure again
-			[GOAL_DEFAULT_CATEGORY_EXPOSURE]: { tracked: false },
+			// One state per page load, so reopening the goal modal does not log the exposure again
+			[GOAL_DEFAULT_CATEGORY_EXP_STATE]: this.goalDefaultCategoryExp,
 		};
 	},
 	head() {
@@ -161,6 +162,7 @@ export default {
 			goalRecommendedLoanEnable: false,
 			goalInReviewInProgressStart: null,
 			expressCheckoutExpVersion: null,
+			goalDefaultCategoryExp: createGoalDefaultCategoryExpState(),
 		};
 	},
 	apollo: {
@@ -317,6 +319,17 @@ export default {
 			EXPRESS_CHECKOUT_EXP_KEY,
 			version => {
 				this.expressCheckoutExpVersion = version ?? null;
+			},
+		);
+
+		// Exposure is tracked where the default category is shown in GoalSelector
+		initializeExperiment(
+			this.cookieStore,
+			this.apollo,
+			this.$route,
+			GOAL_DEFAULT_CATEGORY_EXP_KEY,
+			version => {
+				this.goalDefaultCategoryExp.chooseAsIGoDefault = version === 'b';
 			},
 		);
 

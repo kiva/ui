@@ -7,6 +7,8 @@
  *   Jan 1 – Mar 31  -> 'last-year'
  *   Apr 1 – Dec 31  -> 'no-goal-yet'
  */
+import { reactive } from 'vue';
+import { ID_SUPPORT_ALL, ID_WOMENS_EQUALITY } from '#src/composables/useBadgeData';
 
 export const GOAL_SIGNUP_COPY_VARIANT = {
 	LAST_YEAR: 'last-year',
@@ -20,7 +22,35 @@ export const GOAL_SIGNUP_DATE_QUERY_PARAM = 'goalSignupDate';
 export const GOAL_DEFAULT_CATEGORY_EXP_KEY = 'goal_default_category';
 export const GOAL_DEFAULT_CATEGORY_EXP_CATEGORY = 'event-tracking';
 export const GOAL_DEFAULT_CATEGORY_EXP_ACTION = 'EXP-MP-3259-Jan2027';
-export const GOAL_DEFAULT_CATEGORY_EXPOSURE = 'goalDefaultCategoryExposure';
+// Injection key for the page's experiment state, provided by every page with a goal sign up
+export const GOAL_DEFAULT_CATEGORY_EXP_STATE = 'goalDefaultCategoryExp';
+
+/**
+ * State a page provides for the default category experiment. One object per page load, so the
+ * exposure is logged once however many times the goal modal remounts.
+ *
+ * @returns {{ tracked: boolean, chooseAsIGoDefault: boolean, peopleLoansLastYear: number|null }}
+ */
+export function createGoalDefaultCategoryExpState() {
+	return reactive({
+		tracked: false,
+		chooseAsIGoDefault: false,
+		// Total loans last year, for the `b` copy on entrypoints that read it from the page
+		peopleLoansLastYear: null,
+	});
+}
+
+/**
+ * The category a new goal sign up starts on.
+ *
+ * @param {Object[]} categories Goal categories from useGoalData's getCategories
+ * @param {boolean} chooseAsIGoDefault Whether the visitor has version `b`
+ * @returns {Object} The default category
+ */
+export function getDefaultGoalCategory(categories, chooseAsIGoDefault) {
+	const defaultId = chooseAsIGoDefault ? ID_SUPPORT_ALL : ID_WOMENS_EQUALITY;
+	return categories.find(category => category.badgeId === defaultId) ?? categories[0];
+}
 
 // April (Date#getMonth is 0-indexed) is the earliest 'no-goal-yet' month.
 const NO_GOAL_YET_START_MONTH = 3;

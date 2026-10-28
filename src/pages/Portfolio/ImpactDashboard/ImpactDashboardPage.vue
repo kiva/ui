@@ -73,6 +73,13 @@ import { GOAL_STATUS, GOALS_CURRENT_YEAR } from '#src/composables/useGoalData';
 import useGoalInReview, { getGoalInReviewNow } from '#src/composables/useGoalInReview';
 import GoalInReviewModal from '#src/components/MyKiva/GoalInReview/GoalInReviewModal';
 import portfolioQuery from '#src/graphql/query/portfolioQuery.graphql';
+import experimentAssignmentQuery from '#src/graphql/query/experimentAssignment.graphql';
+import { initializeExperiment } from '#src/util/experiment/experimentUtils';
+import {
+	GOAL_DEFAULT_CATEGORY_EXP_KEY,
+	GOAL_DEFAULT_CATEGORY_EXP_STATE,
+	createGoalDefaultCategoryExpState,
+} from '#src/util/goalSignupCopyVariant';
 import { hasLoanFunFactFootnote } from '#src/util/myKivaUtils';
 import { isDisasterReliefFundOnlySupporter } from '#src/util/givingFundUtils';
 import { KvGrid, KvPageContainer } from '@kiva/kv-components';
@@ -159,11 +166,23 @@ export default {
 			showMyGivingFundsCard: false,
 			isDisasterReliefOnly: false,
 			userId: null,
+			goalDefaultCategoryExp: createGoalDefaultCategoryExpState(),
+		};
+	},
+	provide() {
+		return {
+			[GOAL_DEFAULT_CATEGORY_EXP_STATE]: this.goalDefaultCategoryExp,
 		};
 	},
 	apollo: {
 		preFetch(config, client) {
-			return client.query({ query: portfolioQuery });
+			return Promise.all([
+				client.query({ query: portfolioQuery }),
+				client.query({
+					query: experimentAssignmentQuery,
+					variables: { id: GOAL_DEFAULT_CATEGORY_EXP_KEY },
+				}),
+			]);
 		},
 	},
 	computed: {
@@ -233,6 +252,17 @@ export default {
 		},
 	},
 	created() {
+		// Exposure is tracked where the default category is shown in GoalSelector
+		initializeExperiment(
+			this.cookieStore,
+			this.apollo,
+			this.$route,
+			GOAL_DEFAULT_CATEGORY_EXP_KEY,
+			version => {
+				this.goalDefaultCategoryExp.chooseAsIGoDefault = version === 'b';
+			},
+		);
+
 		const portfolioQueryData = this.apollo.readQuery({ query: portfolioQuery });
 		const userData = portfolioQueryData?.my ?? {};
 		this.loans = userData?.loans?.values ?? [];

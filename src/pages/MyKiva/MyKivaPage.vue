@@ -61,9 +61,11 @@ import { gql } from 'graphql-tag';
 import borrowerProfileSideSheetQuery from '#src/graphql/query/borrowerProfileSideSheet.graphql';
 import experimentAssignmentQuery from '#src/graphql/query/experimentAssignment.graphql';
 import { initializeExperiment } from '#src/util/experiment/experimentUtils';
+import loanStatsByYearQuery from '#src/graphql/query/loanStatsByYear.graphql';
 import {
 	GOAL_DEFAULT_CATEGORY_EXP_KEY,
-	GOAL_DEFAULT_CATEGORY_EXPOSURE,
+	GOAL_DEFAULT_CATEGORY_EXP_STATE,
+	createGoalDefaultCategoryExpState,
 } from '#src/util/goalSignupCopyVariant';
 import { readBoolSetting, readDateSetting } from '#src/util/settingsUtils';
 import useGoalData, { LAST_YEAR_KEY } from '#src/composables/useGoalData';
@@ -101,11 +103,13 @@ export default {
 		const goalDataComposable = useGoalData({ apollo });
 		const { combineBadgeData } = useBadgeData();
 		provide('goalData', goalDataComposable);
-		// One flag per page load, so reopening the goal modal does not log the exposure again
-		provide(GOAL_DEFAULT_CATEGORY_EXPOSURE, { tracked: false });
+		// One state per page load, so reopening the goal modal does not log the exposure again
+		const goalDefaultCategoryExp = createGoalDefaultCategoryExpState();
+		provide(GOAL_DEFAULT_CATEGORY_EXP_STATE, goalDefaultCategoryExp);
 
 		return {
 			combineBadgeData,
+			goalDefaultCategoryExp,
 			fixIncorrectlyCompletedGoals: goalDataComposable.fixIncorrectlyCompletedGoals,
 			hydrateGoalDataFromCache: goalDataComposable.hydrateFromCache,
 			// TESTING ONLY (remove later).
@@ -245,6 +249,10 @@ export default {
 				client.query({
 					query: experimentAssignmentQuery,
 					variables: { id: GOAL_DEFAULT_CATEGORY_EXP_KEY },
+				}),
+				client.query({
+					query: loanStatsByYearQuery,
+					variables: { year: LAST_YEAR_KEY },
 				}),
 			]).catch(error => {
 				logReadQueryError(error, 'myKivaPage Prefetch');
@@ -460,6 +468,23 @@ export default {
 			this.$kvTrackEvent,
 			'EXP-CIT-5265-Sep2026'
 		);
+
+		// Exposure is tracked where the default category is shown in GoalSelector
+		initializeExperiment(
+			this.cookieStore,
+			this.apollo,
+			this.$route,
+			GOAL_DEFAULT_CATEGORY_EXP_KEY,
+			version => {
+				this.goalDefaultCategoryExp.chooseAsIGoDefault = version === 'b';
+			},
+		);
+		try {
+			const stats = this.apollo.readQuery({ query: loanStatsByYearQuery, variables: { year: LAST_YEAR_KEY } });
+			this.goalDefaultCategoryExp.peopleLoansLastYear = stats?.my?.lendingStats?.loanStatsByYear?.count ?? 0;
+		} catch (e) {
+			logReadQueryError(e, 'MyKivaPage loanStatsByYear');
+		}
 	},
 	async mounted() {
 		try {

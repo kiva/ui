@@ -1,4 +1,7 @@
 import MyKivaPage from '#src/pages/MyKiva/MyKivaPage';
+import loanStatsByYearQuery from '#src/graphql/query/loanStatsByYear.graphql';
+import { createGoalDefaultCategoryExpState } from '#src/util/goalSignupCopyVariant';
+import { LAST_YEAR_KEY } from '#src/composables/useGoalData';
 import countryListQuery from '#src/graphql/query/countryList.graphql';
 import logReadQueryError from '#src/util/logReadQueryError';
 
@@ -380,10 +383,22 @@ describe('MyKivaPage', () => {
 
 			const yearOnlyCalls = client.query.mock.calls
 				.map(call => call[0])
-				.filter(call => call?.variables?.year != null && call?.variables?.loanPurchasesLimit == null);
+				.filter(call => call?.variables?.year != null && call?.variables?.loanPurchasesLimit == null)
+				.filter(call => call.query !== loanStatsByYearQuery);
 
 			expect(yearOnlyCalls).toHaveLength(1);
 			expect(yearOnlyCalls[0].variables).toEqual({ year: new Date().getFullYear() });
+		});
+
+		it('prefetches last year\'s total loans for the default category experiment copy', async () => {
+			const client = { query: vi.fn().mockResolvedValue({ data: {} }) };
+
+			await MyKivaPage.apollo.preFetch({}, client, { route: { query: {} } });
+
+			expect(client.query).toHaveBeenCalledWith({
+				query: loanStatsByYearQuery,
+				variables: { year: LAST_YEAR_KEY },
+			});
 		});
 
 		it('prefetches the fundraisers row experiment assignment', async () => {
@@ -469,12 +484,14 @@ describe('MyKivaPage', () => {
 				currentYearTieredAchievements: [],
 				apollo: {
 					readFragment: vi.fn().mockReturnValue(undefined),
+					readQuery: vi.fn().mockReturnValue(null),
 				},
 				cookieStore: {
 					get: vi.fn().mockReturnValue(undefined),
 				},
 				$route: { query: {} },
 				$kvTrackEvent: vi.fn(),
+				goalDefaultCategoryExp: createGoalDefaultCategoryExpState(),
 			};
 
 			MyKivaPage.created.call(context);
@@ -507,12 +524,14 @@ describe('MyKivaPage', () => {
 				transactions,
 				apollo: {
 					readFragment: vi.fn().mockReturnValue(undefined),
+					readQuery: vi.fn().mockReturnValue(null),
 				},
 				cookieStore: {
 					get: vi.fn().mockReturnValue(undefined),
 				},
 				$route: { query: {} },
 				$kvTrackEvent: vi.fn(),
+				goalDefaultCategoryExp: createGoalDefaultCategoryExpState(),
 			};
 
 			MyKivaPage.created.call(context);
@@ -548,18 +567,52 @@ describe('MyKivaPage', () => {
 				heroBadgeContentfulData: [],
 				apollo: {
 					readFragment: vi.fn().mockReturnValue(undefined),
+					readQuery: vi.fn().mockReturnValue(null),
 				},
 				cookieStore: {
 					get: vi.fn().mockReturnValue(undefined),
 				},
 				$route: { query: {} },
 				$kvTrackEvent: vi.fn(),
+				goalDefaultCategoryExp: createGoalDefaultCategoryExpState(),
 			};
 
 			MyKivaPage.created.call(context);
 
 			expect(context.heroSlides).toEqual(slides);
 			expect(context.heroBadgeContentfulData).toEqual(badgeData);
+		});
+
+		it('sets the default category experiment state from the cache', () => {
+			const context = {
+				fetchMyKivaData: vi.fn(),
+				readTieredAchievementsFromCache: vi.fn().mockReturnValue([]),
+				applyMyKivaFreshProgress: vi.fn(),
+				hydrateGoalDataFromCache: vi.fn(),
+				readContentfulSlides: vi.fn().mockReturnValue([]),
+				readContentfulBadgeData: vi.fn().mockReturnValue([]),
+				apollo: {
+					readFragment: vi.fn(({ id }) => (id === 'Experiment:goal_default_category'
+						? { id: 'goal_default_category', version: 'b' }
+						: undefined)),
+					readQuery: vi.fn().mockReturnValue({ my: { lendingStats: { loanStatsByYear: { count: 12 } } } }),
+				},
+				cookieStore: {
+					get: vi.fn().mockReturnValue(undefined),
+				},
+				$route: { query: {} },
+				$kvTrackEvent: vi.fn(),
+				goalDefaultCategoryExp: createGoalDefaultCategoryExpState(),
+			};
+
+			MyKivaPage.created.call(context);
+
+			expect(context.goalDefaultCategoryExp.chooseAsIGoDefault).toBe(true);
+			expect(context.goalDefaultCategoryExp.peopleLoansLastYear).toBe(12);
+			expect(context.apollo.readQuery).toHaveBeenCalledWith({
+				query: loanStatsByYearQuery,
+				variables: { year: LAST_YEAR_KEY },
+			});
 		});
 	});
 });

@@ -19,7 +19,8 @@
 			:goal-progress-percentage="goalProgressPercentageValue"
 			:category-name="categoryName"
 			:user-name="userFirstName"
-			:prev-year-loans="womenLoansLastYear"
+			:prev-year-loans="prevYearLoans"
+			:choose-as-i-go-default="chooseAsIGoDefault"
 			:suppress-completion-confetti="suppressCompletionConfetti"
 			:show-recap-cta="showRecapCta"
 			@set-goal-click="handleSetGoalClick"
@@ -43,6 +44,7 @@ import useGoalData, {
 } from '#src/composables/useGoalData';
 import logReadQueryError from '#src/util/logReadQueryError';
 import { getGoalYear } from '#src/util/goalInReview';
+import { GOAL_DEFAULT_CATEGORY_EXP_STATE } from '#src/util/goalSignupCopyVariant';
 import { useGoalRecapEntryPoint, useHideGoalSignup } from '#src/composables/useGoalInReview';
 import { KvLoadingPlaceholder } from '@kiva/kv-components';
 
@@ -78,6 +80,7 @@ const emit = defineEmits(['set-goal-click', 'cta-click', 'edit-click', 'view-goa
 
 const router = useRouter();
 const goalData = inject('goalData');
+const goalDefaultCategoryExp = inject(GOAL_DEFAULT_CATEGORY_EXP_STATE, null);
 const $kvTrackEvent = inject('$kvTrackEvent');
 const { getCategoryLoansLastYear } = useGoalData();
 
@@ -92,7 +95,11 @@ const goalStatus = computed(() => goalData?.userGoal?.value?.status || null);
 const goalTarget = computed(() => goalData?.userGoal?.value?.target || 0);
 const goalProgressValue = computed(() => goalData?.goalProgress?.value || 0);
 const goalProgressPercentageValue = computed(() => goalData?.goalProgressPercentage?.value || 0);
-const womenLoansLastYear = computed(() => getCategoryLoansLastYear(props.heroTieredAchievements));
+// Version `b` defaults to Choose as I go
+const chooseAsIGoDefault = computed(() => Boolean(goalDefaultCategoryExp?.chooseAsIGoDefault));
+const prevYearLoans = computed(() => (chooseAsIGoDefault.value
+	? goalDefaultCategoryExp.peopleLoansLastYear ?? 0
+	: getCategoryLoansLastYear(props.heroTieredAchievements)));
 
 const categoryName = computed(() => {
 	const target = goalData?.userGoal?.value?.target;

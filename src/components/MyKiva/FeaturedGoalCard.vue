@@ -203,6 +203,11 @@ const props = defineProps({
 		type: Number,
 		default: 0,
 	},
+	// Version `b` of the default category experiment
+	chooseAsIGoDefault: {
+		type: Boolean,
+		default: false,
+	},
 	suppressCompletionConfetti: {
 		type: Boolean,
 		default: false,
@@ -223,7 +228,9 @@ const resolvedState = computed(() => (
 	VALID_STATES.includes(props.state) ? props.state : STATE_NO_GOAL
 ));
 
-const noGoalTitle = computed(() => goalCopy.titleGoalSignupWomensLastYear(props.prevYearLoans));
+const noGoalTitle = computed(() => goalCopy.titleGoalSignupLastYear(props.prevYearLoans, {
+	chooseAsIGoDefault: props.chooseAsIGoDefault,
+}));
 const noGoalSubtitle = goalCopy.subtitleNoGoalYetEntrypoint();
 
 const visibleProgress = computed(() => Math.min(props.goalProgress, props.goalTarget));

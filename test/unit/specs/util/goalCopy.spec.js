@@ -117,6 +117,67 @@ describe('goalCopy', () => {
 		});
 	});
 
+	describe('default category experiment tests (testing copy + titles)', () => {
+		afterEach(() => {
+			vi.useRealTimers();
+		});
+
+		it('uses last-year singular copy from January 1 through March 31', () => {
+			vi.useFakeTimers();
+			vi.setSystemTime(new Date('2026-03-31T12:00:00'));
+
+			expect(stripHtml(goalCopy.titleGoalSignupPeopleLastYear(1))).toBe(
+				'Last year, you helped 1 person shape their future'
+			);
+		});
+
+		it('uses last-year plural copy from January 1 through March 31', () => {
+			vi.useFakeTimers();
+			vi.setSystemTime(new Date('2026-03-31T12:00:00'));
+
+			expect(stripHtml(goalCopy.titleGoalSignupPeopleLastYear(7))).toBe(
+				'Last year, you helped 7 people shape their futures'
+			);
+		});
+
+		it('uses the new lender copy when there were no loans last year', () => {
+			vi.useFakeTimers();
+			vi.setSystemTime(new Date('2026-03-31T12:00:00'));
+
+			expect(stripHtml(goalCopy.titleGoalSignupPeopleLastYear(0))).toBe('Lenders like you help 3 people a year');
+		});
+
+		it('uses no-goal-yet copy starting April 1 regardless of last-year loans', () => {
+			vi.useFakeTimers();
+			vi.setSystemTime(new Date('2026-04-01T12:00:00'));
+
+			expect(goalCopy.titleGoalSignupPeopleLastYear(7)).toBe(goalCopy.CARD_NO_GOAL_YET_EXPERIMENT);
+		});
+	});
+
+	describe('titleLastYearForCategory', () => {
+		it('uses singular copy for 1 loan to Choose as I go', () => {
+			expect(stripHtml(goalCopy.titleLastYearForCategory(1, 'support-all', 'Choose as I go')))
+				.toBe('Last year, you helped 1 person shape their future');
+		});
+	});
+
+	describe('titleGoalSignupLastYear', () => {
+		afterEach(() => {
+			vi.useRealTimers();
+		});
+
+		it('uses the people copy for the Choose as I go default and the women copy otherwise', () => {
+			vi.useFakeTimers();
+			vi.setSystemTime(new Date('2026-02-01T12:00:00'));
+
+			expect(stripHtml(goalCopy.titleGoalSignupLastYear(3, { chooseAsIGoDefault: true })))
+				.toBe('Last year, you helped 3 people shape their futures');
+			expect(stripHtml(goalCopy.titleGoalSignupLastYear(3)))
+				.toBe('Last year, you helped 3 women shape their futures');
+		});
+	});
+
 	describe('titleLastYearSingleWoman', () => {
 		it('formats singular woman copy with count and default class', () => {
 			const result = goalCopy.titleLastYearSingleWoman(1);
@@ -383,7 +444,7 @@ describe('goalCopy', () => {
 		});
 
 		it('preserves case for US economic equality', () => {
-		// eslint-disable-next-line max-len
+			// eslint-disable-next-line max-len
 			const result = stripHtml(goalCopy.modalDescriptionJustSet(4, ID_US_ECONOMIC_EQUALITY, 'U.S. Entrepreneurs'));
 			expect(result).toBe('Your support to 4 loans for U.S. Entrepreneurs begins here.');
 		});
