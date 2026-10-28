@@ -23,6 +23,8 @@ import useBadgeData from '#src/composables/useBadgeData';
 import useGoalDataQuery from '#src/graphql/query/useGoalData.graphql';
 import userAchievementProgressQuery from '#src/graphql/query/userAchievementProgress.graphql';
 import goalSettingPageQuery from '#src/graphql/query/goalSettingPage.graphql';
+import experimentAssignmentQuery from '#src/graphql/query/experimentAssignment.graphql';
+import { GOAL_DEFAULT_CATEGORY_EXP_KEY } from '#src/util/goalSignupCopyVariant';
 import { KvPageContainer } from '@kiva/kv-components';
 import WwwPage from '#src/components/WwwFrame/WwwPage';
 import GoalSettingContainer from '#src/components/GoalSetting/GoalSettingContainer';
@@ -58,6 +60,10 @@ export default {
 					fetchPolicy: 'network-only',
 				}),
 				client.query({ query: goalSettingPageQuery }),
+				client.query({
+					query: experimentAssignmentQuery,
+					variables: { id: GOAL_DEFAULT_CATEGORY_EXP_KEY },
+				}),
 			]).catch(error => {
 				logReadQueryError(error, 'GoalSettingPage Prefetch');
 			});

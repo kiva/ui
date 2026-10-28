@@ -211,9 +211,17 @@ import GoalProgressRing from '#src/components/MyKiva/GoalProgressRing';
 import GoalCustomAmountInput from '#src/components/MyKiva/GoalSetting/GoalCustomAmountInput';
 import useGoalData, { LAST_YEAR_KEY, GOAL_STATUS } from '#src/composables/useGoalData';
 import goalCopy, { GOAL_SIGNUP_COPY_NO_GOAL_YET } from '#src/util/goalCopy';
+import { trackExperimentVersion } from '#src/util/experiment/experimentUtils';
+import {
+	GOAL_DEFAULT_CATEGORY_EXP_ACTION,
+	GOAL_DEFAULT_CATEGORY_EXP_CATEGORY,
+	GOAL_DEFAULT_CATEGORY_EXP_KEY,
+	GOAL_DEFAULT_CATEGORY_EXPOSURE,
+} from '#src/util/goalSignupCopyVariant';
 
 const CUSTOM_LOAN_NUMBER_INDEX = 3;
 
+const apollo = inject('apollo');
 const $kvTrackEvent = inject('$kvTrackEvent');
 
 const { getCategoryLoansLastYear, getCategoryLoanCountByYear, getSupportAllLoanCountByYear } = useGoalData();
@@ -702,6 +710,24 @@ const handleEditGoalFromSettings = () => {
 	$kvTrackEvent('event-tracking', 'click', 'edit-goal');
 	emit('edit-goal-from-settings');
 };
+
+// Default category experiment tracking
+// Only a new goal sign up sees the default, and a goal set later must not re-fire or un-fire it
+const readyForExposure = computed(() => !props.isUpdatingGoal && !props.isGoalSet);
+// Pages that host the goal modal provide one flag for the page load; elsewhere it's per selector
+const exposure = inject(GOAL_DEFAULT_CATEGORY_EXPOSURE, () => ({ tracked: false }), true);
+
+watch(readyForExposure, ready => {
+	if (typeof window === 'undefined' || !ready || exposure.tracked) return;
+	exposure.tracked = true;
+	trackExperimentVersion(
+		apollo,
+		$kvTrackEvent,
+		GOAL_DEFAULT_CATEGORY_EXP_CATEGORY,
+		GOAL_DEFAULT_CATEGORY_EXP_KEY,
+		GOAL_DEFAULT_CATEGORY_EXP_ACTION,
+	);
+}, { immediate: true });
 
 onMounted(async () => {
 	await loadLoansThisYear();

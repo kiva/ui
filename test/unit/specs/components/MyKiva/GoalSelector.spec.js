@@ -2,6 +2,7 @@ import { render } from '@testing-library/vue';
 import userEvent from '@testing-library/user-event';
 import GoalSelector from '#src/components/MyKiva/GoalSetting/GoalSelector';
 import goalCopy from '#src/util/goalCopy';
+import { GOAL_DEFAULT_CATEGORY_EXPOSURE } from '#src/util/goalSignupCopyVariant';
 import {
 	ID_BASIC_NEEDS,
 	ID_CLIMATE_ACTION,
@@ -774,5 +775,77 @@ describe('GoalSelector', () => {
 
 		expect(apolloQueryMock).toHaveBeenCalled();
 		expect(getLoanNumbers()).toEqual(getExpectedGoalOptions({ lastYear: 0, ytd: 10 }));
+	});
+
+	describe('default category experiment exposure', () => {
+		const renderSelector = (props = {}, { trackEvent = vi.fn(), provide = {} } = {}) => {
+			const result = render(GoalSelector, {
+				global: {
+					...globalOptions,
+					provide: {
+						...globalOptions.provide,
+						apollo: {
+							...globalOptions.provide.apollo,
+							readFragment: () => ({ id: 'goal_default_category', version: 'b' }),
+						},
+						$kvTrackEvent: trackEvent,
+						...provide,
+					},
+					stubs: { GoalProgressRing: true },
+				},
+				props: {
+					isGoalSet: false,
+					categoriesLoanCount: {},
+					selectedCategoryId: ID_WOMENS_EQUALITY,
+					selectedCategoryName: 'Women',
+					...props,
+				},
+			});
+			const exposureCalls = () => trackEvent.mock.calls
+				.filter(([category, action]) => category === 'event-tracking' && action === 'EXP-MP-3259-Jan2027');
+			return { ...result, exposureCalls };
+		};
+
+		it('tracks exposure once for a new goal sign up', async () => {
+			const { exposureCalls, rerender } = renderSelector();
+			await flushPromises();
+
+			expect(exposureCalls()).toEqual([['event-tracking', 'EXP-MP-3259-Jan2027', 'b', undefined]]);
+
+			// Setting the goal and re-rendering must not track again
+			await rerender({ isGoalSet: true });
+			await rerender({ isGoalSet: false });
+			await flushPromises();
+
+			expect(exposureCalls()).toHaveLength(1);
+		});
+
+		it('tracks exposure once per page load when the selector remounts under a page flag', async () => {
+			const trackEvent = vi.fn();
+			const provide = { [GOAL_DEFAULT_CATEGORY_EXPOSURE]: { tracked: false } };
+
+			// Opening and closing the goal modal twice mounts a new selector each time
+			const first = renderSelector({}, { trackEvent, provide });
+			await flushPromises();
+			first.unmount();
+			const { exposureCalls } = renderSelector({}, { trackEvent, provide });
+			await flushPromises();
+
+			expect(exposureCalls()).toHaveLength(1);
+		});
+
+		it('does not track exposure when a goal is already set', async () => {
+			const { exposureCalls } = renderSelector({ isGoalSet: true });
+			await flushPromises();
+
+			expect(exposureCalls()).toHaveLength(0);
+		});
+
+		it('does not track exposure when updating an existing goal', async () => {
+			const { exposureCalls } = renderSelector({ isUpdatingGoal: true });
+			await flushPromises();
+
+			expect(exposureCalls()).toHaveLength(0);
+		});
 	});
 });
