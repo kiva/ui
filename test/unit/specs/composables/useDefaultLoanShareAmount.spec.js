@@ -17,7 +17,7 @@ const loggedIn = { ...globalOptions.provide.kvAuth0, getKivaId: () => 1234 };
 function makeClient(respond) {
 	const requests = [];
 	const link = new ApolloLink(operation => {
-		requests.push(operation.operationName);
+		requests.push({ name: operation.operationName, variables: operation.variables });
 		return new Observable(observer => {
 			respond(observer);
 		});
@@ -70,7 +70,7 @@ describe('useDefaultLoanShareAmount', () => {
 		const { client, requests } = makeClient(respondWith('100'));
 		const { getAllByTestId } = renderCallers(client, loggedIn, 3);
 		await flushPromises();
-		expect(requests).toEqual(['DefaultLoanShareAmount']);
+		expect(requests).toEqual([{ name: 'UserPreference', variables: { key: 'defaultLoanShareAmount' } }]);
 		expect(getAllByTestId('amount').map(el => el.textContent)).toEqual(['100', '100', '100']);
 	});
 

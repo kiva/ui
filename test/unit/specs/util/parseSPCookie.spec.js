@@ -12,6 +12,20 @@ describe('parseSPCookie.js', () => {
 		});
 	});
 
+	it('returns the session id, not the last field, from the newer Snowplow cookie format', () => {
+		// Newer trackers (3.5 and up) add four fields after the session id
+		const cookieStore = new CookieStore({
+			'_sp_id.1234': [
+				'domain-user-id', 'created-timestamp', 'visit-count', 'current-timestamp', 'last-visit-timestamp',
+				'session-id', 'previous-session-id', 'first-event-id', 'first-event-timestamp', 'event-index',
+			].join('.'),
+		});
+		expect(parseSPCookie(cookieStore)).toEqual({
+			snowplowUserId: 'domain-user-id',
+			snowplowSessionId: 'session-id',
+		});
+	});
+
 	it('returns an empty object if the Snowplow cookie is not present', () => {
 		const cookieStore = new CookieStore();
 		expect(parseSPCookie(cookieStore)).toEqual({});
@@ -28,11 +42,10 @@ describe('parseSPCookie.js', () => {
 		const cookieStore = new CookieStore({
 			'_sp_id.1234': 'singlevalue'
 		});
-		// When split('.') returns a single element array, both userId and sessionId are the same value
-		expect(parseSPCookie(cookieStore)).toEqual({
-			snowplowUserId: 'singlevalue',
-			snowplowSessionId: 'singlevalue',
-		});
+		// The cookie has no 6th field, so there is no session id
+		const result = parseSPCookie(cookieStore);
+		expect(result.snowplowUserId).toBe('singlevalue');
+		expect(result.snowplowSessionId).toBeUndefined();
 	});
 
 	it('correctly handles cookie with different _sp_id prefix', () => {

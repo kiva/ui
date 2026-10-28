@@ -152,7 +152,7 @@
 
 <script>
 import numeral from 'numeral';
-import { myFTDQuery, formatTransactionData } from '#src/util/checkoutUtils';
+import { formatTransactionData, getTransactionAnalyticsData } from '#src/util/checkoutUtils';
 import { isCCPage } from '#src/util/urlUtils';
 import checkoutUtils from '#src/plugins/checkout-utils-mixin';
 import CheckoutDropInPaymentWrapper from '#src/components/Checkout/CheckoutDropInPaymentWrapper';
@@ -330,15 +330,14 @@ export default {
 			};
 
 			// Check ftd status, then track + redirect whether or not the lookup succeeds
-			const trackingComplete = myFTDQuery(this.apollo)
-				.then(({ data }) => {
-					// Update transaction data
-					transactionData.isFTD = data?.my?.userAccount?.isFirstTimeDepositor;
+			const trackingComplete = getTransactionAnalyticsData(this.apollo, null, {
+				cookieStore: this.cookieStore,
+				depositTotal: transactionData.depositTotal,
+			})
+				.then(({ isFTD }) => {
+					transactionData.isFTD = isFTD;
 				})
-				.catch(() => {
-					// FTD status unknown — leave it undefined so no content_type is asserted downstream
-					transactionData.isFTD = undefined;
-				})
+				.catch(() => {})
 				.then(finalizeTransaction);
 
 			this.$emit('transaction-complete', transactionData);

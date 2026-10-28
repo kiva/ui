@@ -1,5 +1,8 @@
 import _find from 'lodash/find';
 
+// newer Snowplow trackers add fields after the session id
+const SESSION_ID_FIELD_INDEX = 5;
+
 export default function parseSPCookie(cookieStore) {
 	// get the cookie that has a name that starts with '_sp_id'
 	const cookie = _find(cookieStore.getAll(), (val, key) => key.indexOf('_sp_id') === 0);
@@ -14,6 +17,6 @@ export default function parseSPCookie(cookieStore) {
 	// return the user id and sessionid if they were fetched, otherwise return an empty object
 	return data.length ? {
 		snowplowUserId: data[0],
-		snowplowSessionId: data[data.length - 1],
+		snowplowSessionId: data[SESSION_ID_FIELD_INDEX],
 	} : {};
 }

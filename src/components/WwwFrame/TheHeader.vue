@@ -134,8 +134,8 @@ import { COUNTRIES_NOT_LENT_TO_URL } from '#src/util/headerUtils';
 import PromoCreditBanner from './PromotionalBanner/Banners/PromoCreditBanner';
 
 const COMMS_OPT_IN_EXP_KEY = 'opt_in_comms';
-const MAJOR_GIFTS_HEADER_EXP_KEY = 'major_gifts_header';
-const MAJOR_GIFTS_HEADER_EXP_ACTION = 'EXP-CIT-5148-Sept2026';
+const MAJOR_GIFTS_HEADER_EXP_KEY = 'v2_major_gifts_header';
+const MAJOR_GIFTS_HEADER_EXP_ACTION = 'EXP-CIT-5498-Oct2026';
 
 export default {
 	name: 'TheHeader',
