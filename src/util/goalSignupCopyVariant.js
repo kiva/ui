@@ -18,7 +18,7 @@ export const GOAL_SIGNUP_DATE_QUERY_PARAM = 'goalSignupDate';
 // `a`: keeps Women as the default category
 // `b`: defaults to Choose as I go
 export const GOAL_DEFAULT_CATEGORY_EXP_KEY = 'goal_default_category';
-export const GOAL_DEFAULT_CATEGORY_EXP_CATEGORY = 'experiment-tracking';
+export const GOAL_DEFAULT_CATEGORY_EXP_CATEGORY = 'event-tracking';
 export const GOAL_DEFAULT_CATEGORY_EXP_ACTION = 'EXP-MP-3259-Jan2027';
 export const GOAL_DEFAULT_CATEGORY_EXPOSURE = 'goalDefaultCategoryExposure';
 

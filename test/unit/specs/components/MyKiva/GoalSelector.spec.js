@@ -802,7 +802,7 @@ describe('GoalSelector', () => {
 				},
 			});
 			const exposureCalls = () => trackEvent.mock.calls
-				.filter(([category, action]) => category === 'experiment-tracking' && action === 'EXP-MP-3259-Jan2027');
+				.filter(([category, action]) => category === 'event-tracking' && action === 'EXP-MP-3259-Jan2027');
 			return { ...result, exposureCalls };
 		};
 
@@ -810,7 +810,7 @@ describe('GoalSelector', () => {
 			const { exposureCalls, rerender } = renderSelector();
 			await flushPromises();
 
-			expect(exposureCalls()).toEqual([['experiment-tracking', 'EXP-MP-3259-Jan2027', 'b', undefined]]);
+			expect(exposureCalls()).toEqual([['event-tracking', 'EXP-MP-3259-Jan2027', 'b', undefined]]);
 
 			// Setting the goal and re-rendering must not track again
 			await rerender({ isGoalSet: true });
