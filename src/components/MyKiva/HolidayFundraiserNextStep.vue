@@ -77,6 +77,8 @@
 				variant="secondary"
 				class="tw-w-full"
 				:href="HOLIDAY_FUNDRAISER_URL"
+				target="_blank"
+				rel="noopener"
 			>
 				Start a holiday fundraiser
 			</KvButton>

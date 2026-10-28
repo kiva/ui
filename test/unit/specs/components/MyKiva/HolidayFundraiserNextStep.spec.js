@@ -33,11 +33,13 @@ describe('HolidayFundraiserNextStep', () => {
 			.toBeTruthy();
 	});
 
-	it('links the button to the holiday fundraiser create flow', () => {
+	it('links the button to the holiday fundraiser create flow in a new tab', () => {
 		const { getByRole } = renderComponent();
+		const link = getByRole('link', { name: 'Start a holiday fundraiser' });
 
-		expect(getByRole('link', { name: 'Start a holiday fundraiser' }).getAttribute('href'))
-			.toBe('/gf/configure?occasion=holiday');
+		expect(link.getAttribute('href')).toBe('/gf/configure?occasion=holiday');
+		expect(link.getAttribute('target')).toBe('_blank');
+		expect(link.getAttribute('rel')).toBe('noopener');
 	});
 
 	it('tracks button clicks', () => {

@@ -4,6 +4,15 @@ vi.mock('@apollo/client/link/context/index', () => ({
 	setContext: vi.fn(handler => ({ handler, contextHandler: handler }))
 }));
 
+// A v2 tracker cookie: the session id is the 6th and last field
+const v2Cookie = [
+	'domain-user-id', 'created-timestamp', 'visit-count', 'current-timestamp', 'last-visit-timestamp', 'session-id',
+].join('.');
+// Newer trackers (3.5 and up) add four fields after the session id
+const newerCookie = [
+	v2Cookie, 'previous-session-id', 'first-event-id', 'first-event-timestamp', 'event-index',
+].join('.');
+
 describe('SnowplowSessionLink.js', () => {
 	let mockCookieStore;
 
@@ -21,7 +30,7 @@ describe('SnowplowSessionLink.js', () => {
 	});
 
 	it('should add X-Session-Id header when sp cookie exists', () => {
-		mockCookieStore.get.mockReturnValue('domain.timestamp.count.session123');
+		mockCookieStore.get.mockReturnValue(v2Cookie);
 		const link = createSnowplowSessionLink({ cookieStore: mockCookieStore });
 		const mockOperation = {};
 		const previousContext = { headers: {} };
@@ -29,17 +38,17 @@ describe('SnowplowSessionLink.js', () => {
 		const result = link.contextHandler(mockOperation, previousContext);
 
 		expect(mockCookieStore.get).toHaveBeenCalledWith('_sp_id.6d5c');
-		expect(result.headers['X-Session-Id']).toBe('session123');
+		expect(result.headers['X-Session-Id']).toBe('session-id');
 	});
 
-	it('should extract session id from end of cookie value', () => {
-		mockCookieStore.get.mockReturnValue('part1.part2.part3.sessionABC');
+	it('should take the session id from the 6th field, not the last, of the newer cookie format', () => {
+		mockCookieStore.get.mockReturnValue(newerCookie);
 		const link = createSnowplowSessionLink({ cookieStore: mockCookieStore });
 		const previousContext = {};
 
 		const result = link.contextHandler({}, previousContext);
 
-		expect(result.headers['X-Session-Id']).toBe('sessionABC');
+		expect(result.headers['X-Session-Id']).toBe('session-id');
 	});
 
 	it('should return previous context when cookie is undefined', () => {
@@ -63,7 +72,7 @@ describe('SnowplowSessionLink.js', () => {
 	});
 
 	it('should preserve existing headers when adding session id', () => {
-		mockCookieStore.get.mockReturnValue('a.b.c.session456');
+		mockCookieStore.get.mockReturnValue(v2Cookie);
 		const link = createSnowplowSessionLink({ cookieStore: mockCookieStore });
 		const previousContext = {
 			headers: {
@@ -76,16 +85,18 @@ describe('SnowplowSessionLink.js', () => {
 
 		expect(result.headers.Authorization).toBe('Bearer token');
 		expect(result.headers['Content-Type']).toBe('application/json');
-		expect(result.headers['X-Session-Id']).toBe('session456');
+		expect(result.headers['X-Session-Id']).toBe('session-id');
 	});
 
-	it('should handle cookie with single part', () => {
+	it('should return previous context when cookie has no session id field', () => {
 		mockCookieStore.get.mockReturnValue('singlePart');
 		const link = createSnowplowSessionLink({ cookieStore: mockCookieStore });
+		const previousContext = { headers: {} };
 
-		const result = link.contextHandler({}, {});
+		const result = link.contextHandler({}, previousContext);
 
-		expect(result.headers['X-Session-Id']).toBe('singlePart');
+		expect(result).toEqual(previousContext);
+		expect(result.headers['X-Session-Id']).toBeUndefined();
 	});
 
 	it('should return previous context when session id is empty string', () => {
