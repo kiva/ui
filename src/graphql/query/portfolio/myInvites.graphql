@@ -1,0 +1,34 @@
+query MyInvites {
+	my {
+		id
+		userAccount {
+			id
+			inviterName
+			invites {
+				inviter {
+					lender {
+						id
+						name
+						publicId
+						image {
+							id
+							url(customSize: "s100")
+						}
+						lenderPage {
+							city
+							state
+							country {
+								id
+								name
+							}
+						}
+					}
+				}
+			}
+		}
+		userStats {
+			number_of_invites
+			number_of_loans_by_invitees
+		}
+	}
+}
