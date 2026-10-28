@@ -1,3 +1,35 @@
+## [3.99.0](https://github.com/kiva/ui/compare/v3.98.0...v3.99.0) (2026-10-28)
+
+### 🎉 New Features
+
+* cit-5093 hide the for your family birthday card from the hideBdayCard preference ([3d8706e](https://github.com/kiva/ui/commit/3d8706eded13f2534e6807e122073ace55f1a022))
+* cit-5093 hide the mykiva featured goal slot with the next steps row ([ce4152c](https://github.com/kiva/ui/commit/ce4152c2cf2c1d99ec16be5e6beade5eefc06608))
+* cit-5093 show for your family section from the showPriorityMyKivaContent preference ([26e35f0](https://github.com/kiva/ui/commit/26e35f09d170083db146ffe221faf44414fc3075))
+* cit-5451 add for your family mykiva section component ([0889eaf](https://github.com/kiva/ui/commit/0889eaf176cfe368d5e7f48615a165f928ae04a8))
+* mp-3443 report guest first-time depositors to meta ([#7357](https://github.com/kiva/ui/issues/7357)) ([bb85722](https://github.com/kiva/ui/commit/bb857226458571583580553cae73887ab1da2e4e))
+* open the MyKiva holiday fundraiser card in a new tab ([#7368](https://github.com/kiva/ui/issues/7368)) ([270b15f](https://github.com/kiva/ui/commit/270b15f3efc97ca80ff804f7f00edbc2325a3171))
+
+### 🐛 Bugfixes
+
+* cit-5093 keep standard card widths when the birthday card is hidden ([b5d4687](https://github.com/kiva/ui/commit/b5d46873efbae241fdcd1ab0f76ac88e5d2f0c50))
+* cit-5093 read the priority mykiva preference on the client before its session loads ([0dff658](https://github.com/kiva/ui/commit/0dff658f1a7d105ba8e0a4445e2330ece323acd8))
+* cit-5093 treat an empty or true showPriorityMyKivaContent preference as set ([6f50f5a](https://github.com/kiva/ui/commit/6f50f5ac1e8e367c00666dea97245efc341ac287))
+* cit-5501 point the major gifts header at the v2 experiment key ([bf9c42f](https://github.com/kiva/ui/commit/bf9c42f0b2ef862b372776a84592a2510999cb12))
+* mp-3430 read the Snowplow session id from the 6th cookie field ([#7367](https://github.com/kiva/ui/issues/7367)) ([eef3ce4](https://github.com/kiva/ui/commit/eef3ce4694b8a262e4669cc3f8a57a62e5ee5b4c))
+* mp-3431 use @kiva/kv-analytics in the analytics plugin instead of a copy ([#7355](https://github.com/kiva/ui/issues/7355)) ([334a031](https://github.com/kiva/ui/commit/334a031851da9e8a64517f3e16aa7ff03cb8ea27))
+
+### 🪚 Refactors
+
+* cit-5093 read the default loan share amount through the generic user preference query ([0d1088c](https://github.com/kiva/ui/commit/0d1088ce95b464b6c82dcf7afc7c1ffdf144729a))
+* cit-5093 read the priority mykiva content through a generic user preference query ([a4710a3](https://github.com/kiva/ui/commit/a4710a3182644386c4940b16d1eb8a9478fc9cf3))
+* cit-5093 use lodash isPlainObject in the priority mykiva content decoder ([3129316](https://github.com/kiva/ui/commit/31293163c1a82ada4edecd5351c65545d8d04c77))
+
+### 🧹 Chores
+
+* mp-3408 collect web vitals from kv-analytics ([#7366](https://github.com/kiva/ui/issues/7366)) ([d40ee95](https://github.com/kiva/ui/commit/d40ee95219141b14757978ae2ed3f8b1fa6e15a4))
+* **release:** 3.99.0-rc.1 [skip ci] ([f0d2706](https://github.com/kiva/ui/commit/f0d2706dad53538a8541cea78f53c34c88c489ad)), closes [#7357](https://github.com/kiva/ui/issues/7357) [#7368](https://github.com/kiva/ui/issues/7368) [#7367](https://github.com/kiva/ui/issues/7367) [#7355](https://github.com/kiva/ui/issues/7355) [#7366](https://github.com/kiva/ui/issues/7366)
+* update-kv-components-header-updates ([297d0e4](https://github.com/kiva/ui/commit/297d0e40bc48b1d9abaf9cbb48882cc9266ee2e2))
+
 ## [3.99.0-rc.1](https://github.com/kiva/ui/compare/v3.98.0...v3.99.0-rc.1) (2026-10-27)
 
 ### 🎉 New Features
