@@ -5,6 +5,7 @@ query MyInvites {
 			id
 			inviterName
 			invites {
+				id
 				inviter {
 					lender {
 						id
