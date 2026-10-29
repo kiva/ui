@@ -77,10 +77,10 @@
 </template>
 
 <script>
-import { gql } from 'graphql-tag';
 import { format } from 'date-fns';
 import DOMPurify from 'dompurify';
 import getCacheKey from '#src/util/getCacheKey';
+import myUpdatesQuery from '#src/graphql/query/portfolio/myUpdates.graphql';
 import { KvLoadingPlaceholder } from '@kiva/kv-components';
 import AsyncPortfolioSection from './AsyncPortfolioSection';
 
@@ -134,49 +134,8 @@ export default {
 		fetchAsyncData() {
 			if (this.loading && !this.loadingPromise) {
 				this.loadingPromise = this.apollo.query({
-					query: gql`query kivaCreditStats {
-						my {
-							id
-							updates(limit:3) {
-								totalCount
-								values {
-									id
-									authorName
-									subject
-									subjectTranslated
-									body
-									bodyTranslated
-									date
-									type
-									image {
-										id
-										...imageUrls
-									}
-									loan {
-										id
-										image {
-											id
-											...imageUrls
-										}
-										... on LoanPartner {
-											partner {
-												id
-												image {
-													id
-													...imageUrls
-												}
-											}
-										}
-									}
-								}
-							}
-						}
-					}
-					fragment imageUrls on Image {
-						id
-						default: url(customSize:"s100")
-						retina: url(customSize:"s200")
-					}`
+					query: myUpdatesQuery,
+					variables: { limit: 3 },
 				}).then(({ data }) => {
 					this.loading = false;
 					this.totalCount = data?.my?.updates?.totalCount ?? 0;

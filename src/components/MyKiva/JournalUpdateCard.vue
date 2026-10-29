@@ -55,8 +55,16 @@
 				</span>
 			</p>
 
+			<a
+				v-if="readMoreUrl"
+				:href="readMoreUrl"
+				class="tw-inline tw-text-action hover:tw-underline"
+				v-kv-track-event="['portfolio', 'click', 'borrower-update-read-more', update.id]"
+			>
+				read more
+			</a>
 			<button
-				v-if="!update.isRepayment && showTruncatedBody "
+				v-else-if="!update.isRepayment && showTruncatedBody "
 				class="tw-inline tw-text-action hover:tw-underline"
 				@click="openLightbox"
 			>
@@ -66,12 +74,12 @@
 		<div
 			:class="[
 				'tw-flex tw-items-center tw-mt-auto',
-				{ 'tw-justify-between': isFundraising },
-				{ 'tw-justify-end': !isFundraising },
+				{ 'tw-justify-between': showShareButton },
+				{ 'tw-justify-end': !showShareButton },
 			]"
 		>
 			<button
-				v-if="isFundraising"
+				v-if="showShareButton"
 				class="tw-flex tw-items-center"
 				@click="shareLoan"
 			>
@@ -123,6 +131,14 @@ const props = defineProps({
 		type: String,
 		default: '',
 	},
+	readMoreUrl: {
+		type: String,
+		default: '',
+	},
+	showShare: {
+		type: Boolean,
+		default: true,
+	},
 });
 
 const { update } = toRefs(props);
@@ -142,6 +158,7 @@ const title = computed(() => {
 });
 
 const isFundraising = computed(() => isLoanFundraising(loan.value));
+const showShareButton = computed(() => props.showShare && isFundraising.value);
 
 const loanStatus = computed(() => {
 	if (update.value?.isTransaction && update.value?.isRepayment) {
