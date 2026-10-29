@@ -9,13 +9,19 @@
 			</p>
 			<p v-else-if="totalCount === 0" class="tw-mt-4" data-testid="updates-empty">
 				You don't have any updates from borrowers yet.
-				<router-link to="/lend-by-category">
+				<router-link
+					to="/lend-by-category"
+					v-kv-track-event="['portfolio', 'click', 'Borrower updates empty find a loan']"
+				>
 					Find a borrower to support
 				</router-link>
 			</p>
 			<p v-else-if="isPastLastPage" class="tw-mt-4" data-testid="updates-past-last-page">
 				There are no updates on this page.
-				<router-link :to="{ query: pageQuery(1) }">
+				<router-link
+					:to="{ query: pageQuery(1) }"
+					v-kv-track-event="['portfolio', 'click', 'Borrower updates go to first page']"
+				>
 					Go to the first page
 				</router-link>
 			</p>
@@ -45,7 +51,7 @@
 					:offset="offset"
 					:total="totalCount"
 					:scroll-to-top="false"
-					:kv-track-function="kvTrackEvent"
+					:kv-track-function="$kvTrackEvent"
 					track-event-category="portfolio"
 					@page-changed="handlePageChange"
 				/>
@@ -65,10 +71,10 @@ import useMyUpdates from '#src/composables/useMyUpdates';
 
 defineOptions({ name: 'BorrowerUpdatesPage' });
 
-useHead({ title: 'Updates from borrowers' });
+// Same title as the monolith's /blog/myloans page
+useHead({ title: 'Updates from Lending Partners and Entrepreneurs' });
 
-// Not named $kvTrackEvent: the template doesn't read $-prefixed setup bindings, it would get the global instead
-const kvTrackEvent = inject('$kvTrackEvent');
+const $kvTrackEvent = inject('$kvTrackEvent');
 const route = useRoute();
 const router = useRouter();
 

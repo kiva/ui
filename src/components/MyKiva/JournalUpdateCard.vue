@@ -59,7 +59,7 @@
 				v-if="readMoreUrl"
 				:href="readMoreUrl"
 				class="tw-inline tw-text-action hover:tw-underline"
-				v-kv-track-event="['portfolio', 'click', 'borrower-update-read-more', update.id]"
+				v-kv-track-event="['portfolio', 'click', 'Borrower updates read more', update.id]"
 			>
 				read more
 			</a>

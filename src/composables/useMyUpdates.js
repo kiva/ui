@@ -4,8 +4,8 @@ import myUpdatesQuery from '#src/graphql/query/portfolio/myUpdates.graphql';
 import logReadQueryError from '#src/util/logReadQueryError';
 import useApolloQuery from '#src/composables/useApolloQuery';
 
-// Same page size as the monolith's /blog/myloans list
-export const MY_UPDATES_PAGE_LIMIT = 20;
+// Defined page size similar to the monolith's /blog/myloans list
+export const MY_UPDATES_PAGE_LIMIT = 18;
 
 /**
  * The 1-based page number from the route's page query, falling back to 1 when it is missing or invalid.
