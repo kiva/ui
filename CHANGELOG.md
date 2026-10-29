@@ -1,3 +1,15 @@
+## [3.100.0-rc.1](https://github.com/kiva/ui/compare/v3.99.0...v3.100.0-rc.1) (2026-10-29)
+
+### 🎉 New Features
+
+* changed tracking category (experiment -> event) ([23ff66a](https://github.com/kiva/ui/commit/23ff66af7464a94176f330bd925aa3d7b7e48a91))
+* fixed linting errors ([8d2dddb](https://github.com/kiva/ui/commit/8d2dddbfb0af916b0b583f7ec062a68e25525707))
+* implement page frame for migrated invites page including first field implemented in backend ([#7371](https://github.com/kiva/ui/issues/7371)) ([7d215f2](https://github.com/kiva/ui/commit/7d215f2fd322759b2b8ab6b8cc12007acf6dd115))
+* revised implementation (comment edit + exposure event revision) ([f448f7f](https://github.com/kiva/ui/commit/f448f7f8a3e8c3acd868202baf0bcf9d9ae4a7b9))
+* revised implementation (goal exposure experimentation) ([e2cb67b](https://github.com/kiva/ui/commit/e2cb67b39a677dd3a4760fd08e539a9d28aa6d39))
+* run the MyKiva holiday fundraiser card as an experiment ([#7373](https://github.com/kiva/ui/issues/7373)) ([336b7c1](https://github.com/kiva/ui/commit/336b7c1840bf7ec5a3bf863efa015a27fd0c7eb8))
+* setting up experiment keys + template for EXP-MP-3259 ([2d54279](https://github.com/kiva/ui/commit/2d54279a5b9cc5ea826b1c4956a880e6978ffd76))
+
 ## [3.99.0](https://github.com/kiva/ui/compare/v3.98.0...v3.99.0) (2026-10-28)
 
 ### 🎉 New Features
