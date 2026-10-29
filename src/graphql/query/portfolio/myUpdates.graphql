@@ -1,0 +1,59 @@
+query myUpdates($limit: Int, $offset: Int) {
+	my {
+		id
+		updates(limit: $limit, offset: $offset) {
+			totalCount
+			values {
+				id
+				authorName
+				subject
+				subjectTranslated
+				body
+				bodyTranslated
+				date
+				type
+				image {
+					id
+					...myUpdateImageUrls
+				}
+				loan {
+					id
+					name
+					status
+					loanAmount
+					loanFundraisingInfo {
+						id
+						fundedAmount
+						reservedAmount
+					}
+					geocode {
+						country {
+							id
+							name
+						}
+					}
+					image {
+						id
+						hash
+						...myUpdateImageUrls
+					}
+					... on LoanPartner {
+						partner {
+							id
+							image {
+								id
+								...myUpdateImageUrls
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
+fragment myUpdateImageUrls on Image {
+	id
+	default: url(customSize: "s100")
+	retina: url(customSize: "s200")
+}

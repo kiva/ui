@@ -18,6 +18,7 @@
 			:goal-in-review-in-progress-start="goalInReviewInProgressStart"
 			:should-render-featured-slot="shouldRenderFeaturedSlot"
 			:show-co-recovery-fund-card="showCoRecoveryFundCard"
+			:show-holiday-fundraiser-card="holidayFundraiserCardEnabled"
 		/>
 		<my-kiva-page-content
 			v-else
@@ -41,6 +42,7 @@
 			:goals-row-enabled="goalsRowEnabled"
 			:should-render-featured-slot="shouldRenderFeaturedSlot"
 			:show-co-recovery-fund-card="showCoRecoveryFundCard"
+			:show-holiday-fundraiser-card="holidayFundraiserCardEnabled"
 		/>
 	</www-page>
 </template>
@@ -84,6 +86,7 @@ import { getContentfulEntries } from '#src/util/contentfulUtils';
 const CURRENT_YEAR = new Date().getFullYear();
 const GOALS_ROW_EXP_KEY = 'mykiva_goals_row';
 const FUNDRAISERS_ROW_EXP_KEY = 'mykiva_fundraisers_row';
+const HOLIDAY_FUNDRAISER_CARD_EXP_KEY = 'holiday_fundraiser_card';
 
 /**
  * Options API parent needed to ensure WWwPage children options API preFetch works,
@@ -142,6 +145,7 @@ export default {
 			goalInReviewInProgressStart: null,
 			goalsRowEnabled: false,
 			fundraisersRowEnabled: false,
+			holidayFundraiserCardEnabled: false,
 			shouldRenderFeaturedSlot: true,
 		};
 	},
@@ -245,6 +249,10 @@ export default {
 				client.query({
 					query: experimentAssignmentQuery,
 					variables: { id: FUNDRAISERS_ROW_EXP_KEY },
+				}),
+				client.query({
+					query: experimentAssignmentQuery,
+					variables: { id: HOLIDAY_FUNDRAISER_CARD_EXP_KEY },
 				}),
 				client.query({
 					query: experimentAssignmentQuery,

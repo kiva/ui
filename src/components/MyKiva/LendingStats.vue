@@ -48,7 +48,7 @@
 				:show-post-lending-next-steps-cards="showPostLendingNextStepsCards"
 				:show-lending-next-steps-cards="true"
 				:show-co-recovery-fund-card="showCoRecoveryFundCard"
-				:show-holiday-fundraiser-card="isHolidayFundraisersEnabled"
+				:show-holiday-fundraiser-card="showHolidayFundraiserCard"
 				:goal-in-review-enable="goalInReviewEnable"
 				@open-goal-modal="openGoalModal($event)"
 				@open-impact-insight-modal="showImpactInsightsModal = true"
@@ -91,7 +91,7 @@
 			:user-info="userInfo"
 			:show-post-lending-next-steps-cards="showPostLendingNextStepsCards"
 			:show-co-recovery-fund-card="showCoRecoveryFundCard"
-			:show-holiday-fundraiser-card="isHolidayFundraisersEnabled"
+			:show-holiday-fundraiser-card="showHolidayFundraiserCard"
 			:goal-in-review-enable="goalInReviewEnable"
 			@open-goal-modal="openGoalModal($event)"
 			@open-impact-insight-modal="showImpactInsightsModal = true"
@@ -134,7 +134,6 @@ import JourneyCardCarousel from '#src/components/MyKiva/JourneyCardCarousel';
 
 import logReadQueryError from '#src/util/logReadQueryError';
 import { useGoalRecapEntryPoint } from '#src/composables/useGoalInReview';
-import useHolidayFundraisersEnabled from '#src/composables/useHolidayFundraisersEnabled';
 import { getGoalYear } from '#src/util/goalInReview';
 import { checkPostLendingCardCookie, removePostLendingCardCookie } from '#src/util/myKivaUtils';
 import MyKivaImpactInsightModal from '#src/components/MyKiva/ImpactInsight/MyKivaImpactInsightModal';
@@ -222,6 +221,13 @@ export default {
 			type: Boolean,
 			default: false,
 		},
+		/**
+		 * Whether the holiday fundraiser next step is shown: version b of its experiment.
+		 */
+		showHolidayFundraiserCard: {
+			type: Boolean,
+			default: false,
+		},
 	},
 	data() {
 		return {
@@ -250,8 +256,6 @@ export default {
 	setup(props) {
 		const goalData = inject('goalData');
 
-		const { isHolidayFundraisersEnabled } = useHolidayFundraisersEnabled();
-
 		const { keepGoalCardForRecap, showRecapCta } = useGoalRecapEntryPoint({
 			enabled: () => props.goalInReviewEnable,
 			goalStatus: () => goalData.userGoal?.value?.status,
@@ -271,7 +275,6 @@ export default {
 
 		return {
 			hideCompletedGoalCard,
-			isHolidayFundraisersEnabled,
 			showRecapCta,
 			goalProgress: goalData.goalProgress,
 			goalProgressLoading: goalData.loading,
