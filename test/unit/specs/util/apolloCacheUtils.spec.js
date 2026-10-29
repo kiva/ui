@@ -144,6 +144,27 @@ describe('apolloCacheUtils', () => {
 			});
 		});
 
+		it('compares nested values deeply and keeps changed ones whole', () => {
+			const nestedBaseline = {
+				'Experiment:a': { __typename: 'Experiment', settings: { weights: [1, 2] }, tags: ['x'] },
+			};
+			const state = {
+				'Experiment:a': { __typename: 'Experiment', settings: { weights: [1, 2] }, tags: ['x', 'y'] },
+			};
+
+			expect(omitUnchangedState(state, nestedBaseline)).toEqual({
+				'Experiment:a': { __typename: 'Experiment', tags: ['x', 'y'] },
+			});
+		});
+
+		it('keeps changed fields on entities without a typename', () => {
+			expect(omitUnchangedState({ foo: { bar: 2 } }, { foo: { bar: 1 } })).toEqual({ foo: { bar: 2 } });
+		});
+
+		it('keeps the whole state when there is no baseline', () => {
+			expect(omitUnchangedState(baseline, undefined)).toEqual(baseline);
+		});
+
 		it('keeps __META', () => {
 			const state = { ...baseline, __META: { extraRootIds: ['Autolending:0'] } };
 

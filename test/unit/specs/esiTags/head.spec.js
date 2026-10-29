@@ -410,6 +410,20 @@ describe('renderESIHead', () => {
 		});
 	});
 
+	it('takes the local state defaults snapshot before any queries or experiment assignment', async () => {
+		await renderESIHead({
+			cookieStore: mockCookieStore,
+			context: mockContext,
+			fetch: mockFetch,
+			kvAuth0: mockKvAuth0,
+		});
+
+		const [firstExtractOrder] = mockApollo.cache.extract.mock.invocationCallOrder;
+		expect(firstExtractOrder).toBeLessThan(Math.min(...mockApollo.query.mock.invocationCallOrder));
+		expect(firstExtractOrder).toBeLessThan(assignAllActiveExperiments.mock.invocationCallOrder[0]);
+		expect(firstExtractOrder).toBeLessThan(setUserDataCookies.mock.invocationCallOrder[0]);
+	});
+
 	it('should render CSS variables with user data', async () => {
 		await renderESIHead({
 			cookieStore: mockCookieStore,
