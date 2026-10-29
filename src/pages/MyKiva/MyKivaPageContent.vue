@@ -50,6 +50,7 @@
 				:goal-in-review-enable="goalInReviewEnable"
 				:goal-in-review-in-progress-start="goalInReviewInProgressStart"
 				:show-co-recovery-fund-card="showCoRecoveryFundCard"
+				:show-holiday-fundraiser-card="showHolidayFundraiserCard"
 				:basket-items="basketItems"
 				:is-adding="isAdding"
 				@add-to-basket="addGoalRecommendedLoanToBasket"
@@ -380,6 +381,13 @@ export default {
 		 * already donated to the fund.
 		 */
 		showCoRecoveryFundCard: {
+			type: Boolean,
+			default: false,
+		},
+		/**
+		 * Whether the holiday fundraiser next step is shown: version b of its experiment.
+		 */
+		showHolidayFundraiserCard: {
 			type: Boolean,
 			default: false,
 		},
