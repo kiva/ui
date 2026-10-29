@@ -30,7 +30,6 @@
 						</div>
 					</section>
 
-					<!-- Placeholder: rows need the accepted invites read model -->
 					<section data-testid="invites-accepted">
 						<h2 class="tw-text-h3 tw-mb-1">
 							Accepted invites
@@ -38,9 +37,7 @@
 						<p class="tw-mb-2">
 							Listed below are users who joined Kiva thanks to you!
 						</p>
-						<div class="tw-rounded tw-border tw-border-dashed tw-border-tertiary tw-p-2 tw-text-secondary">
-							Accepted invites coming soon.
-						</div>
+						<AcceptedInvitesTable />
 					</section>
 				</div>
 
@@ -176,6 +173,7 @@ import {
 	KvButton, KvLoadingPlaceholder, KvLoadingText, KvUserAvatar,
 } from '@kiva/kv-components';
 import PortfolioShell from '#src/components/WwwFrame/PortfolioShell';
+import AcceptedInvitesTable from '#src/components/Portfolio/Invites/AcceptedInvitesTable';
 import logFormatter from '#src/util/logFormatter';
 import myInvitesQuery from '#src/graphql/query/portfolio/myInvites.graphql';
 
@@ -190,6 +188,7 @@ export default {
 	},
 	components: {
 		PortfolioShell,
+		AcceptedInvitesTable,
 		KvButton,
 		KvLoadingPlaceholder,
 		KvLoadingText,

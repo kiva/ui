@@ -19,7 +19,7 @@ const invitesResponse = ({ inviter = null, inviterName = 'caseyd' } = {}) => ({
 		userAccount: {
 			id: 3,
 			inviterName,
-			invites: { inviter },
+			invites: { id: 3, inviter },
 		},
 		userStats: {
 			number_of_invites: 4,
@@ -51,6 +51,7 @@ const renderPage = ({
 				directives: { 'kv-track-event': trackEventDirective },
 				stubs: {
 					PortfolioShell: { template: '<div><slot /></div>' },
+					AcceptedInvitesTable: { template: '<div data-testid="accepted-invites-table-stub" />' },
 					KvButton: { template: '<button><slot /></button>' },
 					KvLoadingPlaceholder: { template: '<div />' },
 					KvLoadingText: { template: '<span data-testid="loading-text" />' },
@@ -71,6 +72,8 @@ describe('InvitesPage', () => {
 		} = renderPage();
 		expect(getByText('Invite your friends to Kiva!')).toBeTruthy();
 		expect(getByText('My invite activity')).toBeTruthy();
+		expect(getByTestId('invites-accepted').querySelector('[data-testid="accepted-invites-table-stub"]'))
+			.toBeTruthy();
 		expect(getByText('Your personal invite page')).toBeTruthy();
 		expect(getByText('Successful invites')).toBeTruthy();
 		expect(getByTestId('invites-personal-url-loading')).toBeTruthy();
@@ -137,6 +140,8 @@ describe('InvitesPage', () => {
 		} = renderPage({ query });
 		await waitFor(() => expect(getByTestId('invites-load-error')).toBeTruthy());
 		expect(getByText('My invite activity')).toBeTruthy();
+		expect(JSON.parse(getByText('Try again').dataset.trackEvent))
+			.toEqual(['portfolio', 'click', 'Invites retry load']);
 		await fireEvent.click(getByText('Try again'));
 		await waitFor(() => {
 			expect(getByLabelText('Your personal invite page').value).toBe('https://www.kiva.org/invitedby/caseyd');
