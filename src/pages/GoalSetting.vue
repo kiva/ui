@@ -24,11 +24,11 @@ import useGoalDataQuery from '#src/graphql/query/useGoalData.graphql';
 import userAchievementProgressQuery from '#src/graphql/query/userAchievementProgress.graphql';
 import goalSettingPageQuery from '#src/graphql/query/goalSettingPage.graphql';
 import experimentAssignmentQuery from '#src/graphql/query/experimentAssignment.graphql';
-import { initializeExperiment } from '#src/util/experiment/experimentUtils';
 import {
 	GOAL_DEFAULT_CATEGORY_EXP_KEY,
 	GOAL_DEFAULT_CATEGORY_EXP_STATE,
-	createGoalDefaultCategoryExpState,
+	createGoalDefaultCategoryExp,
+	setupGoalDefaultCategoryExp,
 } from '#src/util/goalSignupCopyVariant';
 import { KvPageContainer } from '@kiva/kv-components';
 import WwwPage from '#src/components/WwwFrame/WwwPage';
@@ -53,7 +53,7 @@ export default {
 			categoriesLoanCount: {},
 			tieredAchievements: [],
 			goalRecommendedLoanEnable: false,
-			goalDefaultCategoryExp: createGoalDefaultCategoryExpState(),
+			goalDefaultCategoryExp: createGoalDefaultCategoryExp(),
 		};
 	},
 	provide() {
@@ -94,16 +94,9 @@ export default {
 		},
 	},
 	created() {
-		// Exposure is tracked where the default category is shown in GoalSelector
-		initializeExperiment(
-			this.cookieStore,
-			this.apollo,
-			this.$route,
-			GOAL_DEFAULT_CATEGORY_EXP_KEY,
-			version => {
-				this.goalDefaultCategoryExp.chooseAsIGoDefault = version === 'b';
-			},
-		);
+		// The goal entrypoint's sign up copy changes on load, so the exposure is tracked within the page
+		// eslint-disable-next-line max-len
+		setupGoalDefaultCategoryExp(this.cookieStore, this.apollo, this.$route, this.goalDefaultCategoryExp, this.$kvTrackEvent);
 	},
 	async mounted() {
 		// Try to read from cache first (populated by preFetch on SSR)

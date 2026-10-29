@@ -9,6 +9,7 @@
  */
 import { reactive } from 'vue';
 import { ID_SUPPORT_ALL, ID_WOMENS_EQUALITY } from '#src/composables/useBadgeData';
+import { initializeExperiment } from '#src/util/experiment/experimentUtils';
 
 export const GOAL_SIGNUP_COPY_VARIANT = {
 	LAST_YEAR: 'last-year',
@@ -31,13 +32,42 @@ export const GOAL_DEFAULT_CATEGORY_EXP_STATE = 'goalDefaultCategoryExp';
  *
  * @returns {{ tracked: boolean, chooseAsIGoDefault: boolean, peopleLoansLastYear: number|null }}
  */
-export function createGoalDefaultCategoryExpState() {
+export function createGoalDefaultCategoryExp() {
 	return reactive({
 		tracked: false,
 		chooseAsIGoDefault: false,
 		// Total loans last year, for the `b` copy on entrypoints that read it from the page
 		peopleLoansLastYear: null,
 	});
+}
+
+/**
+ * Reads the user's version into the page's experiment state. Users with version `b`, their pages changes
+ * what renders on load and pass trackEvent, so the exposure is logged when the change is seen.
+ *
+ * @param {Object} cookieStore CookieStore instance
+ * @param {Object} apollo Apollo client instance
+ * @param {Object} route Vue Router route object
+ * @param {Object} state State from createGoalDefaultCategoryExp
+ * @param {Function} [trackEvent] Tracks the exposure on page load when provided
+ */
+export function setupGoalDefaultCategoryExp(cookieStore, apollo, route, state, trackEvent = null) {
+	initializeExperiment(
+		cookieStore,
+		apollo,
+		route,
+		GOAL_DEFAULT_CATEGORY_EXP_KEY,
+		version => {
+			// eslint-disable-next-line no-param-reassign
+			state.chooseAsIGoDefault = version === 'b';
+		},
+		trackEvent,
+		GOAL_DEFAULT_CATEGORY_EXP_ACTION,
+		GOAL_DEFAULT_CATEGORY_EXP_CATEGORY,
+	);
+	// Already logged for this page load, so GoalSelector's watch won't log it again
+	// eslint-disable-next-line no-param-reassign
+	if (trackEvent) state.tracked = true;
 }
 
 /**

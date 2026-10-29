@@ -1,6 +1,6 @@
 import MyKivaPage from '#src/pages/MyKiva/MyKivaPage';
 import loanStatsByYearQuery from '#src/graphql/query/loanStatsByYear.graphql';
-import { createGoalDefaultCategoryExpState } from '#src/util/goalSignupCopyVariant';
+import { createGoalDefaultCategoryExp } from '#src/util/goalSignupCopyVariant';
 import { LAST_YEAR_KEY } from '#src/composables/useGoalData';
 import countryListQuery from '#src/graphql/query/countryList.graphql';
 import logReadQueryError from '#src/util/logReadQueryError';
@@ -503,7 +503,7 @@ describe('MyKivaPage', () => {
 				},
 				$route: { query: {} },
 				$kvTrackEvent: vi.fn(),
-				goalDefaultCategoryExp: createGoalDefaultCategoryExpState(),
+				goalDefaultCategoryExp: createGoalDefaultCategoryExp(),
 			};
 
 			MyKivaPage.created.call(context);
@@ -543,7 +543,7 @@ describe('MyKivaPage', () => {
 				},
 				$route: { query: {} },
 				$kvTrackEvent: vi.fn(),
-				goalDefaultCategoryExp: createGoalDefaultCategoryExpState(),
+				goalDefaultCategoryExp: createGoalDefaultCategoryExp(),
 			};
 
 			MyKivaPage.created.call(context);
@@ -586,7 +586,7 @@ describe('MyKivaPage', () => {
 				},
 				$route: { query: {} },
 				$kvTrackEvent: vi.fn(),
-				goalDefaultCategoryExp: createGoalDefaultCategoryExpState(),
+				goalDefaultCategoryExp: createGoalDefaultCategoryExp(),
 			};
 
 			MyKivaPage.created.call(context);
@@ -614,7 +614,7 @@ describe('MyKivaPage', () => {
 				},
 				$route: { query: {} },
 				$kvTrackEvent: vi.fn(),
-				goalDefaultCategoryExp: createGoalDefaultCategoryExpState(),
+				goalDefaultCategoryExp: createGoalDefaultCategoryExp(),
 			};
 
 			MyKivaPage.created.call(context);

@@ -67,7 +67,8 @@ import loanStatsByYearQuery from '#src/graphql/query/loanStatsByYear.graphql';
 import {
 	GOAL_DEFAULT_CATEGORY_EXP_KEY,
 	GOAL_DEFAULT_CATEGORY_EXP_STATE,
-	createGoalDefaultCategoryExpState,
+	createGoalDefaultCategoryExp,
+	setupGoalDefaultCategoryExp,
 } from '#src/util/goalSignupCopyVariant';
 import { readBoolSetting, readDateSetting } from '#src/util/settingsUtils';
 import useGoalData, { LAST_YEAR_KEY } from '#src/composables/useGoalData';
@@ -107,7 +108,7 @@ export default {
 		const { combineBadgeData } = useBadgeData();
 		provide('goalData', goalDataComposable);
 		// One state per page load, so reopening the goal modal does not log the exposure again
-		const goalDefaultCategoryExp = createGoalDefaultCategoryExpState();
+		const goalDefaultCategoryExp = createGoalDefaultCategoryExp();
 		provide(GOAL_DEFAULT_CATEGORY_EXP_STATE, goalDefaultCategoryExp);
 
 		return {
@@ -477,16 +478,9 @@ export default {
 			'EXP-CIT-5265-Sep2026'
 		);
 
-		// Exposure is tracked where the default category is shown in GoalSelector
-		initializeExperiment(
-			this.cookieStore,
-			this.apollo,
-			this.$route,
-			GOAL_DEFAULT_CATEGORY_EXP_KEY,
-			version => {
-				this.goalDefaultCategoryExp.chooseAsIGoDefault = version === 'b';
-			},
-		);
+		// The goal entrypoint's sign up copy changes on load, so the exposure is tracked within the page
+		// eslint-disable-next-line max-len
+		setupGoalDefaultCategoryExp(this.cookieStore, this.apollo, this.$route, this.goalDefaultCategoryExp, this.$kvTrackEvent);
 		try {
 			const stats = this.apollo.readQuery({ query: loanStatsByYearQuery, variables: { year: LAST_YEAR_KEY } });
 			this.goalDefaultCategoryExp.peopleLoansLastYear = stats?.my?.lendingStats?.loanStatsByYear?.count ?? 0;

@@ -78,7 +78,8 @@ import { EXPRESS_CHECKOUT_EXP_KEY } from '#src/util/thanksPage/expressCheckoutUt
 import {
 	GOAL_DEFAULT_CATEGORY_EXP_KEY,
 	GOAL_DEFAULT_CATEGORY_EXP_STATE,
-	createGoalDefaultCategoryExpState,
+	createGoalDefaultCategoryExp,
+	setupGoalDefaultCategoryExp,
 } from '#src/util/goalSignupCopyVariant';
 
 // Thanks views
@@ -162,7 +163,7 @@ export default {
 			goalRecommendedLoanEnable: false,
 			goalInReviewInProgressStart: null,
 			expressCheckoutExpVersion: null,
-			goalDefaultCategoryExp: createGoalDefaultCategoryExpState(),
+			goalDefaultCategoryExp: createGoalDefaultCategoryExp(),
 		};
 	},
 	apollo: {
@@ -322,16 +323,8 @@ export default {
 			},
 		);
 
-		// Exposure is tracked where the default category is shown in GoalSelector
-		initializeExperiment(
-			this.cookieStore,
-			this.apollo,
-			this.$route,
-			GOAL_DEFAULT_CATEGORY_EXP_KEY,
-			version => {
-				this.goalDefaultCategoryExp.chooseAsIGoDefault = version === 'b';
-			},
-		);
+		// The goal entrypoint's sign up copy changes on load, so the exposure is tracked within the page
+		setupGoalDefaultCategoryExp(this.cookieStore, this.apollo, this.$route, this.goalDefaultCategoryExp);
 
 		if (this.goalRecommendedLoanEnable) {
 			this.loadInitialBasketItems();

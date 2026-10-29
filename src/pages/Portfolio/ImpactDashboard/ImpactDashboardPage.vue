@@ -74,11 +74,11 @@ import useGoalInReview, { getGoalInReviewNow } from '#src/composables/useGoalInR
 import GoalInReviewModal from '#src/components/MyKiva/GoalInReview/GoalInReviewModal';
 import portfolioQuery from '#src/graphql/query/portfolioQuery.graphql';
 import experimentAssignmentQuery from '#src/graphql/query/experimentAssignment.graphql';
-import { initializeExperiment } from '#src/util/experiment/experimentUtils';
 import {
 	GOAL_DEFAULT_CATEGORY_EXP_KEY,
 	GOAL_DEFAULT_CATEGORY_EXP_STATE,
-	createGoalDefaultCategoryExpState,
+	createGoalDefaultCategoryExp,
+	setupGoalDefaultCategoryExp,
 } from '#src/util/goalSignupCopyVariant';
 import { hasLoanFunFactFootnote } from '#src/util/myKivaUtils';
 import { isDisasterReliefFundOnlySupporter } from '#src/util/givingFundUtils';
@@ -166,7 +166,7 @@ export default {
 			showMyGivingFundsCard: false,
 			isDisasterReliefOnly: false,
 			userId: null,
-			goalDefaultCategoryExp: createGoalDefaultCategoryExpState(),
+			goalDefaultCategoryExp: createGoalDefaultCategoryExp(),
 		};
 	},
 	provide() {
@@ -252,16 +252,9 @@ export default {
 		},
 	},
 	created() {
-		// Exposure is tracked where the default category is shown in GoalSelector
-		initializeExperiment(
-			this.cookieStore,
-			this.apollo,
-			this.$route,
-			GOAL_DEFAULT_CATEGORY_EXP_KEY,
-			version => {
-				this.goalDefaultCategoryExp.chooseAsIGoDefault = version === 'b';
-			},
-		);
+		// The goal entrypoint's sign up copy changes on load, so the exposure is tracked within the page
+		// eslint-disable-next-line max-len
+		setupGoalDefaultCategoryExp(this.cookieStore, this.apollo, this.$route, this.goalDefaultCategoryExp, this.$kvTrackEvent);
 
 		const portfolioQueryData = this.apollo.readQuery({ query: portfolioQuery });
 		const userData = portfolioQueryData?.my ?? {};
