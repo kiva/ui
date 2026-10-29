@@ -478,6 +478,18 @@ export default {
 			'EXP-CIT-5265-Sep2026'
 		);
 
+		initializeExperiment(
+			this.cookieStore,
+			this.apollo,
+			this.$route,
+			HOLIDAY_FUNDRAISER_CARD_EXP_KEY,
+			version => {
+				this.holidayFundraiserCardEnabled = version === 'b';
+			},
+			this.$kvTrackEvent,
+			'EXP-CIT-5522-Nov2026'
+		);
+
 		// The goal entrypoint's sign up copy changes on load, so the exposure is tracked within the page
 		// eslint-disable-next-line max-len
 		setupGoalDefaultCategoryExp(this.cookieStore, this.apollo, this.$route, this.goalDefaultCategoryExp, this.$kvTrackEvent);
