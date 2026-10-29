@@ -398,6 +398,18 @@ describe('MyKivaPage', () => {
 			expect(experimentIds).toContain('mykiva_fundraisers_row');
 		});
 
+		it('prefetches the holiday fundraiser card experiment assignment', async () => {
+			const client = { query: vi.fn().mockResolvedValue({ data: {} }) };
+
+			await MyKivaPage.apollo.preFetch({}, client, { route: { query: {} } });
+
+			const experimentIds = client.query.mock.calls
+				.map(call => call[0]?.variables?.id)
+				.filter(Boolean);
+
+			expect(experimentIds).toContain('holiday_fundraiser_card');
+		});
+
 		// Regression: this was route-gated to /mykiva/next-steps, but both routes resolve to
 		// this same component, so Vue patches it in place and created() -> fetchMyKivaData()
 		// never re-runs. regionsData then stayed empty from the /mykiva render and the
