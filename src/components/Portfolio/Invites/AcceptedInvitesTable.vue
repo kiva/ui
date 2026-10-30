@@ -21,6 +21,7 @@
 			<div class="tw-overflow-x-auto">
 				<table
 					class="tw-w-full tw-text-left tw-text-small md:tw-text-base"
+					aria-label="Accepted invites"
 					data-testid="accepted-invites-table"
 				>
 					<thead>
@@ -56,7 +57,7 @@
 								<template v-else>
 									Anonymous
 								</template>
-								<span class="tw-block">{{ viaLabel(row) }}</span>
+								<span v-if="viaLabel(row)" class="tw-block">{{ viaLabel(row) }}</span>
 							</td>
 							<td class="tw-p-1 tw-align-top">
 								<template v-if="row.invitee">
@@ -123,7 +124,10 @@ export default {
 		},
 		viaLabel(row) {
 			const labels = [INVITE_LABELS[row.source], INVITE_LABELS[row.createdAsType]].filter(Boolean);
-			const team = row.teamName ? ` (${row.teamName})` : '';
+			if (!labels.length) {
+				return '';
+			}
+			const team = row.team?.name ? ` (${row.team.name})` : '';
 			return `via ${labels.join(', ')}${team}`;
 		},
 		// Resolves to the accepted collection, or rejects when the response is missing it
@@ -134,7 +138,7 @@ export default {
 				fetchPolicy: 'network-only',
 			});
 			const accepted = data?.my?.userAccount?.invites?.accepted;
-			if (errors?.length || !accepted) {
+			if (errors?.length || !Array.isArray(accepted?.values)) {
 				throw new Error(JSON.stringify(errors ?? 'missing fields'));
 			}
 			return accepted;
@@ -164,8 +168,7 @@ export default {
 			try {
 				const accepted = await this.fetchPage(this.rows.length, INVITES_TABLE_PAGE_SIZE);
 				this.rows = [...this.rows, ...accepted.values];
-				// An empty page means the list shrank since it loaded, so stop offering "More"
-				this.totalCount = accepted.values.length ? accepted.totalCount : this.rows.length;
+				this.totalCount = accepted.totalCount;
 			} catch (error) {
 				// The rows already shown stay, and "More" can be clicked again
 				logFormatter(`Error fetching more accepted invites: ${error}`, 'error');
