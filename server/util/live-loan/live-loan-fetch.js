@@ -41,6 +41,7 @@ const loanData = `
 	}
 	... on LoanPartner {
 		themes
+		partnerName
 	}
 `;
 
@@ -343,7 +344,7 @@ const parseFilterStringFLSS = async filterString => {
 
 	// Start parsing the filter string
 	getFilterArrays(filterString)
-		.filter(([name]) => name !== 'sort')
+		.filter(([name]) => name !== 'sort' && name !== 'lse')
 		.filter(([name]) => supportedFilterFLSS(name))
 		.forEach(([name, value]) => {
 			// Special case for amountleft with "gte" operation
@@ -377,17 +378,29 @@ const parseFilterStringFLSS = async filterString => {
 	return Object.keys(combinedFilter).length ? [combinedFilter] : null;
 };
 
+// Extra loans to fetch when excluding LSE loans
+const LSE_EXCLUDE_BUFFER = 5;
+
+// LSE partners are named "N/A, direct to <business>", the same check KvLoanTag uses
+const isLseLoan = loan => loan?.partnerName?.toUpperCase().includes('N/A') ?? false;
+
+const shouldExcludeLse = filterString => typeof filterString === 'string'
+	&& getFilterArrays(filterString).some(([name, value]) => name === 'lse' && value === 'exclude');
+
 // Get loans from the Fundraising Loan Search Service matching a set of filters
 async function fetchRecommendationsByFilter(filterString, count = DEFAULT_LOAN_COUNT) {
 	const filters = await parseFilterStringFLSS(filterString);
 	const sortOptions = await fetchFLSSSorts();
 	const sortBy = parseSortString(filterString, sortOptions);
-	return fetchLoansFromGraphQL(
+	// FLSS can't filter out LSE loans, so fetch extra and drop them here
+	const excludeLse = shouldExcludeLse(filterString);
+	const limit = excludeLse ? count + LSE_EXCLUDE_BUFFER : count;
+	const loans = await fetchLoansFromGraphQL(
 		{
 			query: `query($filters: [FundraisingLoanSearchFilterInput!], $sortBy: SortEnum) {
 				fundraisingLoans(
 					pageNumber: 0,
-					limit: ${count},
+					limit: ${limit},
 					filters: $filters,
 					sortBy: $sortBy,
 					origin: "email:live-loans"
@@ -402,6 +415,7 @@ async function fetchRecommendationsByFilter(filterString, count = DEFAULT_LOAN_C
 		},
 		'data.fundraisingLoans.values'
 	);
+	return excludeLse ? loans?.filter(loan => !isLseLoan(loan)).slice(0, count) : loans;
 }
 
 // Only returns true for supported legacy loan search filters
