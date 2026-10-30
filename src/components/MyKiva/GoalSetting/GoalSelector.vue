@@ -771,7 +771,7 @@ const editGoalCopy = computed(() => {
 });
 
 watch(() => props.selectedCategoryId, async () => {
-// Wait for both counts before building options; choose as I go's last-year count is fetched, not derived
+	// Wait for both counts before building options; choose as I go's last-year count is fetched, not derived
 	await Promise.all([loadLoansThisYear(), loadPrevSupportAllCount()]);
 	updateGoalOptions();
 	if (editGoalFromSettings.value) {
