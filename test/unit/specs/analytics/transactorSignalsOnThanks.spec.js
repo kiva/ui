@@ -15,6 +15,7 @@ vi.mock('#src/util/hotJarUtils', async importOriginal => ({
 
 const ThanksPage = (await import('#src/pages/Thanks/ThanksPage')).default;
 const thanksPageReceiptQuery = (await import('#src/graphql/query/thanksPageReceipt.graphql')).default;
+const { createGoalDefaultCategoryExp } = await import('#src/util/goalSignupCopyVariant');
 
 // Both thanks views are the only place a completed transaction feeds back into the lifetime
 // transactor cookies that drive the Meta `user_type` segment. Neither has a component spec, so
@@ -46,6 +47,7 @@ describe('transactor signals recorded on the thanks views', () => {
 			loadInitialBasketItems: vi.fn(),
 			$kvTrackEvent: vi.fn(),
 			$showTipMsg: vi.fn(),
+			goalDefaultCategoryExp: createGoalDefaultCategoryExp(),
 		});
 
 		it('reports loans and deposit from the receipt', () => {

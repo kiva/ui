@@ -185,8 +185,13 @@ import {
 	ID_US_ECONOMIC_EQUALITY,
 } from '#src/composables/useBadgeData';
 import useTipMessage from '#src/composables/useTipMessage';
+import {
+	GOAL_DEFAULT_CATEGORY_EXP_STATE,
+	getDefaultGoalCategory,
+} from '#src/util/goalSignupCopyVariant';
 
 const apollo = inject('apollo');
+const goalDefaultCategoryExp = inject(GOAL_DEFAULT_CATEGORY_EXP_STATE, null);
 const $kvTrackEvent = inject('$kvTrackEvent');
 const $appConfig = inject('$appConfig', {});
 const router = useRouter();
@@ -354,7 +359,7 @@ const handleKeepGoal = () => {
 
 const categories = getCategories(props.categoriesLoanCount, props.totalLoans);
 
-const selectedCategory = ref(categories[0]);
+const selectedCategory = ref(getDefaultGoalCategory(categories, goalDefaultCategoryExp?.chooseAsIGoDefault));
 
 // This container doesn't have the same multi-step flow as the modal,
 // so we can always show the recommended loan section when enabled.

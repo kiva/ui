@@ -154,6 +154,10 @@ import { useRouter } from 'vue-router';
 
 import useBreakpoints from '#src/composables/useBreakpoints';
 import useGoalData from '#src/composables/useGoalData';
+import {
+	GOAL_DEFAULT_CATEGORY_EXP_STATE,
+	getDefaultGoalCategory,
+} from '#src/util/goalSignupCopyVariant';
 import useGoalSettingRecommendedLoan, {
 	GOAL_RECOMMENDED_LOAN_ENTRYPOINT_PORTFOLIO,
 } from '#src/composables/useGoalSettingRecommendedLoan';
@@ -176,6 +180,7 @@ const { isMobile } = useBreakpoints();
 const $kvTrackEvent = inject('$kvTrackEvent');
 const appConfig = inject('$appConfig', {});
 const apollo = inject('apollo');
+const goalDefaultCategoryExp = inject(GOAL_DEFAULT_CATEGORY_EXP_STATE, null);
 const router = useRouter();
 
 const {
@@ -299,7 +304,8 @@ const categories = getCategories(props.categoriesLoanCount, props.totalLoans);
 // Check if controlledSelectedCategory has actual data (not just empty object)
 const hasControlledCategory = props.controlledSelectedCategory
 	&& Object.keys(props.controlledSelectedCategory).length > 0;
-const selectedCategory = ref(hasControlledCategory ? props.controlledSelectedCategory : categories[0]);
+const getDefaultCategory = () => getDefaultGoalCategory(categories, goalDefaultCategoryExp?.chooseAsIGoDefault);
+const selectedCategory = ref(hasControlledCategory ? props.controlledSelectedCategory : getDefaultCategory());
 
 const {
 	showRecommendLoanAfterGoalView,
@@ -478,8 +484,8 @@ const handleClick = () => {
 
 const resetForm = () => {
 	formStep.value = 1;
-	// Reset selected category to default (women's equality)
-	selectedCategory.value = { ...categories[0] };
+	// Reset selected category to default (either women or choose as I go)
+	selectedCategory.value = { ...getDefaultCategory() };
 	showCategories.value = false;
 	isSubmitting.value = false;
 	resetRecommendedLoanState();

@@ -77,6 +77,11 @@ const props = defineProps({
 		type: Number,
 		default: 0,
 	},
+	// Version `b` of the default category experiment
+	chooseAsIGoDefault: {
+		type: Boolean,
+		default: false,
+	},
 	loading: {
 		type: Boolean,
 		default: true,
@@ -118,7 +123,10 @@ const goalLoans = computed(() => {
 });
 
 const title = computed(() => (
-	goalCopy.titleGoalSignupWomensLastYear(props.prevYearLoans, { cssClass: 'tw-text-action' })
+	goalCopy.titleGoalSignupLastYear(props.prevYearLoans, {
+		chooseAsIGoDefault: props.chooseAsIGoDefault,
+		cssClass: 'tw-text-action',
+	})
 ));
 const subtitle = computed(() => {
 	if (goalCopy.getGoalSignupCopyVariant() === GOAL_SIGNUP_COPY_NO_GOAL_YET) {

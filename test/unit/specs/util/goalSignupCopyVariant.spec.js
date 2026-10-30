@@ -1,7 +1,9 @@
 import getGoalSignupCopyVariant, {
 	GOAL_SIGNUP_DATE_QUERY_PARAM,
 	GOAL_SIGNUP_COPY_VARIANT,
+	getDefaultGoalCategory,
 } from '#src/util/goalSignupCopyVariant';
+import { ID_SUPPORT_ALL, ID_WOMENS_EQUALITY } from '#src/composables/useBadgeData';
 
 const variantAt = now => getGoalSignupCopyVariant({ now });
 const setTestUrl = query => {
@@ -67,5 +69,20 @@ describe('getGoalSignupCopyVariant', () => {
 		setTestUrl(`${GOAL_SIGNUP_DATE_QUERY_PARAM}=2026-04-01`);
 
 		expect(variantAt(new Date('2026-03-31T12:00:00'))).toBe(GOAL_SIGNUP_COPY_VARIANT.LAST_YEAR);
+	});
+});
+
+describe('default category experiment tests (default categories state)', () => {
+	const categories = [
+		{ id: '1', badgeId: ID_WOMENS_EQUALITY },
+		{ id: '2', badgeId: ID_SUPPORT_ALL },
+	];
+
+	it('starts on Women for version a', () => {
+		expect(getDefaultGoalCategory(categories, false).badgeId).toBe(ID_WOMENS_EQUALITY);
+	});
+
+	it('starts on Choose as I go for version b', () => {
+		expect(getDefaultGoalCategory(categories, true).badgeId).toBe(ID_SUPPORT_ALL);
 	});
 });

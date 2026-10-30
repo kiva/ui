@@ -19,7 +19,8 @@
 					:goal-progress="goalProgress"
 					:loading="goalProgressLoading"
 					:user-goal="userGoal"
-					:prev-year-loans="womenLoansLastYear"
+					:prev-year-loans="prevYearLoans"
+					:choose-as-i-go-default="chooseAsIGoDefault"
 					:hide-goal-card="hideGoalCard"
 					:show-recap-cta="showRecapCta"
 					@open-goal-modal="$emit('open-goal-modal', $event)"
@@ -114,6 +115,7 @@ import MyKivaEmailUpdatesTransition from '#src/components/MyKiva/MyKivaEmailUpda
 import MyKivaLatestLoanCard from '#src/components/MyKiva/MyKivaLatestLoanCard';
 import MyKivaSurveyCard from '#src/components/MyKiva/MyKivaSurveyCard';
 import { useHideGoalSignup } from '#src/composables/useGoalInReview';
+import { GOAL_DEFAULT_CATEGORY_EXP_STATE } from '#src/util/goalSignupCopyVariant';
 import AlmostFundedNextStep from '#src/components/MyKiva/AlmostFundedNextStep';
 import ColombiaReliefNextStep from '#src/components/MyKiva/ColombiaReliefNextStep';
 import HolidayFundraiserNextStep from '#src/components/MyKiva/HolidayFundraiserNextStep';
@@ -141,6 +143,7 @@ const TRANSACTION_DAYS_LIMIT = 30;
 const apollo = inject('apollo');
 const $kvTrackEvent = inject('$kvTrackEvent');
 const goalData = inject('goalData', null);
+const goalDefaultCategoryExp = inject(GOAL_DEFAULT_CATEGORY_EXP_STATE, null);
 
 const {
 	getActiveTierData,
@@ -482,9 +485,11 @@ const showGoalCard = idx => {
 	return idx === 0 && shouldShowGoalCard.value;
 };
 
-const womenLoansLastYear = computed(() => {
-	return getCategoryLoansLastYear(props.heroTieredAchievements);
-});
+// Version `b` defaults to Choose as I go
+const chooseAsIGoDefault = computed(() => Boolean(goalDefaultCategoryExp?.chooseAsIGoDefault));
+const prevYearLoans = computed(() => (chooseAsIGoDefault.value
+	? goalDefaultCategoryExp.peopleLoansLastYear ?? 0
+	: getCategoryLoansLastYear(props.heroTieredAchievements)));
 </script>
 
 <style lang="postcss" scoped>

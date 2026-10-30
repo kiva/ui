@@ -28,7 +28,7 @@
 				class="goal-selector__image lg:tw-mb-1 tw-w-10 lg:tw-w-12.5"
 			>
 			<KvLoadingPlaceholder
-				v-if="isLoadingData"
+				v-if="isLoadingData || loadingPrevSupportAllCount"
 				class="!tw-w-full !tw-h-10 !tw-rounded tw-mb-1 lg:tw-mb-0"
 			/>
 			<template
@@ -42,7 +42,7 @@
 			</template>
 
 			<KvLoadingPlaceholder
-				v-if="isLoadingData || loadingCurrentYear"
+				v-if="isLoadingData || loadingLoanCounts"
 				class="!tw-w-full !tw-h-4 !tw-rounded"
 			/>
 
@@ -66,7 +66,7 @@
 				class="goal-selector__options tw-w-full tw-flex tw-flex-col lg:tw-flex-row tw-gap-1 lg:tw-gap-1.5
 					tw-my-1"
 			>
-				<template v-if="loadingCurrentYear || isLoadingData">
+				<template v-if="loadingLoanCounts || isLoadingData">
 					<KvLoadingPlaceholder
 						v-for="n in 3"
 						:key="n"
@@ -136,7 +136,7 @@
 			</div>
 
 			<div
-				v-if="isCustomIndex && !loadingCurrentYear && !isLoadingData"
+				v-if="isCustomIndex && !loadingLoanCounts && !isLoadingData"
 				class="tw-hidden lg:tw-flex tw-flex-col tw-bg-eco-green-1 tw-px-2.5 tw-py-1.5 tw-w-full
 					tw-rounded-sm"
 			>
@@ -178,7 +178,7 @@
 					variant="ghost"
 					class="edit-goal-button tw-w-full"
 					@click="editGoal"
-					:disabled="isLoadingData || loadingCurrentYear"
+					:disabled="isLoadingData || loadingLoanCounts"
 				>
 					{{ editGoalCopy }}
 					<KvMaterialIcon
@@ -216,12 +216,17 @@ import {
 	GOAL_DEFAULT_CATEGORY_EXP_ACTION,
 	GOAL_DEFAULT_CATEGORY_EXP_CATEGORY,
 	GOAL_DEFAULT_CATEGORY_EXP_KEY,
-	GOAL_DEFAULT_CATEGORY_EXPOSURE,
+	GOAL_DEFAULT_CATEGORY_EXP_STATE,
 } from '#src/util/goalSignupCopyVariant';
 
 const CUSTOM_LOAN_NUMBER_INDEX = 3;
 
 const apollo = inject('apollo');
+const goalDefaultCategoryExp = inject(
+	GOAL_DEFAULT_CATEGORY_EXP_STATE,
+	() => ({ tracked: false, chooseAsIGoDefault: false }),
+	true,
+);
 const $kvTrackEvent = inject('$kvTrackEvent');
 
 const { getCategoryLoansLastYear, getCategoryLoanCountByYear, getSupportAllLoanCountByYear } = useGoalData();
@@ -395,6 +400,7 @@ const goalOptions = ref(DEFAULT_GOAL_OPTIONS);
 const loadingCurrentYear = ref(false);
 const fetchedCurrentYearLoans = ref(null);
 const prevSupportAllCount = ref(0);
+const loadingPrevSupportAllCount = ref(false);
 const selectedIdx = ref(1);
 const editGoalFromSettings = ref(false);
 const allowBackToCategorySelection = ref(false);
@@ -412,11 +418,17 @@ const loansLastYear = computed(() => {
 	return getCategoryLoansLastYear(props.tieredAchievements, props.selectedCategoryId);
 });
 
+const defaultCategoryId = computed(() => (
+	goalDefaultCategoryExp.chooseAsIGoDefault ? ID_SUPPORT_ALL : ID_WOMENS_EQUALITY
+));
+
+const loadingLoanCounts = computed(() => loadingCurrentYear.value || loadingPrevSupportAllCount.value);
+
 const showLoanQuestionPrompt = computed(() => {
 	if (props.useDirectQuestionTitle) return false;
 	return goalSignupCopyVariant === GOAL_SIGNUP_COPY_NO_GOAL_YET
 		|| loansLastYear.value > 0
-		|| props.selectedCategoryId === ID_WOMENS_EQUALITY;
+		|| props.selectedCategoryId === defaultCategoryId.value;
 });
 
 const loanQuestionPrompt = computed(() => {
@@ -444,7 +456,7 @@ const isCustomIndex = computed(() => selectedIdx.value === CUSTOM_LOAN_NUMBER_IN
 
 const isContinueDisabled = computed(() => (
 	props.isLoadingData
-	|| loadingCurrentYear.value
+	|| loadingLoanCounts.value
 	|| isSubmitting.value
 	|| (isCustomIndex.value && validCustomAmount.value !== true)
 ));
@@ -471,6 +483,14 @@ const loadLoansThisYear = async () => {
 	loadingCurrentYear.value = false;
 };
 
+const loadPrevSupportAllCount = async () => {
+	if (props.selectedCategoryId !== ID_SUPPORT_ALL) return;
+
+	loadingPrevSupportAllCount.value = true;
+	prevSupportAllCount.value = await getSupportAllLoanCountByYear(LAST_YEAR_KEY, 'cache-first') ?? 0;
+	loadingPrevSupportAllCount.value = false;
+};
+
 const titleText = computed(() => {
 	if (props.useDirectQuestionTitle) {
 		return goalCopy.titleLoanQuestionForCategory(props.selectedCategoryId, props.selectedCategoryName, {
@@ -482,12 +502,14 @@ const titleText = computed(() => {
 		return goalCopy.titleNoGoalYetSelectorEntrypoint({ compactIntro: props.compactNoGoalYetTitle });
 	}
 
-	// Default title if no lending history and category is ID_WOMENS_EQUALITY
+	// Default title if no lending history and category is user's default category
 	if (
-		props.selectedCategoryId === ID_WOMENS_EQUALITY
+		props.selectedCategoryId === defaultCategoryId.value
 		&& loansLastYear.value === 0
 	) {
-		return goalCopy.titleNoHistoryWomensDefault();
+		return props.selectedCategoryId === ID_SUPPORT_ALL
+			? goalCopy.titleNoHistoryPeopleDefault()
+			: goalCopy.titleNoHistoryWomensDefault();
 	}
 
 	if (loansLastYear.value > 0) {
@@ -714,12 +736,10 @@ const handleEditGoalFromSettings = () => {
 // Default category experiment tracking
 // Only a new goal sign up sees the default, and a goal set later must not re-fire or un-fire it
 const readyForExposure = computed(() => !props.isUpdatingGoal && !props.isGoalSet);
-// Pages that host the goal modal provide one flag for the page load; elsewhere it's per selector
-const exposure = inject(GOAL_DEFAULT_CATEGORY_EXPOSURE, () => ({ tracked: false }), true);
 
 watch(readyForExposure, ready => {
-	if (typeof window === 'undefined' || !ready || exposure.tracked) return;
-	exposure.tracked = true;
+	if (typeof window === 'undefined' || !ready || goalDefaultCategoryExp.tracked) return;
+	goalDefaultCategoryExp.tracked = true;
 	trackExperimentVersion(
 		apollo,
 		$kvTrackEvent,
@@ -730,7 +750,7 @@ watch(readyForExposure, ready => {
 }, { immediate: true });
 
 onMounted(async () => {
-	await loadLoansThisYear();
+	await Promise.all([loadLoansThisYear(), loadPrevSupportAllCount()]);
 	updateGoalOptions();
 
 	if (props.trackingCategory === 'post-checkout') {
@@ -750,15 +770,12 @@ const editGoalCopy = computed(() => {
 	return goalCopy.BUTTON_EDIT_GOAL;
 });
 
-watch(() => props.selectedCategoryId, async newCategory => {
-	await loadLoansThisYear();
+watch(() => props.selectedCategoryId, async () => {
+	// Wait for both counts before building options; choose as I go's last-year count is fetched, not derived
+	await Promise.all([loadLoansThisYear(), loadPrevSupportAllCount()]);
 	updateGoalOptions();
 	if (editGoalFromSettings.value) {
 		allowBackToCategorySelection.value = true;
-	}
-
-	if (newCategory === ID_SUPPORT_ALL) {
-		prevSupportAllCount.value = await getSupportAllLoanCountByYear(LAST_YEAR_KEY);
 	}
 
 	customGoalAmount.value = '';

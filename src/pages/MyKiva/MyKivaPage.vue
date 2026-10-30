@@ -63,12 +63,17 @@ import { gql } from 'graphql-tag';
 import borrowerProfileSideSheetQuery from '#src/graphql/query/borrowerProfileSideSheet.graphql';
 import experimentAssignmentQuery from '#src/graphql/query/experimentAssignment.graphql';
 import { initializeExperiment } from '#src/util/experiment/experimentUtils';
+import loanStatsByYearQuery from '#src/graphql/query/loanStatsByYear.graphql';
 import {
 	GOAL_DEFAULT_CATEGORY_EXP_KEY,
-	GOAL_DEFAULT_CATEGORY_EXPOSURE,
+	GOAL_DEFAULT_CATEGORY_EXP_STATE,
+	createGoalDefaultCategoryExp,
+	setupGoalDefaultCategoryExp,
 } from '#src/util/goalSignupCopyVariant';
 import { readBoolSetting, readDateSetting } from '#src/util/settingsUtils';
 import useGoalData, { LAST_YEAR_KEY } from '#src/composables/useGoalData';
+import { shouldHideGoalSignup } from '#src/util/goalInReview';
+import { getGoalInReviewNow } from '#src/composables/useGoalInReview';
 import {
 	hasSupportedColombiaReliefFund,
 	isColombiaReliefNextStepActive,
@@ -104,11 +109,14 @@ export default {
 		const goalDataComposable = useGoalData({ apollo });
 		const { combineBadgeData } = useBadgeData();
 		provide('goalData', goalDataComposable);
-		// One flag per page load, so reopening the goal modal does not log the exposure again
-		provide(GOAL_DEFAULT_CATEGORY_EXPOSURE, { tracked: false });
+		// One state per page load, so reopening the goal modal does not log the exposure again
+		const goalDefaultCategoryExp = createGoalDefaultCategoryExp();
+		provide(GOAL_DEFAULT_CATEGORY_EXP_STATE, goalDefaultCategoryExp);
 
 		return {
 			combineBadgeData,
+			goalDefaultCategoryExp,
+			userHasGoal: goalDataComposable.userHasGoal,
 			fixIncorrectlyCompletedGoals: goalDataComposable.fixIncorrectlyCompletedGoals,
 			hydrateGoalDataFromCache: goalDataComposable.hydrateFromCache,
 			// TESTING ONLY (remove later).
@@ -254,12 +262,26 @@ export default {
 					query: experimentAssignmentQuery,
 					variables: { id: GOAL_DEFAULT_CATEGORY_EXP_KEY },
 				}),
+				client.query({
+					query: loanStatsByYearQuery,
+					variables: { year: LAST_YEAR_KEY },
+				}),
 			]).catch(error => {
 				logReadQueryError(error, 'myKivaPage Prefetch');
 			});
 		},
 	},
 	methods: {
+		setupGoalDefaultCategoryExpIfShown() {
+			if (this.goalDefaultCategoryExp.tracked || this.userHasGoal) return;
+			const hideGoalSignup = shouldHideGoalSignup({
+				recapStartDate: this.goalInReviewInProgressStart,
+				now: getGoalInReviewNow(this.$route?.query?.recapDate),
+			});
+			if (hideGoalSignup) return;
+			// eslint-disable-next-line max-len
+			setupGoalDefaultCategoryExp(this.cookieStore, this.apollo, this.$route, this.goalDefaultCategoryExp, this.$kvTrackEvent);
+		},
 		applyMyKivaFreshProgress() {
 			this.recentTransactionLoans = getRecentTransactionLoans(this.transactions);
 			const achievements = applyFreshProgressToAchievements({
@@ -480,6 +502,14 @@ export default {
 			this.$kvTrackEvent,
 			'EXP-CIT-5522-Nov2026'
 		);
+
+		this.setupGoalDefaultCategoryExpIfShown();
+		try {
+			const stats = this.apollo.readQuery({ query: loanStatsByYearQuery, variables: { year: LAST_YEAR_KEY } });
+			this.goalDefaultCategoryExp.peopleLoansLastYear = stats?.my?.lendingStats?.loanStatsByYear?.count ?? 0;
+		} catch (e) {
+			logReadQueryError(e, 'MyKivaPage loanStatsByYear');
+		}
 	},
 	async mounted() {
 		try {
@@ -543,6 +573,8 @@ export default {
 			transactions: this.transactions,
 			checkMyKivaCompletedGoalAfterLoad: true,
 		});
+
+		this.setupGoalDefaultCategoryExpIfShown();
 	},
 };
 </script>
