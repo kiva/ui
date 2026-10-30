@@ -252,10 +252,6 @@ export default {
 		},
 	},
 	created() {
-		// The goal entrypoint's sign up copy changes on load, so the exposure is tracked within the page
-		// eslint-disable-next-line max-len
-		setupGoalDefaultCategoryExp(this.cookieStore, this.apollo, this.$route, this.goalDefaultCategoryExp, this.$kvTrackEvent);
-
 		const portfolioQueryData = this.apollo.readQuery({ query: portfolioQuery });
 		const userData = portfolioQueryData?.my ?? {};
 		this.loans = userData?.loans?.values ?? [];
@@ -301,6 +297,11 @@ export default {
 			return goal?.status === GOAL_STATUS.COMPLETED && goalYear === GOALS_CURRENT_YEAR;
 		});
 		this.isEmptyGoal = !goalInProgress && !goalAchieved;
+
+		if (this.isEmptyGoal && !this.hideGoalSignup) {
+			// eslint-disable-next-line max-len
+			setupGoalDefaultCategoryExp(this.cookieStore, this.apollo, this.$route, this.goalDefaultCategoryExp, this.$kvTrackEvent);
+		}
 	},
 	mounted() {
 		this.loadEducationPost();

@@ -72,6 +72,8 @@ import {
 } from '#src/util/goalSignupCopyVariant';
 import { readBoolSetting, readDateSetting } from '#src/util/settingsUtils';
 import useGoalData, { LAST_YEAR_KEY } from '#src/composables/useGoalData';
+import { shouldHideGoalSignup } from '#src/util/goalInReview';
+import { getGoalInReviewNow } from '#src/composables/useGoalInReview';
 import {
 	hasSupportedColombiaReliefFund,
 	isColombiaReliefNextStepActive,
@@ -114,6 +116,7 @@ export default {
 		return {
 			combineBadgeData,
 			goalDefaultCategoryExp,
+			userHasGoal: goalDataComposable.userHasGoal,
 			fixIncorrectlyCompletedGoals: goalDataComposable.fixIncorrectlyCompletedGoals,
 			hydrateGoalDataFromCache: goalDataComposable.hydrateFromCache,
 			// TESTING ONLY (remove later).
@@ -269,6 +272,16 @@ export default {
 		},
 	},
 	methods: {
+		setupGoalDefaultCategoryExpIfShown() {
+			if (this.goalDefaultCategoryExp.tracked || this.userHasGoal) return;
+			const hideGoalSignup = shouldHideGoalSignup({
+				recapStartDate: this.goalInReviewInProgressStart,
+				now: getGoalInReviewNow(this.$route?.query?.recapDate),
+			});
+			if (hideGoalSignup) return;
+			// eslint-disable-next-line max-len
+			setupGoalDefaultCategoryExp(this.cookieStore, this.apollo, this.$route, this.goalDefaultCategoryExp, this.$kvTrackEvent);
+		},
 		applyMyKivaFreshProgress() {
 			this.recentTransactionLoans = getRecentTransactionLoans(this.transactions);
 			const achievements = applyFreshProgressToAchievements({
@@ -490,9 +503,7 @@ export default {
 			'EXP-CIT-5522-Nov2026'
 		);
 
-		// The goal entrypoint's sign up copy changes on load, so the exposure is tracked within the page
-		// eslint-disable-next-line max-len
-		setupGoalDefaultCategoryExp(this.cookieStore, this.apollo, this.$route, this.goalDefaultCategoryExp, this.$kvTrackEvent);
+		this.setupGoalDefaultCategoryExpIfShown();
 		try {
 			const stats = this.apollo.readQuery({ query: loanStatsByYearQuery, variables: { year: LAST_YEAR_KEY } });
 			this.goalDefaultCategoryExp.peopleLoansLastYear = stats?.my?.lendingStats?.loanStatsByYear?.count ?? 0;
@@ -562,6 +573,8 @@ export default {
 			transactions: this.transactions,
 			checkMyKivaCompletedGoalAfterLoad: true,
 		});
+
+		this.setupGoalDefaultCategoryExpIfShown();
 	},
 };
 </script>
