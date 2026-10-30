@@ -12,7 +12,10 @@ query MyAcceptedInvites($offset: Int, $limit: Int) {
 						date
 						source
 						createdAsType
-						teamName
+						team {
+							id
+							name
+						}
 						invitee {
 							id
 							name

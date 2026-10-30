@@ -1,0 +1,34 @@
+query MyInviteActivity($offset: Int, $limit: Int) {
+	my {
+		id
+		userAccount {
+			id
+			invites {
+				id
+				activity(offset: $offset, limit: $limit) {
+					totalCount
+					values {
+						id
+						date
+						source
+						createdAsType
+						team {
+							id
+							name
+						}
+						invitee {
+							id
+							name
+							publicId
+						}
+						toEmailAddress
+						status
+						remindAvailableAt
+						clickCount
+						acceptedCount
+					}
+				}
+			}
+		}
+	}
+}

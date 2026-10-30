@@ -17,7 +17,6 @@
 						</div>
 					</section>
 
-					<!-- Placeholder: rows need the invite activity read model -->
 					<section data-testid="invites-activity">
 						<h2 class="tw-text-h3 tw-mb-1">
 							My invite activity
@@ -25,9 +24,7 @@
 						<p class="tw-mb-2">
 							Here is a record of the invitations you sent to join Kiva or to join a team.
 						</p>
-						<div class="tw-rounded tw-border tw-border-dashed tw-border-tertiary tw-p-2 tw-text-secondary">
-							Invite activity coming soon.
-						</div>
+						<InviteActivityTable />
 					</section>
 
 					<section data-testid="invites-accepted">
@@ -174,6 +171,7 @@ import {
 } from '@kiva/kv-components';
 import PortfolioShell from '#src/components/WwwFrame/PortfolioShell';
 import AcceptedInvitesTable from '#src/components/Portfolio/Invites/AcceptedInvitesTable';
+import InviteActivityTable from '#src/components/Portfolio/Invites/InviteActivityTable';
 import logFormatter from '#src/util/logFormatter';
 import myInvitesQuery from '#src/graphql/query/portfolio/myInvites.graphql';
 
@@ -189,6 +187,7 @@ export default {
 	components: {
 		PortfolioShell,
 		AcceptedInvitesTable,
+		InviteActivityTable,
 		KvButton,
 		KvLoadingPlaceholder,
 		KvLoadingText,

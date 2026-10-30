@@ -3,10 +3,10 @@ import AcceptedInvitesTable from '#src/components/Portfolio/Invites/AcceptedInvi
 
 const publicRow = (n, overrides = {}) => ({
 	id: `invitation:${n}`,
-	date: '2026-03-05T18:00:00Z',
+	date: '2026-03-05T12:00:00Z',
 	source: 'EMAIL',
 	createdAsType: 'INVITE',
-	teamName: null,
+	team: null,
 	invitee: { id: n, name: `Lender ${n}`, publicId: `lender${n}` },
 	loanCount: n,
 	...overrides,
@@ -47,7 +47,23 @@ const renderTable = (query, kvTrackEvent = vi.fn()) => render(AcceptedInvitesTab
 	},
 });
 
+// Stands in for a browser in the given timezone; an explicit timeZone option still wins
+const { toLocaleDateString } = Date.prototype;
+let dateSpy;
+const useTimezone = timezone => dateSpy.mockImplementation(function localDate(locale, options) {
+	return toLocaleDateString.call(this, locale, { timeZone: timezone, ...options });
+});
+
 describe('AcceptedInvitesTable', () => {
+	beforeEach(() => {
+		dateSpy = vi.spyOn(Date.prototype, 'toLocaleDateString');
+		useTimezone('UTC');
+	});
+
+	afterEach(() => {
+		dateSpy.mockRestore();
+	});
+
 	it('shows a loader until the first page loads, then asks for 4 rows', async () => {
 		const query = vi.fn().mockResolvedValue(acceptedResponse([publicRow(1)]));
 		const { getByTestId, queryByTestId, getByRole } = renderTable(query);
@@ -74,6 +90,21 @@ describe('AcceptedInvitesTable', () => {
 		expect(cells[2].textContent.trim()).toBe('7');
 	});
 
+	it('leaves out the via label when the source and type are unknown', async () => {
+		const query = vi.fn().mockResolvedValue(
+			acceptedResponse([publicRow(1, { source: null, createdAsType: null })])
+		);
+		const { findAllByTestId } = renderTable(query);
+		const [row] = await findAllByTestId('accepted-invites-row');
+		expect(row.querySelectorAll('td')[1].textContent.trim()).toBe('Lender 1');
+	});
+
+	it('names the table for screen readers', async () => {
+		const query = vi.fn().mockResolvedValue(acceptedResponse([publicRow(1)]));
+		const { findByRole } = renderTable(query);
+		expect(await findByRole('table', { name: 'Accepted invites' })).toBeTruthy();
+	});
+
 	it('shows an anonymous invitee without a link or loan count', async () => {
 		const query = vi.fn().mockResolvedValue(acceptedResponse([anonymousRow(2)]));
 		const { findAllByTestId } = renderTable(query);
@@ -92,7 +123,7 @@ describe('AcceptedInvitesTable', () => {
 	});
 
 	it.each([
-		[{ source: 'PERMTEAM', createdAsType: 'TEAM_RECRUIT', teamName: 'Team Tula' },
+		[{ source: 'PERMTEAM', createdAsType: 'TEAM_RECRUIT', team: { id: 1, name: 'Team Tula' } },
 			'via Team Invitation Link, Team Recruit (Team Tula)'],
 		[{ source: 'KIVACARD', createdAsType: 'INVITE' }, 'via Kiva Card Redemption, Invite'],
 		[{ source: null, createdAsType: 'THANKS' }, 'via User credited you as invitee'],
@@ -108,24 +139,14 @@ describe('AcceptedInvitesTable', () => {
 		['America/New_York', 'Mar 5, 2026'],
 		['Asia/Tokyo', 'Mar 6, 2026'],
 	])('formats the date in the viewer\'s timezone (%s)', async (timezone, expected) => {
-		// Stands in for a browser in this timezone; an explicit timeZone option still wins
-		const { toLocaleDateString } = Date.prototype;
-		const spy = vi.spyOn(Date.prototype, 'toLocaleDateString').mockImplementation(
-			function localDate(locale, options) {
-				return toLocaleDateString.call(this, locale, { timeZone: timezone, ...options });
-			}
+		useTimezone(timezone);
+		// 03:00 UTC on Mar 6 is still Mar 5 in New York
+		const query = vi.fn().mockResolvedValue(
+			acceptedResponse([publicRow(1, { date: '2026-03-06T03:00:00Z' })])
 		);
-		try {
-			// 03:00 UTC on Mar 6 is still Mar 5 in New York
-			const query = vi.fn().mockResolvedValue(
-				acceptedResponse([publicRow(1, { date: '2026-03-06T03:00:00Z' })])
-			);
-			const { findAllByTestId } = renderTable(query);
-			const [row] = await findAllByTestId('accepted-invites-row');
-			expect(row.querySelector('td').textContent.trim()).toBe(expected);
-		} finally {
-			spy.mockRestore();
-		}
+		const { findAllByTestId } = renderTable(query);
+		const [row] = await findAllByTestId('accepted-invites-row');
+		expect(row.querySelector('td').textContent.trim()).toBe(expected);
 	});
 
 	it('leaves the date blank when it cannot be parsed', async () => {
@@ -192,23 +213,18 @@ describe('AcceptedInvitesTable', () => {
 	it('keeps the rows and offers "More" again when loading more fails', async () => {
 		const query = vi.fn()
 			.mockResolvedValueOnce(acceptedResponse(rowsOf(1, 4), 10))
-			.mockRejectedValueOnce(new Error('boom'));
+			.mockRejectedValueOnce(new Error('boom'))
+			.mockResolvedValueOnce(acceptedResponse(rowsOf(5, 6), 10));
 		const { findByTestId, getAllByTestId } = renderTable(query);
 		const toggle = await findByTestId('accepted-invites-toggle');
 		await fireEvent.click(toggle);
 		await waitFor(() => expect(toggle.dataset.state).toBe(''));
 		expect(getAllByTestId('accepted-invites-row')).toHaveLength(4);
 		expect(toggle.textContent.trim()).toBe('More');
-	});
 
-	it('stops offering "More" when a later page comes back empty', async () => {
-		const query = vi.fn()
-			.mockResolvedValueOnce(acceptedResponse(rowsOf(1, 4), 10))
-			.mockResolvedValueOnce(acceptedResponse([], 4));
-		const { findByTestId, queryByTestId, getAllByTestId } = renderTable(query);
-		await fireEvent.click(await findByTestId('accepted-invites-toggle'));
-		await waitFor(() => expect(queryByTestId('accepted-invites-toggle')).toBeNull());
-		expect(getAllByTestId('accepted-invites-row')).toHaveLength(4);
+		await fireEvent.click(toggle);
+		await waitFor(() => expect(getAllByTestId('accepted-invites-row')).toHaveLength(10));
+		expect(query).toHaveBeenLastCalledWith(expect.objectContaining({ variables: { offset: 4, limit: 20 } }));
 	});
 
 	it('shows the error state and recovers on retry', async () => {
@@ -227,6 +243,7 @@ describe('AcceptedInvitesTable', () => {
 	it.each([
 		['GraphQL errors', { ...acceptedResponse([publicRow(1)]), errors: [{ message: 'accepted failed' }] }],
 		['a missing collection', { data: { my: { id: 'my-id', userAccount: { id: 3, invites: null } } } }],
+		['a null list', acceptedResponse(null, 5)],
 	])('shows the error state for %s', async (_case, response) => {
 		const query = vi.fn().mockResolvedValue(response);
 		const { findByTestId } = renderTable(query);

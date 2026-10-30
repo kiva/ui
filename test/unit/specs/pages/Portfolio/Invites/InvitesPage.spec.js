@@ -52,6 +52,7 @@ const renderPage = ({
 				stubs: {
 					PortfolioShell: { template: '<div><slot /></div>' },
 					AcceptedInvitesTable: { template: '<div data-testid="accepted-invites-table-stub" />' },
+					InviteActivityTable: { template: '<div data-testid="invite-activity-table-stub" />' },
 					KvButton: { template: '<button><slot /></button>' },
 					KvLoadingPlaceholder: { template: '<div />' },
 					KvLoadingText: { template: '<span data-testid="loading-text" />' },
@@ -72,6 +73,8 @@ describe('InvitesPage', () => {
 		} = renderPage();
 		expect(getByText('Invite your friends to Kiva!')).toBeTruthy();
 		expect(getByText('My invite activity')).toBeTruthy();
+		expect(getByTestId('invites-activity').querySelector('[data-testid="invite-activity-table-stub"]'))
+			.toBeTruthy();
 		expect(getByTestId('invites-accepted').querySelector('[data-testid="accepted-invites-table-stub"]'))
 			.toBeTruthy();
 		expect(getByText('Your personal invite page')).toBeTruthy();
