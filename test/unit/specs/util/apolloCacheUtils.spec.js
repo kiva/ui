@@ -1,5 +1,10 @@
 import { ApolloClient, InMemoryCache } from '@apollo/client';
-import { applyStateToCache, findIndexWithSameKeyField, mergeStateObjects } from '#src/util/apolloCacheUtils';
+import {
+	applyStateToCache,
+	findIndexWithSameKeyField,
+	mergeStateObjects,
+	omitUnchangedState,
+} from '#src/util/apolloCacheUtils';
 
 describe('apolloCacheUtils', () => {
 	describe('applyStateToCache (integration with ApolloClient)', () => {
@@ -104,6 +109,86 @@ describe('apolloCacheUtils', () => {
 			const item = { foo: 1, __typename: 'TypeA' };
 			const index = findIndexWithSameKeyField(target, item);
 			expect(index).toBe(-1);
+		});
+	});
+
+	describe('omitUnchangedState', () => {
+		const baseline = {
+			ROOT_QUERY: { __typename: 'Query', autolending: { __ref: 'Autolending:0' } },
+			'Autolending:0': {
+				__typename: 'Autolending',
+				id: 0,
+				currentProfile: null,
+				profileChanged: false,
+			},
+		};
+
+		it('drops fields and entities left unchanged from the baseline', () => {
+			expect(omitUnchangedState(baseline, baseline)).toEqual({});
+		});
+
+		it('keeps changed and new fields along with the entity typename', () => {
+			const state = {
+				ROOT_QUERY: {
+					...baseline.ROOT_QUERY,
+					my: { __ref: 'My:1' },
+				},
+				'Autolending:0': { ...baseline['Autolending:0'], profileChanged: true },
+				'My:1': { __typename: 'My', id: 1 },
+			};
+
+			expect(omitUnchangedState(state, baseline)).toEqual({
+				ROOT_QUERY: { __typename: 'Query', my: { __ref: 'My:1' } },
+				'Autolending:0': { __typename: 'Autolending', profileChanged: true },
+				'My:1': { __typename: 'My', id: 1 },
+			});
+		});
+
+		it('compares nested values deeply and keeps changed ones whole', () => {
+			const nestedBaseline = {
+				'Experiment:a': { __typename: 'Experiment', settings: { weights: [1, 2] }, tags: ['x'] },
+			};
+			const state = {
+				'Experiment:a': { __typename: 'Experiment', settings: { weights: [1, 2] }, tags: ['x', 'y'] },
+			};
+
+			expect(omitUnchangedState(state, nestedBaseline)).toEqual({
+				'Experiment:a': { __typename: 'Experiment', tags: ['x', 'y'] },
+			});
+		});
+
+		it('keeps changed fields on entities without a typename', () => {
+			expect(omitUnchangedState({ foo: { bar: 2 } }, { foo: { bar: 1 } })).toEqual({ foo: { bar: 2 } });
+		});
+
+		it('keeps the whole state when there is no baseline', () => {
+			expect(omitUnchangedState(baseline, undefined)).toEqual(baseline);
+		});
+
+		it('keeps __META', () => {
+			const state = { ...baseline, __META: { extraRootIds: ['Autolending:0'] } };
+
+			expect(omitUnchangedState(state, baseline)).toEqual({ __META: { extraRootIds: ['Autolending:0'] } });
+		});
+
+		it('leaves page state intact when merged after it', () => {
+			const pageState = {
+				...baseline,
+				'Autolending:0': {
+					...baseline['Autolending:0'],
+					currentProfile: { __ref: 'AutolendProfile:0' },
+				},
+			};
+			const esiState = {
+				...baseline,
+				ROOT_QUERY: { ...baseline.ROOT_QUERY, my: { __ref: 'My:1' } },
+				'My:1': { __typename: 'My', id: 1 },
+			};
+
+			const merged = mergeStateObjects(pageState, omitUnchangedState(esiState, baseline));
+
+			expect(merged['Autolending:0'].currentProfile).toEqual({ __ref: 'AutolendProfile:0' });
+			expect(merged.ROOT_QUERY.my).toEqual({ __ref: 'My:1' });
 		});
 	});
 

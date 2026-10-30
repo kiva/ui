@@ -5,7 +5,7 @@
 				Your auto-lending setting is currently
 				<button
 					class="tw-text-link tw-font-medium"
-					@click="showLightbox = true; triggerWatcher()"
+					@click="showLightbox = true"
 					data-test="autolending-status"
 				>
 					<!-- eslint-disable-next-line max-len -->
@@ -34,21 +34,24 @@
 						radio-value="paused"
 						v-model="autolendingStatus"
 					>
-						PAUSED for
+						PAUSED
 						<kv-select
 							v-model="daysToPause"
 							@change="triggerWatcher"
 							id="days-to-pause-select"
 							class="tw-mb-0"
 						>
-							<option value="30">
-								1 Month
+							<option v-if="savedPauseUntil" value="saved">
+								until {{ formatPauseDate(savedPauseUntil) }}
 							</option>
-							<option value="90">
-								3 Months
+							<option :value="30">
+								for 1 month
 							</option>
-							<option value="180">
-								6 Months
+							<option :value="90">
+								for 3 months
+							</option>
+							<option :value="180">
+								for 6 months
 							</option>
 						</kv-select>
 					</kv-radio>
@@ -112,6 +115,7 @@ export default {
 			showLightbox: false,
 			isChanged: false,
 			pauseUntil: null,
+			savedPauseUntil: null,
 			daysToPause: 30,
 			autolendingStatus: 'off'
 		};
@@ -126,13 +130,24 @@ export default {
 					isEnabled
 					pauseUntil
 				}
+				savedProfile {
+					id
+					pauseUntil
+				}
 			}
 		}`,
 		preFetch: true,
 		result({ data }) {
 			this.isEnabled = !!_get(data, 'autolending.currentProfile.isEnabled');
 			this.pauseUntil = _get(data, 'autolending.currentProfile.pauseUntil');
+			this.savedPauseUntil = _get(data, 'autolending.savedProfile.pauseUntil') ?? null;
 			this.isChanged = !!_get(data, 'autolending.profileChanged');
+
+			if (this.savedPauseUntil && this.pauseUntil === this.savedPauseUntil) {
+				this.daysToPause = 'saved';
+			} else if (!this.savedPauseUntil && this.daysToPause === 'saved') {
+				this.daysToPause = 30;
+			}
 
 			this.autolendingStatus = this.setAutolendingStatus({
 				isEnabled: this.isEnabled,
@@ -142,10 +157,7 @@ export default {
 	},
 	computed: {
 		pauseUntilDateFormatted() {
-			if (this.pauseUntil) {
-				return format(parseISO(this.pauseUntil), 'MM/dd/yyyy');
-			}
-			return '';
+			return this.formatPauseDate(this.pauseUntil);
 		}
 	},
 	mounted() {
@@ -156,7 +168,9 @@ export default {
 		watchAutolendingStatus() {
 			switch (this.autolendingStatus) {
 				case 'paused': {
-					const pauseUntilDate = `${formatISO(addDays(new Date(), this.daysToPause))}`;
+					const pauseUntilDate = this.daysToPause === 'saved'
+						? this.savedPauseUntil
+						: formatISO(addDays(new Date(), this.daysToPause));
 					this.apollo.mutate({
 						mutation: gql`mutation pauseAutolending($pauseUntilDate: Date) {
 							autolending @client {
@@ -200,9 +214,7 @@ export default {
 					break;
 			}
 		},
-		// If value is paused, manually trigger watch function.
-		// This allows a paused user to see the save button when modal opens up
-		// allowing them to change their pause duration without changing status
+		// Changing only the pause duration leaves the status unchanged, so the watcher won't fire on its own
 		triggerWatcher() {
 			// Wait one tick to allow model to update before firing watcher.
 			this.$nextTick(() => {
@@ -210,6 +222,9 @@ export default {
 					this.watchAutolendingStatus();
 				}
 			});
+		},
+		formatPauseDate(date) {
+			return date ? format(parseISO(date), 'MM/dd/yyyy') : '';
 		},
 		setAutolendingStatus({ isEnabled, pauseUntil }) {
 			if (pauseUntil) {
