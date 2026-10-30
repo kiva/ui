@@ -20,6 +20,33 @@ export function applyStateToCache(apolloClient, newData) {
 	}
 }
 
+/**
+ * Removes the fields of an extracted cache state that are unchanged from a baseline state,
+ * dropping entities with no changed fields left.
+ *
+ * @param {Object} state - The extracted cache state.
+ * @param {Object} baseline - The extracted cache state to compare against.
+ * @returns {Object} - The state with only changed fields, plus __typename on each kept entity.
+ */
+export function omitUnchangedState(state, baseline) {
+	const { __META, ...entities } = state;
+	const result = {};
+	Object.keys(entities).forEach(dataId => {
+		const entity = entities[dataId];
+		const baselineEntity = baseline?.[dataId] ?? {};
+		const changedKeys = Object.keys(entity).filter(key => !_isEqual(entity[key], baselineEntity[key]));
+		if (changedKeys.length) {
+			/* eslint-disable-next-line no-underscore-dangle */
+			const changed = entity.__typename ? { __typename: entity.__typename } : {};
+			changedKeys.forEach(key => {
+				changed[key] = entity[key];
+			});
+			result[dataId] = changed;
+		}
+	});
+	return __META ? { ...result, __META } : result;
+}
+
 // Key fields by typename for types that use key fields other than 'id', '_id', or 'key'
 export const keyFields = {
 	Country: 'isoCode',

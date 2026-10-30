@@ -379,7 +379,22 @@ describe('renderESIHead', () => {
 		expect(renderAppInstallPrompt).toHaveBeenCalledWith(false);
 	});
 
-	it('should render globals with Apollo state', async () => {
+	it('should render globals with only the Apollo state changed from local state defaults', async () => {
+		mockApollo.cache.extract
+			.mockReturnValueOnce({
+				ROOT_QUERY: { __typename: 'Query', autolending: { __ref: 'Autolending:0' } },
+				'Autolending:0': { __typename: 'Autolending', currentProfile: null },
+			})
+			.mockReturnValueOnce({
+				ROOT_QUERY: {
+					__typename: 'Query',
+					autolending: { __ref: 'Autolending:0' },
+					my: { __ref: 'My:1' },
+				},
+				'Autolending:0': { __typename: 'Autolending', currentProfile: null },
+				'My:1': { __typename: 'My', id: 1 },
+			});
+
 		await renderESIHead({
 			cookieStore: mockCookieStore,
 			context: mockContext,
@@ -388,8 +403,25 @@ describe('renderESIHead', () => {
 		});
 
 		expect(renderGlobals).toHaveBeenCalledWith({
-			__APOLLO_STATE_ESI__: { test: 'apollo-state' },
+			__APOLLO_STATE_ESI__: {
+				ROOT_QUERY: { __typename: 'Query', my: { __ref: 'My:1' } },
+				'My:1': { __typename: 'My', id: 1 },
+			},
 		});
+	});
+
+	it('takes the local state defaults snapshot before any queries or experiment assignment', async () => {
+		await renderESIHead({
+			cookieStore: mockCookieStore,
+			context: mockContext,
+			fetch: mockFetch,
+			kvAuth0: mockKvAuth0,
+		});
+
+		const [firstExtractOrder] = mockApollo.cache.extract.mock.invocationCallOrder;
+		expect(firstExtractOrder).toBeLessThan(Math.min(...mockApollo.query.mock.invocationCallOrder));
+		expect(firstExtractOrder).toBeLessThan(assignAllActiveExperiments.mock.invocationCallOrder[0]);
+		expect(firstExtractOrder).toBeLessThan(setUserDataCookies.mock.invocationCallOrder[0]);
 	});
 
 	it('should render CSS variables with user data', async () => {
