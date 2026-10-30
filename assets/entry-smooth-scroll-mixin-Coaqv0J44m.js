@@ -1,0 +1,1 @@
+const m={methods:{smoothScrollTo({yPosition:e,millisecondsToAnimate:o=200}){const n=window.scrollY,t=new Date().getTime()+o,s=n-e;if(!window.requestAnimationFrame)return window.scrollTo(0,e),!0;const r=()=>{const i=new Date().getTime(),c=1-(t-i)/o,w=Math.min(c,1),a=n-w*s;window.scrollTo(0,a),i<t&&window.requestAnimationFrame(r)};window.requestAnimationFrame(r)}}};export{m as s};
