@@ -207,6 +207,18 @@ describe('live-loan-fetch', () => {
 
 			expect(loans.map(loan => loan.id)).toEqual([1]);
 		});
+
+		it('returns LSE loans when every loan found is LSE', async () => {
+			mockFundraisingLoans([
+				{ id: 1, partnerName: 'N/A, direct to Business One' },
+				{ id: 2, partnerName: 'N/A, direct to Business Two' },
+				{ id: 3, partnerName: 'N/A, direct to Business Three' },
+			]);
+
+			const loans = await fetchLoansByType('filter', 'lse_exclude', 'default', 2);
+
+			expect(loans.map(loan => loan.id)).toEqual([1, 2]);
+		});
 	});
 
 	describe('fetchRecommendationsByLoginId (default)', () => {

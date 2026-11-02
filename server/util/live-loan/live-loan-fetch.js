@@ -415,7 +415,11 @@ async function fetchRecommendationsByFilter(filterString, count = DEFAULT_LOAN_C
 		},
 		'data.fundraisingLoans.values'
 	);
-	return excludeLse ? loans?.filter(loan => !isLseLoan(loan)).slice(0, count) : loans;
+	if (!excludeLse) {
+		return loans;
+	}
+	const nonLseLoans = loans?.filter(loan => !isLseLoan(loan));
+	return (nonLseLoans?.length ? nonLseLoans : loans)?.slice(0, count);
 }
 
 // Only returns true for supported legacy loan search filters
