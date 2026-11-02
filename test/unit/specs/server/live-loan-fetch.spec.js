@@ -110,6 +110,9 @@ describe('live-loan-fetch', () => {
 			await testFilterParsing('amountleft_gte100', [{ amountLeft: { range: { gte: 100 } } }]);
 			await testFilterParsing('amountleft_gte200', [{ amountLeft: { range: { gte: 200 } } }]);
 			await testFilterParsing('amountleft_gte300', [{ amountLeft: { range: { gte: 300 } } }]);
+			await testFilterParsing('loanamount_lte40000', [{ loanAmount: { range: { lte: 40000 } } }]);
+			await testFilterParsing('loanamount_40000', null);
+			await testFilterParsing('loanamount_lte', null);
 		});
 
 		// FLSS ORs the entries of the filters array together, so combining filters means emitting a

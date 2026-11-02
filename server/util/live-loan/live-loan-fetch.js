@@ -306,6 +306,7 @@ const supportedFilterFLSS = name => {
 		case 'theme':
 		case 'tag':
 		case 'amountleft':
+		case 'loanamount':
 			return true;
 		default:
 			warn(`Unsupported FLSS filter "${name}"`);
@@ -353,6 +354,12 @@ const parseFilterStringFLSS = async filterString => {
 				// Extract the numeric part from the value (e.g., "gte100" -> "100")
 				const numericValue = value.substring(3); // Remove "gte" prefix
 				addRangeFilterValue('amountLeft', 'gte', numericValue);
+			} else if (name === 'loanamount') {
+				// Value format would be "lte40000", etc. Other values are ignored
+				const maxAmount = parseFloat(value.substring(3));
+				if (value.startsWith('lte') && !Number.isNaN(maxAmount)) {
+					addRangeFilterValue('loanAmount', 'lte', maxAmount);
+				}
 			} else if (name === 'country') {
 				// FLSS uses 'countryIsoCode' for the country filter
 				addArrayFilterValue('countryIsoCode', value);
