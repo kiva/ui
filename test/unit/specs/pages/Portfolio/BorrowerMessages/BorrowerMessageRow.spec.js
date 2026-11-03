@@ -1,4 +1,4 @@
-import { render } from '@testing-library/vue';
+import { render, fireEvent } from '@testing-library/vue';
 import BorrowerMessageRow from '#src/pages/Portfolio/BorrowerMessages/BorrowerMessageRow';
 
 const RouterLinkStub = {
@@ -46,6 +46,29 @@ describe('BorrowerMessageRow', () => {
 		const { getByRole } = renderRow(buildMessage());
 
 		expect(getByRole('link').getAttribute('href')).toBe('/portfolio/borrower-messages/123');
+	});
+
+	it('opens the message when the row is clicked', async () => {
+		const { getByRole, getByText } = renderRow(buildMessage());
+		const onLinkClick = vi.fn();
+		getByRole('link').addEventListener('click', onLinkClick);
+
+		await fireEvent.click(getByText('Maria · Philippines'));
+
+		expect(onLinkClick).toHaveBeenCalledTimes(1);
+	});
+
+	it('does not open the message when the click ends a text selection', async () => {
+		const { getByRole, getByText } = renderRow(buildMessage());
+		const onLinkClick = vi.fn();
+		getByRole('link').addEventListener('click', onLinkClick);
+		const body = getByText('Thanks to your support & help.');
+		window.getSelection().selectAllChildren(body);
+
+		await fireEvent.click(body);
+
+		expect(onLinkClick).not.toHaveBeenCalled();
+		window.getSelection().removeAllRanges();
 	});
 
 	it('shows the subject, borrower, plain-text body and signature', () => {
