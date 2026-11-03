@@ -5,7 +5,6 @@ query borrowerMessages($limit: Int, $offset: Int) {
 			totalCount
 			values {
 				id
-				authorName
 				subject
 				subjectTranslated
 				body
