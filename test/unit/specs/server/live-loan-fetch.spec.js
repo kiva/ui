@@ -110,6 +110,9 @@ describe('live-loan-fetch', () => {
 			await testFilterParsing('amountleft_gte100', [{ amountLeft: { range: { gte: 100 } } }]);
 			await testFilterParsing('amountleft_gte200', [{ amountLeft: { range: { gte: 200 } } }]);
 			await testFilterParsing('amountleft_gte300', [{ amountLeft: { range: { gte: 300 } } }]);
+			await testFilterParsing('loanamount_lte40000', [{ loanAmount: { range: { lte: 40000 } } }]);
+			await testFilterParsing('loanamount_40000', null);
+			await testFilterParsing('loanamount_lte', null);
 		});
 
 		// FLSS ORs the entries of the filters array together, so combining filters means emitting a
@@ -161,6 +164,63 @@ describe('live-loan-fetch', () => {
 			await testSortParsing('gender_female', null);
 			await testSortParsing('', null);
 			await testSortParsing('1234', null);
+		});
+	});
+
+	describe('lse_exclude filter', () => {
+		function mockFundraisingLoans(values) {
+			fetch.mockResolvedValue({ json: () => ({ data: { fundraisingLoans: { values } } }) });
+		}
+
+		beforeEach(() => {
+			fetch.mockReset();
+		});
+
+		it('drops LSE loans in any letter case and returns only the requested count', async () => {
+			mockFundraisingLoans([
+				{ id: 1, partnerName: 'Partner One' },
+				{ id: 2, partnerName: 'N/A, direct to Business Two' },
+				{ id: 3, partnerName: 'n/a, direct to Business Three' },
+				{ id: 4 },
+				{ id: 5, partnerName: 'Partner Five' },
+			]);
+
+			const loans = await fetchLoansByType('filter', 'lse_exclude', 'default', 2);
+
+			expect(loans.map(loan => loan.id)).toEqual([1, 4]);
+		});
+
+		it('queries fundraisingLoans for 5 extra loans and their partner names', async () => {
+			mockFundraisingLoans([]);
+
+			await fetchLoansByType('filter', 'lse_exclude', 'default', 4);
+
+			const { query } = JSON.parse(fetch.mock.calls[0][1].body);
+			expect(query).toMatch(/fundraisingLoans\s*\([^)]*limit\s*:\s*9\b/);
+			expect(query).toMatch(/\.\.\. on LoanPartner\s*{[^}]*partnerName/);
+		});
+
+		it('returns fewer loans than requested when too few are left', async () => {
+			mockFundraisingLoans([
+				{ id: 1, partnerName: 'Partner One' },
+				{ id: 2, partnerName: 'N/A, direct to Business Two' },
+			]);
+
+			const loans = await fetchLoansByType('filter', 'lse_exclude', 'default', 2);
+
+			expect(loans.map(loan => loan.id)).toEqual([1]);
+		});
+
+		it('returns LSE loans when every loan found is LSE', async () => {
+			mockFundraisingLoans([
+				{ id: 1, partnerName: 'N/A, direct to Business One' },
+				{ id: 2, partnerName: 'N/A, direct to Business Two' },
+				{ id: 3, partnerName: 'N/A, direct to Business Three' },
+			]);
+
+			const loans = await fetchLoansByType('filter', 'lse_exclude', 'default', 2);
+
+			expect(loans.map(loan => loan.id)).toEqual([1, 2]);
 		});
 	});
 
