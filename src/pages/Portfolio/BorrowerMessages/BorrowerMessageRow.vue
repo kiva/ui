@@ -48,7 +48,8 @@
 
 <script setup>
 import { computed, ref } from 'vue';
-import htmlToText from '#src/util/htmlToText';
+import { getBorrowerMessageAuthor, getBorrowerMessageSubject } from '#src/util/borrowerMessage';
+import { htmlToText } from '#src/util/limitedHtml';
 import { formatInKivaServerTimezone } from '#src/util/dateUtils';
 import kivaKUrl from '#src/assets/images/kiva_k.svg?url';
 
@@ -84,14 +85,14 @@ const thumbnail = computed(() => {
 	return null;
 });
 
-const subject = computed(() => htmlToText(props.message.subjectTranslated || props.message.subject));
+const subject = computed(() => getBorrowerMessageSubject(props.message));
 
 const borrower = computed(() => [loan.value.name, loan.value.geocode?.country?.name].filter(Boolean).join(' · '));
 
 const body = computed(() => htmlToText(props.message.bodyTranslated || props.message.body));
 
 const signature = computed(() => {
-	const author = props.message.authorName || loan.value.partner?.name;
+	const author = getBorrowerMessageAuthor(props.message);
 	const date = formatInKivaServerTimezone(props.message.date, { month: 'long', day: 'numeric', year: 'numeric' });
 	return [author && `Posted by ${author}`, date].filter(Boolean).join(' · ');
 });

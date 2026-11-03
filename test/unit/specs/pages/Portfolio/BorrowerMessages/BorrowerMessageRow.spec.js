@@ -8,7 +8,7 @@ const RouterLinkStub = {
 
 const buildMessage = overrides => ({
 	id: 123,
-	authorName: 'Field Partner Staff',
+	authorName: 'fieldstaff */*/',
 	subject: 'Original subject',
 	subjectTranslated: null,
 	body: '<p>Thanks to <b>your</b> support &amp; help.</p>',
@@ -77,7 +77,7 @@ describe('BorrowerMessageRow', () => {
 		expect(getByRole('heading', { name: 'Original subject' })).toBeDefined();
 		getByText('Maria · Philippines');
 		getByText('Thanks to your support & help.');
-		getByText('Posted by Field Partner Staff · July 1, 2026');
+		getByText('Posted by Maria · July 1, 2026');
 	});
 
 	it('prefers the translated subject and body', () => {
@@ -91,14 +91,17 @@ describe('BorrowerMessageRow', () => {
 		expect(queryByText(/Thanks to/)).toBeNull();
 	});
 
-	it('falls back to the partner name when there is no author', () => {
-		const { getByText } = renderRow(buildMessage({ authorName: null }));
+	it('falls back to the partner name when the loan has no name', () => {
+		const message = buildMessage();
+		message.loan.name = '';
+		const { getByText } = renderRow(message);
 
 		getByText('Posted by NWTF · July 1, 2026');
 	});
 
-	it('shows only the date when there is no author or partner', () => {
-		const message = buildMessage({ authorName: '' });
+	it('shows only the date when there is no loan name or partner', () => {
+		const message = buildMessage();
+		message.loan.name = '';
 		delete message.loan.partner;
 		const { getByText } = renderRow(message);
 
