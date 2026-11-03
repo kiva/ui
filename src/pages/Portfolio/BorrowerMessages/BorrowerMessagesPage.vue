@@ -47,7 +47,9 @@
 								class="tw-shrink-0 tw-rounded-md !tw-w-8 !tw-h-8 md:!tw-w-15 md:!tw-h-15"
 							/>
 							<div class="tw-flex tw-flex-col tw-gap-1 tw-grow">
-								<kv-loading-text class="tw-text-title tw-w-1/2" />
+								<div class="tw-text-title tw-w-1/2">
+									<kv-loading-placeholder class="!tw-inline-block !tw-h-[1em] tw-align-middle" />
+								</div>
 								<kv-loading-text class="tw-text-small tw-w-1/4" />
 								<kv-loading-text :lines="3" />
 							</div>
