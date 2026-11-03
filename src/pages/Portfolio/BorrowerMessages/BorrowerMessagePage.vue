@@ -4,10 +4,11 @@
 			<router-link
 				v-if="isLoggedIn"
 				:to="BORROWER_MESSAGES_LIST_PATH"
-				class="tw-inline-flex tw-gap-1 tw-items-center tw-text-button-link tw-mb-2"
+				class="tw-inline-flex tw-gap-1 tw-items-center tw-mb-2 tw-font-medium
+					tw-text-primary hover:tw-text-primary tw-no-underline hover:tw-no-underline"
 				v-kv-track-event="['portfolio', 'click', 'Borrower message return to list']"
 			>
-				<kv-material-icon :icon="mdiArrowLeft" class="tw-w-2.5 tw-h-2.5" />
+				<kv-material-icon :icon="mdiChevronLeft" class="tw-ml-0.5" />
 				Return to message list
 			</router-link>
 			<template v-if="message">
@@ -87,7 +88,7 @@
 import { computed, inject } from 'vue';
 import { useRoute } from 'vue-router';
 import { useHead } from '@unhead/vue';
-import { mdiArrowLeft, mdiChevronRight } from '@mdi/js';
+import { mdiChevronLeft, mdiChevronRight } from '@mdi/js';
 import {
 	KvGrid,
 	KvLoadingPlaceholder,
