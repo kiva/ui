@@ -4,11 +4,10 @@
 			<router-link
 				v-if="isLoggedIn"
 				:to="BORROWER_MESSAGES_LIST_PATH"
-				class="tw-inline-flex tw-gap-1 tw-items-center tw-mb-2 tw-font-medium
-					tw-text-primary hover:tw-text-primary tw-no-underline hover:tw-no-underline"
+				class="tw-inline-flex tw-gap-0.5 tw-items-center tw-mb-2"
 				v-kv-track-event="['portfolio', 'click', 'Borrower message return to list']"
 			>
-				<kv-material-icon :icon="mdiChevronLeft" class="tw-ml-0.5" />
+				<kv-material-icon :icon="mdiChevronLeft" />
 				Return to message list
 			</router-link>
 			<template v-if="message">
