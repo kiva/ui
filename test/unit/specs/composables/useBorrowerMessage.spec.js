@@ -18,9 +18,10 @@ describe('useBorrowerMessage', () => {
 	describe('getMessageId', () => {
 		it('reads a positive integer id from the route', () => {
 			expect(getMessageId({ params: { id: '123' } })).toBe(123);
+			expect(getMessageId({ params: { id: '999999999' } })).toBe(999999999);
 		});
 
-		it.each(['', '0', '-1', '1.5', '1e3', 'abc', '012', '2147483648'])('rejects %j', id => {
+		it.each(['', '0', '-1', '1.5', '1e3', 'abc', '012', '1000000000', '99999999999999999999'])('rejects %j', id => {
 			expect(getMessageId({ params: { id } })).toBeNull();
 		});
 	});

@@ -5,8 +5,6 @@ import useApolloQuery from '#src/composables/useApolloQuery';
 
 export const BORROWER_MESSAGES_LIST_PATH = '/portfolio/borrower-messages';
 
-const MAX_INT = 2147483647;
-
 /**
  * The update id from the route's id param, or null when it is not a valid positive integer.
  *
@@ -15,11 +13,9 @@ const MAX_INT = 2147483647;
  */
 export const getMessageId = route => {
 	const param = String(route?.params?.id ?? '');
-	if (!/^[1-9]\d*$/.test(param)) {
-		return null;
-	}
-	const id = Number(param);
-	return id <= MAX_INT ? id : null;
+	// 9 digits keeps ids under GraphQL's 32-bit Int max. The API answers larger ids with an HTTP 400,
+	// which fails the render instead of redirecting to the list.
+	return /^[1-9]\d{0,8}$/.test(param) ? Number(param) : null;
 };
 
 const getErrorCodes = errors => (errors ?? []).map(error => error?.code ?? error?.extensions?.code);
