@@ -1,4 +1,4 @@
-import htmlToText from '#src/util/htmlToText';
+import { htmlToText } from '#src/util/limitedHtml';
 import { formatPossessiveName } from '#src/util/stringParserUtils';
 
 /**

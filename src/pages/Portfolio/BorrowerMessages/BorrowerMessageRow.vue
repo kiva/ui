@@ -49,7 +49,7 @@
 <script setup>
 import { computed, ref } from 'vue';
 import { getBorrowerMessageAuthor, getBorrowerMessageSubject } from '#src/util/borrowerMessage';
-import htmlToText from '#src/util/htmlToText';
+import { htmlToText } from '#src/util/limitedHtml';
 import { formatInKivaServerTimezone } from '#src/util/dateUtils';
 import kivaKUrl from '#src/assets/images/kiva_k.svg?url';
 

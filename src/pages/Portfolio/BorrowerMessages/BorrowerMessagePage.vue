@@ -23,7 +23,7 @@
 						:class="photo ? 'md:tw-col-span-8 lg:tw-col-span-7' : 'lg:tw-col-span-10'"
 					>
 						<div
-							class="tw-text-gray-600 tw-whitespace-pre-line tw-break-words"
+							class="borrower-message__body tw-text-gray-600 tw-break-words"
 							data-testid="borrower-message-body"
 							v-html="body"
 						></div>
@@ -47,7 +47,7 @@
 								{{ originalSubject }}
 							</p>
 							<div
-								class="tw-text-gray-600 tw-whitespace-pre-line tw-break-words"
+								class="borrower-message__body tw-text-gray-600 tw-break-words"
 								:dir="originalTextDirection"
 								v-html="originalBody"
 							></div>
@@ -93,8 +93,7 @@ import {
 	getBorrowerMessageSubject,
 	getBorrowerMessageTitle,
 } from '#src/util/borrowerMessage';
-import htmlToText from '#src/util/htmlToText';
-import sanitizeLimitedHtml from '#src/util/sanitizeLimitedHtml';
+import { htmlToText, sanitizeLimitedHtml } from '#src/util/limitedHtml';
 import { formatInKivaServerTimezone } from '#src/util/dateUtils';
 
 defineOptions({ name: 'BorrowerMessagePage' });
@@ -201,6 +200,10 @@ useHead(computed(() => (message.value ? {
 </script>
 
 <style lang="postcss" scoped>
+.borrower-message__body :deep(p:not(:last-child)) {
+	@apply tw-mb-2;
+}
+
 .borrower-message__photo {
 	height: 17.5rem;
 }
