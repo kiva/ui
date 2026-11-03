@@ -22,8 +22,10 @@
 				<kv-grid class="tw-grid-cols-12">
 					<div v-if="photo" class="tw-col-span-12 md:tw-col-span-4 lg:tw-col-span-3">
 						<img
-							class="borrower-message__photo tw-w-full tw-object-cover tw-rounded-md"
+							class="tw-w-full tw-h-auto tw-rounded-md"
 							:src="photo.default"
+							:width="photo.width"
+							:height="photo.height"
 							:alt="photo.alt"
 						>
 					</div>
@@ -228,16 +230,5 @@ useHead(computed(() => (message.value ? {
 
 .borrower-message__body :deep(blockquote) {
 	@apply tw-pl-2 tw-border-l-4 tw-border-tertiary;
-}
-
-.borrower-message__photo {
-	height: 17.5rem;
-}
-
-@screen md {
-	.borrower-message__photo {
-		height: auto;
-		aspect-ratio: 264 / 320;
-	}
 }
 </style>

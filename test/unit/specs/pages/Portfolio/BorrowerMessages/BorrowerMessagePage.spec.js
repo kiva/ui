@@ -28,7 +28,13 @@ const buildMessage = overrides => ({
 	bodyTranslated: null,
 	originalLanguage: 'English',
 	date: '2026-03-25T19:00:00Z',
-	image: { id: 1, default: 'https://example.com/update.jpg', share: 'https://example.com/update-share.jpg' },
+	image: {
+		id: 1,
+		width: 3171,
+		height: 2378,
+		default: 'https://example.com/update.jpg',
+		share: 'https://example.com/update-share.jpg',
+	},
 	...overrides,
 	loan: {
 		id: 456,
@@ -128,7 +134,9 @@ describe('BorrowerMessagePage', () => {
 
 	it('shows the update photo, falling back to the loan photo', () => {
 		const { getByRole, unmount } = renderPage(buildMessage());
-		expect(getByRole('img').getAttribute('src')).toBe('https://example.com/update.jpg');
+		const photo = getByRole('img');
+		expect(photo.getAttribute('src')).toBe('https://example.com/update.jpg');
+		expect([photo.getAttribute('width'), photo.getAttribute('height')]).toEqual(['3171', '2378']);
 		unmount();
 
 		const { getByRole: getByRoleFallback } = renderPage(buildMessage({ image: null }));

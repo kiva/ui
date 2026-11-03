@@ -47,6 +47,8 @@ query borrowerMessage($id: Int!) {
 
 fragment borrowerMessagePhoto on Image {
 	id
-	default: url(customSize: "s800")
+	width
+	height
+	default: url(customSize: "w800")
 	share: url(customSize: "w1200h630")
 }
