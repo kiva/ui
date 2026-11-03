@@ -200,8 +200,24 @@ useHead(computed(() => (message.value ? {
 </script>
 
 <style lang="postcss" scoped>
-.borrower-message__body :deep(p:not(:last-child)) {
+.borrower-message__body :deep(:is(p, ul, ol, blockquote):not(:last-child)) {
 	@apply tw-mb-2;
+}
+
+.borrower-message__body :deep(ul) {
+	@apply tw-list-disc tw-pl-3;
+}
+
+.borrower-message__body :deep(ol) {
+	@apply tw-list-decimal tw-pl-3;
+}
+
+.borrower-message__body :deep(li:not(:last-child)) {
+	@apply tw-mb-0.5;
+}
+
+.borrower-message__body :deep(blockquote) {
+	@apply tw-pl-2 tw-border-l-4 tw-border-tertiary;
 }
 
 .borrower-message__photo {

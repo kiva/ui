@@ -10,6 +10,11 @@ describe('limitedHtml', () => {
 			expect(htmlToText('<p>One</p><p>Two</p>Three<br>Four<br />Five')).toBe('One Two Three Four Five');
 		});
 
+		it('keeps words apart across list items and other blocks', () => {
+			expect(htmlToText('<ul><li>Seeds</li><li>Tools</li></ul><div>Thanks</div><h3>Bye</h3>'))
+				.toBe('Seeds Tools Thanks Bye');
+		});
+
 		it('drops script and style content and comments', () => {
 			expect(htmlToText('a <script>alert(1)</script>b<style>p{}</style> c<!-- note -->')).toBe('a b c');
 		});
@@ -39,6 +44,30 @@ describe('limitedHtml', () => {
 				.toBe('<p>Thanks to <b>you</b>!<br>Maria</p>');
 		});
 
+		it('keeps lists, blockquotes and inline emphasis', () => {
+			const lists = '<p>We bought:</p><ul><li>Seeds</li><li>Tools</li></ul><ol><li>One</li></ol>';
+			expect(sanitizeLimitedHtml(lists)).toBe(lists);
+			const quote = '<blockquote><strong>Big</strong> <em>news</em> <i>today</i></blockquote>';
+			expect(sanitizeLimitedHtml(quote)).toBe(quote);
+		});
+
+		it('turns other block elements into paragraphs', () => {
+			expect(sanitizeLimitedHtml('<div>Hello lenders,</div><div>The harvest went well.</div>'))
+				.toBe('<p>Hello lenders,</p><p>The harvest went well.</p>');
+			expect(sanitizeLimitedHtml('<h3 class="x">Update</h3>Thanks')).toBe('<p>Update</p>Thanks');
+		});
+
+		it('nests blocks the way the browser parser would', () => {
+			expect(sanitizeLimitedHtml('<div><div>One</div>Two</div>')).toBe('<p>One</p>Two');
+			expect(sanitizeLimitedHtml('<p>Intro<ul><li>One<li>Two</ul>'))
+				.toBe('<p>Intro</p><ul><li>One</li><li>Two</li></ul>');
+		});
+
+		it('splits plain text into paragraphs on blank lines', () => {
+			expect(sanitizeLimitedHtml('Hello lenders,\n\nThe harvest went well.\nThanks to you.\r\n\r\n\r\nBye'))
+				.toBe('<p>Hello lenders,</p><p>The harvest went well.<br>Thanks to you.</p><p>Bye</p>');
+		});
+
 		it('keeps links with an http(s) or root-relative href and drops other attributes', () => {
 			expect(sanitizeLimitedHtml('<a href="https://kiva.org/lend" onclick="x()">Kiva</a>'))
 				.toBe('<a href="https://kiva.org/lend" rel="nofollow noopener">Kiva</a>');
@@ -53,7 +82,8 @@ describe('limitedHtml', () => {
 		});
 
 		it('strips other tags but keeps their text', () => {
-			expect(sanitizeLimitedHtml('<div><img src=x onerror="alert(1)"><i>Hello</i></div>')).toBe('Hello');
+			expect(sanitizeLimitedHtml('<span style="x"><img src=x onerror="alert(1)"><u>Hello</u></span>'))
+				.toBe('Hello');
 		});
 
 		it('drops script and style content and comments', () => {
@@ -75,10 +105,11 @@ describe('limitedHtml', () => {
 			expect(sanitizeLimitedHtml('One\nTwo\r\nThree')).toBe('One<br>Two<br>Three');
 		});
 
-		it('collapses runs of breaks to one', () => {
-			expect(sanitizeLimitedHtml('One<br><br />Two<br/>\r\n<br>\n\nThree')).toBe('One<br>Two<br>Three');
+		it('collapses runs of breaks inside blocks to one', () => {
+			expect(sanitizeLimitedHtml('<p>One<br><br />Two<br/>\r\n<br>\n\nThree</p>'))
+				.toBe('<p>One<br>Two<br>Three</p>');
 			expect(sanitizeLimitedHtml('One<br />\r\nTwo')).toBe('One<br>Two');
-			expect(sanitizeLimitedHtml('One<br><b><br>Two</b>')).toBe('One<br><b>Two</b>');
+			expect(sanitizeLimitedHtml('<p>One<br><b><br>Two</b></p>')).toBe('<p>One<br><b>Two</b></p>');
 		});
 
 		it('drops breaks at the edges of the fragment and of paragraphs', () => {
