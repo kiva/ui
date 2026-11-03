@@ -5,10 +5,10 @@
 				v-if="isLoggedIn"
 				:to="BORROWER_MESSAGES_LIST_PATH"
 				class="tw-inline-flex tw-gap-0.5 tw-items-center tw-mb-2"
-				v-kv-track-event="['portfolio', 'click', 'Borrower message return to list']"
+				v-kv-track-event="['portfolio', 'click', 'Borrower message back to list']"
 			>
 				<kv-material-icon :icon="mdiChevronLeft" />
-				Return to message list
+				Back to message list
 			</router-link>
 			<template v-if="message">
 				<div class="tw-flex tw-flex-col tw-gap-1 tw-mb-3 md:tw-mb-4">

@@ -74,14 +74,14 @@ describe('BorrowerMessagePage', () => {
 	it('links logged-in viewers back to the message list', () => {
 		const { getByRole } = renderPage(buildMessage(), { isLoggedIn: true });
 
-		expect(getByRole('link', { name: 'Return to message list' }).getAttribute('href'))
+		expect(getByRole('link', { name: 'Back to message list' }).getAttribute('href'))
 			.toBe('/portfolio/borrower-messages');
 	});
 
 	it('hides the message list link from logged-out viewers', () => {
 		const { queryByRole } = renderPage(buildMessage());
 
-		expect(queryByRole('link', { name: 'Return to message list' })).toBeNull();
+		expect(queryByRole('link', { name: 'Back to message list' })).toBeNull();
 	});
 
 	it('shows the sanitized body', () => {
