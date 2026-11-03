@@ -1,0 +1,49 @@
+query borrowerMessage($id: Int!) {
+	general {
+		update(id: $id) {
+			id
+			type
+			subject
+			subjectTranslated
+			body
+			bodyTranslated
+			originalLanguage
+			date
+			image {
+				id
+				...borrowerMessagePhoto
+			}
+			loan {
+				id
+				name
+				anonymizationLevel
+				geocode {
+					city
+					country {
+						id
+						name
+					}
+				}
+				image {
+					id
+					...borrowerMessagePhoto
+				}
+				userProperties {
+					lentTo
+				}
+				... on LoanPartner {
+					partner {
+						id
+						name
+					}
+				}
+			}
+		}
+	}
+}
+
+fragment borrowerMessagePhoto on Image {
+	id
+	default: url(customSize: "s800")
+	share: url(customSize: "w1200h630")
+}

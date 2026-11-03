@@ -7,7 +7,7 @@ const NAMED_ENTITIES = {
 	nbsp: ' ',
 };
 
-const decodeEntities = text => text.replace(/&(#x[0-9a-f]+|#\d+|[a-z]+);/gi, (match, entity) => {
+export const decodeEntities = text => text.replace(/&(#x[0-9a-f]+|#\d+|[a-z]+);/gi, (match, entity) => {
 	if (entity[0] === '#') {
 		const codePoint = entity[1].toLowerCase() === 'x'
 			? parseInt(entity.slice(2), 16)

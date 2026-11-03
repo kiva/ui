@@ -351,6 +351,13 @@ export default [
 		}
 	},
 	{
+		path: '/portfolio/borrower-messages/:id',
+		component: () => import('#src/pages/Portfolio/BorrowerMessages/BorrowerMessagePage'),
+		meta: {
+			excludeFromStaticSitemap: true,
+		}
+	},
+	{
 		path: '/portfolio/lending-stats',
 		component: () => import('#src/pages/Portfolio/LendingStats/LendingStatsPage'),
 		meta: {
