@@ -111,12 +111,28 @@ describe('BorrowerMessageRow', () => {
 
 		expect(img.getAttribute('src')).toBe('https://example.com/update-s120.jpg');
 		expect(img.getAttribute('srcset')).toBe('https://example.com/update-s240.jpg 2x');
+		expect(img.getAttribute('alt')).toBe("Photo from Maria's message");
 	});
 
 	it('falls back to the loan image when the update has no image', () => {
 		const { container } = renderRow(buildMessage({ image: null }));
 
-		expect(container.querySelector('img').getAttribute('src')).toBe('https://example.com/loan-s120.jpg');
+		const img = container.querySelector('img');
+
+		expect(img.getAttribute('src')).toBe('https://example.com/loan-s120.jpg');
+		expect(img.getAttribute('alt')).toBe('Photo of Maria');
+	});
+
+	it('describes the photo without a borrower name', async () => {
+		const message = buildMessage();
+		message.loan.name = null;
+		const { getByAltText, rerender } = renderRow(message);
+
+		getByAltText('Photo from this message');
+
+		await rerender({ message: { ...message, image: null } });
+
+		getByAltText('Borrower photo');
 	});
 
 	it('falls back to the Kiva placeholder when neither image exists', () => {
@@ -125,6 +141,9 @@ describe('BorrowerMessageRow', () => {
 		const { container, getByTestId } = renderRow(message);
 
 		getByTestId('borrower-message-placeholder');
-		expect(container.querySelector('img').getAttribute('src')).toMatch(/kiva_k/);
+		const img = container.querySelector('img');
+
+		expect(img.getAttribute('src')).toMatch(/kiva_k/);
+		expect(img.getAttribute('alt')).toBe('Kiva logo');
 	});
 });

@@ -12,7 +12,7 @@
 				class="tw-w-full tw-h-full tw-object-cover"
 				:src="thumbnail.default"
 				:srcset="thumbnail.retina ? `${thumbnail.retina} 2x` : undefined"
-				alt=""
+				:alt="thumbnail.alt"
 				loading="lazy"
 			>
 			<div
@@ -20,7 +20,7 @@
 				class="tw-w-full tw-h-full tw-bg-brand tw-flex tw-items-center tw-justify-center"
 				data-testid="borrower-message-placeholder"
 			>
-				<img :src="kivaKUrl" alt="">
+				<img :src="kivaKUrl" alt="Kiva logo">
 			</div>
 		</div>
 		<div class="tw-flex tw-flex-col tw-gap-0.5 md:tw-gap-1 tw-min-w-0">
@@ -74,8 +74,14 @@ const openMessage = event => {
 const loan = computed(() => props.message.loan ?? {});
 
 const thumbnail = computed(() => {
-	const image = props.message.image?.default ? props.message.image : loan.value.image;
-	return image?.default ? image : null;
+	const { name } = loan.value;
+	if (props.message.image?.default) {
+		return { ...props.message.image, alt: name ? `Photo from ${name}'s message` : 'Photo from this message' };
+	}
+	if (loan.value.image?.default) {
+		return { ...loan.value.image, alt: name ? `Photo of ${name}` : 'Borrower photo' };
+	}
+	return null;
 });
 
 const subject = computed(() => htmlToText(props.message.subjectTranslated || props.message.subject));
