@@ -48,7 +48,13 @@ const renderPage = (message, { isLoggedIn = false } = {}) => {
 	return render(BorrowerMessagePage, {
 		global: {
 			provide: { $appConfig: { host: 'www.kiva.org' } },
-			directives: { kvTrackEvent: {} },
+			directives: {
+				kvTrackEvent: {
+					beforeMount(el, { value }) {
+						el.setAttribute('data-track-event', JSON.stringify(value));
+					},
+				},
+			},
 			stubs: {
 				WwwPage: { template: '<div><slot /></div>' },
 				RouterLink: { props: ['to'], template: '<a :href="to"><slot /></a>' },
@@ -76,6 +82,13 @@ describe('BorrowerMessagePage', () => {
 
 		expect(getByRole('link', { name: 'Back to message list' }).getAttribute('href'))
 			.toBe('/portfolio/borrower-messages');
+	});
+
+	it('tracks clicks on the message list link', () => {
+		const { getByRole } = renderPage(buildMessage(), { isLoggedIn: true });
+
+		expect(JSON.parse(getByRole('link', { name: 'Back to message list' }).dataset.trackEvent))
+			.toEqual(['portfolio', 'click', 'Borrower message back to list']);
 	});
 
 	it('hides the message list link from logged-out viewers', () => {
@@ -163,6 +176,13 @@ describe('BorrowerMessagePage', () => {
 
 		expect(getByRole('link', { name: 'Post a comment on the loan page' }).getAttribute('href'))
 			.toBe('/lend/456#loanComments');
+	});
+
+	it('tracks clicks on the comment link', () => {
+		const { getByRole } = renderPage(buildMessage());
+
+		expect(JSON.parse(getByRole('link', { name: 'Post a comment on the loan page' }).dataset.trackEvent))
+			.toEqual(['portfolio', 'click', 'Borrower message post a comment', 123]);
 	});
 
 	it('hides the comment link from viewers who have not lent to the loan', () => {
