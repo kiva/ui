@@ -1,5 +1,6 @@
-// Helpers for the HTML that borrower updates are stored as. Neither needs a DOM, so both run during server
-// rendering, where DOMPurify cannot.
+// Borrower update bodies are either partner HTML (saved unfiltered, so any markup) or plain text from a textarea.
+// sanitizeLimitedHtml reduces either to a small, safe subset of HTML; htmlToText flattens either to one line of text.
+// Neither needs a DOM, so both run during server rendering, where DOMPurify cannot.
 
 const NAMED_ENTITIES = {
 	amp: '&',
@@ -25,12 +26,15 @@ const PARAGRAPH_TAGS = new Set([
 	'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'header', 'pre', 'section', 'table', 'td', 'th', 'tr',
 ]);
 
+// Matches a comment, a script or style element with its content, or one tag.
+// Groups: script/style name, closing slash, tag name, attributes.
 const TOKEN_PATTERN = new RegExp([
 	/<!--[\s\S]*?(?:-->|$)/.source,
 	/<(script|style)\b[\s\S]*?(?:<\/\1\s*>|$)/.source,
 	/<(\/?)([a-z][a-z0-9]*)\b([^>]*)>/.source,
 ].join('|'), 'gi');
 
+// Numeric entities and the common named ones; unknown names are left as written
 const decodeEntities = text => text.replace(/&(#x[0-9a-f]+|#\d+|[a-z]+);/gi, (match, entity) => {
 	if (entity[0] === '#') {
 		const codePoint = entity[1].toLowerCase() === 'x'
@@ -81,6 +85,8 @@ const isBlank = node => node?.text !== undefined && !node.text.trim();
 
 const isBlockBoundary = node => !node || BLOCK_TAGS.has(node.tag);
 
+// The nearest node before (step -1) or after (step 1), skipping whitespace and inline tags, which don't separate
+// one break or block from the next
 const findNeighbour = (nodes, index, step) => {
 	let i = index + step;
 	while (i >= 0 && i < nodes.length && (isBlank(nodes[i]) || INLINE_TAGS.has(nodes[i].tag))) {
@@ -106,6 +112,8 @@ const withoutNewlinesBesideBreaks = tokens => tokens.map((token, index) => {
 
 const isEdge = token => isBreak(token) || isBlank(token);
 
+// Turns source newlines into break tokens, so plain text and <br> markup are handled alike, then trims breaks and
+// whitespace from both ends
 const withLineBreaks = tokens => {
 	const lines = withoutNewlinesBesideBreaks(tokens).flatMap(token => {
 		if (token.tag === 'br') {
@@ -138,6 +146,8 @@ const withParagraphBreaks = tokens => tokens.reduce((result, token, index) => {
 	return result;
 }, []);
 
+// Keeps only the allowed tags and closes every tag it opens, so the output is well-formed whatever the source.
+// With wrapInParagraphs, the text starts in a <p> and each paragraph break closes it and opens the next.
 const buildBalancedNodes = (tokens, wrapInParagraphs) => {
 	const nodes = [];
 	const open = [];
@@ -191,6 +201,8 @@ const buildBalancedNodes = (tokens, wrapInParagraphs) => {
 	return nodes;
 };
 
+// Collapses runs of breaks to one, then drops breaks beside block edges, empty paragraphs, and whitespace-only text
+// between blocks
 const normalizeBreaks = nodes => {
 	const collapsed = nodes.filter((node, index) => !isBreak(node) || !isBreak(findNeighbour(nodes, index, -1)));
 	const trimmed = collapsed.filter((node, index) => !isBreak(node) || (
@@ -209,6 +221,7 @@ const normalizeBreaks = nodes => {
 		|| !isBlockBoundary(all[index + 1]));
 };
 
+// The href only when it's http(s) or root-relative, which rules out javascript: and data: links
 const getSafeHref = attributes => {
 	const match = (attributes ?? '').match(/\bhref\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s"'>]+))/i);
 	const href = decodeEntities(match?.[1] ?? match?.[2] ?? match?.[3] ?? '').trim();
