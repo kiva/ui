@@ -1,11 +1,10 @@
 import { computed, ref, watch } from 'vue';
 import { useRoute } from 'vue-router';
-import myUpdatesQuery from '#src/graphql/query/portfolio/myUpdates.graphql';
+import borrowerMessagesQuery from '#src/graphql/query/portfolio/borrowerMessages.graphql';
 import logReadQueryError from '#src/util/logReadQueryError';
 import useApolloQuery from '#src/composables/useApolloQuery';
 
-// Defined page size similar to the monolith's /blog/myloans list
-export const MY_UPDATES_PAGE_LIMIT = 18;
+export const BORROWER_MESSAGES_PAGE_LIMIT = 10;
 
 /**
  * The 1-based page number from the route's page query, falling back to 1 when it is missing or invalid.
@@ -19,19 +18,19 @@ export const getPageNumber = route => {
 };
 
 const getVariables = route => ({
-	limit: MY_UPDATES_PAGE_LIMIT,
-	offset: (getPageNumber(route) - 1) * MY_UPDATES_PAGE_LIMIT,
+	limit: BORROWER_MESSAGES_PAGE_LIMIT,
+	offset: (getPageNumber(route) - 1) * BORROWER_MESSAGES_PAGE_LIMIT,
 });
 
 const operation = {
-	query: myUpdatesQuery,
+	query: borrowerMessagesQuery,
 	preFetchVariables: ({ route }) => getVariables(route),
 };
 
 export const preFetchOperations = [operation];
 
 /**
- * One page of the lender's borrower updates, paged by the route's page query.
+ * One page of the lender's borrower messages, paged by the route's page query.
  *
  * @returns {{
  *   updates: import('vue').ComputedRef<object[]>,
@@ -42,14 +41,14 @@ export const preFetchOperations = [operation];
  *   error: import('vue').Ref<Error|object[]|null>,
  * }}
  */
-export default function useMyUpdates() {
+export default function useBorrowerMessages() {
 	const route = useRoute();
 	const variables = computed(() => getVariables(route));
 	const { result, loading, error } = useApolloQuery(operation, () => variables.value);
 
 	watch(error, e => {
 		if (e) {
-			logReadQueryError(e, 'useMyUpdates myUpdates');
+			logReadQueryError(e, 'useBorrowerMessages borrowerMessages');
 		}
 	});
 
@@ -64,7 +63,7 @@ export default function useMyUpdates() {
 	return {
 		updates: computed(() => result.value?.my?.updates?.values ?? []),
 		totalCount: computed(() => result.value?.my?.updates?.totalCount),
-		limit: MY_UPDATES_PAGE_LIMIT,
+		limit: BORROWER_MESSAGES_PAGE_LIMIT,
 		offset: computed(() => variables.value.offset),
 		loading: computed(() => !error.value && (loading.value || resultOffset.value !== variables.value.offset)),
 		error,

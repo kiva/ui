@@ -343,8 +343,8 @@ export default [
 		}
 	},
 	{
-		path: '/blog-myloans-beta',
-		component: () => import('#src/pages/Portfolio/BorrowerUpdates/BorrowerUpdatesPage'),
+		path: '/portfolio/borrower-messages',
+		component: () => import('#src/pages/Portfolio/BorrowerMessages/BorrowerMessagesPage'),
 		meta: {
 			authenticationRequired: true,
 			excludeFromStaticSitemap: true,
