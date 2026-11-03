@@ -61,6 +61,7 @@ export const preFetchOperations = [operation];
  *
  * @returns {{
  *   message: import('vue').ComputedRef<object|null>,
+ *   isLoggedIn: import('vue').ComputedRef<boolean>,
  *   loading: import('vue').Ref<boolean>,
  * }}
  */
@@ -70,6 +71,7 @@ export default function useBorrowerMessage() {
 
 	return {
 		message: computed(() => result.value?.general?.update ?? null),
+		isLoggedIn: computed(() => !!result.value?.my?.id),
 		loading,
 	};
 }

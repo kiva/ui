@@ -1,6 +1,15 @@
 <template>
 	<www-page main-class="tw-bg-secondary">
 		<kv-page-container class="tw-pt-3 tw-pb-5 md:tw-pt-4 md:tw-pb-8">
+			<router-link
+				v-if="isLoggedIn"
+				:to="BORROWER_MESSAGES_LIST_PATH"
+				class="tw-inline-flex tw-gap-1 tw-items-center tw-text-button-link tw-mb-2"
+				v-kv-track-event="['portfolio', 'click', 'Borrower message return to list']"
+			>
+				<kv-material-icon :icon="mdiArrowLeft" class="tw-w-2.5 tw-h-2.5" />
+				Return to message list
+			</router-link>
 			<template v-if="message">
 				<div class="tw-flex tw-flex-col tw-gap-1 tw-mb-3 md:tw-mb-4">
 					<h1 class="tw-text-headline tw-break-words">
@@ -78,16 +87,17 @@
 import { computed, inject } from 'vue';
 import { useRoute } from 'vue-router';
 import { useHead } from '@unhead/vue';
-import { mdiChevronRight } from '@mdi/js';
+import { mdiArrowLeft, mdiChevronRight } from '@mdi/js';
 import {
 	KvGrid,
 	KvLoadingPlaceholder,
 	KvLoadingText,
+	KvMaterialIcon,
 	KvPageContainer,
 	KvTextLink,
 } from '@kiva/kv-components';
 import WwwPage from '#src/components/WwwFrame/WwwPage';
-import useBorrowerMessage from '#src/composables/useBorrowerMessage';
+import useBorrowerMessage, { BORROWER_MESSAGES_LIST_PATH } from '#src/composables/useBorrowerMessage';
 import {
 	getBorrowerMessageAuthor,
 	getBorrowerMessageSubject,
@@ -103,7 +113,7 @@ const SHARE_DESCRIPTION_WORDS = 60;
 
 const $appConfig = inject('$appConfig', {});
 const route = useRoute();
-const { message } = useBorrowerMessage();
+const { message, isLoggedIn } = useBorrowerMessage();
 
 const loan = computed(() => message.value?.loan ?? {});
 

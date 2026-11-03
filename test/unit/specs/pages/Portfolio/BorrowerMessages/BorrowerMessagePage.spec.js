@@ -4,6 +4,7 @@ import { useHead } from '@unhead/vue';
 import BorrowerMessagePage from '#src/pages/Portfolio/BorrowerMessages/BorrowerMessagePage';
 
 const mockMessage = ref(null);
+const mockIsLoggedIn = ref(false);
 
 vi.mock('vue-router', () => ({
 	useRoute: () => ({ path: '/portfolio/borrower-messages/123', params: { id: '123' } }),
@@ -14,7 +15,8 @@ vi.mock('@unhead/vue', () => ({
 }));
 
 vi.mock('#src/composables/useBorrowerMessage', () => ({
-	default: () => ({ message: mockMessage, loading: ref(false) }),
+	default: () => ({ message: mockMessage, isLoggedIn: mockIsLoggedIn, loading: ref(false) }),
+	BORROWER_MESSAGES_LIST_PATH: '/portfolio/borrower-messages',
 }));
 
 const buildMessage = overrides => ({
@@ -40,8 +42,9 @@ const buildMessage = overrides => ({
 	},
 });
 
-const renderPage = message => {
+const renderPage = (message, { isLoggedIn = false } = {}) => {
 	mockMessage.value = message;
+	mockIsLoggedIn.value = isLoggedIn;
 	return render(BorrowerMessagePage, {
 		global: {
 			provide: { $appConfig: { host: 'www.kiva.org' } },
@@ -66,6 +69,19 @@ describe('BorrowerMessagePage', () => {
 
 		getByRole('heading', { level: 1, name: 'Original subject' });
 		getByText('Posted by Dina Teresa on Mar 25, 2026');
+	});
+
+	it('links logged-in viewers back to the message list', () => {
+		const { getByRole } = renderPage(buildMessage(), { isLoggedIn: true });
+
+		expect(getByRole('link', { name: 'Return to message list' }).getAttribute('href'))
+			.toBe('/portfolio/borrower-messages');
+	});
+
+	it('hides the message list link from logged-out viewers', () => {
+		const { queryByRole } = renderPage(buildMessage());
+
+		expect(queryByRole('link', { name: 'Return to message list' })).toBeNull();
 	});
 
 	it('shows the sanitized body', () => {

@@ -1,4 +1,7 @@
 query borrowerMessage($id: Int!) {
+	my {
+		id
+	}
 	general {
 		update(id: $id) {
 			id
