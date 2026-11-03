@@ -47,9 +47,9 @@
 								class="tw-shrink-0 tw-rounded-md !tw-w-8 !tw-h-8 md:!tw-w-15 md:!tw-h-15"
 							/>
 							<div class="tw-flex tw-flex-col tw-gap-1 tw-grow">
-								<kv-loading-placeholder class="!tw-w-1/2 !tw-h-3" />
-								<kv-loading-placeholder class="!tw-w-1/4 !tw-h-2" />
-								<kv-loading-placeholder class="!tw-h-6" />
+								<kv-loading-text class="tw-text-title tw-w-1/2" />
+								<kv-loading-text class="tw-text-small tw-w-1/4" />
+								<kv-loading-text :lines="3" />
 							</div>
 						</li>
 					</template>
@@ -81,7 +81,12 @@
 import { computed, inject } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useHead } from '@unhead/vue';
-import { KvLoadingPlaceholder, KvPageContainer, KvPagination } from '@kiva/kv-components';
+import {
+	KvLoadingPlaceholder,
+	KvLoadingText,
+	KvPageContainer,
+	KvPagination,
+} from '@kiva/kv-components';
 import WwwPage from '#src/components/WwwFrame/WwwPage';
 import useBorrowerMessages from '#src/composables/useBorrowerMessages';
 import BorrowerMessageRow from './BorrowerMessageRow';
