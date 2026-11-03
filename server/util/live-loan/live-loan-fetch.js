@@ -355,7 +355,7 @@ const parseFilterStringFLSS = async filterString => {
 				const numericValue = value.substring(3); // Remove "gte" prefix
 				addRangeFilterValue('amountLeft', 'gte', numericValue);
 			} else if (name === 'loanamount') {
-				// Value format would be "lte40000", etc. Other values are ignored
+				// Keep loans of this amount or less, e.g. "lte40000". Only "lte" works, other values are ignored
 				const maxAmount = parseFloat(value.substring(3));
 				if (value.startsWith('lte') && !Number.isNaN(maxAmount)) {
 					addRangeFilterValue('loanAmount', 'lte', maxAmount);
