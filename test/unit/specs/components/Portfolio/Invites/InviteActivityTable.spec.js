@@ -1,10 +1,11 @@
 import { render, waitFor, fireEvent } from '@testing-library/vue';
 import InviteActivityTable from '#src/components/Portfolio/Invites/InviteActivityTable';
+import { getOperationName } from '../../../../specUtils';
 
 const NOW = new Date('2026-03-10T12:00:00Z');
 
 const emailRow = (n, overrides = {}) => ({
-	id: `invitation_pending:${n}`,
+	id: `pending:${n}`,
 	date: '2026-03-05T12:00:00Z',
 	source: 'EMAIL',
 	createdAsType: 'INVITE',
@@ -19,7 +20,7 @@ const emailRow = (n, overrides = {}) => ({
 });
 
 const socialRow = (n, overrides = {}) => emailRow(n, {
-	id: `invitation_social:${n}`,
+	id: `social:${n}`,
 	source: 'FACEBOOK',
 	toEmailAddress: null,
 	status: null,
@@ -46,19 +47,34 @@ const trackEventDirective = {
 	},
 };
 
-const renderTable = (query, kvTrackEvent = vi.fn()) => render(InviteActivityTable, {
-	global: {
-		provide: { apollo: { query } },
-		mocks: { $kvTrackEvent: kvTrackEvent },
-		directives: { 'kv-track-event': trackEventDirective },
-		stubs: {
-			KvButton: {
-				props: ['state'],
-				template: '<button :data-state="state" :disabled="state === \'disabled\'"><slot /></button>',
+const renderTable = (query, kvTrackEvent = vi.fn(), { mutate = vi.fn(), showTipMsg = vi.fn() } = {}) => render(
+	InviteActivityTable,
+	{
+		global: {
+			provide: { apollo: { query, mutate } },
+			mocks: { $kvTrackEvent: kvTrackEvent, $showTipMsg: showTipMsg },
+			directives: { 'kv-track-event': trackEventDirective },
+			stubs: {
+				KvButton: {
+					props: ['state'],
+					// Like KvButton, disabled while loading
+					template: '<button :data-state="state" :disabled="state === \'disabled\' || state === \'loading\'">'
+						+ '<slot /></button>',
+				},
+				KvLoadingText: { template: '<div />' },
 			},
-			KvLoadingText: { template: '<div />' },
 		},
 	},
+);
+
+const sentRow = (n, overrides = {}) => emailRow(n, {
+	status: 'SENT',
+	remindAvailableAt: '2026-03-06T18:00:00Z',
+	...overrides,
+});
+
+const actionResponse = (field, status, message) => ({
+	data: { my: { [field]: { status, message } } },
 });
 
 const firstRow = async (query, kvTrackEvent) => {
@@ -100,6 +116,15 @@ describe('InviteActivityTable', () => {
 
 	afterEach(() => {
 		vi.useRealTimers();
+	});
+
+	let confirmSpy;
+	beforeEach(() => {
+		confirmSpy = vi.spyOn(window, 'confirm').mockReturnValue(true);
+	});
+
+	afterEach(() => {
+		confirmSpy.mockRestore();
 	});
 
 	it('shows a loader until the first page loads, then asks for 4 rows', async () => {
@@ -156,7 +181,7 @@ describe('InviteActivityTable', () => {
 		expect(row.querySelector('button')).toBeNull();
 	});
 
-	it('shows "Sent <date>" and a disabled Clear before a reminder is available', async () => {
+	it('shows "Sent <date>" and Clear before a reminder is available', async () => {
 		const query = vi.fn().mockResolvedValue(activityResponse([emailRow(1, {
 			date: '2026-03-09T12:00:00Z',
 			status: 'SENT',
@@ -165,18 +190,219 @@ describe('InviteActivityTable', () => {
 		const { status, queryByTestId, getByTestId } = await firstRow(query);
 		expect(status).toBe('Sent Mar 9, 2026 Clear');
 		expect(queryByTestId('invite-activity-remind')).toBeNull();
-		expect(getByTestId('invite-activity-clear').disabled).toBe(true);
+		expect(getByTestId('invite-activity-clear').disabled).toBe(false);
 	});
 
-	it('shows disabled Remind and Clear once a reminder is available', async () => {
-		const query = vi.fn().mockResolvedValue(activityResponse([emailRow(1, {
-			status: 'SENT',
-			remindAvailableAt: '2026-03-06T18:00:00Z',
-		})]));
-		const { status, getByTestId } = await firstRow(query);
+	it('shows Remind and Clear once a reminder is available', async () => {
+		const query = vi.fn().mockResolvedValue(activityResponse([sentRow(1)]));
+		const { status } = await firstRow(query);
 		expect(status).toBe('Remind Clear');
-		expect(getByTestId('invite-activity-remind').disabled).toBe(true);
+	});
+
+	it.each([
+		['remind', 'remindInvite', 'SENT'],
+		['clear', 'clearInvite', 'CLEARED'],
+	])('tracks %s once it is confirmed', async (action, field, status) => {
+		const query = vi.fn().mockResolvedValue(activityResponse([sentRow(1)]));
+		const mutate = vi.fn().mockResolvedValue(actionResponse(field, status, 'Done'));
+		const kvTrackEvent = vi.fn();
+		const { findByTestId } = renderTable(query, kvTrackEvent, { mutate });
+		await fireEvent.click(await findByTestId(`invite-activity-${action}`));
+		expect(kvTrackEvent).toHaveBeenCalledWith('portfolio', 'click', `Invite activity ${action}`);
+	});
+
+	it.each([
+		['remind', 'Are you sure you want to send a reminder?'],
+		['clear', 'Are you sure you want to remove this invitation?'],
+	])('asks before running %s, and does nothing when declined', async (action, question) => {
+		confirmSpy.mockReturnValue(false);
+		const query = vi.fn().mockResolvedValue(activityResponse([sentRow(1)]));
+		const mutate = vi.fn();
+		const kvTrackEvent = vi.fn();
+		const { findByTestId, getByTestId } = renderTable(query, kvTrackEvent, { mutate });
+		await fireEvent.click(await findByTestId(`invite-activity-${action}`));
+		expect(confirmSpy).toHaveBeenCalledWith(question);
+		expect(mutate).not.toHaveBeenCalled();
+		expect(kvTrackEvent).not.toHaveBeenCalled();
+		expect(getByTestId(`invite-activity-${action}`).dataset.state).toBe('');
+	});
+
+	it('reminds an invite, shows the message, and shows it as sent now', async () => {
+		const query = vi.fn().mockResolvedValue(activityResponse([emailRow(2), sentRow(1)]));
+		let resolveMutate;
+		const mutate = vi.fn(() => new Promise(resolve => { resolveMutate = resolve; }));
+		const showTipMsg = vi.fn();
+		const {
+			findByTestId, getByTestId, queryByTestId, getAllByTestId
+		} = renderTable(
+			query,
+			vi.fn(),
+			{ mutate, showTipMsg },
+		);
+		await fireEvent.click(await findByTestId('invite-activity-remind'));
+
+		expect(getByTestId('invite-activity-remind').dataset.state).toBe('loading');
 		expect(getByTestId('invite-activity-clear').disabled).toBe(true);
+		expect(mutate).toHaveBeenCalledWith(expect.objectContaining({ variables: { id: 'pending:1' } }));
+		expect(getOperationName(mutate.mock.calls[0][0].mutation)).toBe('RemindInvite');
+
+		resolveMutate(actionResponse('remindInvite', 'SENT', 'Reminder sent'));
+		await waitFor(() => expect(queryByTestId('invite-activity-remind')).toBeNull());
+		expect(showTipMsg).toHaveBeenCalledWith('Reminder sent');
+		// The reminded invite is now the newest, so it moves to the top
+		const [row] = getAllByTestId('invite-activity-row');
+		expect(row.textContent).toContain('friend1@');
+		expect(row.querySelector('td').textContent.trim()).toBe('Mar 10, 2026');
+		expect(row.textContent).toContain('Sent Mar 10, 2026');
+		expect(getByTestId('invite-activity-clear').disabled).toBe(false);
+		expect(query).toHaveBeenCalledTimes(1);
+	});
+
+	it('clears an invite and removes its row without re-reading the table', async () => {
+		const query = vi.fn()
+			.mockResolvedValueOnce(activityResponse([sentRow(1), ...rowsOf(2, 3)], 5))
+			.mockResolvedValueOnce(activityResponse(rowsOf(5, 1), 4));
+		const mutate = vi.fn().mockResolvedValue(actionResponse('clearInvite', 'CLEARED', 'Invitation cleared'));
+		const showTipMsg = vi.fn();
+		const {
+			findByTestId, getAllByTestId, getByTestId, queryByTestId,
+		} = renderTable(query, vi.fn(), { mutate, showTipMsg });
+		await fireEvent.click(await findByTestId('invite-activity-clear'));
+		await waitFor(() => expect(getAllByTestId('invite-activity-row')).toHaveLength(3));
+		expect(showTipMsg).toHaveBeenCalledWith('Invitation cleared');
+		expect(getOperationName(mutate.mock.calls[0][0].mutation)).toBe('ClearInvite');
+		expect(getAllByTestId('invite-activity-row')[0].textContent).toContain('friend2@');
+		expect(query).toHaveBeenCalledTimes(1);
+
+		// 4 invites remain, so "More" still reaches the one not shown
+		const toggle = getByTestId('invite-activity-toggle');
+		expect(toggle.textContent.trim()).toBe('More');
+		await fireEvent.click(toggle);
+		await waitFor(() => expect(getAllByTestId('invite-activity-row')).toHaveLength(4));
+		expect(query).toHaveBeenLastCalledWith(expect.objectContaining({ variables: { offset: 3, limit: 20 } }));
+		// All 4 fit in the first rows, so there's nothing to collapse
+		expect(queryByTestId('invite-activity-toggle')).toBeNull();
+	});
+
+	it('keeps "More" instead of the empty message when every shown invite is cleared', async () => {
+		const query = vi.fn().mockResolvedValue(activityResponse([sentRow(1)], 3));
+		const mutate = vi.fn().mockResolvedValue(actionResponse('clearInvite', 'CLEARED', 'Cleared'));
+		const {
+			findByTestId, queryByTestId, queryAllByTestId, getByTestId
+		} = renderTable(query, vi.fn(), { mutate });
+		await fireEvent.click(await findByTestId('invite-activity-clear'));
+		await waitFor(() => expect(queryAllByTestId('invite-activity-row')).toHaveLength(0));
+		expect(queryByTestId('invite-activity-empty')).toBeNull();
+		expect(getByTestId('invite-activity-toggle').textContent.trim()).toBe('More');
+	});
+
+	it('shows the empty message when the last invite is cleared', async () => {
+		const query = vi.fn().mockResolvedValue(activityResponse([sentRow(1)]));
+		const mutate = vi.fn().mockResolvedValue(actionResponse('clearInvite', 'CLEARED', 'Cleared'));
+		const { findByTestId } = renderTable(query, vi.fn(), { mutate });
+		await fireEvent.click(await findByTestId('invite-activity-clear'));
+		expect(await findByTestId('invite-activity-empty')).toBeTruthy();
+	});
+
+	it('moves focus to the table when the focused button leaves with its row', async () => {
+		const query = vi.fn().mockResolvedValue(activityResponse([sentRow(1), emailRow(2)]));
+		const mutate = vi.fn().mockResolvedValue(actionResponse('clearInvite', 'CLEARED', 'Cleared'));
+		const { findByTestId, getByRole } = renderTable(query, vi.fn(), { mutate });
+		const clear = await findByTestId('invite-activity-clear');
+		clear.focus();
+		await fireEvent.click(clear);
+		await waitFor(() => expect(document.activeElement).toBe(getByRole('table')));
+	});
+
+	it('moves focus to the empty message\'s container when the last row is cleared', async () => {
+		const query = vi.fn().mockResolvedValue(activityResponse([sentRow(1)]));
+		const mutate = vi.fn().mockResolvedValue(actionResponse('clearInvite', 'CLEARED', 'Cleared'));
+		const { findByTestId, container } = renderTable(query, vi.fn(), { mutate });
+		const clear = await findByTestId('invite-activity-clear');
+		clear.focus();
+		await fireEvent.click(clear);
+		await findByTestId('invite-activity-empty');
+		await waitFor(() => expect(document.activeElement).toBe(container.firstElementChild));
+	});
+
+	it('moves focus to the row\'s Clear button when a reminder replaces Remind', async () => {
+		const query = vi.fn().mockResolvedValue(activityResponse([emailRow(1), sentRow(2)]));
+		const mutate = vi.fn().mockResolvedValue(actionResponse('remindInvite', 'SENT', 'Reminder sent'));
+		const { findByTestId, getByTestId } = renderTable(query, vi.fn(), { mutate });
+		const remind = await findByTestId('invite-activity-remind');
+		remind.focus();
+		await fireEvent.click(remind);
+		await waitFor(() => expect(document.activeElement).toBe(getByTestId('invite-activity-clear')));
+	});
+
+	it('returns focus to the button when a failed action lost it', async () => {
+		const query = vi.fn().mockResolvedValue(activityResponse([sentRow(1)]));
+		let resolveMutate;
+		const mutate = vi.fn(() => new Promise(resolve => { resolveMutate = resolve; }));
+		const { findByTestId, getByTestId } = renderTable(query, vi.fn(), { mutate });
+		const remind = await findByTestId('invite-activity-remind');
+		remind.focus();
+		await fireEvent.click(remind);
+		// Browsers drop focus from a button that becomes disabled
+		remind.blur();
+		resolveMutate(actionResponse('remindInvite', 'TOO_SOON', 'You must wait 24 hours.'));
+		await waitFor(() => expect(document.activeElement).toBe(getByTestId('invite-activity-remind')));
+	});
+
+	it.each([
+		['remind', 'remindInvite', 'TOO_SOON', 'You must wait 24 hours.', 'You must wait 24 hours.'],
+		['clear', 'clearInvite', 'INVALID', 'Invalid invitation', 'Invalid invitation'],
+		['remind', 'remindInvite', 'ERROR', '', 'An error occurred. Please try again.'],
+	])('shows a %s %s/%s result as an error and keeps the row', async (action, field, status, message, shown) => {
+		const query = vi.fn().mockResolvedValue(activityResponse([sentRow(1)]));
+		const mutate = vi.fn().mockResolvedValue(actionResponse(field, status, message));
+		const showTipMsg = vi.fn();
+		const { findByTestId, getByTestId, getAllByTestId } = renderTable(query, vi.fn(), { mutate, showTipMsg });
+		await fireEvent.click(await findByTestId(`invite-activity-${action}`));
+		await waitFor(() => expect(showTipMsg).toHaveBeenCalledWith(shown, 'error'));
+		await waitFor(() => expect(getByTestId(`invite-activity-${action}`).dataset.state).toBe(''));
+		expect(getAllByTestId('invite-activity-row')).toHaveLength(1);
+		expect(query).toHaveBeenCalledTimes(1);
+	});
+
+	it.each([
+		['GraphQL errors', () => Promise.resolve({ data: null, errors: [{ message: 'denied' }] })],
+		['a missing result', () => Promise.resolve({ data: { my: null } })],
+		['a network error', () => Promise.reject(new Error('boom'))],
+	])('shows a generic error for %s', async (_case, mutateImpl) => {
+		const query = vi.fn().mockResolvedValue(activityResponse([sentRow(1)]));
+		const showTipMsg = vi.fn();
+		const { findByTestId, getAllByTestId } = renderTable(query, vi.fn(), { mutate: vi.fn(mutateImpl), showTipMsg });
+		await fireEvent.click(await findByTestId('invite-activity-clear'));
+		await waitFor(() => expect(showTipMsg).toHaveBeenCalledWith('An error occurred. Please try again.', 'error'));
+		expect(getAllByTestId('invite-activity-row')).toHaveLength(1);
+	});
+
+	it('disables row actions while "More" loads', async () => {
+		const query = vi.fn()
+			.mockResolvedValueOnce(activityResponse([sentRow(1), ...rowsOf(2, 3)], 10))
+			.mockReturnValueOnce(new Promise(() => {}));
+		const mutate = vi.fn();
+		const { findByTestId, getByTestId } = renderTable(query, vi.fn(), { mutate });
+		await fireEvent.click(await findByTestId('invite-activity-toggle'));
+		['remind', 'clear'].forEach(action => {
+			const button = getByTestId(`invite-activity-${action}`);
+			expect(button.disabled).toBe(true);
+			expect(button.dataset.state).toBe('disabled');
+		});
+	});
+
+	it('disables paging and other row actions while a row action runs', async () => {
+		const query = vi.fn().mockResolvedValue(activityResponse([sentRow(1), sentRow(2), ...rowsOf(3, 2)], 10));
+		const mutate = vi.fn(() => new Promise(() => {}));
+		const { findByTestId, getAllByTestId } = renderTable(query, vi.fn(), { mutate });
+		const toggle = await findByTestId('invite-activity-toggle');
+		const [firstRemind, secondRemind] = getAllByTestId('invite-activity-remind');
+		await fireEvent.click(firstRemind);
+		expect(toggle.disabled).toBe(true);
+		expect(secondRemind.disabled).toBe(true);
+		await fireEvent.click(secondRemind);
+		expect(mutate).toHaveBeenCalledTimes(1);
 	});
 
 	it('shows an accepted email invite with the invitee\'s profile link', async () => {
