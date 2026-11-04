@@ -1,0 +1,30 @@
+query MyAcceptedInvites($offset: Int, $limit: Int) {
+	my {
+		id
+		userAccount {
+			id
+			invites {
+				id
+				accepted(offset: $offset, limit: $limit) {
+					totalCount
+					values {
+						id
+						date
+						source
+						createdAsType
+						team {
+							id
+							name
+						}
+						invitee {
+							id
+							name
+							publicId
+						}
+						loanCount
+					}
+				}
+			}
+		}
+	}
+}

@@ -2,6 +2,8 @@ import { render } from '@testing-library/vue';
 import userEvent from '@testing-library/user-event';
 import GoalSelector from '#src/components/MyKiva/GoalSetting/GoalSelector';
 import goalCopy from '#src/util/goalCopy';
+import { GOAL_DEFAULT_CATEGORY_EXP_STATE } from '#src/util/goalSignupCopyVariant';
+import { LAST_YEAR_KEY } from '#src/composables/useGoalData';
 import {
 	ID_BASIC_NEEDS,
 	ID_CLIMATE_ACTION,
@@ -774,5 +776,128 @@ describe('GoalSelector', () => {
 
 		expect(apolloQueryMock).toHaveBeenCalled();
 		expect(getLoanNumbers()).toEqual(getExpectedGoalOptions({ lastYear: 0, ytd: 10 }));
+	});
+
+	describe('default category experiment exposure', () => {
+		const renderSelector = (props = {}, { trackEvent = vi.fn(), provide = {} } = {}) => {
+			const result = render(GoalSelector, {
+				global: {
+					...globalOptions,
+					provide: {
+						...globalOptions.provide,
+						apollo: {
+							...globalOptions.provide.apollo,
+							readFragment: () => ({ id: 'goal_default_category', version: 'b' }),
+						},
+						$kvTrackEvent: trackEvent,
+						...provide,
+					},
+					stubs: { GoalProgressRing: true },
+				},
+				props: {
+					isGoalSet: false,
+					categoriesLoanCount: {},
+					selectedCategoryId: ID_WOMENS_EQUALITY,
+					selectedCategoryName: 'Women',
+					...props,
+				},
+			});
+			const exposureCalls = () => trackEvent.mock.calls
+				.filter(([category, action]) => category === 'event-tracking' && action === 'EXP-MP-3259-Jan2027');
+			return { ...result, exposureCalls };
+		};
+
+		it('tracks exposure once for a new goal sign up', async () => {
+			const { exposureCalls, rerender } = renderSelector();
+			await flushPromises();
+
+			expect(exposureCalls()).toEqual([['event-tracking', 'EXP-MP-3259-Jan2027', 'b', undefined]]);
+
+			// Setting the goal and re-rendering must not track again
+			await rerender({ isGoalSet: true });
+			await rerender({ isGoalSet: false });
+			await flushPromises();
+
+			expect(exposureCalls()).toHaveLength(1);
+		});
+
+		it('tracks exposure once per page load when the selector remounts under a page flag', async () => {
+			const trackEvent = vi.fn();
+			const provide = { [GOAL_DEFAULT_CATEGORY_EXP_STATE]: { tracked: false, chooseAsIGoDefault: false } };
+
+			// Opening and closing the goal modal twice mounts a new selector each time
+			const first = renderSelector({}, { trackEvent, provide });
+			await flushPromises();
+			first.unmount();
+			const { exposureCalls } = renderSelector({}, { trackEvent, provide });
+			await flushPromises();
+
+			expect(exposureCalls()).toHaveLength(1);
+		});
+
+		it('does not track exposure when a goal is already set', async () => {
+			const { exposureCalls } = renderSelector({ isGoalSet: true });
+			await flushPromises();
+
+			expect(exposureCalls()).toHaveLength(0);
+		});
+
+		it('does not track exposure when updating an existing goal', async () => {
+			const { exposureCalls } = renderSelector({ isUpdatingGoal: true });
+			await flushPromises();
+
+			expect(exposureCalls()).toHaveLength(0);
+		});
+	});
+
+	describe('default category experiment tests (version b: choose as I go)', () => {
+		const LOANS_LAST_YEAR = 8;
+
+		const renderChooseAsIGo = () => {
+			// Total loans per year, as useGoalData's loanStatsByYear query returns them
+			const query = vi.fn(({ variables }) => {
+				const count = variables?.year === LAST_YEAR_KEY ? LOANS_LAST_YEAR : 0;
+				return Promise.resolve({ data: { my: { lendingStats: { loanStatsByYear: { count, amount: 0 } } } } });
+			});
+			return render(GoalSelector, {
+				global: {
+					...globalOptions,
+					provide: {
+						...globalOptions.provide,
+						apollo: { ...globalOptions.provide.apollo, query },
+						$kvTrackEvent: vi.fn(),
+						[GOAL_DEFAULT_CATEGORY_EXP_STATE]: { tracked: false, chooseAsIGoDefault: true },
+					},
+				},
+				props: {
+					isGoalSet: false,
+					categoriesLoanCount: {},
+					selectedCategoryId: ID_SUPPORT_ALL,
+					selectedCategoryName: 'Choose as I go',
+				},
+			});
+		};
+
+		const getLoanNumbers = container => Array.from(container.querySelectorAll('.loan-number-selector__number'))
+			.map(el => Number(el.textContent.trim()))
+			.filter(Number.isFinite);
+
+		it('shows total loans last year in the title from January 1 through March 31', async () => {
+			vi.useFakeTimers();
+			vi.setSystemTime(new Date('2026-02-01T12:00:00'));
+
+			const { getByRole } = renderChooseAsIGo();
+			await vi.runAllTimersAsync();
+
+			expect(getByRole('heading', { level: 2 }).textContent)
+				.toBe(`Last year, you helped ${LOANS_LAST_YEAR} people shape their futures`);
+		});
+
+		it('suggests goals from total loans last year on the first render', async () => {
+			const { container } = renderChooseAsIGo();
+			await flushPromises();
+
+			expect(getLoanNumbers(container)).toEqual(getExpectedGoalOptions({ lastYear: LOANS_LAST_YEAR }));
+		});
 	});
 });

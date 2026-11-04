@@ -102,7 +102,7 @@
 							Build impact beyond your loan
 						</h2>
 						<section class="badges-section tw-grid tw-grid-cols-1 tw-gap-4">
-							<HolidayFundraiserNextStep v-if="isHolidayFundraisersEnabled && !isMobile" />
+							<HolidayFundraiserNextStep v-if="showHolidayFundraiserCard && !isMobile" />
 							<template v-if="latestLoan !== null && !isMobile">
 								<MyKivaEmailUpdatesTransition
 									v-if="showEmailInBuildSection"
@@ -160,7 +160,7 @@
 								:latest-loan="latestLoan"
 								:user-info="userInfo"
 								:enable-slide-limit="false"
-								:show-holiday-fundraiser-card="isHolidayFundraisersEnabled"
+								:show-holiday-fundraiser-card="showHolidayFundraiserCard"
 								@open-impact-insight-modal="showImpactInsightsModal = true"
 							/>
 						</section>
@@ -358,11 +358,8 @@ import {
 	checkPostLendingCardCookie, removePostLendingCardCookie, TRANSACTION_LOANS_KEY, MY_KIVA_CARD_HEIGHT
 } from '#src/util/myKivaUtils';
 import useBreakpoints from '#src/composables/useBreakpoints';
-import useHolidayFundraisersEnabled from '#src/composables/useHolidayFundraisersEnabled';
 
 defineOptions({ name: 'MyKivaNextStepsContent' });
-
-const { isHolidayFundraisersEnabled } = useHolidayFundraisersEnabled();
 
 const TRANSACTION_DAYS_LIMIT = 30;
 
@@ -442,6 +439,13 @@ const props = defineProps({
 	 * already donated to the fund.
 	 */
 	showCoRecoveryFundCard: {
+		type: Boolean,
+		default: false,
+	},
+	/**
+	 * Whether the holiday fundraiser next step is shown: version b of its experiment.
+	 */
+	showHolidayFundraiserCard: {
 		type: Boolean,
 		default: false,
 	},
@@ -633,7 +637,7 @@ const showSurveyInBuildSection = computed(
 // "Build impact beyond your loan" header never renders with an empty grid underneath,
 // whether that's because no card is eligible or because Contentful returned no slides.
 const showBuildImpactSection = computed(() => {
-	if (isHolidayFundraisersEnabled.value || nonBadgesSlides.value.length > 0) return true;
+	if (props.showHolidayFundraiserCard || nonBadgesSlides.value.length > 0) return true;
 
 	if (isMobile.value && !showPostLendingNextStepsCards.value) {
 		return shouldShowEmailMarketingCard.value || showLatestLoan.value || showSurveyCard.value;

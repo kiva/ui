@@ -18,6 +18,7 @@
 			:goal-in-review-in-progress-start="goalInReviewInProgressStart"
 			:should-render-featured-slot="shouldRenderFeaturedSlot"
 			:show-co-recovery-fund-card="showCoRecoveryFundCard"
+			:show-holiday-fundraiser-card="holidayFundraiserCardEnabled"
 		/>
 		<my-kiva-page-content
 			v-else
@@ -41,6 +42,7 @@
 			:goals-row-enabled="goalsRowEnabled"
 			:should-render-featured-slot="shouldRenderFeaturedSlot"
 			:show-co-recovery-fund-card="showCoRecoveryFundCard"
+			:show-holiday-fundraiser-card="holidayFundraiserCardEnabled"
 		/>
 	</www-page>
 </template>
@@ -61,8 +63,17 @@ import { gql } from 'graphql-tag';
 import borrowerProfileSideSheetQuery from '#src/graphql/query/borrowerProfileSideSheet.graphql';
 import experimentAssignmentQuery from '#src/graphql/query/experimentAssignment.graphql';
 import { initializeExperiment } from '#src/util/experiment/experimentUtils';
+import loanStatsByYearQuery from '#src/graphql/query/loanStatsByYear.graphql';
+import {
+	GOAL_DEFAULT_CATEGORY_EXP_KEY,
+	GOAL_DEFAULT_CATEGORY_EXP_STATE,
+	createGoalDefaultCategoryExp,
+	setupGoalDefaultCategoryExp,
+} from '#src/util/goalSignupCopyVariant';
 import { readBoolSetting, readDateSetting } from '#src/util/settingsUtils';
 import useGoalData, { LAST_YEAR_KEY } from '#src/composables/useGoalData';
+import { shouldHideGoalSignup } from '#src/util/goalInReview';
+import { getGoalInReviewNow } from '#src/composables/useGoalInReview';
 import {
 	hasSupportedColombiaReliefFund,
 	isColombiaReliefNextStepActive,
@@ -78,6 +89,7 @@ import { getContentfulEntries } from '#src/util/contentfulUtils';
 const CURRENT_YEAR = new Date().getFullYear();
 const GOALS_ROW_EXP_KEY = 'mykiva_goals_row';
 const FUNDRAISERS_ROW_EXP_KEY = 'mykiva_fundraisers_row';
+const HOLIDAY_FUNDRAISER_CARD_EXP_KEY = 'holiday_fundraiser_card';
 
 /**
  * Options API parent needed to ensure WWwPage children options API preFetch works,
@@ -97,9 +109,14 @@ export default {
 		const goalDataComposable = useGoalData({ apollo });
 		const { combineBadgeData } = useBadgeData();
 		provide('goalData', goalDataComposable);
+		// One state per page load, so reopening the goal modal does not log the exposure again
+		const goalDefaultCategoryExp = createGoalDefaultCategoryExp();
+		provide(GOAL_DEFAULT_CATEGORY_EXP_STATE, goalDefaultCategoryExp);
 
 		return {
 			combineBadgeData,
+			goalDefaultCategoryExp,
+			userHasGoal: goalDataComposable.userHasGoal,
 			fixIncorrectlyCompletedGoals: goalDataComposable.fixIncorrectlyCompletedGoals,
 			hydrateGoalDataFromCache: goalDataComposable.hydrateFromCache,
 			// TESTING ONLY (remove later).
@@ -132,6 +149,7 @@ export default {
 			goalInReviewInProgressStart: null,
 			goalsRowEnabled: false,
 			fundraisersRowEnabled: false,
+			holidayFundraiserCardEnabled: false,
 			shouldRenderFeaturedSlot: true,
 		};
 	},
@@ -236,12 +254,34 @@ export default {
 					query: experimentAssignmentQuery,
 					variables: { id: FUNDRAISERS_ROW_EXP_KEY },
 				}),
+				client.query({
+					query: experimentAssignmentQuery,
+					variables: { id: HOLIDAY_FUNDRAISER_CARD_EXP_KEY },
+				}),
+				client.query({
+					query: experimentAssignmentQuery,
+					variables: { id: GOAL_DEFAULT_CATEGORY_EXP_KEY },
+				}),
+				client.query({
+					query: loanStatsByYearQuery,
+					variables: { year: LAST_YEAR_KEY },
+				}),
 			]).catch(error => {
 				logReadQueryError(error, 'myKivaPage Prefetch');
 			});
 		},
 	},
 	methods: {
+		setupGoalDefaultCategoryExpIfShown() {
+			if (this.goalDefaultCategoryExp.tracked || this.userHasGoal) return;
+			const hideGoalSignup = shouldHideGoalSignup({
+				recapStartDate: this.goalInReviewInProgressStart,
+				now: getGoalInReviewNow(this.$route?.query?.recapDate),
+			});
+			if (hideGoalSignup) return;
+			// eslint-disable-next-line max-len
+			setupGoalDefaultCategoryExp(this.cookieStore, this.apollo, this.$route, this.goalDefaultCategoryExp, this.$kvTrackEvent);
+		},
 		applyMyKivaFreshProgress() {
 			this.recentTransactionLoans = getRecentTransactionLoans(this.transactions);
 			const achievements = applyFreshProgressToAchievements({
@@ -450,6 +490,26 @@ export default {
 			this.$kvTrackEvent,
 			'EXP-CIT-5265-Sep2026'
 		);
+
+		initializeExperiment(
+			this.cookieStore,
+			this.apollo,
+			this.$route,
+			HOLIDAY_FUNDRAISER_CARD_EXP_KEY,
+			version => {
+				this.holidayFundraiserCardEnabled = version === 'b';
+			},
+			this.$kvTrackEvent,
+			'EXP-CIT-5522-Nov2026'
+		);
+
+		this.setupGoalDefaultCategoryExpIfShown();
+		try {
+			const stats = this.apollo.readQuery({ query: loanStatsByYearQuery, variables: { year: LAST_YEAR_KEY } });
+			this.goalDefaultCategoryExp.peopleLoansLastYear = stats?.my?.lendingStats?.loanStatsByYear?.count ?? 0;
+		} catch (e) {
+			logReadQueryError(e, 'MyKivaPage loanStatsByYear');
+		}
 	},
 	async mounted() {
 		try {
@@ -513,6 +573,8 @@ export default {
 			transactions: this.transactions,
 			checkMyKivaCompletedGoalAfterLoad: true,
 		});
+
+		this.setupGoalDefaultCategoryExpIfShown();
 	},
 };
 </script>

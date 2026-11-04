@@ -42,19 +42,23 @@ import userAchievementProgressQuery from '#src/graphql/query/userAchievementProg
 import useGoalData, { LAST_YEAR_KEY } from '#src/composables/useGoalData';
 import goalCopy from '#src/util/goalCopy';
 import {
+	GOAL_DEFAULT_CATEGORY_EXP_STATE,
 	GOAL_SIGNUP_DATE_QUERY_PARAM,
 	parseGoalSignupDateParam,
 } from '#src/util/goalSignupCopyVariant';
 import AsyncPortfolioSection from './AsyncPortfolioSection';
 
-const { getCategoryLoansLastYear } = useGoalData();
+const { getCategoryLoansLastYear, getSupportAllLoanCountByYear } = useGoalData();
+const goalDefaultCategoryExp = inject(GOAL_DEFAULT_CATEGORY_EXP_STATE, null);
+const chooseAsIGoDefault = computed(() => Boolean(goalDefaultCategoryExp?.chooseAsIGoDefault));
 
 const $kvTrackEvent = inject('$kvTrackEvent');
 const apollo = inject('apollo');
 const loading = ref(true);
 const route = useRoute();
 const router = useRouter();
-const womenLoansLastYear = ref(0);
+// Loans last year in the visitor's default category: women, or choose as I go
+const loansLastYear = ref(0);
 
 const goalSignupDateOverride = computed(() => {
 	const value = route.query?.[GOAL_SIGNUP_DATE_QUERY_PARAM];
@@ -62,7 +66,10 @@ const goalSignupDateOverride = computed(() => {
 });
 
 const title = computed(() => (
-	goalCopy.titleGoalSignupWomensLastYear(womenLoansLastYear.value, { date: goalSignupDateOverride.value })
+	goalCopy.titleGoalSignupLastYear(loansLastYear.value, {
+		chooseAsIGoDefault: chooseAsIGoDefault.value,
+		date: goalSignupDateOverride.value,
+	})
 ));
 const subtitle = computed(() => goalCopy.subtitleNoGoalYetEntrypoint(goalSignupDateOverride.value));
 
@@ -72,6 +79,11 @@ const goToGoalPage = () => {
 };
 
 const fetchUserAchievementProgress = async () => {
+	if (chooseAsIGoDefault.value) {
+		loansLastYear.value = await getSupportAllLoanCountByYear(LAST_YEAR_KEY, 'cache-first') ?? 0;
+		loading.value = false;
+		return;
+	}
 	try {
 		const { data } = await apollo.query({
 			query: userAchievementProgressQuery,
@@ -79,7 +91,7 @@ const fetchUserAchievementProgress = async () => {
 			fetchPolicy: 'network-only',
 		});
 		const tieredAchievements = data.userAchievementProgress?.tieredLendingAchievements ?? [];
-		womenLoansLastYear.value = getCategoryLoansLastYear(tieredAchievements);
+		loansLastYear.value = getCategoryLoansLastYear(tieredAchievements);
 		loading.value = false;
 	} catch (error) {
 		logReadQueryError(error, 'PortfolioGoalEntrypoint fetchUserAchievementProgress');

@@ -23,6 +23,13 @@ import useBadgeData from '#src/composables/useBadgeData';
 import useGoalDataQuery from '#src/graphql/query/useGoalData.graphql';
 import userAchievementProgressQuery from '#src/graphql/query/userAchievementProgress.graphql';
 import goalSettingPageQuery from '#src/graphql/query/goalSettingPage.graphql';
+import experimentAssignmentQuery from '#src/graphql/query/experimentAssignment.graphql';
+import {
+	GOAL_DEFAULT_CATEGORY_EXP_KEY,
+	GOAL_DEFAULT_CATEGORY_EXP_STATE,
+	createGoalDefaultCategoryExp,
+	setupGoalDefaultCategoryExp,
+} from '#src/util/goalSignupCopyVariant';
 import { KvPageContainer } from '@kiva/kv-components';
 import WwwPage from '#src/components/WwwFrame/WwwPage';
 import GoalSettingContainer from '#src/components/GoalSetting/GoalSettingContainer';
@@ -46,6 +53,12 @@ export default {
 			categoriesLoanCount: {},
 			tieredAchievements: [],
 			goalRecommendedLoanEnable: false,
+			goalDefaultCategoryExp: createGoalDefaultCategoryExp(),
+		};
+	},
+	provide() {
+		return {
+			[GOAL_DEFAULT_CATEGORY_EXP_STATE]: this.goalDefaultCategoryExp,
 		};
 	},
 	apollo: {
@@ -58,6 +71,10 @@ export default {
 					fetchPolicy: 'network-only',
 				}),
 				client.query({ query: goalSettingPageQuery }),
+				client.query({
+					query: experimentAssignmentQuery,
+					variables: { id: GOAL_DEFAULT_CATEGORY_EXP_KEY },
+				}),
 			]).catch(error => {
 				logReadQueryError(error, 'GoalSettingPage Prefetch');
 			});
@@ -75,6 +92,11 @@ export default {
 		setRecentLoanIds(data) {
 			this.recentLoanIds = (data?.my?.loans?.values ?? []).map(loan => loan?.id).filter(Boolean);
 		},
+	},
+	created() {
+		// The goal entrypoint's sign up copy changes on load, so the exposure is tracked within the page
+		// eslint-disable-next-line max-len
+		setupGoalDefaultCategoryExp(this.cookieStore, this.apollo, this.$route, this.goalDefaultCategoryExp, this.$kvTrackEvent);
 	},
 	async mounted() {
 		// Try to read from cache first (populated by preFetch on SSR)

@@ -5,6 +5,7 @@ import renderCssVariables from '#src/rendering/cssVariables';
 import renderDocumentCookies from '#src/rendering/documentCookies';
 import { renderOptInExternals } from '#src/rendering/externals';
 import renderGlobals from '#src/rendering/globals';
+import { omitUnchangedState } from '#src/util/apolloCacheUtils';
 import { renderAppInstallPrompt, shouldShowAppInstallPrompt } from '#src/util/appInstallPrompt';
 import { assignAllActiveExperiments } from '#src/util/experiment/experimentUtils';
 import { setUserDataCookies } from '#src/util/optimizelyUserMetrics';
@@ -86,6 +87,7 @@ export default async function renderESIHead({
 		route,
 		forceHeader,
 	});
+	const defaultState = apollo.cache.extract();
 
 	// Set the visitor id cookie before other cookies or requests
 	setVisitorIdCookie(cookieStore);
@@ -105,7 +107,8 @@ export default async function renderESIHead({
 	html += renderOptInExternals(config, cookieStore);
 	html += renderAppInstallPrompt(showPrompt);
 	html += renderGlobals({
-		__APOLLO_STATE_ESI__: apollo.cache.extract(),
+		// Local state defaults would overwrite the page's own local state when the client merges both states
+		__APOLLO_STATE_ESI__: omitUnchangedState(apollo.cache.extract(), defaultState),
 	});
 	html += renderCssVariables({
 		...userAvatarData(userDataGlobals),

@@ -230,11 +230,16 @@ import {
 } from '#src/util/myKivaUtils';
 import logReadQueryError from '#src/util/logReadQueryError';
 import useTipMessage from '#src/composables/useTipMessage';
+import {
+	GOAL_DEFAULT_CATEGORY_EXP_STATE,
+	getDefaultGoalCategory,
+} from '#src/util/goalSignupCopyVariant';
 
 const EVENT_CATEGORY = 'post-checkout';
 const NON_TIERED_BADGE = 'non-tiered-badge';
 
 const apollo = inject('apollo');
+const goalDefaultCategoryExp = inject(GOAL_DEFAULT_CATEGORY_EXP_STATE, null);
 const $kvTrackEvent = inject('$kvTrackEvent');
 const cookieStore = inject('cookieStore');
 const $appConfig = inject('$appConfig', {});
@@ -361,7 +366,7 @@ const { getAllCategoryLoanCounts } = useBadgeData();
 const badgeAchievedIds = computed(() => props.badgesAchieved.map(b => b.achievementId));
 
 const categories = getCategories(props.categoriesLoanCount, props.totalLoans);
-const selectedCategory = ref(categories[0]);
+const selectedCategory = ref(getDefaultGoalCategory(categories, goalDefaultCategoryExp?.chooseAsIGoDefault));
 
 // Recommended-loan-after-goal step (shared logic with GoalSettingContainer)
 const loadedSetData = ref(false);

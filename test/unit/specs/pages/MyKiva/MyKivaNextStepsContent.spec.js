@@ -20,14 +20,6 @@ vi.mock('#src/composables/useBreakpoints', () => ({
 	}),
 }));
 
-const holidayFundraisersEnabled = ref(false);
-
-vi.mock('#src/composables/useHolidayFundraisersEnabled', () => ({
-	default: () => ({
-		isHolidayFundraisersEnabled: holidayFundraisersEnabled,
-	}),
-}));
-
 const MyKivaContainerStub = defineComponent({
 	name: 'MyKivaContainer',
 	setup(_, { slots }) {
@@ -164,7 +156,6 @@ describe('MyKivaNextStepsContent', () => {
 	beforeEach(() => {
 		vi.clearAllMocks();
 		routeRef.value = { query: {} };
-		holidayFundraisersEnabled.value = false;
 	});
 
 	it('shows both Almost Funded and the region card in "Keep your impact going" for post-lending lenders', () => {
@@ -251,17 +242,16 @@ describe('MyKivaNextStepsContent', () => {
 	});
 
 	describe('Holiday fundraiser next step', () => {
-		it('is absent when holiday fundraisers are switched off', () => {
+		it('is absent outside the experiment variant', () => {
 			const { wrapper } = createWrapper({ cookieValue: 'true' });
 
 			expect(wrapper.findComponent({ name: 'HolidayFundraiserNextStep' }).exists()).toBe(false);
 		});
 
 		it('is the first card in "Build impact beyond your loan"', () => {
-			holidayFundraisersEnabled.value = true;
 			const { wrapper } = createWrapper({
 				cookieValue: 'true',
-				props: { heroSlides: [buildNonBadgeSlide('invite-friends')] },
+				props: { heroSlides: [buildNonBadgeSlide('invite-friends')], showHolidayFundraiserCard: true },
 			});
 
 			const cards = wrapper.findAll('section.badges-section > *')
@@ -272,10 +262,9 @@ describe('MyKivaNextStepsContent', () => {
 		});
 
 		it('shows "Build impact beyond your loan" even when it has no other cards', () => {
-			holidayFundraisersEnabled.value = true;
 			const { wrapper } = createWrapper({
 				cookieValue: 'true',
-				props: { heroSlides: [], latestLoan: null },
+				props: { heroSlides: [], latestLoan: null, showHolidayFundraiserCard: true },
 			});
 
 			expect(wrapper.text()).toContain('Build impact beyond your loan');
@@ -283,8 +272,7 @@ describe('MyKivaNextStepsContent', () => {
 		});
 
 		it('stays out of "Keep your impact going"', () => {
-			holidayFundraisersEnabled.value = true;
-			const { wrapper } = createWrapper({ cookieValue: 'true' });
+			const { wrapper } = createWrapper({ cookieValue: 'true', props: { showHolidayFundraiserCard: true } });
 
 			const keepImpactTiles = wrapper.findAll('section.tw-grid.md\\:tw-grid-cols-3 > *')
 				.map(el => el.element.tagName.toLowerCase());
