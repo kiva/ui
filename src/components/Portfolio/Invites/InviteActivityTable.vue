@@ -69,16 +69,16 @@
 									<span class="tw-block">{{ row.clickCount ?? 0 }} clicks</span>
 									<span class="tw-block">{{ row.acceptedCount ?? 0 }} accepted</span>
 								</template>
-								<template v-else-if="row.status === 'ACCEPTED'">
+								<template v-else-if="row.status === inviteStatus.ACCEPTED">
 									Accepted!
 								</template>
-								<template v-else-if="row.status === 'JOINED_TEAM'">
+								<template v-else-if="row.status === inviteStatus.JOINED_TEAM">
 									Joined Team!
 								</template>
-								<template v-else-if="row.status === 'PENDING'">
+								<template v-else-if="row.status === inviteStatus.PENDING">
 									Pending
 								</template>
-								<div v-else-if="row.status === 'SENT'" class="tw-flex tw-flex-col tw-gap-1">
+								<div v-else-if="row.status === inviteStatus.SENT" class="tw-flex tw-flex-col tw-gap-1">
 									<KvButton
 										v-if="canRemind(row)"
 										class="tw-w-full"
@@ -127,7 +127,9 @@
 import { KvButton, KvLoadingText } from '@kiva/kv-components';
 import logFormatter from '#src/util/logFormatter';
 import {
+	INVITE_ACTION_STATUS,
 	INVITE_LABELS,
+	INVITE_STATUS,
 	INVITES_TABLE_INITIAL_SIZE,
 	INVITES_TABLE_PAGE_SIZE,
 } from '#src/util/invites/invitesConstants';
@@ -141,13 +143,13 @@ const ROW_ACTIONS = {
 	remind: {
 		mutation: remindInviteMutation,
 		field: 'remindInvite',
-		success: 'SENT',
+		success: INVITE_ACTION_STATUS.SENT,
 		confirm: 'Are you sure you want to send a reminder?',
 	},
 	clear: {
 		mutation: clearInviteMutation,
 		field: 'clearInvite',
-		success: 'CLEARED',
+		success: INVITE_ACTION_STATUS.CLEARED,
 		confirm: 'Are you sure you want to remove this invitation?',
 	},
 };
@@ -174,6 +176,7 @@ export default {
 			rows: [],
 			totalCount: 0,
 			initialSize: INVITES_TABLE_INITIAL_SIZE,
+			inviteStatus: INVITE_STATUS,
 		};
 	},
 	computed: {
@@ -208,7 +211,7 @@ export default {
 			return `via ${labels.join(', ')}${team}`;
 		},
 		isAccepted(row) {
-			return row.status === 'ACCEPTED' || row.status === 'JOINED_TEAM';
+			return row.status === INVITE_STATUS.ACCEPTED || row.status === INVITE_STATUS.JOINED_TEAM;
 		},
 		canRemind(row) {
 			const availableAt = new Date(row.remindAvailableAt).getTime();

@@ -20,3 +20,20 @@ export const INVITE_LABELS = {
 	THANKS: 'User credited you as invitee',
 	TEAM_RECRUIT: 'Team Recruit',
 };
+
+// InviteStatusEnum values: the status of an invite activity row
+export const INVITE_STATUS = {
+	SENT: 'SENT',
+	PENDING: 'PENDING',
+	ACCEPTED: 'ACCEPTED',
+	JOINED_TEAM: 'JOINED_TEAM',
+};
+
+// InviteActionStatusEnum values: the outcome of reminding or clearing an invite
+export const INVITE_ACTION_STATUS = {
+	SENT: 'SENT',
+	TOO_SOON: 'TOO_SOON',
+	CLEARED: 'CLEARED',
+	INVALID: 'INVALID',
+	ERROR: 'ERROR',
+};
