@@ -21,10 +21,10 @@ const config = {
 };
 
 // Requests /ui-login from an app with the auth router mounted and returns the Auth0 authorize params
-async function authorizeParams(query, headers = {}) {
+async function authorizeParams(query, headers = {}, routerConfig = config) {
 	const app = express();
 	app.use(session({ secret: 'test', resave: false, saveUninitialized: true }));
-	app.use(authRouter(config));
+	app.use(authRouter(routerConfig));
 
 	const server = await new Promise(resolve => {
 		const listening = app.listen(0, () => resolve(listening));
@@ -73,5 +73,31 @@ describe('auth-router /ui-login', () => {
 
 		expect([...params.keys()].filter(key => key.startsWith('ext-'))).toEqual([]);
 		expect(params.get('prompt')).toBe('login');
+	});
+
+	it('sends the email connection for a passwordless login when the passwordless connection is enabled', async () => {
+		const params = await authorizeParams('passwordless=true', {}, {
+			...config,
+			auth0: { ...config.auth0, passwordlessConnection: true },
+		});
+
+		expect(params.get('connection')).toBe('email');
+		expect(params.get('passwordless')).toBe('true');
+	});
+
+	it('sends no connection for a passwordless login when the passwordless connection is disabled', async () => {
+		const params = await authorizeParams('passwordless=true');
+
+		expect(params.has('connection')).toBe(false);
+		expect(params.get('passwordless')).toBe('true');
+	});
+
+	it('sends no connection for a password login when the passwordless connection is enabled', async () => {
+		const params = await authorizeParams('force=true', {}, {
+			...config,
+			auth0: { ...config.auth0, passwordlessConnection: true },
+		});
+
+		expect(params.has('connection')).toBe(false);
 	});
 });

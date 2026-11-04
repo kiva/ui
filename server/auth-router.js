@@ -121,6 +121,9 @@ export default function authRouter(config = {}) {
 		// Specify if login is meant to be passwordless
 		if (req.query.passwordless) {
 			options.passwordless = true;
+			if (config.auth0.passwordlessConnection) {
+				options.connection = 'email';
+			}
 		}
 
 		// Specify partnerContentId
