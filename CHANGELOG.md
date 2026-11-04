@@ -1,3 +1,64 @@
+## [3.100.0](https://github.com/kiva/ui/compare/v3.99.0...v3.100.0) (2026-11-04)
+
+### 🎉 New Features
+
+* add accepted invites table to invites beta page ([#7377](https://github.com/kiva/ui/issues/7377)) ([b5f6274](https://github.com/kiva/ui/commit/b5f62742438c6876adc25f83d5ec2adf143efda9))
+* add list of accepted invites to invites beta page ([#7375](https://github.com/kiva/ui/issues/7375)) ([4092280](https://github.com/kiva/ui/commit/4092280ab95078aecde72207a7d994e4b5156bef))
+* adding back experiment (mistakenly removed) ([986d1ab](https://github.com/kiva/ui/commit/986d1ab8235c6bc26a94007105b0c3bd1b715f8a))
+* changed tracking category (experiment -> event) ([23ff66a](https://github.com/kiva/ui/commit/23ff66af7464a94176f330bd925aa3d7b7e48a91))
+* cit-5600 redesign borrower messages list at /portfolio/borrower-messages ([99fc749](https://github.com/kiva/ui/commit/99fc749fa75e5d7b68499788999e6ea698943ff5))
+* cit-5601 add borrower message detail page at /portfolio/borrower-messages/:id ([92a22d3](https://github.com/kiva/ui/commit/92a22d3dbaa973aa96cbcc3d76ed885ed03c3c52))
+* cit-5601 link logged-in viewers back to the borrower message list ([985d8fe](https://github.com/kiva/ui/commit/985d8fee36db8c0f527614ba968d2a784b8931ad))
+* cit-5614 send the kiva login options as ext- authorize params ([#7381](https://github.com/kiva/ui/issues/7381)) ([3efa4d5](https://github.com/kiva/ui/commit/3efa4d511fed71b88990ef907f3f558e08cc1080))
+* comment indentation fix ([ce493a7](https://github.com/kiva/ui/commit/ce493a703d22a369743dc30e5874fc83f9ab7afd))
+* fixed linting errors ([8d2dddb](https://github.com/kiva/ui/commit/8d2dddbfb0af916b0b583f7ec062a68e25525707))
+* fixed MyKivaPage.spec.js ([d7aea99](https://github.com/kiva/ui/commit/d7aea99dcd1293268fec666e5519db7c51957115))
+* implement page frame for migrated invites page including first field implemented in backend ([#7371](https://github.com/kiva/ui/issues/7371)) ([7d215f2](https://github.com/kiva/ui/commit/7d215f2fd322759b2b8ab6b8cc12007acf6dd115))
+* initial implementation ([947ea95](https://github.com/kiva/ui/commit/947ea955ccfe72d310c20586c278d4d0c947249b))
+* intial implementation (establishing states + copies for experiment) ([93d45dd](https://github.com/kiva/ui/commit/93d45ddf8ff3d43e822cac659d53e67be1da55fd))
+* mp-3468 add lse_exclude filter to live-loan filter urls ([#7378](https://github.com/kiva/ui/issues/7378)) ([b37e5ff](https://github.com/kiva/ui/commit/b37e5ffb0ab1b7584d5a3ca23c01693d83a4351f))
+* revised implementation (added click kv-analytics, renaming + redefining values) ([522929f](https://github.com/kiva/ui/commit/522929fffd8f5963875f70b1a250a9e4ac1c9382))
+* revised implementation (comment edit + exposure event revision) ([f448f7f](https://github.com/kiva/ui/commit/f448f7f8a3e8c3acd868202baf0bcf9d9ae4a7b9))
+* revised implementation (gating experiment tracking) ([50538a9](https://github.com/kiva/ui/commit/50538a955387bb61c617289e639931f1f9dffef6))
+* revised implementation (goal exposure experimentation) ([e2cb67b](https://github.com/kiva/ui/commit/e2cb67b39a677dd3a4760fd08e539a9d28aa6d39))
+* revised implementation (helper function, experiment tracking fix) ([7926014](https://github.com/kiva/ui/commit/79260145af14e147e007ea6d711414ed22783452))
+* run the MyKiva holiday fundraiser card as an experiment ([#7373](https://github.com/kiva/ui/issues/7373)) ([336b7c1](https://github.com/kiva/ui/commit/336b7c1840bf7ec5a3bf863efa015a27fd0c7eb8))
+* setting up experiment keys + template for EXP-MP-3259 ([2d54279](https://github.com/kiva/ui/commit/2d54279a5b9cc5ea826b1c4956a880e6978ffd76))
+
+### 🐛 Bugfixes
+
+* cit-5353 keep esi local state defaults from overwriting page apollo state ([32bf2a4](https://github.com/kiva/ui/commit/32bf2a40cb1f8ba8aa5ab724958ba3fd26696e27))
+* cit-5353 show the saved autolending pause date instead of resetting it on open ([a607826](https://github.com/kiva/ui/commit/a60782689cdd20c548efc810d619a9c415e92eb7))
+* cit-5600 describe borrower message thumbnails by source ([3fa0d2b](https://github.com/kiva/ui/commit/3fa0d2b7951d0e5c600b05b72cdff5d0d2ead3c4))
+* cit-5600 keep borrower message text selectable ([772d900](https://github.com/kiva/ui/commit/772d9004cfe23eb549b05cc9ae8167b251603f6f))
+* cit-5600 size the borrower message title skeleton to the title text ([39bfbc6](https://github.com/kiva/ui/commit/39bfbc66956ff1fdc68484060cd5191ac234dcf3))
+* cit-5600 use kv-loading-text for borrower message text skeletons ([bf0b104](https://github.com/kiva/ui/commit/bf0b10411393c11dd1a0fca482edf8e6660127cf))
+* cit-5601 combine borrower message html helpers and collapse repeated line breaks ([f81dd3f](https://github.com/kiva/ui/commit/f81dd3f818284022cdb9e786eb065fde234a0bb9))
+* cit-5601 keep lists and paragraph structure in borrower message bodies ([325c501](https://github.com/kiva/ui/commit/325c501f9bf1c075dd0d8980bc77bc4b88b67a09))
+* cit-5601 match the goals page back link style ([bcd29d5](https://github.com/kiva/ui/commit/bcd29d585e25fd8176f8ccc8da611f700cd9a3e3))
+* cit-5601 post borrower messages under the loan name and title empty subjects ([aa33abc](https://github.com/kiva/ui/commit/aa33abcf1e36edc3a6600378b9a6fccda02167dd))
+* cit-5601 say back to message list ([2575069](https://github.com/kiva/ui/commit/25750697d39d1e24555304f1dcbe6714d0e83545))
+* cit-5601 show the full borrower message photo at its natural height ([83d4f25](https://github.com/kiva/ui/commit/83d4f25677aa5a7ae46f7fb62232cb8f304b385d))
+* cit-5601 use default link style for the message list back link ([d19ca35](https://github.com/kiva/ui/commit/d19ca35e6259d2730c504e7d128479f945908664))
+
+### 🪚 Refactors
+
+* cit-5601 cap borrower message ids at 9 digits ([7899c4a](https://github.com/kiva/ui/commit/7899c4a587f79596fbd9cf221ad2b1e0788c3f00))
+
+### 📚 Documentation Changes
+
+* cit-5601 describe the limited html helpers ([c744d74](https://github.com/kiva/ui/commit/c744d74739187601066f797b99033629d77f8483))
+
+### 🔍 Tests
+
+* cit-5353 cover esi and page apollo state hydration for experiments and local state ([be6bf9b](https://github.com/kiva/ui/commit/be6bf9b639faac6b7f824b49241a8bdbd5e97839))
+* cit-5601 check click tracking on borrower message links ([0ff691f](https://github.com/kiva/ui/commit/0ff691f0e2735410b38759eeaac9cd997301d5ed))
+
+### 🧹 Chores
+
+* **release:** 3.100.0-rc.1 [skip ci] ([09c4f35](https://github.com/kiva/ui/commit/09c4f35cc9941453cf0ff4505be6e9c603be5b66)), closes [#7371](https://github.com/kiva/ui/issues/7371) [#7373](https://github.com/kiva/ui/issues/7373)
+* **release:** 3.100.0-rc.2 [skip ci] ([4cce22f](https://github.com/kiva/ui/commit/4cce22fb6f35edf98f919e5cb2087d0164340fb6)), closes [#7377](https://github.com/kiva/ui/issues/7377) [#7375](https://github.com/kiva/ui/issues/7375) [#7381](https://github.com/kiva/ui/issues/7381) [#7378](https://github.com/kiva/ui/issues/7378)
+
 ## [3.100.0-rc.2](https://github.com/kiva/ui/compare/v3.100.0-rc.1...v3.100.0-rc.2) (2026-11-04)
 
 ### 🎉 New Features
