@@ -75,27 +75,27 @@ describe('auth-router /ui-login', () => {
 		expect(params.get('prompt')).toBe('login');
 	});
 
-	it('sends the email connection for a passwordless login when the passwordless connection is enabled', async () => {
+	it('sends the email connection for a passwordless login when sending the connection is on', async () => {
 		const params = await authorizeParams('passwordless=true', {}, {
 			...config,
-			auth0: { ...config.auth0, passwordlessConnection: true },
+			auth0: { ...config.auth0, sendPasswordlessConnection: true },
 		});
 
 		expect(params.get('connection')).toBe('email');
 		expect(params.get('passwordless')).toBe('true');
 	});
 
-	it('sends no connection for a passwordless login when the passwordless connection is disabled', async () => {
+	it('sends no connection for a passwordless login when sending the passwordless connection is off', async () => {
 		const params = await authorizeParams('passwordless=true');
 
 		expect(params.has('connection')).toBe(false);
 		expect(params.get('passwordless')).toBe('true');
 	});
 
-	it('sends no connection for a password login when the passwordless connection is enabled', async () => {
+	it('sends no connection for a password login when sending the passwordless connection is on', async () => {
 		const params = await authorizeParams('force=true', {}, {
 			...config,
-			auth0: { ...config.auth0, passwordlessConnection: true },
+			auth0: { ...config.auth0, sendPasswordlessConnection: true },
 		});
 
 		expect(params.has('connection')).toBe(false);
