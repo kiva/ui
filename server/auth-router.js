@@ -110,10 +110,12 @@ export default function authRouter(config = {}) {
 		// Specify ssoRedirect url
 		if (req.query.ssoRedirect) {
 			options.ssoRedirect = req.query.ssoRedirect;
+			options['ext-ssoRedirect'] = req.query.ssoRedirect;
 		}
 		// Enable Kiva Corp Partner version of the login UI
 		if (req.query.kivaCorpPartner) {
 			options.kiva_corp_partner = true;
+			options['ext-kiva_corp_partner'] = true;
 		}
 
 		// Specify if login is meant to be passwordless
@@ -124,16 +126,19 @@ export default function authRouter(config = {}) {
 		// Specify partnerContentId
 		if (req.query.partnerContentId) {
 			options.partnerContentId = req.query.partnerContentId;
+			options['ext-partnerContentId'] = req.query.partnerContentId;
 		}
 
 		// Opt-In Communication Exp MP-271
 		if (cookies.opt_in_comms) {
 			options.optInComms = cookies.opt_in_comms;
+			options['ext-optInComms'] = cookies.opt_in_comms;
 		}
 
 		// Badge Experiment MP-387
 		if (req.query.earnBadge) {
 			options.earn_badge = true;
+			options['ext-earn_badge'] = true;
 			options.login_hint = 'signUp';
 		}
 
