@@ -166,6 +166,13 @@ export default [
 		component: () => import('#src/pages/Legal/Legal'),
 		children: [
 			{
+				path: 'cookies-beta',
+				component: () => import('#src/pages/Legal/CookiePolicy'),
+				meta: {
+					excludeFromStaticSitemap: true,
+				}
+			},
+			{
 				path: 'privacy',
 				component: () => import('#src/pages/Legal/PrivacyPolicy')
 			},
