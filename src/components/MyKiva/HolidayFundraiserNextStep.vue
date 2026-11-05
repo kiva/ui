@@ -49,7 +49,7 @@
 		>
 			<img
 				:src="fundraiserIllustration"
-				alt=""
+				alt="Example holiday fundraiser page showing lives touched and amount raised"
 				width="208"
 				height="212"
 			>
