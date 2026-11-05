@@ -3,35 +3,25 @@
 		ref="cardElement"
 		class="next-step-card tw-w-full tw-h-full tw-relative tw-rounded-lg tw-shadow-lg tw-overflow-hidden
 			tw-shrink-0 tw-select-none"
-		style="background-color: #c8e2e7;"
 	>
+		<div
+			class="texture tw-absolute tw-inset-0 tw-pointer-events-none"
+			:style="{ backgroundImage: `url(${texture})` }"
+			aria-hidden="true"
+		></div>
 		<img
-			:src="snowLeft"
+			:src="snowTop"
 			alt=""
 			aria-hidden="true"
 			class="tw-absolute tw-pointer-events-none"
-			style="left: -16px; top: 27px; width: 205px; transform: rotate(-30.16deg);"
+			style="left: 11px; top: 4px; width: 306px;"
 		>
 		<img
-			:src="snowRight"
+			:src="snowBottom"
 			alt=""
 			aria-hidden="true"
 			class="tw-absolute tw-pointer-events-none"
-			style="right: -63px; top: 32px; width: 212px; transform: rotate(-120deg);"
-		>
-		<img
-			:src="ribbonBottomLeft"
-			alt=""
-			aria-hidden="true"
-			class="tw-absolute tw-pointer-events-none"
-			style="left: -4px; bottom: -4px; width: 115px; transform: scaleY(-1);"
-		>
-		<img
-			:src="ribbonTopRight"
-			alt=""
-			aria-hidden="true"
-			class="tw-absolute tw-pointer-events-none"
-			style="right: -8px; top: -4px; width: 115px; transform: scaleY(-1) rotate(180deg);"
+			style="left: 13px; top: 279px; width: 306px; transform: scaleX(-1);"
 		>
 		<div
 			class="snowfall tw-absolute tw-inset-0 tw-pointer-events-none"
@@ -53,35 +43,36 @@
 				}"
 			></span>
 		</div>
-		<div class="tw-relative tw-z-1 tw-flex tw-flex-col tw-justify-between tw-gap-1.5 tw-h-full tw-p-2">
-			<span
-				class="tw-inline-flex tw-items-center tw-gap-0.5 tw-self-start tw-rounded-md tw-px-1.5 tw-py-1
-					tw-bg-primary-inverse tw-text-primary-inverse tw-text-label"
+		<div
+			class="tw-relative tw-z-1 tw-flex tw-flex-col tw-items-center tw-justify-between tw-gap-1.5 tw-h-full
+				tw-p-2"
+		>
+			<img
+				:src="fundraiserIllustration"
+				alt="Example holiday fundraiser page showing lives touched and amount raised"
+				width="208"
+				height="212"
 			>
-				<KvMaterialIcon
-					:icon="mdiSnowflake"
-					class="tw-w-2.5 tw-h-2.5"
-				/>
-				New Kiva Fundraisers
-			</span>
-			<div class="tw-flex tw-flex-col tw-gap-2 tw-text-center tw-text-primary">
-				<h3 class="tw-text-headline-two">
-					Give back this holiday season with Kiva fundraisers
-				</h3>
-				<p class="tw-text-base">
-					Support the causes you care about with the people that mean the most to you.
-				</p>
+			<div class="tw-flex tw-flex-col tw-gap-1 tw-w-full">
+				<div class="tw-flex tw-flex-col tw-gap-0.5 tw-text-center tw-text-marigold-4">
+					<h3 class="tw-text-headline-two">
+						Less stuff. More good.
+					</h3>
+					<p class="tw-text-base">
+						Easily create and share fundraisers that support the kind of loans you love.
+					</p>
+				</div>
+				<KvButton
+					v-kv-track-event="['portfolio', 'click', 'next-step-holiday-fundraiser']"
+					variant="secondary"
+					class="tw-w-full"
+					:href="HOLIDAY_FUNDRAISER_URL"
+					target="_blank"
+					rel="noopener"
+				>
+					Start a holiday fundraiser
+				</KvButton>
 			</div>
-			<KvButton
-				v-kv-track-event="['portfolio', 'click', 'next-step-holiday-fundraiser']"
-				variant="secondary"
-				class="tw-w-full"
-				:href="HOLIDAY_FUNDRAISER_URL"
-				target="_blank"
-				rel="noopener"
-			>
-				Start a holiday fundraiser
-			</KvButton>
 		</div>
 	</div>
 </template>
@@ -93,14 +84,13 @@ import {
 	onBeforeUnmount,
 	inject,
 } from 'vue';
-import { KvButton, KvMaterialIcon } from '@kiva/kv-components';
-import { mdiSnowflake } from '@mdi/js';
+import { KvButton } from '@kiva/kv-components';
 import useDelayUntilVisible from '#src/composables/useDelayUntilVisible';
 import { createIntersectionObserver } from '#src/util/observerUtils';
-import snowLeft from '#src/assets/images/my-kiva/holiday-fundraiser/snow-left.svg?url';
-import snowRight from '#src/assets/images/my-kiva/holiday-fundraiser/snow-right.svg?url';
-import ribbonBottomLeft from '#src/assets/images/my-kiva/holiday-fundraiser/ribbon-bottom-left.svg?url';
-import ribbonTopRight from '#src/assets/images/my-kiva/holiday-fundraiser/ribbon-top-right.svg?url';
+import fundraiserIllustration from '#src/assets/images/my-kiva/holiday-fundraiser/fundraiser-illustration.png';
+import texture from '#src/assets/images/my-kiva/holiday-fundraiser/texture.jpg';
+import snowTop from '#src/assets/images/my-kiva/holiday-fundraiser/snow-top.svg?url';
+import snowBottom from '#src/assets/images/my-kiva/holiday-fundraiser/snow-bottom.svg?url';
 
 defineOptions({ name: 'HolidayFundraiserNextStep' });
 
@@ -179,6 +169,13 @@ onBeforeUnmount(() => {
 /* MyKivaCard's minimum, so this card fills its row rather than setting the row's height */
 .next-step-card {
 	min-height: 340px;
+	background: radial-gradient(173% 111% at 55% 98%, #f3ccc3 10%, #c7dbf0 35%, #b0d9d7 100%);
+}
+
+.texture {
+	background-size: 118px;
+	mix-blend-mode: soft-light;
+	opacity: 0.3;
 }
 
 .snowflake {

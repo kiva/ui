@@ -24,12 +24,11 @@ describe('HolidayFundraiserNextStep', () => {
 		trackedClicks.length = 0;
 	});
 
-	it('renders the badge, heading and body copy', () => {
+	it('renders the heading and body copy', () => {
 		const { getByText } = renderComponent();
 
-		expect(getByText('New Kiva Fundraisers')).toBeTruthy();
-		expect(getByText('Give back this holiday season with Kiva fundraisers')).toBeTruthy();
-		expect(getByText('Support the causes you care about with the people that mean the most to you.'))
+		expect(getByText('Less stuff. More good.')).toBeTruthy();
+		expect(getByText('Easily create and share fundraisers that support the kind of loans you love.'))
 			.toBeTruthy();
 	});
 
