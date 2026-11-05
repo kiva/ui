@@ -56,7 +56,10 @@ const deferredMutate = () => {
 describe('InviteComposer', () => {
 	it('signs the defaults with the first name of a public viewer', () => {
 		const { getByLabelText } = renderComposer();
+		expect(getByLabelText('Email addresses').tagName).toBe('TEXTAREA');
 		expect(getByLabelText('From').value).toBe('Casey');
+		// The sender can't be changed here
+		expect(getByLabelText('From').disabled).toBe(true);
 		expect(getByLabelText('Subject').value).toBe('Casey invites you to make a difference on Kiva!');
 		expect(getByLabelText('Message').value).toBe(`${DEFAULT_MESSAGE}\n\n- Casey`);
 	});

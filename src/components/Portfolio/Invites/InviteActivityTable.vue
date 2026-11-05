@@ -60,9 +60,9 @@
 								<template v-else-if="isAccepted(row)">
 									Anonymous
 								</template>
-								<template v-else-if="row.toEmailAddress">
+								<span v-else-if="row.toEmailAddress" class="tw-break-all">
 									{{ row.toEmailAddress }}
-								</template>
+								</span>
 							</td>
 							<td class="tw-p-1 tw-align-top" data-testid="invite-activity-status">
 								<template v-if="row.clickCount != null || row.acceptedCount != null">

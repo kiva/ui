@@ -1,15 +1,15 @@
 <template>
 	<form class="tw-flex tw-flex-col tw-gap-2" data-testid="invite-composer-email" @submit.prevent="send">
-		<h3 id="invite-composer-heading" class="tw-text-h4">
+		<h3 class="tw-text-h4">
 			Email friends
 		</h3>
 		<div>
+			<label for="invite-composer-emails" class="tw-sr-only">Email addresses</label>
 			<textarea
 				id="invite-composer-emails"
 				v-model="emails"
 				:class="fieldClass"
 				rows="3"
-				aria-labelledby="invite-composer-heading"
 				aria-describedby="invite-composer-emails-hint"
 				:disabled="fieldsDisabled"
 				data-testid="invite-composer-emails"
@@ -23,9 +23,9 @@
 			<label for="invite-composer-from" class="tw-block tw-mb-0.5">From</label>
 			<KvTextInput
 				id="invite-composer-from"
+				class="tw-w-full"
 				:model-value="senderName"
-				readonly
-				:disabled="fieldsDisabled"
+				disabled
 				data-testid="invite-composer-from"
 			/>
 		</div>
@@ -33,6 +33,7 @@
 			<label for="invite-composer-subject" class="tw-block tw-mb-0.5">Subject</label>
 			<KvTextInput
 				id="invite-composer-subject"
+				class="tw-w-full"
 				v-model="subject"
 				:disabled="fieldsDisabled"
 				data-testid="invite-composer-subject"
