@@ -52,7 +52,7 @@ export default {
 				},
 				{
 					name: 'Cookie Policy',
-					routerLink: '/legal/cookies-beta',
+					routerLink: '/legal/cookies',
 				},
 				{
 					name: 'Terms of Use',
