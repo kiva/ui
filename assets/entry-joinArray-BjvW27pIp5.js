@@ -1,0 +1,1 @@
+function i(r,n="and"){if(!Array.isArray(r))throw new Error("Passed value is not of array type.");if(r.length>1&&n){let e=[...r];return e.splice(-1,0,n),e=e.join().split(""),e[e.lastIndexOf(",")]=" ",e[e.lastIndexOf(",")]=" ",e=e.join("").replace(/,/g,", "),e}return r.join().replace(/,/g,", ")}export{i as j};
