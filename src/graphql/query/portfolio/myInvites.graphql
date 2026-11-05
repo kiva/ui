@@ -3,6 +3,8 @@ query MyInvites {
 		id
 		userAccount {
 			id
+			firstName
+			public
 			inviterName
 			invites {
 				id

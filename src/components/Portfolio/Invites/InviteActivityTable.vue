@@ -60,9 +60,9 @@
 								<template v-else-if="isAccepted(row)">
 									Anonymous
 								</template>
-								<template v-else-if="row.toEmailAddress">
+								<span v-else-if="row.toEmailAddress" class="tw-break-all">
 									{{ row.toEmailAddress }}
-								</template>
+								</span>
 							</td>
 							<td class="tw-p-1 tw-align-top" data-testid="invite-activity-status">
 								<template v-if="row.clickCount != null || row.acceptedCount != null">
@@ -173,6 +173,8 @@ export default {
 			loadingMore: false,
 			// The row action in flight, as { id, action }; one runs at a time
 			pendingAction: null,
+			// Counts first-page loads, so a response that arrives after a reload is dropped
+			loadCount: 0,
 			rows: [],
 			totalCount: 0,
 			initialSize: INVITES_TABLE_INITIAL_SIZE,
@@ -246,7 +248,11 @@ export default {
 					return;
 				}
 				this.$showTipMsg(result.message);
-				// The rows update in place: a re-read could come from a replica that hasn't seen the change yet
+				// The rows update in place: a re-read could come from a replica that hasn't seen the change yet. A
+				// reload while the action ran may have already left the row out.
+				if (!this.rows.some(({ id }) => id === row.id)) {
+					return;
+				}
 				if (action === 'clear') {
 					this.rows = this.rows.filter(({ id }) => id !== row.id);
 					this.totalCount = Math.max(this.totalCount - 1, 0);
@@ -294,17 +300,27 @@ export default {
 			return activity;
 		},
 		async fetchFirstPage() {
+			this.loadCount += 1;
+			const { loadCount } = this;
 			this.loading = true;
 			this.loadError = false;
 			try {
 				const activity = await this.fetchPage(0, INVITES_TABLE_INITIAL_SIZE);
+				if (loadCount !== this.loadCount) {
+					return;
+				}
 				this.rows = activity.values;
 				this.totalCount = activity.totalCount;
 			} catch (error) {
+				if (loadCount !== this.loadCount) {
+					return;
+				}
 				this.loadError = true;
 				logFormatter(`Error fetching invite activity: ${error}`, 'error');
 			} finally {
-				this.loading = false;
+				if (loadCount === this.loadCount) {
+					this.loading = false;
+				}
 			}
 		},
 		async toggleMore() {
@@ -318,8 +334,13 @@ export default {
 				return;
 			}
 			this.loadingMore = true;
+			const { loadCount } = this;
 			try {
 				const activity = await this.fetchPage(this.rows.length, INVITES_TABLE_PAGE_SIZE);
+				// The page was read at an offset into rows a reload has since replaced
+				if (loadCount !== this.loadCount) {
+					return;
+				}
 				this.rows = [...this.rows, ...activity.values];
 				this.totalCount = activity.totalCount;
 			} catch (error) {

@@ -37,3 +37,12 @@ export const INVITE_ACTION_STATUS = {
 	INVALID: 'INVALID',
 	ERROR: 'ERROR',
 };
+
+// InviteRecipientStatusEnum values: what sending invites did with one address
+export const INVITE_RECIPIENT_STATUS = {
+	SENT: 'SENT',
+	INVALID: 'INVALID',
+	ALREADY_INVITED: 'ALREADY_INVITED',
+	ALREADY_MEMBER: 'ALREADY_MEMBER',
+	QUOTA_EXCEEDED: 'QUOTA_EXCEEDED',
+};

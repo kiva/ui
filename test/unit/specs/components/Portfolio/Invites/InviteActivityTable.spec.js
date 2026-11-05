@@ -47,8 +47,10 @@ const trackEventDirective = {
 	},
 };
 
-const renderTable = (query, kvTrackEvent = vi.fn(), { mutate = vi.fn(), showTipMsg = vi.fn() } = {}) => render(
-	InviteActivityTable,
+const renderTable = (query, kvTrackEvent = vi.fn(), {
+	mutate = vi.fn(), showTipMsg = vi.fn(), component = InviteActivityTable,
+} = {}) => render(
+	component,
 	{
 		global: {
 			provide: { apollo: { query, mutate } },
@@ -66,6 +68,22 @@ const renderTable = (query, kvTrackEvent = vi.fn(), { mutate = vi.fn(), showTipM
 		},
 	},
 );
+
+// The table inside a host with a "Reload" button, as the page reloads it after invites are sent
+const ReloadHost = {
+	components: { InviteActivityTable },
+	template: '<div><button data-testid="reload" @click="$refs.table.fetchFirstPage()">Reload</button>'
+		+ '<InviteActivityTable ref="table" /></div>',
+};
+
+// A promise for a query or mutation response, with its resolve function
+const deferred = () => {
+	let resolve;
+	const promise = new Promise(r => { resolve = r; });
+	return { promise, resolve };
+};
+
+const rowEmails = rows => rows.map(row => row.textContent.match(/friend\d+@example\.com/)?.[0]);
 
 const sentRow = (n, overrides = {}) => emailRow(n, {
 	status: 'SENT',
@@ -531,5 +549,129 @@ describe('InviteActivityTable', () => {
 		const query = vi.fn().mockResolvedValue(response);
 		const { findByTestId } = renderTable(query);
 		expect(await findByTestId('invite-activity-error')).toBeTruthy();
+	});
+
+	it('drops a "More" page that arrives after a reload', async () => {
+		const more = deferred();
+		const query = vi.fn()
+			.mockResolvedValueOnce(activityResponse(rowsOf(1, 4), 6))
+			.mockReturnValueOnce(more.promise)
+			.mockResolvedValueOnce(activityResponse(rowsOf(11, 4), 7));
+		const { findAllByTestId, getByTestId } = renderTable(query, vi.fn(), { component: ReloadHost });
+		await findAllByTestId('invite-activity-row');
+		await fireEvent.click(getByTestId('invite-activity-toggle'));
+		await fireEvent.click(getByTestId('reload'));
+		await waitFor(async () => expect(rowEmails(await findAllByTestId('invite-activity-row'))[0])
+			.toBe('friend11@example.com'));
+		more.resolve(activityResponse(rowsOf(5, 2), 6));
+		await waitFor(() => expect(getByTestId('invite-activity-toggle').dataset.state).toBe(''));
+		expect(rowEmails(await findAllByTestId('invite-activity-row'))).toEqual(
+			rowsOf(11, 4).map(row => row.toEmailAddress),
+		);
+		expect(getByTestId('invite-activity-toggle').textContent.trim()).toBe('More');
+	});
+
+	it('applies an action that finishes after a reload to the reloaded rows', async () => {
+		const clear = deferred();
+		const mutate = vi.fn(() => clear.promise);
+		const showTipMsg = vi.fn();
+		const query = vi.fn().mockResolvedValue(activityResponse([sentRow(1), sentRow(2)]));
+		const { findAllByTestId, getByTestId } = renderTable(query, vi.fn(), {
+			mutate, showTipMsg, component: ReloadHost,
+		});
+		const [clearButton] = await findAllByTestId('invite-activity-clear');
+		await fireEvent.click(clearButton);
+		await fireEvent.click(getByTestId('reload'));
+		await waitFor(() => expect(query).toHaveBeenCalledTimes(2));
+		await findAllByTestId('invite-activity-row');
+		clear.resolve(actionResponse('clearInvite', 'CLEARED', 'Cleared'));
+		await waitFor(() => expect(showTipMsg).toHaveBeenCalledWith('Cleared'));
+		await waitFor(async () => expect(rowEmails(await findAllByTestId('invite-activity-row')))
+			.toEqual(['friend2@example.com']));
+	});
+
+	it('leaves the rows alone when a reload already dropped the cleared invite', async () => {
+		const clear = deferred();
+		const mutate = vi.fn(() => clear.promise);
+		const showTipMsg = vi.fn();
+		const query = vi.fn()
+			.mockResolvedValueOnce(activityResponse([sentRow(1), sentRow(2), sentRow(3)], 5))
+			.mockResolvedValueOnce(activityResponse([sentRow(2), sentRow(3)], 3));
+		const { findAllByTestId, getByTestId } = renderTable(query, vi.fn(), {
+			mutate, showTipMsg, component: ReloadHost,
+		});
+		const [clearButton] = await findAllByTestId('invite-activity-clear');
+		await fireEvent.click(clearButton);
+		await fireEvent.click(getByTestId('reload'));
+		await waitFor(async () => expect(await findAllByTestId('invite-activity-row')).toHaveLength(2));
+		clear.resolve(actionResponse('clearInvite', 'CLEARED', 'Cleared'));
+		await waitFor(() => expect(showTipMsg).toHaveBeenCalledWith('Cleared'));
+		expect(rowEmails(await findAllByTestId('invite-activity-row')))
+			.toEqual(['friend2@example.com', 'friend3@example.com']);
+		// The reload's count already excludes the cleared invite; counting it again would hide the one left to load
+		expect(getByTestId('invite-activity-toggle').textContent.trim()).toBe('More');
+	});
+
+	it('keeps loading until the latest reload when an older one resolves first', async () => {
+		const first = deferred();
+		const second = deferred();
+		const query = vi.fn()
+			.mockResolvedValueOnce(activityResponse([emailRow(1)]))
+			.mockReturnValueOnce(first.promise)
+			.mockReturnValueOnce(second.promise);
+		const { findAllByTestId, getByTestId, findByTestId } = renderTable(query, vi.fn(), {
+			component: ReloadHost,
+		});
+		await findAllByTestId('invite-activity-row');
+		await fireEvent.click(getByTestId('reload'));
+		await fireEvent.click(getByTestId('reload'));
+		first.resolve(activityResponse([emailRow(30)]));
+		await new Promise(r => { setTimeout(r, 0); });
+		expect(getByTestId('invite-activity-loading')).toBeTruthy();
+		second.resolve(activityResponse([emailRow(20)]));
+		await findByTestId('invite-activity-table');
+		expect(rowEmails(await findAllByTestId('invite-activity-row'))).toEqual(['friend20@example.com']);
+	});
+
+	it('ignores an older reload that fails after the latest one loaded', async () => {
+		const first = deferred();
+		const query = vi.fn()
+			.mockResolvedValueOnce(activityResponse([emailRow(1)]))
+			.mockReturnValueOnce(first.promise)
+			.mockResolvedValueOnce(activityResponse([emailRow(20)]));
+		const { findAllByTestId, getByTestId, queryByTestId } = renderTable(query, vi.fn(), {
+			component: ReloadHost,
+		});
+		await findAllByTestId('invite-activity-row');
+		await fireEvent.click(getByTestId('reload'));
+		await fireEvent.click(getByTestId('reload'));
+		await waitFor(async () => expect(rowEmails(await findAllByTestId('invite-activity-row')))
+			.toEqual(['friend20@example.com']));
+		first.resolve(Promise.reject(new Error('boom')));
+		await new Promise(r => { setTimeout(r, 0); });
+		expect(queryByTestId('invite-activity-error')).toBeNull();
+		expect(rowEmails(await findAllByTestId('invite-activity-row'))).toEqual(['friend20@example.com']);
+	});
+
+	it('shows the latest of overlapping reloads', async () => {
+		const first = deferred();
+		const second = deferred();
+		const query = vi.fn()
+			.mockResolvedValueOnce(activityResponse([emailRow(1)]))
+			.mockReturnValueOnce(first.promise)
+			.mockReturnValueOnce(second.promise);
+		const { findAllByTestId, getByTestId, queryByTestId } = renderTable(query, vi.fn(), {
+			component: ReloadHost,
+		});
+		await findAllByTestId('invite-activity-row');
+		await fireEvent.click(getByTestId('reload'));
+		await fireEvent.click(getByTestId('reload'));
+		second.resolve(activityResponse([emailRow(20)]));
+		await waitFor(async () => expect(rowEmails(await findAllByTestId('invite-activity-row')))
+			.toEqual(['friend20@example.com']));
+		first.resolve(activityResponse([emailRow(30)]));
+		await new Promise(r => { setTimeout(r, 0); });
+		expect(rowEmails(await findAllByTestId('invite-activity-row'))).toEqual(['friend20@example.com']);
+		expect(queryByTestId('invite-activity-loading')).toBeNull();
 	});
 });
