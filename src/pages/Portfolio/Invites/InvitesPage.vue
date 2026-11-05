@@ -10,11 +10,14 @@
 
 			<div class="tw-grid tw-grid-cols-12 tw-gap-3">
 				<div class="tw-col-span-12 lg:tw-col-span-8 tw-min-w-0 tw-flex tw-flex-col tw-gap-3">
-					<!-- Placeholder: the email, Facebook, Tweet and personal URL tabs need the invite mutations -->
+					<!-- The Facebook, Tweet and personal URL tabs need the share link mutation -->
 					<section data-testid="invites-composer">
-						<div class="tw-rounded tw-border tw-border-dashed tw-border-tertiary tw-p-2 tw-text-secondary">
-							Invite composer coming soon.
-						</div>
+						<InviteComposer
+							:first-name="firstName"
+							:is-public="isPublic"
+							:disabled="loading || loadError"
+							@sent="refreshActivity"
+						/>
 					</section>
 
 					<section data-testid="invites-activity">
@@ -24,7 +27,7 @@
 						<p class="tw-mb-2">
 							Here is a record of the invitations you sent to join Kiva or to join a team.
 						</p>
-						<InviteActivityTable />
+						<InviteActivityTable ref="activityTable" />
 					</section>
 
 					<section data-testid="invites-accepted">
@@ -172,6 +175,7 @@ import {
 import PortfolioShell from '#src/components/WwwFrame/PortfolioShell';
 import AcceptedInvitesTable from '#src/components/Portfolio/Invites/AcceptedInvitesTable';
 import InviteActivityTable from '#src/components/Portfolio/Invites/InviteActivityTable';
+import InviteComposer from '#src/components/Portfolio/Invites/InviteComposer';
 import logFormatter from '#src/util/logFormatter';
 import myInvitesQuery from '#src/graphql/query/portfolio/myInvites.graphql';
 
@@ -188,6 +192,7 @@ export default {
 		PortfolioShell,
 		AcceptedInvitesTable,
 		InviteActivityTable,
+		InviteComposer,
 		KvButton,
 		KvLoadingPlaceholder,
 		KvLoadingText,
@@ -199,6 +204,8 @@ export default {
 			loading: true,
 			loadError: false,
 			inviterNameForUrl: null,
+			firstName: '',
+			isPublic: false,
 			// null = no inviter; { lender: null } = anonymous inviter
 			inviter: null,
 			invitesAccepted: 0,
@@ -231,6 +238,10 @@ export default {
 		},
 	},
 	methods: {
+		// New invites show at the top of the activity list
+		refreshActivity() {
+			this.$refs.activityTable?.fetchFirstPage();
+		},
 		async fetchInvites() {
 			this.loading = true;
 			this.loadError = false;
@@ -248,6 +259,8 @@ export default {
 					return;
 				}
 				this.inviterNameForUrl = userAccount.inviterName ?? null;
+				this.firstName = userAccount.firstName ?? '';
+				this.isPublic = !!userAccount.public;
 				this.inviter = userAccount.invites.inviter ?? null;
 				this.invitesAccepted = userStats.number_of_invites ?? 0;
 				this.inviteeLoanCount = userStats.number_of_loans_by_invitees ?? 0;
