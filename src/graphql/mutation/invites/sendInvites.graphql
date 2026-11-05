@@ -1,0 +1,12 @@
+mutation SendInvites($emails: String!, $subject: String!, $message: String!) {
+	my {
+		sendInvites(emails: $emails, subject: $subject, message: $message) {
+			success
+			lines
+			results {
+				email
+				status
+			}
+		}
+	}
+}

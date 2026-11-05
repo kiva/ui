@@ -13,11 +13,15 @@ const publicLender = {
 	},
 };
 
-const invitesResponse = ({ inviter = null, inviterName = 'caseyd' } = {}) => ({
+const invitesResponse = ({
+	inviter = null, inviterName = 'caseyd', firstName = 'Casey', isPublic = true,
+} = {}) => ({
 	my: {
 		id: 'my-id',
 		userAccount: {
 			id: 3,
+			firstName,
+			public: isPublic,
 			inviterName,
 			invites: { id: 3, inviter },
 		},
@@ -35,8 +39,16 @@ const trackEventDirective = {
 	},
 };
 
+// Records the props the page passes the composer, and lets specs report a send
+const composerStub = {
+	props: ['firstName', 'isPublic', 'disabled'],
+	emits: ['sent'],
+	template: '<button data-testid="invite-composer-stub" :data-first-name="firstName" :data-public="isPublic" '
+		+ ':data-disabled="disabled" @click="$emit(\'sent\')" />',
+};
+
 const renderPage = ({
-	response = invitesResponse(), errors, rejects = false, query: customQuery,
+	response = invitesResponse(), errors, rejects = false, query: customQuery, fetchActivity = vi.fn(),
 } = {}) => {
 	const query = customQuery ?? (rejects
 		? vi.fn().mockRejectedValue(new Error('boom'))
@@ -52,7 +64,11 @@ const renderPage = ({
 				stubs: {
 					PortfolioShell: { template: '<div><slot /></div>' },
 					AcceptedInvitesTable: { template: '<div data-testid="accepted-invites-table-stub" />' },
-					InviteActivityTable: { template: '<div data-testid="invite-activity-table-stub" />' },
+					InviteActivityTable: {
+						methods: { fetchFirstPage: fetchActivity },
+						template: '<div data-testid="invite-activity-table-stub" />',
+					},
+					InviteComposer: composerStub,
 					KvButton: { template: '<button><slot /></button>' },
 					KvLoadingPlaceholder: { template: '<div />' },
 					KvLoadingText: { template: '<span data-testid="loading-text" />' },
@@ -85,6 +101,33 @@ describe('InvitesPage', () => {
 		// Two stat numbers, plus the inviter heading and line
 		expect(getAllByTestId('loading-text')).toHaveLength(4);
 		expect(getByRole('status').textContent).toBe('Loading invite details');
+	});
+
+	it('keeps the composer disabled until the viewer loads, then signs it with their name', async () => {
+		const { getByTestId } = renderPage();
+		expect(getByTestId('invite-composer-stub').dataset.disabled).toBe('true');
+		await waitFor(() => expect(getByTestId('invite-composer-stub').dataset.disabled).toBe('false'));
+		expect(getByTestId('invite-composer-stub').dataset.firstName).toBe('Casey');
+		expect(getByTestId('invite-composer-stub').dataset.public).toBe('true');
+	});
+
+	it('passes a private viewer to the composer as not public', async () => {
+		const { getByTestId } = renderPage({ response: invitesResponse({ isPublic: false }) });
+		await waitFor(() => expect(getByTestId('invite-composer-stub').dataset.disabled).toBe('false'));
+		expect(getByTestId('invite-composer-stub').dataset.public).toBe('false');
+	});
+
+	it('keeps the composer disabled when the viewer fails to load', async () => {
+		const { getByTestId } = renderPage({ rejects: true });
+		await waitFor(() => expect(getByTestId('invites-load-error')).toBeTruthy());
+		expect(getByTestId('invite-composer-stub').dataset.disabled).toBe('true');
+	});
+
+	it('reloads the activity table after invites are sent', async () => {
+		const fetchActivity = vi.fn();
+		const { getByTestId } = renderPage({ fetchActivity });
+		await fireEvent.click(getByTestId('invite-composer-stub'));
+		expect(fetchActivity).toHaveBeenCalledTimes(1);
 	});
 
 	it('queries the network each time the page loads', () => {
