@@ -1,0 +1,19 @@
+fragment inviterInfo on InviterInfo {
+	lender {
+		id
+		name
+		publicId
+		image {
+			id
+			url(customSize: "s100")
+		}
+		lenderPage {
+			city
+			state
+			country {
+				id
+				name
+			}
+		}
+	}
+}

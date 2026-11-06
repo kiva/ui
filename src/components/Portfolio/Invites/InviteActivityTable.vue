@@ -5,7 +5,7 @@
 			<KvLoadingText :lines="4" data-testid="invite-activity-loading" />
 		</template>
 		<div v-else-if="loadError" role="alert" data-testid="invite-activity-error">
-			<p>An error occurred. Please try again.</p>
+			<p>{{ errorMessage }}</p>
 			<KvButton
 				class="tw-mt-2"
 				@click="fetchFirstPage"
@@ -58,14 +58,14 @@
 									v-kv-track-event="['portfolio', 'click', 'Invite activity invitee profile']"
 								>{{ row.invitee.name }}</a>
 								<template v-else-if="isAccepted(row)">
-									Anonymous
+									-anonymous-
 								</template>
 								<span v-else-if="row.toEmailAddress" class="tw-break-all">
 									{{ row.toEmailAddress }}
 								</span>
 							</td>
 							<td class="tw-p-1 tw-align-top" data-testid="invite-activity-status">
-								<template v-if="row.clickCount != null || row.acceptedCount != null">
+								<template v-if="showsCounts(row)">
 									<span class="tw-block">{{ row.clickCount ?? 0 }} clicks</span>
 									<span class="tw-block">{{ row.acceptedCount ?? 0 }} accepted</span>
 								</template>
@@ -126,9 +126,11 @@
 <script>
 import { KvButton, KvLoadingText } from '@kiva/kv-components';
 import logFormatter from '#src/util/logFormatter';
+import { formatInviteDate, inviteViaLabel } from '#src/util/invites/inviteFormat';
+import focusIfDropped from '#src/util/invites/focusIfDropped';
 import {
 	INVITE_ACTION_STATUS,
-	INVITE_LABELS,
+	INVITE_ERROR_MESSAGE,
 	INVITE_STATUS,
 	INVITES_TABLE_INITIAL_SIZE,
 	INVITES_TABLE_PAGE_SIZE,
@@ -154,7 +156,11 @@ const ROW_ACTIONS = {
 	},
 };
 
-const ACTION_ERROR_MESSAGE = 'An error occurred. Please try again.';
+// The share link sources whose rows show their click and accept counts
+const SHARE_COUNT_SOURCES = ['TWITTER', 'FACEBOOK', 'FACEBOOK_SHARE'];
+
+// The sources whose rows say how they were sent; rows from other share links leave it out
+const ACTIVITY_VIA_SOURCES = ['EMAIL', ...SHARE_COUNT_SOURCES];
 
 // An invite can be reminded again 24 hours after it was sent or last reminded
 const REMIND_WAIT_MS = 24 * 60 * 60 * 1000;
@@ -168,6 +174,7 @@ export default {
 	inject: ['apollo'],
 	data() {
 		return {
+			errorMessage: INVITE_ERROR_MESSAGE,
 			loading: true,
 			loadError: false,
 			loadingMore: false,
@@ -197,20 +204,12 @@ export default {
 		},
 	},
 	methods: {
-		formatDate(date) {
-			const parsed = new Date(date);
-			if (Number.isNaN(parsed.getTime())) {
-				return '';
-			}
-			return parsed.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
-		},
+		formatDate: formatInviteDate,
 		viaLabel(row) {
-			const labels = [INVITE_LABELS[row.source], INVITE_LABELS[row.createdAsType]].filter(Boolean);
-			if (!labels.length) {
-				return '';
-			}
-			const team = row.team?.name ? ` (${row.team.name})` : '';
-			return `via ${labels.join(', ')}${team}`;
+			return inviteViaLabel(row, ACTIVITY_VIA_SOURCES);
+		},
+		showsCounts(row) {
+			return SHARE_COUNT_SOURCES.includes(row.source);
 		},
 		isAccepted(row) {
 			return row.status === INVITE_STATUS.ACCEPTED || row.status === INVITE_STATUS.JOINED_TEAM;
@@ -241,10 +240,10 @@ export default {
 				const { data, errors } = await this.apollo.mutate({ mutation, variables: { id: row.id } });
 				const result = data?.my?.[field];
 				if (errors?.length || !result) {
-					throw new Error(JSON.stringify(errors ?? 'missing fields'));
+					throw new Error(JSON.stringify(errors ?? 'missing result'));
 				}
 				if (result.status !== success) {
-					this.$showTipMsg(result.message || ACTION_ERROR_MESSAGE, 'error');
+					this.$showTipMsg(result.message || INVITE_ERROR_MESSAGE, 'error');
 					return;
 				}
 				this.$showTipMsg(result.message);
@@ -268,7 +267,7 @@ export default {
 					this.rows = [reminded, ...this.rows.filter(({ id }) => id !== row.id)];
 				}
 			} catch (error) {
-				this.$showTipMsg(ACTION_ERROR_MESSAGE, 'error');
+				this.$showTipMsg(INVITE_ERROR_MESSAGE, 'error');
 				logFormatter(`Error running invite activity ${action}: ${error}`, 'error');
 			} finally {
 				this.pendingAction = null;
@@ -279,12 +278,9 @@ export default {
 		// focus to the page. Focus returns to the button, else to its row's other button, else to the table.
 		async restoreFocus(id, action) {
 			await this.$nextTick();
-			if (document.activeElement && document.activeElement !== document.body) {
-				return;
-			}
 			const rowButtons = [...this.$el.querySelectorAll('[data-row-id]')].filter(el => el.dataset.rowId === id);
 			const button = rowButtons.find(el => el.dataset.testid === `invite-activity-${action}`) ?? rowButtons[0];
-			(button ?? this.$refs.table ?? this.$el).focus();
+			focusIfDropped(button ?? this.$refs.table ?? this.$el);
 		},
 		// Resolves to the activity collection, or rejects when the response is missing it
 		async fetchPage(offset, limit) {

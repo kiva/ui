@@ -46,3 +46,25 @@ export const INVITE_RECIPIENT_STATUS = {
 	ALREADY_MEMBER: 'ALREADY_MEMBER',
 	QUOTA_EXCEEDED: 'QUOTA_EXCEEDED',
 };
+
+// Composer tabs, in order
+export const INVITE_COMPOSER_TABS = ['email', 'facebook', 'twitter', 'url'];
+
+// InviteShareSourceEnum values: the social sites a share link can be made for
+export const INVITE_SHARE_SOURCE = {
+	FACEBOOK: 'FACEBOOK',
+	TWITTER: 'TWITTER',
+};
+
+// InviteAcknowledgeStatusEnum values: the outcome of crediting the viewer's inviter
+export const INVITE_ACKNOWLEDGE_STATUS = {
+	ACKNOWLEDGED: 'ACKNOWLEDGED',
+	NOT_FOUND: 'NOT_FOUND',
+	INVALID_INPUT: 'INVALID_INPUT',
+};
+
+// Cookie the monolith sets when a visitor follows an invite link; acknowledgeInviter takes it as inviteRef
+export const INVITE_ORIGIN_COOKIE = 'kv_inv';
+
+// Shown when loading or changing invites fails without a message from the server
+export const INVITE_ERROR_MESSAGE = 'An error occurred. Please try again.';

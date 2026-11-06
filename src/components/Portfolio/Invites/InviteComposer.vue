@@ -60,29 +60,26 @@
 			>
 				Send invitations
 			</KvButton>
-		</div>
-		<!-- Always rendered, so screen readers announce each result as it replaces the last -->
-		<div ref="result" role="status" tabindex="-1" data-testid="invite-composer-result">
-			<div
-				v-if="result && result.lines.length"
-				class="tw-rounded tw-p-2"
-				:class="result.success ? 'tw-bg-secondary' : 'tw-bg-caution-highlight'"
-			>
-				<p v-for="(line, i) in result.lines" :key="i" class="tw-break-words">
-					{{ line }}
-				</p>
-			</div>
+			<!-- Spaced only once it has lines, so the empty region adds no space below the button -->
+			<InviteResultLines
+				ref="result"
+				:class="{ 'tw-mt-2': result?.lines?.length }"
+				:lines="result?.lines"
+				:success="result?.success"
+				tabindex="-1"
+				data-testid="invite-composer-result"
+			/>
 		</div>
 	</form>
 </template>
 
 <script>
 import { KvButton, KvTextInput } from '@kiva/kv-components';
+import InviteResultLines from '#src/components/Portfolio/Invites/InviteResultLines';
 import logFormatter from '#src/util/logFormatter';
-import { INVITE_RECIPIENT_STATUS } from '#src/util/invites/invitesConstants';
+import focusIfDropped from '#src/util/invites/focusIfDropped';
+import { INVITE_ERROR_MESSAGE, INVITE_RECIPIENT_STATUS } from '#src/util/invites/invitesConstants';
 import sendInvitesMutation from '#src/graphql/mutation/invites/sendInvites.graphql';
-
-const SEND_ERROR_MESSAGE = 'An error occurred. Please try again.';
 
 const DEFAULT_MESSAGE = 'With Kiva, you can make a difference by lending just $25 to people around the globe. '
 	+ 'I\'m already lending on Kiva and thought you\'d like to join me!';
@@ -90,6 +87,7 @@ const DEFAULT_MESSAGE = 'With Kiva, you can make a difference by lending just $2
 export default {
 	name: 'InviteComposer',
 	components: {
+		InviteResultLines,
 		KvButton,
 		KvTextInput,
 	},
@@ -185,7 +183,7 @@ export default {
 				});
 				const result = data?.my?.sendInvites;
 				if (errors?.length || !result) {
-					throw new Error(JSON.stringify(errors ?? 'missing fields'));
+					throw new Error(JSON.stringify(errors ?? 'missing result'));
 				}
 				this.result = { success: result.success, lines: result.lines };
 				if (result.success) {
@@ -197,7 +195,7 @@ export default {
 					this.$emit('sent');
 				}
 			} catch (error) {
-				this.result = { success: false, lines: [SEND_ERROR_MESSAGE] };
+				this.result = { success: false, lines: [INVITE_ERROR_MESSAGE] };
 				logFormatter(`Error sending invites: ${error}`, 'error');
 			} finally {
 				this.sending = false;
@@ -208,10 +206,7 @@ export default {
 		// keyboard users continue from it.
 		async restoreFocus() {
 			await this.$nextTick();
-			if (document.activeElement && document.activeElement !== document.body) {
-				return;
-			}
-			this.$refs.result.focus();
+			focusIfDropped(this.$refs.result?.$el);
 		},
 	},
 };
