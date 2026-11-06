@@ -1,0 +1,7 @@
+mutation CreateInviteShareUrl($source: InviteShareSourceEnum!) {
+	my {
+		createInviteShareUrl(source: $source) {
+			url
+		}
+	}
+}

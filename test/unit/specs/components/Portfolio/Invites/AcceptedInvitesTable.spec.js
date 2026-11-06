@@ -1,5 +1,6 @@
 import { render, waitFor, fireEvent } from '@testing-library/vue';
 import AcceptedInvitesTable from '#src/components/Portfolio/Invites/AcceptedInvitesTable';
+import { KvButtonStub, trackEventDirective } from './invitesSpecHelpers';
 
 const publicRow = (n, overrides = {}) => ({
 	id: `invitation:${n}`,
@@ -25,23 +26,13 @@ const acceptedResponse = (values, totalCount = values.length) => ({
 
 const rowsOf = (from, count) => Array.from({ length: count }, (_, i) => publicRow(from + i));
 
-// Records each element's tracking payload so specs can check it
-const trackEventDirective = {
-	mounted(el, { value }) {
-		el.setAttribute('data-track-event', JSON.stringify(value));
-	},
-};
-
 const renderTable = (query, kvTrackEvent = vi.fn()) => render(AcceptedInvitesTable, {
 	global: {
 		provide: { apollo: { query } },
 		mocks: { $kvTrackEvent: kvTrackEvent },
 		directives: { 'kv-track-event': trackEventDirective },
 		stubs: {
-			KvButton: {
-				props: ['state'],
-				template: '<button :data-state="state"><slot /></button>',
-			},
+			KvButton: KvButtonStub,
 			KvLoadingText: { template: '<div />' },
 		},
 	},

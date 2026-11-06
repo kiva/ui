@@ -1,0 +1,13 @@
+#import '../../fragments/inviterInfo.graphql'
+
+mutation AcknowledgeInviter($inviter: String!, $inviteRef: String) {
+	my {
+		acknowledgeInviter(inviter: $inviter, inviteRef: $inviteRef) {
+			status
+			lines
+			inviter {
+				...inviterInfo
+			}
+		}
+	}
+}
