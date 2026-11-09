@@ -75,7 +75,7 @@
 							</div>
 							<input
 								v-else
-								class="tw-w-full tw-rounded tw-border tw-border-tertiary tw-p-1 tw-mb-1"
+								class="tw-w-full tw-rounded tw-border tw-border-tertiary tw-p-1 tw-mb-1 tw-text-small"
 								type="text"
 								readonly
 								aria-label="Your personal invite page"
