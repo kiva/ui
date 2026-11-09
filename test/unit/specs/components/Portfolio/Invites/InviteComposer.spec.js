@@ -2,6 +2,7 @@ import { render, waitFor, fireEvent } from '@testing-library/vue';
 import InviteComposer from '#src/components/Portfolio/Invites/InviteComposer';
 import logFormatter from '#src/util/logFormatter';
 import { getOperationName } from '../../../../specUtils';
+import { FAILED_MUTATIONS, KvButtonStub, KvTextInputStub } from './invitesSpecHelpers';
 
 vi.mock('#src/util/logFormatter', () => ({ default: vi.fn() }));
 
@@ -28,20 +29,8 @@ const renderComposer = ({
 		provide: { apollo: { mutate } },
 		mocks: { $kvTrackEvent: kvTrackEvent },
 		stubs: {
-			KvButton: {
-				props: ['state', 'type'],
-				// Like KvButton, disabled while loading
-				template: '<button :type="type" :data-state="state" '
-					+ ':disabled="state === \'disabled\' || state === \'loading\'"><slot /></button>',
-			},
-			// Like KvTextInput, passes other listeners, such as change, to the input
-			KvTextInput: {
-				inheritAttrs: false,
-				props: ['modelValue', 'id', 'disabled'],
-				emits: ['update:modelValue'],
-				template: '<input :id="id" :value="modelValue" :disabled="disabled" v-bind="$attrs" '
-					+ '@input="$emit(\'update:modelValue\', $event.target.value)">',
-			},
+			KvButton: KvButtonStub,
+			KvTextInput: KvTextInputStub,
 		},
 	},
 });
@@ -187,11 +176,7 @@ describe('InviteComposer', () => {
 		expect(emitted().sent).toBeUndefined();
 	});
 
-	it.each([
-		['GraphQL errors', () => vi.fn().mockResolvedValue({ data: null, errors: [{ message: 'boom' }] })],
-		['a missing result', () => vi.fn().mockResolvedValue({ data: { my: null } })],
-		['a network failure', () => vi.fn().mockRejectedValue(new Error('offline'))],
-	])('shows a generic error and keeps what was entered after %s', async (_, makeMutate) => {
+	it.each(FAILED_MUTATIONS)('shows a generic error and keeps what was entered after %s', async (_, makeMutate) => {
 		const {
 			getByTestId, getByRole, findByText, emitted,
 		} = renderComposer({ mutate: makeMutate() });
@@ -244,13 +229,15 @@ describe('InviteComposer', () => {
 		await waitFor(() => expect(document.activeElement).toBe(getByTestId('invite-composer-result')));
 	});
 
-	it('leaves focus alone when it is still in the form', async () => {
+	it('leaves focus alone when the viewer moved it elsewhere', async () => {
 		const mutate = vi.fn().mockResolvedValue(sendResponse());
-		const { getByRole, getByTestId, findByText } = renderComposer({ mutate });
-		const emails = getByTestId('invite-composer-emails');
+		const { getByRole, findByText } = renderComposer({ mutate });
+		const elsewhere = document.createElement('input');
+		document.body.appendChild(elsewhere);
 		await fireEvent.click(getByRole('button', { name: 'Send invitations' }));
-		emails.focus();
+		elsewhere.focus();
 		await findByText('Invitations Sent: friend@example.com');
-		expect(document.activeElement).toBe(emails);
+		expect(document.activeElement).toBe(elsewhere);
+		elsewhere.remove();
 	});
 });

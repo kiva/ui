@@ -1,6 +1,8 @@
 import { render, waitFor, fireEvent } from '@testing-library/vue';
 import InviteActivityTable from '#src/components/Portfolio/Invites/InviteActivityTable';
+import { INVITE_ERROR_MESSAGE } from '#src/util/invites/invitesConstants';
 import { getOperationName } from '../../../../specUtils';
+import { FAILED_MUTATIONS, KvButtonStub, trackEventDirective } from './invitesSpecHelpers';
 
 const NOW = new Date('2026-03-10T12:00:00Z');
 
@@ -40,13 +42,6 @@ const activityResponse = (values, totalCount = values.length) => ({
 
 const rowsOf = (from, count) => Array.from({ length: count }, (_, i) => emailRow(from + i));
 
-// Records each element's tracking payload so specs can check it
-const trackEventDirective = {
-	mounted(el, { value }) {
-		el.setAttribute('data-track-event', JSON.stringify(value));
-	},
-};
-
 const renderTable = (query, kvTrackEvent = vi.fn(), {
 	mutate = vi.fn(), showTipMsg = vi.fn(), component = InviteActivityTable,
 } = {}) => render(
@@ -57,12 +52,7 @@ const renderTable = (query, kvTrackEvent = vi.fn(), {
 			mocks: { $kvTrackEvent: kvTrackEvent, $showTipMsg: showTipMsg },
 			directives: { 'kv-track-event': trackEventDirective },
 			stubs: {
-				KvButton: {
-					props: ['state'],
-					// Like KvButton, disabled while loading
-					template: '<button :data-state="state" :disabled="state === \'disabled\' || state === \'loading\'">'
-						+ '<slot /></button>',
-				},
+				KvButton: KvButtonStub,
 				KvLoadingText: { template: '<div />' },
 			},
 		},
@@ -166,23 +156,27 @@ describe('InviteActivityTable', () => {
 		expect(status).toBe('12 clicks 3 accepted');
 	});
 
-	it('shows 0 for a missing share count', async () => {
-		const query = vi.fn().mockResolvedValue(activityResponse([socialRow(1, { clickCount: null })]));
+	it.each([
+		[{ clickCount: null }, '0 clicks 3 accepted'],
+		[{ acceptedCount: null }, '12 clicks 0 accepted'],
+	])('shows 0 for a missing share count (%o)', async (overrides, expected) => {
+		const query = vi.fn().mockResolvedValue(activityResponse([socialRow(1, overrides)]));
 		const { status } = await firstRow(query);
-		expect(status).toBe('0 clicks 3 accepted');
+		expect(status).toBe(expected);
 	});
 
 	it.each([
-		[{ source: 'URL' }, 'via Special Invitation Link, Invite'],
-		[{ source: 'KIVACARD', createdAsType: null }, 'via Kiva Card Redemption'],
-		[{ source: null, createdAsType: null }, ''],
-	])('labels share link %o as "%s" with no status', async (fields, expected) => {
-		const query = vi.fn().mockResolvedValue(activityResponse([socialRow(1, {
-			clickCount: null, acceptedCount: null, ...fields,
-		})]));
+		[{ source: 'TWITTER' }, 'via Twitter, Invite', '12 clicks 3 accepted'],
+		[{ source: 'FACEBOOK_SHARE' }, 'via Shared Loan on Facebook, Invite', '12 clicks 3 accepted'],
+		[{ source: 'URL' }, '', ''],
+		[{ source: 'PERMURL' }, '', ''],
+		[{ source: 'KIVACARD', createdAsType: null }, '', ''],
+		[{ source: null, createdAsType: null }, '', ''],
+	])('shows share link %o as "%s" with status "%s"', async (fields, expectedActivity, expectedStatus) => {
+		const query = vi.fn().mockResolvedValue(activityResponse([socialRow(1, fields)]));
 		const { activity, status } = await firstRow(query);
-		expect(activity).toBe(expected);
-		expect(status).toBe('');
+		expect(activity).toBe(expectedActivity);
+		expect(status).toBe(expectedStatus);
 	});
 
 	it('names the table for screen readers', async () => {
@@ -383,16 +377,12 @@ describe('InviteActivityTable', () => {
 		expect(query).toHaveBeenCalledTimes(1);
 	});
 
-	it.each([
-		['GraphQL errors', () => Promise.resolve({ data: null, errors: [{ message: 'denied' }] })],
-		['a missing result', () => Promise.resolve({ data: { my: null } })],
-		['a network error', () => Promise.reject(new Error('boom'))],
-	])('shows a generic error for %s', async (_case, mutateImpl) => {
+	it.each(FAILED_MUTATIONS)('shows a generic error for %s', async (_case, makeMutate) => {
 		const query = vi.fn().mockResolvedValue(activityResponse([sentRow(1)]));
 		const showTipMsg = vi.fn();
-		const { findByTestId, getAllByTestId } = renderTable(query, vi.fn(), { mutate: vi.fn(mutateImpl), showTipMsg });
+		const { findByTestId, getAllByTestId } = renderTable(query, vi.fn(), { mutate: makeMutate(), showTipMsg });
 		await fireEvent.click(await findByTestId('invite-activity-clear'));
-		await waitFor(() => expect(showTipMsg).toHaveBeenCalledWith('An error occurred. Please try again.', 'error'));
+		await waitFor(() => expect(showTipMsg).toHaveBeenCalledWith(INVITE_ERROR_MESSAGE, 'error'));
 		expect(getAllByTestId('invite-activity-row')).toHaveLength(1);
 	});
 
@@ -408,6 +398,22 @@ describe('InviteActivityTable', () => {
 			expect(button.disabled).toBe(true);
 			expect(button.dataset.state).toBe('disabled');
 		});
+	});
+
+	it('ignores a "More" click that reaches it while the next page loads', async () => {
+		const query = vi.fn()
+			.mockResolvedValueOnce(activityResponse(rowsOf(1, 4), 10))
+			.mockReturnValueOnce(new Promise(() => {}));
+		const kvTrackEvent = vi.fn();
+		const { findByTestId } = renderTable(query, kvTrackEvent);
+		const toggle = await findByTestId('invite-activity-toggle');
+		await fireEvent.click(toggle);
+		expect(query).toHaveBeenCalledTimes(2);
+		// As when a button disabled for loading still passes the click on
+		toggle.disabled = false;
+		await fireEvent.click(toggle);
+		expect(query).toHaveBeenCalledTimes(2);
+		expect(kvTrackEvent).toHaveBeenCalledTimes(1);
 	});
 
 	it('disables paging and other row actions while a row action runs', async () => {
@@ -445,7 +451,7 @@ describe('InviteActivityTable', () => {
 			toEmailAddress: null,
 		})]));
 		const { activity, status, row } = await firstRow(query);
-		expect(activity).toBe('via Email, Team Recruit (Team Tula) Anonymous');
+		expect(activity).toBe('via Email, Team Recruit (Team Tula) -anonymous-');
 		expect(status).toBe('Joined Team!');
 		expect(row.querySelector('a')).toBeNull();
 	});

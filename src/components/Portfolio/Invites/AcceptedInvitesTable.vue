@@ -5,7 +5,7 @@
 			<KvLoadingText :lines="4" data-testid="accepted-invites-loading" />
 		</template>
 		<div v-else-if="loadError" role="alert" data-testid="accepted-invites-error">
-			<p>An error occurred. Please try again.</p>
+			<p>{{ errorMessage }}</p>
 			<KvButton
 				class="tw-mt-2"
 				@click="fetchFirstPage"
@@ -85,8 +85,9 @@
 <script>
 import { KvButton, KvLoadingText } from '@kiva/kv-components';
 import logFormatter from '#src/util/logFormatter';
+import { formatInviteDate, inviteViaLabel } from '#src/util/invites/inviteFormat';
 import {
-	INVITE_LABELS,
+	INVITE_ERROR_MESSAGE,
 	INVITES_TABLE_INITIAL_SIZE,
 	INVITES_TABLE_PAGE_SIZE,
 } from '#src/util/invites/invitesConstants';
@@ -101,6 +102,7 @@ export default {
 	inject: ['apollo'],
 	data() {
 		return {
+			errorMessage: INVITE_ERROR_MESSAGE,
 			loading: true,
 			loadError: false,
 			loadingMore: false,
@@ -115,21 +117,8 @@ export default {
 		},
 	},
 	methods: {
-		formatDate(date) {
-			const parsed = new Date(date);
-			if (Number.isNaN(parsed.getTime())) {
-				return '';
-			}
-			return parsed.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
-		},
-		viaLabel(row) {
-			const labels = [INVITE_LABELS[row.source], INVITE_LABELS[row.createdAsType]].filter(Boolean);
-			if (!labels.length) {
-				return '';
-			}
-			const team = row.team?.name ? ` (${row.team.name})` : '';
-			return `via ${labels.join(', ')}${team}`;
-		},
+		formatDate: formatInviteDate,
+		viaLabel: inviteViaLabel,
 		// Resolves to the accepted collection, or rejects when the response is missing it
 		async fetchPage(offset, limit) {
 			const { data, errors } = await this.apollo.query({
