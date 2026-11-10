@@ -1,0 +1,9 @@
+query impactStats {
+	my {
+		id
+		userAccount {
+			id
+			firstName
+		}
+	}
+}
