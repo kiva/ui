@@ -34,7 +34,7 @@ describe('ImpactStatsPage', () => {
 	it('greets the lender by name', () => {
 		const { getByRole, getByText } = renderPage();
 
-		getByRole('heading', { level: 1, name: 'James, here\'s the impact you\'ve made!' });
+		expect(getByRole('heading', { level: 1 }).textContent.trim()).toBe('James, here\'s the impact you\'ve made!');
 		getByText('Your account');
 		getByText('Your portfolio, milestones, and the borrowers behind every dollar.');
 	});
@@ -55,5 +55,12 @@ describe('ImpactStatsPage', () => {
 		const { getByTestId } = renderPage();
 
 		getByTestId('impact-layout');
+	});
+
+	it('hides only the lender\'s name from session recordings', () => {
+		const { getByText, getByRole } = renderPage();
+
+		expect(getByText('James').hasAttribute('data-hj-suppress')).toBe(true);
+		expect(getByRole('heading', { level: 1 }).hasAttribute('data-hj-suppress')).toBe(false);
 	});
 });

@@ -37,4 +37,16 @@ describe('WwwPageAccount', () => {
 
 		expect(order).toEqual(['nav', 'h1', 'content']);
 	});
+
+	it('does not hide the title from session recordings', () => {
+		const { getByRole } = renderFrame();
+
+		expect(getByRole('heading', { level: 1 }).hasAttribute('data-hj-suppress')).toBe(false);
+	});
+
+	it('renders a title slot in place of the title prop', () => {
+		const { getByRole } = renderFrame({ title: '' }, { title: '<span data-testid="slotted">Slotted</span> title' });
+
+		expect(getByRole('heading', { level: 1 }).textContent.trim()).toBe('Slotted title');
+	});
 });

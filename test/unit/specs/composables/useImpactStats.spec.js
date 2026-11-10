@@ -56,6 +56,15 @@ describe('useImpactStats', () => {
 		expect(await renderFirstName(respondWith(null))).toBe('');
 	});
 
+	it('returns an empty name when the response carries GraphQL errors', async () => {
+		const respond = observer => {
+			observer.next({ data: null, errors: [{ message: 'not privileged' }] });
+			observer.complete();
+		};
+
+		expect(await renderFirstName(respond)).toBe('');
+	});
+
 	it('logs a failed request and returns an empty name', async () => {
 		expect(await renderFirstName(observer => observer.error(new Error('Network error')))).toBe('');
 		expect(logReadQueryError).toHaveBeenCalled();

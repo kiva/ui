@@ -6,8 +6,10 @@
 				<p v-if="eyebrow" class="tw-text-upper tw-text-secondary" data-testid="account-frame-eyebrow">
 					{{ eyebrow }}
 				</p>
-				<h1 data-hj-suppress>
-					{{ title }}
+				<h1>
+					<slot name="title">
+						{{ title }}
+					</slot>
 				</h1>
 				<p v-if="subtitle" class="tw-text-subhead tw-text-secondary" data-testid="account-frame-subtitle">
 					{{ subtitle }}
@@ -31,7 +33,7 @@ defineProps({
 	},
 	title: {
 		type: String,
-		required: true,
+		default: '',
 	},
 	subtitle: {
 		type: String,
