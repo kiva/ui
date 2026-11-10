@@ -413,6 +413,14 @@ export default [
 		}
 	},
 	{
+		path: '/portfolio/impact-beta',
+		component: () => import('#src/pages/Portfolio/ImpactStats/ImpactStatsPage'),
+		meta: {
+			authenticationRequired: true,
+			excludeFromStaticSitemap: true,
+		}
+	},
+	{
 		path: '/portfolio/transactions',
 		component: () => import('#src/pages/Portfolio/Transactions/TransactionsPage'),
 		meta: {
