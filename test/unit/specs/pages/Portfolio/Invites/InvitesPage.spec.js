@@ -1,5 +1,6 @@
 import { render, waitFor, fireEvent } from '@testing-library/vue';
 import InvitesPage from '#src/pages/Portfolio/Invites/InvitesPage';
+import { trackEventDirective } from '../../../components/Portfolio/Invites/invitesSpecHelpers';
 
 const publicLender = {
 	id: 601,
@@ -13,11 +14,15 @@ const publicLender = {
 	},
 };
 
-const invitesResponse = ({ inviter = null, inviterName = 'caseyd' } = {}) => ({
+const invitesResponse = ({
+	inviter = null, inviterName = 'caseyd', firstName = 'Casey', isPublic = true,
+} = {}) => ({
 	my: {
 		id: 'my-id',
 		userAccount: {
 			id: 3,
+			firstName,
+			public: isPublic,
 			inviterName,
 			invites: { id: 3, inviter },
 		},
@@ -28,15 +33,37 @@ const invitesResponse = ({ inviter = null, inviterName = 'caseyd' } = {}) => ({
 	},
 });
 
-// Records each element's tracking payload so specs can check it
-const trackEventDirective = {
-	mounted(el, { value }) {
-		el.setAttribute('data-track-event', JSON.stringify(value));
-	},
+// Records the props the page passes the email form, and lets specs report a send
+const composerStub = {
+	props: ['firstName', 'isPublic', 'disabled'],
+	emits: ['sent'],
+	template: '<button data-testid="invite-composer-stub" :data-first-name="firstName" :data-public="isPublic" '
+		+ ':data-disabled="disabled" @click="$emit(\'sent\')" />',
+};
+
+// Shows the email form the page gives the tabs, records their props, and lets specs report a share
+const tabsStub = {
+	props: ['personalUrl', 'loading', 'loadError'],
+	emits: ['shared'],
+	template: '<div data-testid="invite-tabs-stub" :data-personal-url="personalUrl" :data-loading="loading" '
+		+ ':data-load-error="loadError">'
+		+ '<slot name="email" /><button data-testid="invite-composer-share" @click="$emit(\'shared\')" /></div>',
+};
+
+// Shows whether the page opened the form, and lets specs close it or report its outcome
+const ackModalStub = {
+	props: ['visible'],
+	emits: ['close', 'acknowledged', 'not-found'],
+	data: () => ({ acknowledgement: null }),
+	template: '<div data-testid="ack-modal-stub" :data-visible="visible">'
+		+ '<button data-testid="ack-modal-close" @click="$emit(\'close\')" />'
+		+ '<button data-testid="ack-modal-ack" @click="$emit(\'acknowledged\', acknowledgement)" />'
+		+ '<button data-testid="ack-modal-not-found" @click="$emit(\'not-found\')" /></div>',
 };
 
 const renderPage = ({
-	response = invitesResponse(), errors, rejects = false, query: customQuery,
+	response = invitesResponse(), errors, rejects = false, query: customQuery, fetchActivity = vi.fn(),
+	showTipMsg = vi.fn(), acknowledgement,
 } = {}) => {
 	const query = customQuery ?? (rejects
 		? vi.fn().mockRejectedValue(new Error('boom'))
@@ -47,14 +74,22 @@ const renderPage = ({
 		...render(InvitesPage, {
 			global: {
 				provide: { apollo: { query }, cookieStore: {} },
-				mocks: { $appConfig: { host: 'www.kiva.org' } },
+				mocks: { $appConfig: { host: 'www.kiva.org' }, $showTipMsg: showTipMsg },
 				directives: { 'kv-track-event': trackEventDirective },
 				stubs: {
 					PortfolioShell: { template: '<div><slot /></div>' },
 					AcceptedInvitesTable: { template: '<div data-testid="accepted-invites-table-stub" />' },
-					InviteActivityTable: { template: '<div data-testid="invite-activity-table-stub" />' },
+					InviteActivityTable: {
+						methods: { fetchFirstPage: fetchActivity },
+						template: '<div data-testid="invite-activity-table-stub" />',
+					},
+					InviteComposer: composerStub,
+					InviteComposerTabs: tabsStub,
+					AcknowledgeInviterModal: {
+						...ackModalStub,
+						data: () => ({ acknowledgement }),
+					},
 					KvButton: { template: '<button><slot /></button>' },
-					KvLoadingPlaceholder: { template: '<div />' },
 					KvLoadingText: { template: '<span data-testid="loading-text" />' },
 					KvUserAvatar: {
 						props: ['lenderName', 'lenderImageUrl'],
@@ -82,9 +117,47 @@ describe('InvitesPage', () => {
 		expect(getByTestId('invites-personal-url-loading')).toBeTruthy();
 		expect(queryByLabelText('Your personal invite page')).toBeNull();
 		expect(getByTestId('invites-inviter-loading')).toBeTruthy();
-		// Two stat numbers, plus the inviter heading and line
-		expect(getAllByTestId('loading-text')).toHaveLength(4);
+		// The personal URL, two stat numbers, plus the inviter heading and line
+		expect(getAllByTestId('loading-text')).toHaveLength(5);
 		expect(getByRole('status').textContent).toBe('Loading invite details');
+	});
+
+	it('keeps the composer disabled until the viewer loads, then signs it with their name', async () => {
+		const { getByTestId } = renderPage();
+		expect(getByTestId('invite-composer-stub').dataset.disabled).toBe('true');
+		await waitFor(() => expect(getByTestId('invite-composer-stub').dataset.disabled).toBe('false'));
+		expect(getByTestId('invite-composer-stub').dataset.firstName).toBe('Casey');
+		expect(getByTestId('invite-composer-stub').dataset.public).toBe('true');
+	});
+
+	it('passes a private viewer to the composer as not public', async () => {
+		const { getByTestId } = renderPage({ response: invitesResponse({ isPublic: false }) });
+		await waitFor(() => expect(getByTestId('invite-composer-stub').dataset.disabled).toBe('false'));
+		expect(getByTestId('invite-composer-stub').dataset.public).toBe('false');
+	});
+
+	it('keeps the composer disabled when the viewer fails to load', async () => {
+		const { getByTestId } = renderPage({ rejects: true });
+		await waitFor(() => expect(getByTestId('invites-load-error')).toBeTruthy());
+		expect(getByTestId('invite-composer-stub').dataset.disabled).toBe('true');
+		expect(getByTestId('invite-tabs-stub').dataset.loadError).toBe('true');
+	});
+
+	it.each([
+		['invites are sent', 'invite-composer-stub'],
+		['a share link is made', 'invite-composer-share'],
+	])('reloads the activity table after %s', async (_, testId) => {
+		const fetchActivity = vi.fn();
+		const { getByTestId } = renderPage({ fetchActivity });
+		await fireEvent.click(getByTestId(testId));
+		expect(fetchActivity).toHaveBeenCalledTimes(1);
+	});
+
+	it('passes the personal invite URL to the tabs once it loads', async () => {
+		const { getByTestId } = renderPage();
+		expect(getByTestId('invite-tabs-stub').dataset.loading).toBe('true');
+		await waitFor(() => expect(getByTestId('invite-tabs-stub').dataset.loading).toBe('false'));
+		expect(getByTestId('invite-tabs-stub').dataset.personalUrl).toBe('https://www.kiva.org/invitedby/caseyd');
 	});
 
 	it('queries the network each time the page loads', () => {
@@ -97,10 +170,27 @@ describe('InvitesPage', () => {
 		await waitFor(() => {
 			expect(getByLabelText('Your personal invite page').value).toBe('https://www.kiva.org/invitedby/caseyd');
 		});
-		expect(JSON.parse(getByLabelText('Your personal invite page').dataset.trackEvent))
-			.toEqual(['portfolio', 'click', 'Invites personal url']);
+		const input = getByLabelText('Your personal invite page');
+		expect(JSON.parse(input.dataset.trackEvent)).toEqual(['portfolio', 'click', 'Invites personal url']);
+		await fireEvent.click(input);
+		expect([input.selectionStart, input.selectionEnd]).toEqual([0, input.value.length]);
 		expect(getByTestId('invites-accepted-count').textContent.trim()).toBe('4');
 		expect(getByTestId('invitee-loan-count').textContent.trim()).toBe('12');
+	});
+
+	it('falls back to empty values for fields the account leaves out', async () => {
+		const response = invitesResponse();
+		Object.assign(response.my.userAccount, { inviterName: null, firstName: null, public: null });
+		response.my.userAccount.invites = { id: 3 };
+		response.my.userStats = { number_of_invites: null, number_of_loans_by_invitees: null };
+		const { getByLabelText, getByTestId } = renderPage({ response });
+		await waitFor(() => expect(getByTestId('invites-accepted-count').textContent.trim()).toBe('0'));
+		expect(getByTestId('invitee-loan-count').textContent.trim()).toBe('0');
+		expect(getByLabelText('Your personal invite page').value).toBe('');
+		const composer = getByTestId('invite-composer-stub');
+		expect(composer.dataset.firstName).toBe('');
+		expect(composer.dataset.public).toBe('false');
+		expect(getByTestId('invites-ack-inviter')).toBeTruthy();
 	});
 
 	it('asks a user with no inviter to give their friend credit', async () => {
@@ -209,9 +299,99 @@ describe('InvitesPage', () => {
 		expect(getByTestId('avatar').getAttribute('src')).toBe('');
 	});
 
-	it('keeps the give-credit action disabled until it is available', async () => {
-		const { getByTestId } = renderPage();
-		await waitFor(() => expect(getByTestId('invites-ack-inviter').disabled).toBe(true));
+	it('titles the page', () => {
+		expect(InvitesPage.head().title).toBe('Invite friends');
+	});
+
+	it('opens and closes the give-credit form', async () => {
+		const { getByTestId, findByTestId } = renderPage();
+		expect(getByTestId('ack-modal-stub').dataset.visible).toBe('false');
+		await fireEvent.click(await findByTestId('invites-ack-inviter'));
+		expect(getByTestId('ack-modal-stub').dataset.visible).toBe('true');
+		expect(JSON.parse(getByTestId('invites-ack-inviter').dataset.trackEvent))
+			.toEqual(['portfolio', 'click', 'Invites open acknowledge inviter']);
+		await fireEvent.click(getByTestId('ack-modal-close'));
+		expect(getByTestId('ack-modal-stub').dataset.visible).toBe('false');
+		// The control that closed it is hidden, so focus goes back to the button that opened it
+		await waitFor(() => expect(document.activeElement).toBe(getByTestId('invites-ack-inviter')));
+	});
+
+	it('shows the credited inviter, thanks the viewer and moves focus to the inviter box', async () => {
+		const showTipMsg = vi.fn();
+		const acknowledgement = {
+			inviter: { lender: publicLender },
+			lines: ['Thank you. You helped your friend to get the credit to invite you.'],
+		};
+		const {
+			getByTestId, findByTestId, getByText, queryByTestId,
+		} = renderPage({ showTipMsg, acknowledgement });
+		await fireEvent.click(await findByTestId('invites-ack-inviter'));
+		await fireEvent.click(getByTestId('ack-modal-ack'));
+		expect(getByTestId('ack-modal-stub').dataset.visible).toBe('false');
+		expect(getByText('Invited by')).toBeTruthy();
+		expect(getByTestId('invites-inviter-name').textContent).toBe('Inviter Ivy');
+		expect(queryByTestId('invites-ack-inviter')).toBeNull();
+		expect(showTipMsg).toHaveBeenCalledWith(acknowledgement.lines[0]);
+		await waitFor(() => expect(document.activeElement).toBe(getByTestId('invites-inviter')));
+	});
+
+	it('shows an inviter credited since the page loaded when crediting finds nothing', async () => {
+		const query = vi.fn()
+			.mockResolvedValueOnce({ data: invitesResponse() })
+			.mockResolvedValueOnce({ data: invitesResponse({ inviter: { lender: publicLender } }) });
+		const { getByTestId, findByTestId } = renderPage({ query });
+		await fireEvent.click(await findByTestId('invites-ack-inviter'));
+		await fireEvent.click(getByTestId('ack-modal-not-found'));
+		await waitFor(() => expect(getByTestId('invites-inviter-name').textContent).toBe('Inviter Ivy'));
+		expect(getByTestId('ack-modal-stub').dataset.visible).toBe('false');
+		expect(query).toHaveBeenLastCalledWith(expect.objectContaining({ fetchPolicy: 'network-only' }));
+		await waitFor(() => expect(document.activeElement).toBe(getByTestId('invites-inviter')));
+	});
+
+	it('leaves focus alone when the viewer closed the form and moved on before the inviter was found', async () => {
+		let resolveRefresh;
+		const query = vi.fn()
+			.mockResolvedValueOnce({ data: invitesResponse() })
+			.mockReturnValueOnce(new Promise(r => { resolveRefresh = r; }));
+		const { getByTestId, findByTestId } = renderPage({ query });
+		await fireEvent.click(await findByTestId('invites-ack-inviter'));
+		await fireEvent.click(getByTestId('ack-modal-not-found'));
+		await fireEvent.click(getByTestId('ack-modal-close'));
+		const elsewhere = document.createElement('input');
+		document.body.appendChild(elsewhere);
+		elsewhere.focus();
+		resolveRefresh({ data: invitesResponse({ inviter: { lender: publicLender } }) });
+		await waitFor(() => expect(getByTestId('invites-inviter-name').textContent).toBe('Inviter Ivy'));
+		expect(document.activeElement).toBe(elsewhere);
+		elsewhere.remove();
+	});
+
+	it('keeps the form open when crediting finds nothing and there is still no inviter', async () => {
+		const query = vi.fn().mockResolvedValue({ data: invitesResponse() });
+		const { getByTestId, findByTestId } = renderPage({ query });
+		await fireEvent.click(await findByTestId('invites-ack-inviter'));
+		await fireEvent.click(getByTestId('ack-modal-not-found'));
+		await waitFor(() => expect(query).toHaveBeenCalledTimes(2));
+		expect(getByTestId('ack-modal-stub').dataset.visible).toBe('true');
+		expect(getByTestId('invites-ack-inviter')).toBeTruthy();
+	});
+
+	it('keeps the form open when the inviter check fails', async () => {
+		const query = vi.fn()
+			.mockResolvedValueOnce({ data: invitesResponse() })
+			.mockRejectedValueOnce(new Error('offline'));
+		const { getByTestId, findByTestId } = renderPage({ query });
+		await fireEvent.click(await findByTestId('invites-ack-inviter'));
+		await fireEvent.click(getByTestId('ack-modal-not-found'));
+		await waitFor(() => expect(query).toHaveBeenCalledTimes(2));
+		expect(getByTestId('ack-modal-stub').dataset.visible).toBe('true');
+	});
+
+	it('shows an inviter credited without details as anonymous', async () => {
+		const { getByTestId, findByTestId } = renderPage({ acknowledgement: { inviter: null, lines: ['Thanks'] } });
+		await fireEvent.click(await findByTestId('invites-ack-inviter'));
+		await fireEvent.click(getByTestId('ack-modal-ack'));
+		expect(getByTestId('invites-inviter-name').textContent.trim()).toBe('Anonymous');
 	});
 
 	it('suppresses user data from session recording', async () => {

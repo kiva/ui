@@ -83,25 +83,26 @@ export default function authRouter(config = {}) {
 			audience: config.auth0.apiAudience,
 			scope: config.auth0.scope,
 		};
+		let loginHint;
 		if (req.query.force === 'true') {
 			options.prompt = 'login';
 		}
 		// Go to register instead of login if the user has not logged in before
 		if (req.query.autoPage === 'true' && !cookies.kvu) {
-			options.login_hint = 'signUp';
+			loginHint = 'signUp';
 		}
 		// Used by guest checkout to start account claiming process (password reset)
 		if (req.query.forgot === 'true') {
 			options.prompt = 'login';
 			const username = req.query.username || '';
-			options.login_hint = `forgotPassword|${JSON.stringify({
+			loginHint = `forgotPassword|${JSON.stringify({
 				guest: true,
 				username: encodeURIComponent(username),
 			})}`;
 		}
 		// Override the login hint with whatever hint is set in the request
 		if (req.query.loginHint) {
-			options.login_hint = req.query.loginHint;
+			loginHint = req.query.loginHint;
 		}
 		// Store url to redirect to after successful login
 		if (req.query.doneUrl) {
@@ -121,6 +122,9 @@ export default function authRouter(config = {}) {
 		// Specify if login is meant to be passwordless
 		if (req.query.passwordless) {
 			options.passwordless = true;
+			if (config.auth0.sendPasswordlessConnection) {
+				options.connection = 'email';
+			}
 		}
 
 		// Specify partnerContentId
@@ -139,7 +143,14 @@ export default function authRouter(config = {}) {
 		if (req.query.earnBadge) {
 			options.earn_badge = true;
 			options['ext-earn_badge'] = true;
-			options.login_hint = 'signUp';
+			loginHint = 'signUp';
+		}
+
+		// Send signup as screen_hint and any other Kiva hint base64url-encoded as ext-kiva_login_hint
+		if (loginHint === 'signUp') {
+			options.screen_hint = 'signup';
+		} else if (loginHint) {
+			options['ext-kiva_login_hint'] = Buffer.from(loginHint).toString('base64url');
 		}
 
 		info(`LoginUI: attempt login, session id:${req.sessionID}, cookie:${getSyncCookie(req)}, done url:${req.query.doneUrl}`); // eslint-disable-line max-len

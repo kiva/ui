@@ -166,6 +166,13 @@ export default [
 		component: () => import('#src/pages/Legal/Legal'),
 		children: [
 			{
+				path: 'cookies-beta',
+				component: () => import('#src/pages/Legal/CookiePolicy'),
+				meta: {
+					excludeFromStaticSitemap: true,
+				}
+			},
+			{
 				path: 'privacy',
 				component: () => import('#src/pages/Legal/PrivacyPolicy')
 			},
@@ -400,6 +407,14 @@ export default [
 	{
 		path: INVITES_ROUTE,
 		component: () => import('#src/pages/Portfolio/Invites/InvitesPage'),
+		meta: {
+			authenticationRequired: true,
+			excludeFromStaticSitemap: true,
+		}
+	},
+	{
+		path: '/portfolio/impact-beta',
+		component: () => import('#src/pages/Portfolio/ImpactStats/ImpactStatsPage'),
 		meta: {
 			authenticationRequired: true,
 			excludeFromStaticSitemap: true,

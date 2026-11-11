@@ -1,0 +1,8 @@
+mutation ClearInvite($id: ID!) {
+	my {
+		clearInvite(id: $id) {
+			status
+			message
+		}
+	}
+}

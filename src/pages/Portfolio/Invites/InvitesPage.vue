@@ -10,24 +10,35 @@
 
 			<div class="tw-grid tw-grid-cols-12 tw-gap-3">
 				<div class="tw-col-span-12 lg:tw-col-span-8 tw-min-w-0 tw-flex tw-flex-col tw-gap-3">
-					<!-- Placeholder: the email, Facebook, Tweet and personal URL tabs need the invite mutations -->
-					<section data-testid="invites-composer">
-						<div class="tw-rounded tw-border tw-border-dashed tw-border-tertiary tw-p-2 tw-text-secondary">
-							Invite composer coming soon.
-						</div>
+					<section class="tw-pb-3" data-testid="invites-composer">
+						<InviteComposerTabs
+							:personal-url="personalUrl"
+							:loading="loading"
+							:load-error="loadError"
+							@shared="refreshActivity"
+						>
+							<template #email>
+								<InviteComposer
+									:first-name="firstName"
+									:is-public="isPublic"
+									:disabled="loading || loadError"
+									@sent="refreshActivity"
+								/>
+							</template>
+						</InviteComposerTabs>
 					</section>
 
-					<section data-testid="invites-activity">
+					<section class="tw-pb-3" data-testid="invites-activity">
 						<h2 class="tw-text-h3 tw-mb-1">
 							My invite activity
 						</h2>
 						<p class="tw-mb-2">
 							Here is a record of the invitations you sent to join Kiva or to join a team.
 						</p>
-						<InviteActivityTable />
+						<InviteActivityTable ref="activityTable" />
 					</section>
 
-					<section data-testid="invites-accepted">
+					<section class="tw-pb-3" data-testid="invites-accepted">
 						<h2 class="tw-text-h3 tw-mb-1">
 							Accepted invites
 						</h2>
@@ -44,7 +55,7 @@
 				>
 					<span v-if="loading" class="tw-sr-only" role="status">Loading invite details</span>
 					<div v-if="loadError" role="alert" data-testid="invites-load-error">
-						<p>An error occurred. Please try again.</p>
+						<p>{{ errorMessage }}</p>
 						<KvButton
 							class="tw-mt-2"
 							@click="fetchInvites"
@@ -59,14 +70,12 @@
 							<h2 class="tw-text-h4 tw-mb-1">
 								Your personal invite page
 							</h2>
-							<KvLoadingPlaceholder
-								v-if="loading"
-								class="!tw-h-5 tw-mb-1 tw-rounded"
-								data-testid="invites-personal-url-loading"
-							/>
+							<div v-if="loading" class="tw-mb-1" data-testid="invites-personal-url-loading">
+								<KvLoadingText />
+							</div>
 							<input
 								v-else
-								class="tw-w-full tw-rounded tw-border tw-border-tertiary tw-p-1 tw-mb-1"
+								class="tw-w-full tw-rounded tw-border tw-border-tertiary tw-p-1 tw-mb-1 tw-text-small"
 								type="text"
 								readonly
 								aria-label="Your personal invite page"
@@ -116,13 +125,26 @@
 							</div>
 							<KvLoadingText class="tw-w-16" />
 						</section>
-						<section v-else data-testid="invites-inviter">
+						<!-- Focused once the inviter is credited, when the button that opened the form is gone -->
+						<section
+							v-else
+							ref="inviterSection"
+							class="focus:tw-outline-none"
+							tabindex="-1"
+							data-testid="invites-inviter"
+						>
 							<template v-if="!inviter">
 								<h2 class="tw-text-h4 tw-mb-1">
 									Invited to Kiva by a friend?
 								</h2>
-								<!-- Placeholder: opening the acknowledge form needs the acknowledge mutation -->
-								<button type="button" class="tw-text-link" disabled data-testid="invites-ack-inviter">
+								<button
+									type="button"
+									class="tw-text-link"
+									ref="ackButton"
+									data-testid="invites-ack-inviter"
+									@click="ackOpen = true"
+									v-kv-track-event="['portfolio', 'click', 'Invites open acknowledge inviter']"
+								>
 									Give your friend credit.
 								</button>
 							</template>
@@ -162,17 +184,28 @@
 				</aside>
 			</div>
 		</div>
+		<AcknowledgeInviterModal
+			:visible="ackOpen"
+			@close="closeAck"
+			@acknowledged="onInviterAcknowledged"
+			@not-found="refreshInviter"
+		/>
 	</PortfolioShell>
 </template>
 
 <script>
 import {
-	KvButton, KvLoadingPlaceholder, KvLoadingText, KvUserAvatar,
+	KvButton, KvLoadingText, KvUserAvatar,
 } from '@kiva/kv-components';
 import PortfolioShell from '#src/components/WwwFrame/PortfolioShell';
 import AcceptedInvitesTable from '#src/components/Portfolio/Invites/AcceptedInvitesTable';
 import InviteActivityTable from '#src/components/Portfolio/Invites/InviteActivityTable';
+import AcknowledgeInviterModal from '#src/components/Portfolio/Invites/AcknowledgeInviterModal';
+import InviteComposer from '#src/components/Portfolio/Invites/InviteComposer';
+import InviteComposerTabs from '#src/components/Portfolio/Invites/InviteComposerTabs';
 import logFormatter from '#src/util/logFormatter';
+import focusIfDropped from '#src/util/invites/focusIfDropped';
+import { INVITE_ERROR_MESSAGE } from '#src/util/invites/invitesConstants';
 import myInvitesQuery from '#src/graphql/query/portfolio/myInvites.graphql';
 
 const ANONYMOUS_NAME = 'Anonymous';
@@ -187,20 +220,26 @@ export default {
 	components: {
 		PortfolioShell,
 		AcceptedInvitesTable,
+		AcknowledgeInviterModal,
 		InviteActivityTable,
+		InviteComposer,
+		InviteComposerTabs,
 		KvButton,
-		KvLoadingPlaceholder,
 		KvLoadingText,
 		KvUserAvatar,
 	},
 	inject: ['apollo'],
 	data() {
 		return {
+			errorMessage: INVITE_ERROR_MESSAGE,
 			loading: true,
 			loadError: false,
 			inviterNameForUrl: null,
+			firstName: '',
+			isPublic: false,
 			// null = no inviter; { lender: null } = anonymous inviter
 			inviter: null,
+			ackOpen: false,
 			invitesAccepted: 0,
 			inviteeLoanCount: 0,
 		};
@@ -231,6 +270,46 @@ export default {
 		},
 	},
 	methods: {
+		// New invites show at the top of the activity list
+		refreshActivity() {
+			this.$refs.activityTable?.fetchFirstPage();
+		},
+		// Focus goes back to the button that opened the form, since the control that closed it is now hidden
+		async closeAck() {
+			this.ackOpen = false;
+			await this.$nextTick();
+			this.$refs.ackButton?.focus();
+		},
+		// The inviter card replaces the form, and focus moves to it from the form, or from the page when the button
+		// that opened the form is gone. Focus the viewer moved elsewhere is left alone.
+		async showInviter(inviter) {
+			const wasOpen = this.ackOpen;
+			this.ackOpen = false;
+			this.inviter = inviter;
+			await this.$nextTick();
+			if (wasOpen) {
+				this.$refs.inviterSection?.focus();
+			} else {
+				focusIfDropped(this.$refs.inviterSection);
+			}
+		},
+		onInviterAcknowledged({ inviter, lines }) {
+			this.$showTipMsg(lines.join(' '));
+			// An inviter credited without details shows as anonymous
+			this.showInviter(inviter ?? { lender: null });
+		},
+		// An inviter credited since the page loaded, such as in another tab, replaces the form
+		async refreshInviter() {
+			try {
+				const { data } = await this.apollo.query({ query: myInvitesQuery, fetchPolicy: 'network-only' });
+				const inviter = data?.my?.userAccount?.invites?.inviter;
+				if (inviter && !this.inviter) {
+					await this.showInviter(inviter);
+				}
+			} catch (error) {
+				logFormatter(`Error refreshing inviter: ${error}`, 'error');
+			}
+		},
 		async fetchInvites() {
 			this.loading = true;
 			this.loadError = false;
@@ -248,6 +327,8 @@ export default {
 					return;
 				}
 				this.inviterNameForUrl = userAccount.inviterName ?? null;
+				this.firstName = userAccount.firstName ?? '';
+				this.isPublic = !!userAccount.public;
 				this.inviter = userAccount.invites.inviter ?? null;
 				this.invitesAccepted = userStats.number_of_invites ?? 0;
 				this.inviteeLoanCount = userStats.number_of_loans_by_invitees ?? 0;

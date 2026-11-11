@@ -18,6 +18,7 @@ const browserClientID = process.env.BROWSER_CLIENT_ID || 'ouGKxT4mE4wQEKqpfsHSE9
 const serverClientID = process.env.SERVER_CLIENT_ID || 'KIzjUBQjKZwMRgYSn6NvMxsUwNppwnLH';
 
 const checkFakeAuth = process.env.CHECK_FAKE_AUTH === 'true';
+const sendPasswordlessConnection = process.env.AUTH0_SEND_PASSWORDLESS_CONNECTION === 'true';
 
 export const app = {
 	algoliaConfig: {
@@ -41,6 +42,7 @@ export const app = {
 		},
 		enable: true,
 		checkFakeAuth,
+		sendPasswordlessConnection,
 		apiAudience: process.env.ALTERNATE_API_AUDIENCE || `https://gateway.${baseUrl}/graphql`,
 		mfaAudience: `https://kiva-${env}.auth0.com/mfa/`,
 		browserClientID,

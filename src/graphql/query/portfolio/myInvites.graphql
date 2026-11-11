@@ -1,29 +1,17 @@
+#import '../../fragments/inviterInfo.graphql'
+
 query MyInvites {
 	my {
 		id
 		userAccount {
 			id
+			firstName
+			public
 			inviterName
 			invites {
 				id
 				inviter {
-					lender {
-						id
-						name
-						publicId
-						image {
-							id
-							url(customSize: "s100")
-						}
-						lenderPage {
-							city
-							state
-							country {
-								id
-								name
-							}
-						}
-					}
+					...inviterInfo
 				}
 			}
 		}

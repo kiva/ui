@@ -51,6 +51,10 @@ export default {
 					routerLink: '/legal/privacy',
 				},
 				{
+					name: 'Cookie Policy',
+					routerLink: '/legal/cookies',
+				},
+				{
 					name: 'Terms of Use',
 					routerLink: '/legal/terms',
 				},

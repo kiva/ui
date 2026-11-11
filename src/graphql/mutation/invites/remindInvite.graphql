@@ -1,0 +1,8 @@
+mutation RemindInvite($id: ID!) {
+	my {
+		remindInvite(id: $id) {
+			status
+			message
+		}
+	}
+}
