@@ -65,7 +65,45 @@ describe('auth-router /ui-login', () => {
 		expect(params.get('ext-optInComms')).toBe('1');
 		expect(params.get('earn_badge')).toBe('true');
 		expect(params.get('ext-earn_badge')).toBe('true');
-		expect(params.get('login_hint')).toBe('signUp');
+		expect(params.get('screen_hint')).toBe('signup');
+		expect(params.has('login_hint')).toBe(false);
+	});
+
+	it('opens signup with screen_hint and no login_hint for autoPage without a kvu cookie', async () => {
+		const params = await authorizeParams('autoPage=true');
+
+		expect(params.get('screen_hint')).toBe('signup');
+		expect(params.has('login_hint')).toBe(false);
+		expect(params.has('ext-kiva_login_hint')).toBe(false);
+	});
+
+	it('opens signup with screen_hint for a signUp loginHint', async () => {
+		const params = await authorizeParams('loginHint=signUp&force=true');
+
+		expect(params.get('screen_hint')).toBe('signup');
+		expect(params.has('login_hint')).toBe(false);
+	});
+
+	it('sends the guest claim hint base64url-encoded as ext-kiva_login_hint', async () => {
+		const params = await authorizeParams('forgot=true&username=guest%40example.com');
+		const encoded = params.get('ext-kiva_login_hint');
+
+		expect(encoded).toMatch(/^[\w-]+$/);
+		expect(Buffer.from(encoded, 'base64url').toString())
+			.toBe(`forgotPassword|${JSON.stringify({ guest: true, username: 'guest%40example.com' })}`);
+		expect(params.has('login_hint')).toBe(false);
+		expect(params.get('prompt')).toBe('login');
+	});
+
+	it('sends a loginHint query base64url-encoded as ext-kiva_login_hint', async () => {
+		const hint = `login|${JSON.stringify({ msg: 're-auth-acc-exists' })}`;
+		const params = await authorizeParams(`force=true&loginHint=${encodeURIComponent(hint)}`);
+		const encoded = params.get('ext-kiva_login_hint');
+
+		expect(encoded).toMatch(/^[\w-]+$/);
+		expect(Buffer.from(encoded, 'base64url').toString()).toBe(hint);
+		expect(params.has('login_hint')).toBe(false);
+		expect(params.has('screen_hint')).toBe(false);
 	});
 
 	it('sends no ext- params when no Kiva login options are set', async () => {
