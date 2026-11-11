@@ -1,3 +1,30 @@
+## [3.101.0](https://github.com/kiva/ui/compare/v3.100.0...v3.101.0) (2026-11-11)
+
+### 🎉 New Features
+
+* add email invite feature to invites beta page ([#7385](https://github.com/kiva/ui/issues/7385)) ([08140f3](https://github.com/kiva/ui/commit/08140f3a1c1063154f5207ffe5b62ebff4776a50))
+* add impact beta page at /portfolio/impact-beta ([d4ade9e](https://github.com/kiva/ui/commit/d4ade9e3eb4d7c0f116abded03be24e2679f2a5d))
+* add impact stats composable with lender first name ([2148817](https://github.com/kiva/ui/commit/2148817146d635c5a001ebb793adc874a0dde489))
+* add impact stats page layout with section cards ([22eba68](https://github.com/kiva/ui/commit/22eba681515e6e7060f7acc51560af32966478ae))
+* add shared account page frame ([e367b4a](https://github.com/kiva/ui/commit/e367b4a17997d88a6fa7c72cceafbca4b24b89d9))
+* cit-5614 send the email connection for passwordless logins behind a flag ([#7383](https://github.com/kiva/ui/issues/7383)) ([dd6b5f2](https://github.com/kiva/ui/commit/dd6b5f2bc8cfb5774b23199346684e0bf329f3c5))
+* connect remind and clear mutations on invites beta page ([#7384](https://github.com/kiva/ui/issues/7384)) ([23584d0](https://github.com/kiva/ui/commit/23584d02358255532288b69ea83edf87d9ade149))
+* connect share link and acknowledgement functionality to invites beta page ([#7388](https://github.com/kiva/ui/issues/7388)) ([8a1d2a4](https://github.com/kiva/ui/commit/8a1d2a4a92f5706c498ef49fd8fd8932c859a240))
+* footer menu edit (adding cookies route to menu) ([94786c2](https://github.com/kiva/ui/commit/94786c2403f4b28472c8863a1041f1667f7bcec8))
+* migrating /legal/cookies to ui ([abbca28](https://github.com/kiva/ui/commit/abbca287cf013210cf4fbbfc3a2f62c625a88fdd))
+* update the MyKiva holiday fundraiser card design ([#7386](https://github.com/kiva/ui/issues/7386)) ([766bbc3](https://github.com/kiva/ui/commit/766bbc31702511ebd50bd90d93505bec309435e5))
+* url redirect change ([6340f58](https://github.com/kiva/ui/commit/6340f580899d7fae83971005334cab39994ceeed))
+
+### 🐛 Bugfixes
+
+* cit-5620 send the kiva login hint as ext-kiva_login_hint ([#7390](https://github.com/kiva/ui/issues/7390)) ([1317efe](https://github.com/kiva/ui/commit/1317efef77e20a51e54e7ec15f43c707fd8e5690))
+* resolve issue where cookie settings button sometimes renders wrong ([#7391](https://github.com/kiva/ui/issues/7391)) ([9eb4c76](https://github.com/kiva/ui/commit/9eb4c764314abbd4de7aff15363ce2b8e9a16f12))
+* suppress only the lender's name in the account frame title ([34f112b](https://github.com/kiva/ui/commit/34f112b3bab2f207fb721719a6d4f3893d52e739))
+
+### 🧹 Chores
+
+* **release:** 3.101.0-rc.1 [skip ci] ([52f6068](https://github.com/kiva/ui/commit/52f6068633374a8be87789f6b237beffae7b3d1a)), closes [#7385](https://github.com/kiva/ui/issues/7385) [#7383](https://github.com/kiva/ui/issues/7383) [#7384](https://github.com/kiva/ui/issues/7384) [#7388](https://github.com/kiva/ui/issues/7388) [#7386](https://github.com/kiva/ui/issues/7386) [#7390](https://github.com/kiva/ui/issues/7390) [#7391](https://github.com/kiva/ui/issues/7391)
+
 ## [3.101.0-rc.1](https://github.com/kiva/ui/compare/v3.100.0...v3.101.0-rc.1) (2026-11-11)
 
 ### 🎉 New Features
