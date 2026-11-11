@@ -35,7 +35,7 @@
 				Kiva also provides a method to opt out of non-essential cookies placed by Kiva and our third-party service providers. Whether or not you are not logged into a Kiva account, you can change your session cookie preferences here:
 				<button
 					type="button"
-					class="ot-sdk-show-settings tw-text-link tw-underline tw-font-medium"
+					class="tw-text-link tw-underline tw-font-medium"
 					v-kv-track-event="['CookiePolicy', 'click-Cookie-Settings']"
 					@click="openCookieSettings"
 				>Cookie Settings</button>.
@@ -48,7 +48,6 @@
 			<div class="tw-not-prose tw-flex tw-flex-wrap tw-gap-2 tw-my-3">
 				<kv-button
 					variant="secondary"
-					class="ot-sdk-show-settings"
 					v-kv-track-event="['CookiePolicy', 'click-Cookie-Settings']"
 					@click="openCookieSettings"
 				>
@@ -119,9 +118,6 @@ export default {
 	},
 	methods: {
 		openCookieSettings() {
-			// OneTrust only binds .ot-sdk-show-settings elements that exist when the SDK initializes,
-			// so after client-side navigation the class alone does nothing. Call the SDK directly.
-			// If the SDK hasn't loaded or is blocked, do nothing; the Data Settings link is alongside.
 			window.OneTrust?.ToggleInfoDisplay?.();
 		},
 	},
