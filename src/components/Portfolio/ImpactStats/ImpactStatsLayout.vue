@@ -4,11 +4,9 @@
 			<h2 class="tw-text-h3 tw-mb-1.5">
 				Account overview
 			</h2>
-			<section class="tw-bg-white tw-rounded tw-p-2 md:tw-p-3" data-testid="impact-account-overview">
-				<h3 class="tw-text-h4">
-					Account overview
-				</h3>
-			</section>
+			<div class="tw-grid tw-grid-cols-12 tw-gap-3">
+				<account-overview-card class="tw-col-span-12 lg:tw-col-span-8" />
+			</div>
 		</div>
 
 		<div class="tw-grid tw-grid-cols-12 tw-gap-3">
@@ -81,5 +79,7 @@
 </template>
 
 <script setup>
+import AccountOverviewCard from '#src/components/Portfolio/ImpactStats/AccountOverviewCard';
+
 defineOptions({ name: 'ImpactStatsLayout' });
 </script>
