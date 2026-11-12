@@ -138,6 +138,35 @@ describe('BorrowerMessageRow', () => {
 		getByAltText('Borrower photo');
 	});
 
+	describe('partner messages', () => {
+		const buildPartnerMessage = overrides => {
+			const message = buildMessage({ type: 'partner', ...overrides });
+			message.loan.partner.image = {
+				id: 4,
+				default: 'https://example.com/partner-s120.jpg',
+				retina: 'https://example.com/partner-s240.jpg',
+			};
+			return message;
+		};
+
+		it('shows the partner instead of the first loan', () => {
+			const { getByText, container } = renderRow(buildPartnerMessage());
+
+			getByText('NWTF');
+			getByText('Posted by NWTF · July 1, 2026');
+			expect(container.textContent).not.toMatch(/Maria|Philippines/);
+		});
+
+		it('falls back to the partner image', () => {
+			const { container } = renderRow(buildPartnerMessage({ image: null }));
+			const img = container.querySelector('img');
+
+			expect(img.getAttribute('src')).toBe('https://example.com/partner-s120.jpg');
+			expect(img.getAttribute('srcset')).toBe('https://example.com/partner-s240.jpg 2x');
+			expect(img.getAttribute('alt')).toBe('Photo of NWTF');
+		});
+	});
+
 	it('falls back to the Kiva placeholder when neither image exists', () => {
 		const message = buildMessage({ image: null });
 		message.loan.image = null;

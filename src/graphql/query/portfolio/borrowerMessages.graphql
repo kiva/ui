@@ -5,6 +5,7 @@ query borrowerMessages($limit: Int, $offset: Int) {
 			totalCount
 			values {
 				id
+				type
 				subject
 				subjectTranslated
 				body
@@ -31,6 +32,10 @@ query borrowerMessages($limit: Int, $offset: Int) {
 						partner {
 							id
 							name
+							image {
+								id
+								...borrowerMessageThumbnail
+							}
 						}
 					}
 				}
