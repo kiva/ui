@@ -10,5 +10,16 @@ query impactStats {
 		userStats {
 			amount_outstanding
 		}
+		givingFundParticipation {
+			totalAmount
+			totalCount
+		}
+		givingFunds {
+			totalCount
+			values {
+				id
+				currentAmountDonated
+			}
+		}
 	}
 }

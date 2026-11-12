@@ -21,8 +21,16 @@ const respondWith = my => observer => {
 	observer.complete();
 };
 
+const fund = (id, currentAmountDonated) => ({ __typename: 'GivingFund', id, currentAmountDonated });
+
 const lender = ({
-	firstName = 'James', balance = '0.00', promoBalance = '0.00', amountOutstanding = '0.00',
+	firstName = 'James',
+	balance = '0.00',
+	promoBalance = '0.00',
+	amountOutstanding = '0.00',
+	deposits = '0.00',
+	depositCount = 0,
+	funds = [],
 } = {}) => ({
 	__typename: 'My',
 	id: 1,
@@ -30,6 +38,10 @@ const lender = ({
 		__typename: 'UserAccount', id: 1, firstName, balance, promoBalance,
 	},
 	userStats: { __typename: 'UserStatistics', amount_outstanding: amountOutstanding },
+	givingFundParticipation: {
+		__typename: 'GivingFundParticipationCollection', totalAmount: deposits, totalCount: depositCount,
+	},
+	givingFunds: { __typename: 'GivingFundCollection', totalCount: funds.length, values: funds },
 });
 
 async function renderFixture(respond) {
@@ -50,6 +62,10 @@ async function renderStats(respond) {
 	return {
 		availableToLend: getByTestId('available-to-lend').textContent,
 		lentOut: getByTestId('lent-out').textContent,
+		givingFundDeposits: getByTestId('giving-fund-deposits').textContent,
+		fundraisersRaised: getByTestId('fundraisers-raised').textContent,
+		ownsGivingFunds: getByTestId('owns-giving-funds').textContent,
+		showGivingFund: getByTestId('show-giving-fund').textContent,
 	};
 }
 
@@ -102,6 +118,41 @@ describe('useImpactStats', () => {
 
 	it('returns null account values when my is null', async () => {
 		expect(await renderStats(respondWith(null))).toMatchObject({ availableToLend: 'null', lentOut: 'null' });
+	});
+
+	it('returns giving fund deposits', async () => {
+		const stats = await renderStats(respondWith(lender({ deposits: '1000.00', depositCount: 3 })));
+
+		expect(Number(stats.givingFundDeposits)).toBe(1000);
+	});
+
+	it('sums what the lender\'s own funds raised', async () => {
+		const stats = await renderStats(respondWith(lender({ funds: [fund('a', '1000.00'), fund('b', '25.00')] })));
+
+		expect(Number(stats.fundraisersRaised)).toBe(1025);
+		expect(stats.ownsGivingFunds).toBe('true');
+	});
+
+	it('shows the giving fund card for a fund owner who never deposited', async () => {
+		const stats = await renderStats(respondWith(lender({ funds: [fund('a', '0.00')] })));
+
+		expect(stats.showGivingFund).toBe('true');
+	});
+
+	it('hides the giving fund card without giving fund activity', async () => {
+		const stats = await renderStats(respondWith(lender()));
+
+		expect(stats.showGivingFund).toBe('false');
+		expect(stats.ownsGivingFunds).toBe('false');
+	});
+
+	it('returns null giving fund values and hides the card when my is null', async () => {
+		expect(await renderStats(respondWith(null))).toMatchObject({
+			givingFundDeposits: 'null',
+			fundraisersRaised: 'null',
+			ownsGivingFunds: 'false',
+			showGivingFund: 'false',
+		});
 	});
 
 	it('registers the impactStats operation', () => {
