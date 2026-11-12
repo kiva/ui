@@ -240,4 +240,54 @@ describe('BorrowerMessagePage', () => {
 
 		getByRole('heading', { level: 1, name: 'Update for Dina Teresa\'s Loan' });
 	});
+
+	describe('partner messages', () => {
+		const buildPartnerMessage = overrides => buildMessage({
+			type: 'partner',
+			...overrides,
+			loan: {
+				partner: {
+					id: 3,
+					name: 'CrediCampo',
+					image: {
+						id: 4,
+						default: 'https://example.com/partner.jpg',
+						share: 'https://example.com/partner-share.jpg',
+					},
+				},
+				...overrides?.loan,
+			},
+		});
+
+		it('shows the partner as the poster, without the first loan\'s name or location', () => {
+			const { getByText, queryByText, container } = renderPage(buildPartnerMessage());
+
+			getByText('Posted by CrediCampo on Mar 25, 2026');
+			getByText('Posted by CrediCampo · Mar 25, 2026');
+			expect(queryByText('CrediCampo')).toBeNull();
+			expect(container.textContent).not.toMatch(/Dina Teresa|El Salvador/);
+		});
+
+		it('falls back to the partner photo', () => {
+			const { getByRole } = renderPage(buildPartnerMessage({ image: null }));
+
+			expect(getByRole('img', { name: 'Photo of CrediCampo' }).getAttribute('src'))
+				.toBe('https://example.com/partner.jpg');
+		});
+
+		it('hides the comment link, which would point at the first loan', () => {
+			const { queryByRole } = renderPage(buildPartnerMessage());
+
+			expect(queryByRole('link', { name: 'Post a comment on the loan page' })).toBeNull();
+		});
+
+		it('titles the page with the partner and shares the partner photo', () => {
+			const { getByRole } = renderPage(buildPartnerMessage({ subject: '', image: null }));
+
+			getByRole('heading', { level: 1, name: 'Update from CrediCampo' });
+			expect(getHead().title).toBe('Update from CrediCampo');
+			expect(getHead().meta)
+				.toContainEqual({ property: 'og:image', content: 'https://example.com/partner-share.jpg' });
+		});
+	});
 });

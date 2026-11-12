@@ -39,7 +39,7 @@
 							v-html="body"
 						></div>
 						<div class="tw-flex tw-flex-col tw-gap-1">
-							<p v-if="partnerName" class="tw-text-label">
+							<p v-if="partnerName && !isPartner" class="tw-text-label">
 								{{ partnerName }}
 							</p>
 							<p class="tw-text-caption tw-text-secondary">
@@ -102,8 +102,10 @@ import WwwPage from '#src/components/WwwFrame/WwwPage';
 import useBorrowerMessage, { BORROWER_MESSAGES_LIST_PATH } from '#src/composables/useBorrowerMessage';
 import {
 	getBorrowerMessageAuthor,
+	getBorrowerMessagePhoto,
 	getBorrowerMessageSubject,
 	getBorrowerMessageTitle,
+	isPartnerMessage,
 } from '#src/util/borrowerMessage';
 import { htmlToText, sanitizeLimitedHtml } from '#src/util/limitedHtml';
 import { formatInKivaServerTimezone } from '#src/util/dateUtils';
@@ -118,6 +120,8 @@ const route = useRoute();
 const { message, isLoggedIn } = useBorrowerMessage();
 
 const loan = computed(() => message.value?.loan ?? {});
+
+const isPartner = computed(() => isPartnerMessage(message.value));
 
 const subject = computed(() => getBorrowerMessageSubject(message.value));
 
@@ -148,21 +152,16 @@ const location = computed(() => {
 	return [city, country?.name].filter(Boolean).join(', ');
 });
 
-const signature = computed(() => {
-	const postedBy = author.value ? `Posted by ${author.value} from ${location.value}` : `From ${location.value}`;
-	return [postedBy, date.value].filter(Boolean).join(' · ');
+const postedBy = computed(() => {
+	if (isPartner.value) {
+		return author.value ? `Posted by ${author.value}` : '';
+	}
+	return author.value ? `Posted by ${author.value} from ${location.value}` : `From ${location.value}`;
 });
 
-const photo = computed(() => {
-	const { name } = loan.value;
-	if (message.value?.image?.default) {
-		return { ...message.value.image, alt: name ? `Photo from ${name}'s message` : 'Photo from this message' };
-	}
-	if (loan.value.image?.default) {
-		return { ...loan.value.image, alt: name ? `Photo of ${name}` : 'Borrower photo' };
-	}
-	return null;
-});
+const signature = computed(() => [postedBy.value, date.value].filter(Boolean).join(' · '));
+
+const photo = computed(() => getBorrowerMessagePhoto(message.value));
 
 const originalLanguage = computed(() => message.value?.originalLanguage ?? '');
 
@@ -182,7 +181,7 @@ const originalSubject = computed(() => htmlToText(message.value?.subject));
 
 const originalBody = computed(() => sanitizeLimitedHtml(message.value?.body));
 
-const showCommentLink = computed(() => !!loan.value.id && !!loan.value.userProperties?.lentTo);
+const showCommentLink = computed(() => !isPartner.value && !!loan.value.id && !!loan.value.userProperties?.lentTo);
 
 const pageTitle = computed(() => getBorrowerMessageTitle(message.value));
 
@@ -196,7 +195,7 @@ const shareImage = computed(() => {
 	if (loan.value.anonymizationLevel !== 'none') {
 		return undefined;
 	}
-	return message.value?.image?.share || loan.value.image?.share || undefined;
+	return photo.value?.share || undefined;
 });
 
 useHead(computed(() => (message.value ? {

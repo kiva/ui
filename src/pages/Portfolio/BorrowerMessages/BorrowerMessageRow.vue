@@ -48,7 +48,12 @@
 
 <script setup>
 import { computed, ref } from 'vue';
-import { getBorrowerMessageAuthor, getBorrowerMessageSubject } from '#src/util/borrowerMessage';
+import {
+	getBorrowerMessageAuthor,
+	getBorrowerMessagePhoto,
+	getBorrowerMessageSubject,
+	isPartnerMessage,
+} from '#src/util/borrowerMessage';
 import { htmlToText } from '#src/util/limitedHtml';
 import { formatInKivaServerTimezone } from '#src/util/dateUtils';
 import kivaKUrl from '#src/assets/images/kiva_k.svg?url';
@@ -74,20 +79,16 @@ const openMessage = event => {
 
 const loan = computed(() => props.message.loan ?? {});
 
-const thumbnail = computed(() => {
-	const { name } = loan.value;
-	if (props.message.image?.default) {
-		return { ...props.message.image, alt: name ? `Photo from ${name}'s message` : 'Photo from this message' };
-	}
-	if (loan.value.image?.default) {
-		return { ...loan.value.image, alt: name ? `Photo of ${name}` : 'Borrower photo' };
-	}
-	return null;
-});
+const thumbnail = computed(() => getBorrowerMessagePhoto(props.message));
 
 const subject = computed(() => getBorrowerMessageSubject(props.message));
 
-const borrower = computed(() => [loan.value.name, loan.value.geocode?.country?.name].filter(Boolean).join(' · '));
+const borrower = computed(() => {
+	if (isPartnerMessage(props.message)) {
+		return getBorrowerMessageAuthor(props.message);
+	}
+	return [loan.value.name, loan.value.geocode?.country?.name].filter(Boolean).join(' · ');
+});
 
 const body = computed(() => htmlToText(props.message.bodyTranslated || props.message.body));
 
