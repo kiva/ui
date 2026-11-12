@@ -21,18 +21,36 @@ const respondWith = my => observer => {
 	observer.complete();
 };
 
-const lender = firstName => ({
+const lender = ({
+	firstName = 'James', balance = '0.00', promoBalance = '0.00', amountOutstanding = '0.00',
+} = {}) => ({
 	__typename: 'My',
 	id: 1,
-	userAccount: { __typename: 'UserAccount', id: 1, firstName },
+	userAccount: {
+		__typename: 'UserAccount', id: 1, firstName, balance, promoBalance,
+	},
+	userStats: { __typename: 'UserStatistics', amount_outstanding: amountOutstanding },
 });
 
-async function renderFirstName(respond) {
+async function renderFixture(respond) {
 	const { getByTestId } = render(UsesImpactStats, {
 		global: { ...globalOptions, provide: { ...globalOptions.provide, apollo: makeClient(respond) } },
 	});
 	await flushPromises();
+	return getByTestId;
+}
+
+async function renderFirstName(respond) {
+	const getByTestId = await renderFixture(respond);
 	return getByTestId('first-name').textContent;
+}
+
+async function renderStats(respond) {
+	const getByTestId = await renderFixture(respond);
+	return {
+		availableToLend: getByTestId('available-to-lend').textContent,
+		lentOut: getByTestId('lent-out').textContent,
+	};
 }
 
 describe('useImpactStats', () => {
@@ -41,15 +59,15 @@ describe('useImpactStats', () => {
 	});
 
 	it('returns the lender\'s first name', async () => {
-		expect(await renderFirstName(respondWith(lender('James')))).toBe('James');
+		expect(await renderFirstName(respondWith(lender({ firstName: 'James' })))).toBe('James');
 	});
 
 	it('trims the first name', async () => {
-		expect(await renderFirstName(respondWith(lender('  James ')))).toBe('James');
+		expect(await renderFirstName(respondWith(lender({ firstName: '  James ' })))).toBe('James');
 	});
 
 	it.each([null, '', '   '])('returns an empty name for %j', async firstName => {
-		expect(await renderFirstName(respondWith(lender(firstName)))).toBe('');
+		expect(await renderFirstName(respondWith(lender({ firstName })))).toBe('');
 	});
 
 	it('returns an empty name when my is null', async () => {
@@ -68,6 +86,22 @@ describe('useImpactStats', () => {
 	it('logs a failed request and returns an empty name', async () => {
 		expect(await renderFirstName(observer => observer.error(new Error('Network error')))).toBe('');
 		expect(logReadQueryError).toHaveBeenCalled();
+	});
+
+	it('returns available to lend as balance plus promo balance', async () => {
+		const stats = await renderStats(respondWith(lender({ balance: '800.23', promoBalance: '47.00' })));
+
+		expect(Number(stats.availableToLend)).toBeCloseTo(847.23);
+	});
+
+	it('returns lent out as the amount outstanding', async () => {
+		const stats = await renderStats(respondWith(lender({ amountOutstanding: '3240.00' })));
+
+		expect(Number(stats.lentOut)).toBe(3240);
+	});
+
+	it('returns null account values when my is null', async () => {
+		expect(await renderStats(respondWith(null))).toMatchObject({ availableToLend: 'null', lentOut: 'null' });
 	});
 
 	it('registers the impactStats operation', () => {
