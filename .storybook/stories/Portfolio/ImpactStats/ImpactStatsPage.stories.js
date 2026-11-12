@@ -16,6 +16,15 @@ const lender = {
 	userStats: { amount_outstanding: '3240.00' },
 };
 
+const givingFundLender = {
+	...lender,
+	givingFundParticipation: { totalAmount: '1000.00', totalCount: 3 },
+	givingFunds: {
+		totalCount: 2,
+		values: [{ id: 'a', currentAmountDonated: '1000.00' }, { id: 'b', currentAmountDonated: '25.00' }],
+	},
+};
+
 const story = my => {
 	const template = () => ({
 		components: { WwwPageAccount, ImpactStatsLayout },
@@ -40,5 +49,20 @@ Desktop.parameters = {
 
 export const Mobile = story(lender);
 Mobile.parameters = {
+	viewport: { defaultViewport: 'mobile2' },
+};
+
+export const DesktopGivingFunds = story(givingFundLender);
+DesktopGivingFunds.parameters = {
+	viewport: { defaultViewport: 'largeBreakpoint' },
+};
+
+export const TabletGivingFunds = story(givingFundLender);
+TabletGivingFunds.parameters = {
+	viewport: { defaultViewport: 'mediumBreakpoint' },
+};
+
+export const MobileGivingFunds = story(givingFundLender);
+MobileGivingFunds.parameters = {
 	viewport: { defaultViewport: 'mobile2' },
 };

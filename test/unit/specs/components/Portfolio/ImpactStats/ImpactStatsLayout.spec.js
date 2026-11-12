@@ -1,4 +1,5 @@
 import { render } from '@testing-library/vue';
+import { computed } from 'vue';
 import ImpactStatsLayout from '#src/components/Portfolio/ImpactStats/ImpactStatsLayout';
 
 const GROUP_HEADINGS = ['Account overview', 'Your impact diversity', 'Achievements', 'Remember them?'];
@@ -12,16 +13,30 @@ const LEFT = [
 ];
 const RIGHT = ['impact-goal', 'impact-percentile', 'impact-badges', 'impact-first-loan'];
 
-const renderLayout = () => render(ImpactStatsLayout, {
-	global: {
-		stubs: {
-			AccountOverviewCard: {
-				name: 'AccountOverviewCard',
-				template: '<div data-testid="impact-account-overview"></div>',
+const mockState = {};
+
+vi.mock('#src/composables/useImpactStats', () => ({
+	default: () => mockState,
+}));
+
+const renderLayout = ({ showGivingFund = false } = {}) => {
+	Object.assign(mockState, { showGivingFund: computed(() => showGivingFund) });
+
+	return render(ImpactStatsLayout, {
+		global: {
+			stubs: {
+				AccountOverviewCard: {
+					name: 'AccountOverviewCard',
+					template: '<div data-testid="impact-account-overview"></div>',
+				},
+				GivingFundCard: {
+					name: 'GivingFundCard',
+					template: '<div data-testid="impact-giving-fund"></div>',
+				},
 			},
 		},
-	},
-});
+	});
+};
 
 describe('ImpactStatsLayout', () => {
 	it('shows the group headings as h2', () => {
@@ -51,10 +66,20 @@ describe('ImpactStatsLayout', () => {
 		expect(order.slice(-3)).toEqual(['impact-badges', 'Remember them?', 'impact-first-loan']);
 	});
 
-	it('has no giving fund card', () => {
-		const { queryByTestId } = renderLayout();
+	it('shows the giving fund card beside the account overview card for giving fund lenders', () => {
+		const { getByTestId } = renderLayout({ showGivingFund: true });
+		const accountOverview = getByTestId('impact-account-overview');
+		const givingFund = getByTestId('impact-giving-fund');
+
+		expect(accountOverview.nextElementSibling).toBe(givingFund);
+		expect(givingFund.parentElement.classList).toContain('md:tw-grid-cols-2');
+	});
+
+	it('hides the giving fund card for other lenders', () => {
+		const { getByTestId, queryByTestId } = renderLayout();
 
 		expect(queryByTestId('impact-giving-fund')).toBeNull();
+		expect(getByTestId('impact-account-overview').classList).toContain('lg:tw-col-span-8');
 	});
 
 	it('spans the account overview 8 of 12 columns from lg', () => {

@@ -4,7 +4,11 @@
 			<h2 class="tw-text-h3 tw-mb-1.5">
 				Account overview
 			</h2>
-			<div class="tw-grid tw-grid-cols-12 tw-gap-3">
+			<div v-if="showGivingFund" class="tw-grid tw-gap-2 md:tw-grid-cols-2">
+				<account-overview-card />
+				<giving-fund-card />
+			</div>
+			<div v-else class="tw-grid tw-grid-cols-12 tw-gap-3">
 				<account-overview-card class="tw-col-span-12 lg:tw-col-span-8" />
 			</div>
 		</div>
@@ -80,6 +84,10 @@
 
 <script setup>
 import AccountOverviewCard from '#src/components/Portfolio/ImpactStats/AccountOverviewCard';
+import GivingFundCard from '#src/components/Portfolio/ImpactStats/GivingFundCard';
+import useImpactStats from '#src/composables/useImpactStats';
 
 defineOptions({ name: 'ImpactStatsLayout' });
+
+const { showGivingFund } = useImpactStats();
 </script>
