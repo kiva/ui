@@ -3,7 +3,7 @@
 		class="tw-flex tw-flex-wrap tw-items-center tw-gap-2 md:tw-gap-3
 			tw-bg-white tw-rounded tw-shadow-lg tw-p-2.5 md:tw-p-3"
 	>
-		<dl class="tw-grid tw-grid-cols-2 tw-gap-2 md:tw-gap-3 tw-min-w-0 tw-grow-[999] tw-basis-[19rem]">
+		<dl class="tw-grid tw-grid-cols-2 tw-gap-2 md:tw-gap-3 tw-min-w-0 tw-grow-[999] tw-basis-[18rem]">
 			<div
 				v-for="stat in stats"
 				:key="stat.testId"
@@ -24,7 +24,7 @@
 				</dd>
 			</div>
 		</dl>
-		<div class="tw-flex tw-grow">
+		<div class="tw-flex tw-grow tw-basis-[10rem]">
 			<slot></slot>
 		</div>
 	</div>
