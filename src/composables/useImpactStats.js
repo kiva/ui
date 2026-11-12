@@ -37,7 +37,10 @@ export default function useImpactStats() {
 
 	const availableToLend = computed(() => {
 		const account = result.value?.my?.userAccount;
-		return account ? parseMoney(account.balance) + parseMoney(account.promoBalance) : null;
+		if (account?.balance === null || account?.balance === undefined) {
+			return null;
+		}
+		return parseMoney(account.balance) + parseMoney(account.promoBalance);
 	});
 
 	const lentOut = computed(() => {
@@ -51,8 +54,8 @@ export default function useImpactStats() {
 	});
 
 	const fundraisersRaised = computed(() => {
-		const funds = result.value?.my?.givingFunds;
-		return funds ? sumCurrentAmountDonated(funds.values) : null;
+		const values = result.value?.my?.givingFunds?.values;
+		return values ? sumCurrentAmountDonated(values) : null;
 	});
 
 	const ownsGivingFunds = computed(() => (result.value?.my?.givingFunds?.totalCount ?? 0) > 0);

@@ -120,6 +120,27 @@ describe('useImpactStats', () => {
 		expect(await renderStats(respondWith(null))).toMatchObject({ availableToLend: 'null', lentOut: 'null' });
 	});
 
+	it('returns null available to lend when the balance field fails', async () => {
+		const stats = await renderStats(respondWith(lender({ balance: null, promoBalance: '47.00' })));
+
+		expect(stats.availableToLend).toBe('null');
+	});
+
+	it('counts a null promo balance as 0', async () => {
+		const stats = await renderStats(respondWith(lender({ balance: '800.23', promoBalance: null })));
+
+		expect(Number(stats.availableToLend)).toBeCloseTo(800.23);
+	});
+
+	it('returns null fundraisers raised when the fund list fails', async () => {
+		const my = lender();
+		my.givingFunds = { __typename: 'GivingFundCollection', totalCount: 2, values: null };
+		const stats = await renderStats(respondWith(my));
+
+		expect(stats.fundraisersRaised).toBe('null');
+		expect(stats.ownsGivingFunds).toBe('true');
+	});
+
 	it('returns giving fund deposits', async () => {
 		const stats = await renderStats(respondWith(lender({ deposits: '1000.00', depositCount: 3 })));
 
