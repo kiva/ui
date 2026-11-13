@@ -4,6 +4,11 @@ query impactStats {
 		userAccount {
 			id
 			firstName
+			balance
+			promoBalance
+		}
+		userStats {
+			amount_outstanding
 		}
 	}
 }
