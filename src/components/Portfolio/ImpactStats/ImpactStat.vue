@@ -23,7 +23,7 @@
 					{{ tooltip }}
 				</KvTooltip>
 			</div>
-			<p class="tw-text-title tw-text-primary" :data-testid="valueTestId">
+			<div class="tw-text-title tw-text-primary" :data-testid="valueTestId">
 				<KvLoadingText v-if="loading" />
 				<template v-else-if="value === null">
 					—
@@ -31,7 +31,7 @@
 				<template v-else>
 					{{ $filters.numeral(value, format) }}
 				</template>
-			</p>
+			</div>
 		</div>
 		<div v-if="$slots.default" :class="{ 'tw-ml-auto md:tw-ml-0': footerBeside }">
 			<slot></slot>

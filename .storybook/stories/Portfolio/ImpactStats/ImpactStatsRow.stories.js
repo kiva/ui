@@ -49,3 +49,6 @@ ZeroMobile.parameters = mobile;
 
 export const LargeMobile = story({ my: large, wrapperStyle: '' });
 LargeMobile.parameters = mobile;
+
+export const LargeDesktop = story({ my: large, wrapperStyle: 'max-width: 568px;' });
+LargeDesktop.parameters = desktop;
