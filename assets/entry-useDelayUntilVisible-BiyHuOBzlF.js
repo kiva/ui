@@ -1,0 +1,1 @@
+import{z as c}from"./entry-vue.esm-bundler-DN41AgNdM7.js";import{c as r}from"./entry-observerUtils-Cg16I4RRYc.js";const v=()=>{const e=c(null);return{delayUntilVisible:(t,s)=>{const n=s??[];e.value=r({targets:n,callback:o=>{o.forEach(i=>{i.intersectionRatio>0&&t(i)})}}),e.value||t()},disconnect:()=>{e.value&&e.value.disconnect()}}};export{v as u};

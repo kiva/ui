@@ -1,0 +1,1 @@
+import{g as r}from"./entry-userPreferenceUtils-CND_2oBzoj.js";const o="defaultLoanShareAmount",n=e=>{let t;return typeof e=="number"?t=e:typeof e=="string"&&e.trim()!==""&&(t=Number(e)),Number.isFinite(t)&&t>0?t:void 0};function f(e){if(typeof e=="string")try{return n(JSON.parse(e))}catch{return}}function i(e){return n(r(e,o))}export{o as D,f as d,i as r};

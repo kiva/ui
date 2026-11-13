@@ -1,0 +1,1 @@
+import{n}from"./entry-numeral-xVHG5DEP0A.js";function t(e){return e===""||["object","boolean"].includes(typeof e)?!1:!Number.isNaN(Number(e))}function i(e){if(typeof e=="boolean")return 0;const r=n(e).value();return Number.isFinite(r)?r:0}export{t as i,i as p};
