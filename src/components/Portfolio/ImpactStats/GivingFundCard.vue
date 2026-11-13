@@ -1,5 +1,5 @@
 <template>
-	<AccountStatCard :stats="stats" :loading="loading" data-testid="impact-giving-fund">
+	<AccountStatCard :stats="stats" :loading="givingFundLoading" data-testid="impact-giving-fund">
 		<KvButton
 			class="tw-w-full"
 			variant="secondary"
@@ -23,7 +23,7 @@ const {
 	givingFundDeposits,
 	fundraisersRaised,
 	ownsGivingFunds,
-	loading,
+	givingFundLoading,
 } = useImpactStats();
 
 const stats = computed(() => [

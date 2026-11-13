@@ -1,5 +1,6 @@
 import { computed, watch } from 'vue';
 import impactStatsQuery from '#src/graphql/query/portfolio/impactStats.graphql';
+import impactStatsGivingFundsQuery from '#src/graphql/query/portfolio/impactStatsGivingFunds.graphql';
 import logReadQueryError from '#src/util/logReadQueryError';
 import { parseMoney } from '#src/util/numberUtils';
 import { hasGivingFundActivity, sumCurrentAmountDonated } from '#src/util/givingFundUtils';
@@ -7,7 +8,19 @@ import useApolloQuery from '#src/composables/useApolloQuery';
 
 const operation = { query: impactStatsQuery };
 
-export const preFetchOperations = [operation];
+// Both queries cache their data under `my`, and the giving fund fields are non-null, so a failure there
+// nulls `my`. Refusing to cache an errored result keeps that null from overwriting the main query's data.
+const givingFundOperation = {
+	query: impactStatsGivingFundsQuery,
+	fetchPolicy: 'cache-only',
+	preFetch: (config, client) => client.query({
+		query: config.query,
+		fetchPolicy: 'network-only',
+		errorPolicy: 'none',
+	}).catch(e => logReadQueryError(e, 'useImpactStats impactStatsGivingFunds')),
+};
+
+export const preFetchOperations = [operation, givingFundOperation];
 
 /**
  * The logged-in lender's data for the impact stats page.
@@ -21,11 +34,13 @@ export const preFetchOperations = [operation];
  *   ownsGivingFunds: import('vue').ComputedRef<boolean>,
  *   showGivingFund: import('vue').ComputedRef<boolean>,
  *   loading: import('vue').Ref<boolean>,
+ *   givingFundLoading: import('vue').Ref<boolean>,
  *   error: import('vue').Ref<Error|object[]|null>,
  * }}
  */
 export default function useImpactStats() {
 	const { result, loading, error } = useApolloQuery(operation);
+	const { result: givingFundResult, loading: givingFundLoading } = useApolloQuery(givingFundOperation);
 
 	watch(error, e => {
 		if (e) {
@@ -49,18 +64,18 @@ export default function useImpactStats() {
 	});
 
 	const givingFundDeposits = computed(() => {
-		const participation = result.value?.my?.givingFundParticipation;
+		const participation = givingFundResult.value?.my?.givingFundParticipation;
 		return participation ? parseMoney(participation.totalAmount) : null;
 	});
 
 	const fundraisersRaised = computed(() => {
-		const values = result.value?.my?.givingFunds?.values;
+		const values = givingFundResult.value?.my?.givingFunds?.values;
 		return values ? sumCurrentAmountDonated(values) : null;
 	});
 
-	const ownsGivingFunds = computed(() => (result.value?.my?.givingFunds?.totalCount ?? 0) > 0);
+	const ownsGivingFunds = computed(() => (givingFundResult.value?.my?.givingFunds?.totalCount ?? 0) > 0);
 
-	const showGivingFund = computed(() => hasGivingFundActivity(result.value?.my));
+	const showGivingFund = computed(() => hasGivingFundActivity(givingFundResult.value?.my));
 
 	return {
 		firstName,
@@ -71,6 +86,7 @@ export default function useImpactStats() {
 		ownsGivingFunds,
 		showGivingFund,
 		loading,
+		givingFundLoading,
 		error,
 	};
 }

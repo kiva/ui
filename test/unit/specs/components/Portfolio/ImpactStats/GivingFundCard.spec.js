@@ -16,7 +16,8 @@ const renderCard = ({
 		givingFundDeposits: computed(() => givingFundDeposits),
 		fundraisersRaised: computed(() => fundraisersRaised),
 		ownsGivingFunds: computed(() => ownsGivingFunds),
-		loading: ref(loading),
+		loading: ref(false),
+		givingFundLoading: ref(loading),
 	});
 	const tracked = [];
 	const result = render(GivingFundCard, {
@@ -60,7 +61,7 @@ describe('GivingFundCard', () => {
 	it('shows loading text while the lender\'s data loads', () => {
 		const { getByTestId } = renderCard({ givingFundDeposits: null, fundraisersRaised: null, loading: true });
 
-		expect(valueOf(getByTestId, 'impact-giving-fund-deposits')).not.toContain('$');
+		expect(getByTestId('impact-giving-fund-deposits').querySelector('.kv-loading-text')).not.toBeNull();
 	});
 
 	it('links Manage funds to /gfm in the same tab', () => {

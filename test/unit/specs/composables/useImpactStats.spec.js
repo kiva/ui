@@ -12,9 +12,11 @@ vi.mock('#src/util/logReadQueryError');
 const flushPromises = () => new Promise(resolve => { setTimeout(resolve); });
 
 function makeClient(respond) {
-	const link = new ApolloLink(() => new Observable(observer => { respond(observer); }));
+	const link = new ApolloLink(operation => new Observable(observer => { respond(observer, operation); }));
 	return new ApolloClient({ link, cache: new InMemoryCache() });
 }
+
+const [mainOperation, givingFundOperation] = preFetchOperations;
 
 const respondWith = my => observer => {
 	observer.next({ data: { my } });
@@ -44,9 +46,15 @@ const lender = ({
 	givingFunds: { __typename: 'GivingFundCollection', totalCount: funds.length, values: funds },
 });
 
-async function renderFixture(respond) {
+// Loads the operations the way the server prefetch does before the components read them
+async function renderFixture(respond, { prefetchMain = false } = {}) {
+	const apollo = makeClient(respond);
+	if (prefetchMain) {
+		await apollo.query({ query: mainOperation.query });
+	}
+	await givingFundOperation.preFetch(givingFundOperation, apollo);
 	const { getByTestId } = render(UsesImpactStats, {
-		global: { ...globalOptions, provide: { ...globalOptions.provide, apollo: makeClient(respond) } },
+		global: { ...globalOptions, provide: { ...globalOptions.provide, apollo } },
 	});
 	await flushPromises();
 	return getByTestId;
@@ -57,9 +65,10 @@ async function renderFirstName(respond) {
 	return getByTestId('first-name').textContent;
 }
 
-async function renderStats(respond) {
-	const getByTestId = await renderFixture(respond);
+async function renderStats(respond, options) {
+	const getByTestId = await renderFixture(respond, options);
 	return {
+		firstName: getByTestId('first-name').textContent,
 		availableToLend: getByTestId('available-to-lend').textContent,
 		lentOut: getByTestId('lent-out').textContent,
 		givingFundDeposits: getByTestId('giving-fund-deposits').textContent,
@@ -101,7 +110,7 @@ describe('useImpactStats', () => {
 
 	it('logs a failed request and returns an empty name', async () => {
 		expect(await renderFirstName(observer => observer.error(new Error('Network error')))).toBe('');
-		expect(logReadQueryError).toHaveBeenCalled();
+		expect(logReadQueryError).toHaveBeenCalledWith(expect.anything(), 'useImpactStats impactStats');
 	});
 
 	it('returns available to lend as balance plus promo balance', async () => {
@@ -176,7 +185,25 @@ describe('useImpactStats', () => {
 		});
 	});
 
-	it('registers the impactStats operation', () => {
-		expect(preFetchOperations[0].query.definitions[0].name.value).toBe('impactStats');
+	it('keeps the account values and name when the giving fund query fails', async () => {
+		const failGivingFunds = (observer, operation) => {
+			if (operation.operationName === 'impactStatsGivingFunds') {
+				observer.next({ data: { my: null }, errors: [{ message: 'giving funds unavailable' }] });
+			} else {
+				observer.next({ data: { my: lender({ balance: '847.23' }) } });
+			}
+			observer.complete();
+		};
+		const stats = await renderStats(failGivingFunds, { prefetchMain: true });
+
+		expect(stats.firstName).toBe('James');
+		expect(Number(stats.availableToLend)).toBeCloseTo(847.23);
+		expect(stats).toMatchObject({ givingFundDeposits: 'null', showGivingFund: 'false' });
+		expect(logReadQueryError).toHaveBeenCalledWith(expect.anything(), 'useImpactStats impactStatsGivingFunds');
+	});
+
+	it('registers the main and giving fund operations', () => {
+		expect(preFetchOperations.map(op => op.query.definitions[0].name.value))
+			.toEqual(['impactStats', 'impactStatsGivingFunds']);
 	});
 });
