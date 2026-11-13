@@ -33,6 +33,10 @@ const renderLayout = ({ showGivingFund = false } = {}) => {
 					name: 'GivingFundCard',
 					template: '<div data-testid="impact-giving-fund"></div>',
 				},
+				ImpactStatsRow: {
+					name: 'ImpactStatsRow',
+					template: '<div data-testid="impact-stats"></div>',
+				},
 			},
 		},
 	});
