@@ -5,6 +5,7 @@ import logReadQueryError from '#src/util/logReadQueryError';
 import { parseMoney } from '#src/util/numberUtils';
 import { hasGivingFundActivity, sumCurrentAmountDonated } from '#src/util/givingFundUtils';
 import useApolloQuery from '#src/composables/useApolloQuery';
+import useCountryReach from '#src/composables/useCountryReach';
 
 const operation = { query: impactStatsQuery };
 
@@ -33,6 +34,11 @@ export const preFetchOperations = [operation, givingFundOperation];
  *   fundraisersRaised: import('vue').ComputedRef<number|null>,
  *   ownsGivingFunds: import('vue').ComputedRef<boolean>,
  *   showGivingFund: import('vue').ComputedRef<boolean>,
+ *   livesTouched: import('vue').ComputedRef<number|null>,
+ *   countriesLentTo: import('vue').ComputedRef<number|null>,
+ *   countriesAvailable: import('vue').ComputedRef<number|null>,
+ *   donations: import('vue').ComputedRef<number|null>,
+ *   totalImpact: import('vue').ComputedRef<number|null>,
  *   loading: import('vue').Ref<boolean>,
  *   givingFundLoading: import('vue').Ref<boolean>,
  *   error: import('vue').Ref<Error|object[]|null>,
@@ -63,6 +69,22 @@ export default function useImpactStats() {
 		return stats ? parseMoney(stats.amount_outstanding) : null;
 	});
 
+	const livesTouched = computed(() => result.value?.my?.lendingStats?.lentTo?.borrowers?.totalCount ?? null);
+
+	const countriesLentTo = computed(() => result.value?.my?.lendingStats?.lentTo?.countries?.totalCount ?? null);
+
+	const { availableCountryCount: countriesAvailable } = useCountryReach(() => result.value);
+
+	const donations = computed(() => {
+		const stats = result.value?.my?.userStats;
+		return stats ? parseMoney(stats.amount_donated) : null;
+	});
+
+	const totalImpact = computed(() => {
+		const stats = result.value?.my?.userStats;
+		return stats ? parseMoney(stats.amount_of_loans) : null;
+	});
+
 	const givingFundDeposits = computed(() => {
 		const participation = givingFundResult.value?.my?.givingFundParticipation;
 		return participation ? parseMoney(participation.totalAmount) : null;
@@ -85,6 +107,11 @@ export default function useImpactStats() {
 		fundraisersRaised,
 		ownsGivingFunds,
 		showGivingFund,
+		livesTouched,
+		countriesLentTo,
+		countriesAvailable,
+		donations,
+		totalImpact,
 		loading,
 		givingFundLoading,
 		error,
