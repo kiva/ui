@@ -8,7 +8,7 @@
 	>
 		<div class="tw-flex tw-flex-col tw-gap-0.5 tw-min-w-0">
 			<div class="tw-flex tw-items-center tw-gap-0.5">
-				<p class="tw-text-label tw-text-secondary">
+				<p class="tw-text-label tw-text-secondary tw-whitespace-nowrap">
 					{{ label }}
 				</p>
 				<button
@@ -33,7 +33,7 @@
 				</template>
 			</p>
 		</div>
-		<div v-if="$slots.default">
+		<div v-if="$slots.default" :class="{ 'tw-ml-auto md:tw-ml-0': footerBeside }">
 			<slot></slot>
 		</div>
 	</div>

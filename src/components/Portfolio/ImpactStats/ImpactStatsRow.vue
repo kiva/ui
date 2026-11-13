@@ -14,22 +14,31 @@
 			:loading="loading"
 			footer-beside
 		>
-			<div class="tw-flex tw-flex-col tw-items-end tw-gap-1 md:tw-items-start md:tw-gap-0.5">
-				<KvTextLink
-					to="/portfolio/loans"
-					:icon="mdiArrowRight"
-					v-kv-track-event="['portfolio', 'click', 'view-my-loans']"
-				>
-					View my loans
-				</KvTextLink>
-				<KvTextLink
-					to="/portfolio/borrower-messages"
-					:icon="mdiArrowRight"
-					v-kv-track-event="['portfolio', 'click', 'see-borrower-updates']"
-				>
-					See borrower updates
-				</KvTextLink>
-			</div>
+			<ul
+				class="tw-flex tw-flex-col tw-items-end tw-gap-1 tw-text-right tw-text-balance
+					md:tw-items-start md:tw-gap-0.5 md:tw-text-left"
+			>
+				<li>
+					<KvTextLink
+						:class="linkClass"
+						to="/portfolio/loans"
+						:icon="mdiArrowRight"
+						v-kv-track-event="['portfolio', 'click', 'view-my-loans']"
+					>
+						View my loans
+					</KvTextLink>
+				</li>
+				<li>
+					<KvTextLink
+						:class="linkClass"
+						to="/portfolio/borrower-messages"
+						:icon="mdiArrowRight"
+						v-kv-track-event="['portfolio', 'click', 'see-borrower-updates']"
+					>
+						See borrower updates
+					</KvTextLink>
+				</li>
+			</ul>
 		</ImpactStat>
 		<ImpactStat
 			:class="cellClass"
@@ -56,13 +65,16 @@
 			format="$0,0[.]00"
 			:loading="loading"
 		>
-			<KvTextLink
-				to="/portfolio/donations"
-				:icon="mdiArrowRight"
-				v-kv-track-event="['portfolio', 'click', 'view-tax-receipts']"
-			>
-				View tax receipts
-			</KvTextLink>
+			<p class="tw-text-balance">
+				<KvTextLink
+					:class="linkClass"
+					to="/portfolio/donations"
+					:icon="mdiArrowRight"
+					v-kv-track-event="['portfolio', 'click', 'view-tax-receipts']"
+				>
+					View tax receipts
+				</KvTextLink>
+			</p>
 		</ImpactStat>
 		<ImpactStat
 			:class="[cellClass, 'tw-col-span-2 md:tw-col-span-1']"
@@ -97,6 +109,9 @@ const {
 	loading,
 } = useImpactStats();
 
+// KvTextLink is inline-flex, which pushes its arrow to the far edge when the text wraps
+const linkClass = '!tw-inline [&>span]:tw-align-middle';
+
 const cellClass = `tw-bg-white tw-rounded tw-shadow-lg tw-p-2
-	md:tw-bg-transparent md:tw-rounded-none md:tw-shadow-none md:tw-px-2.5 md:tw-py-2`;
+	md:tw-bg-transparent md:tw-rounded-none md:tw-shadow-[0_0_#0000] md:tw-px-2.5 md:tw-py-2`;
 </script>
