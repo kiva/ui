@@ -18,8 +18,11 @@
 					:data-testid="stat.testId"
 				>
 					<KvLoadingText v-if="loading" />
+					<template v-else-if="stat.value === null">
+						—
+					</template>
 					<template v-else>
-						{{ formatMoney(stat.value) }}
+						{{ $filters.numeral(stat.value, '$0,0.00') }}
 					</template>
 				</dd>
 			</div>
@@ -31,7 +34,6 @@
 </template>
 
 <script setup>
-import numeral from 'numeral';
 import { KvLoadingText } from '@kiva/kv-components';
 
 defineOptions({ name: 'AccountStatCard' });
@@ -49,6 +51,4 @@ defineProps({
 		default: false,
 	},
 });
-
-const formatMoney = value => (value === null || value === undefined ? '—' : numeral(value).format('$0,0.00'));
 </script>

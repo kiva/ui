@@ -1,6 +1,7 @@
 import { render } from '@testing-library/vue';
 import { computed, ref } from 'vue';
 import { globalOptions } from '#src/../test/unit/specUtils';
+import numeralFilter from '#src/plugins/numeral-filter';
 import AccountOverviewCard from '#src/components/Portfolio/ImpactStats/AccountOverviewCard';
 
 const mockState = {};
@@ -20,6 +21,7 @@ const renderCard = ({ availableToLend = 847.23, lentOut = 3240, loading = false 
 		global: {
 			...globalOptions,
 			directives: { kvTrackEvent: { mounted: (el, { value }) => tracked.push(value) } },
+			mocks: { ...globalOptions.mocks, $filters: { numeral: numeralFilter } },
 		},
 	});
 	return { ...result, tracked };

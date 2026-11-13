@@ -1,4 +1,5 @@
 import { render } from '@testing-library/vue';
+import numeralFilter from '#src/plugins/numeral-filter';
 import AccountStatCard from '#src/components/Portfolio/ImpactStats/AccountStatCard';
 
 const STATS = [
@@ -11,6 +12,7 @@ const STATS = [
 const renderCard = ({ stats = STATS, loading = false, attrs = {} } = {}) => render(AccountStatCard, {
 	props: { stats, loading, ...attrs },
 	slots: { default: '<button>Act</button>' },
+	global: { mocks: { $filters: { numeral: numeralFilter } } },
 });
 
 describe('AccountStatCard', () => {

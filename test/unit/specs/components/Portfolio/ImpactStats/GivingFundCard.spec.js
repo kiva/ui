@@ -1,6 +1,7 @@
 import { render } from '@testing-library/vue';
 import { computed, ref } from 'vue';
 import { globalOptions } from '#src/../test/unit/specUtils';
+import numeralFilter from '#src/plugins/numeral-filter';
 import GivingFundCard from '#src/components/Portfolio/ImpactStats/GivingFundCard';
 
 const mockState = {};
@@ -24,6 +25,7 @@ const renderCard = ({
 		global: {
 			...globalOptions,
 			directives: { kvTrackEvent: { mounted: (el, { value }) => tracked.push(value) } },
+			mocks: { ...globalOptions.mocks, $filters: { numeral: numeralFilter } },
 		},
 	});
 	return { ...result, tracked };
