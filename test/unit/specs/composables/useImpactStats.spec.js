@@ -18,8 +18,21 @@ function makeClient(respond) {
 
 const [mainOperation, givingFundOperation] = preFetchOperations;
 
-const respondWith = my => observer => {
-	observer.next({ data: { my } });
+const facet = isoCode => ({
+	__typename: 'CountryFacet',
+	country: { __typename: 'Country', id: isoCode.charCodeAt(0) * 100 + isoCode.charCodeAt(1), isoCode },
+});
+
+const publicData = ({ codes = ['KE', 'PE', 'ZA'], excluded = '"ZA, AU"' } = {}) => ({
+	lend: { __typename: 'Lend', countryFacets: codes && codes.map(facet) },
+	general: {
+		__typename: 'General',
+		excluded_countries: { __typename: 'Setting', key: 'ui.excluded_countries', value: excluded },
+	},
+});
+
+const respondWith = (my, rest = publicData()) => observer => {
+	observer.next({ data: { my, ...rest } });
 	observer.complete();
 };
 
@@ -33,13 +46,31 @@ const lender = ({
 	deposits = '0.00',
 	depositCount = 0,
 	funds = [],
+	borrowers = 0,
+	countries = 0,
+	donated = '0.00',
+	lifetimeLent = '0.00',
 } = {}) => ({
 	__typename: 'My',
 	id: 1,
 	userAccount: {
 		__typename: 'UserAccount', id: 1, firstName, balance, promoBalance,
 	},
-	userStats: { __typename: 'UserStatistics', amount_outstanding: amountOutstanding },
+	userStats: {
+		__typename: 'UserStatistics',
+		amount_outstanding: amountOutstanding,
+		amount_donated: donated,
+		amount_of_loans: lifetimeLent,
+	},
+	lendingStats: {
+		__typename: 'LendingStats',
+		id: 1,
+		lentTo: {
+			__typename: 'LentTo',
+			borrowers: { __typename: 'BorrowerCollection', totalCount: borrowers },
+			countries: { __typename: 'CountryCollection', totalCount: countries },
+		},
+	},
 	givingFundParticipation: {
 		__typename: 'GivingFundParticipationCollection', totalAmount: deposits, totalCount: depositCount,
 	},
@@ -75,6 +106,11 @@ async function renderStats(respond, options) {
 		fundraisersRaised: getByTestId('fundraisers-raised').textContent,
 		ownsGivingFunds: getByTestId('owns-giving-funds').textContent,
 		showGivingFund: getByTestId('show-giving-fund').textContent,
+		livesTouched: getByTestId('lives-touched').textContent,
+		countriesLentTo: getByTestId('countries-lent-to').textContent,
+		countriesAvailable: getByTestId('countries-available').textContent,
+		donations: getByTestId('donations').textContent,
+		totalImpact: getByTestId('total-impact').textContent,
 	};
 }
 
@@ -190,7 +226,7 @@ describe('useImpactStats', () => {
 			if (operation.operationName === 'impactStatsGivingFunds') {
 				observer.next({ data: { my: null }, errors: [{ message: 'giving funds unavailable' }] });
 			} else {
-				observer.next({ data: { my: lender({ balance: '847.23' }) } });
+				observer.next({ data: { my: lender({ balance: '847.23' }), ...publicData() } });
 			}
 			observer.complete();
 		};
@@ -200,6 +236,61 @@ describe('useImpactStats', () => {
 		expect(Number(stats.availableToLend)).toBeCloseTo(847.23);
 		expect(stats).toMatchObject({ givingFundDeposits: 'null', showGivingFund: 'false' });
 		expect(logReadQueryError).toHaveBeenCalledWith(expect.anything(), 'useImpactStats impactStatsGivingFunds');
+	});
+
+	it('returns lives touched and countries lent to', async () => {
+		const stats = await renderStats(respondWith(lender({ borrowers: 284, countries: 7 })));
+
+		expect(stats).toMatchObject({ livesTouched: '284', countriesLentTo: '7' });
+	});
+
+	it('returns the countries Kiva lends in, less the excluded ones', async () => {
+		const stats = await renderStats(respondWith(lender()));
+
+		expect(stats.countriesAvailable).toBe('2');
+	});
+
+	it('returns donations and total impact', async () => {
+		const stats = await renderStats(respondWith(lender({ donated: '120.00', lifetimeLent: '4240.00' })));
+
+		expect(Number(stats.donations)).toBe(120);
+		expect(Number(stats.totalImpact)).toBe(4240);
+	});
+
+	it('returns zeros for a lender with no loans', async () => {
+		expect(await renderStats(respondWith(lender()))).toMatchObject({
+			livesTouched: '0',
+			countriesLentTo: '0',
+			donations: '0',
+			totalImpact: '0',
+			countriesAvailable: '2',
+		});
+	});
+
+	it('returns null lending stats and keeps the rest when lending stats are null', async () => {
+		const my = lender({ donated: '120.00', balance: '847.23' });
+		my.lendingStats = null;
+		const stats = await renderStats(respondWith(my));
+
+		expect(stats).toMatchObject({ livesTouched: 'null', countriesLentTo: 'null' });
+		expect(Number(stats.donations)).toBe(120);
+		expect(Number(stats.availableToLend)).toBeCloseTo(847.23);
+	});
+
+	it('returns a null countries total when the facets fail', async () => {
+		const stats = await renderStats(respondWith(lender(), publicData({ codes: null })));
+
+		expect(stats.countriesAvailable).toBe('null');
+	});
+
+	it('keeps the countries total when my is null', async () => {
+		expect(await renderStats(respondWith(null))).toMatchObject({
+			livesTouched: 'null',
+			countriesLentTo: 'null',
+			donations: 'null',
+			totalImpact: 'null',
+			countriesAvailable: '2',
+		});
 	});
 
 	it('registers the main and giving fund operations', () => {

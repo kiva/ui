@@ -32,6 +32,21 @@ export function readDateSetting(data, key) {
 }
 
 /**
+ * Read a comma separated list setting from SettingsManager, e.g. "VI, GU, CA"
+ *
+ * @param {object} data
+ * @param {string} key
+ * @returns {string[]}
+ */
+export function readListSetting(data, key) {
+	return String(_get(data, key) ?? '')
+		.replaceAll('"', '')
+		.split(',')
+		.map(item => item.trim())
+		.filter(Boolean);
+}
+
+/**
  * Read a json setting from SettingsManager
  *
  * TODO: figure out why these values are double-serialized

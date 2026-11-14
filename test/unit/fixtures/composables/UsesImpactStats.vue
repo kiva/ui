@@ -6,6 +6,11 @@
 	<span data-testid="fundraisers-raised">{{ String(fundraisersRaised) }}</span>
 	<span data-testid="owns-giving-funds">{{ String(ownsGivingFunds) }}</span>
 	<span data-testid="show-giving-fund">{{ String(showGivingFund) }}</span>
+	<span data-testid="lives-touched">{{ String(livesTouched) }}</span>
+	<span data-testid="countries-lent-to">{{ String(countriesLentTo) }}</span>
+	<span data-testid="countries-available">{{ String(countriesAvailable) }}</span>
+	<span data-testid="donations">{{ String(donations) }}</span>
+	<span data-testid="total-impact">{{ String(totalImpact) }}</span>
 </template>
 
 <script setup>
@@ -21,5 +26,10 @@ const {
 	fundraisersRaised,
 	ownsGivingFunds,
 	showGivingFund,
+	livesTouched,
+	countriesLentTo,
+	countriesAvailable,
+	donations,
+	totalImpact,
 } = useImpactStats();
 </script>

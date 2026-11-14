@@ -9,6 +9,33 @@ query impactStats {
 		}
 		userStats {
 			amount_outstanding
+			amount_donated
+			amount_of_loans
+		}
+		lendingStats {
+			id
+			lentTo {
+				borrowers {
+					totalCount
+				}
+				countries {
+					totalCount
+				}
+			}
+		}
+	}
+	lend {
+		countryFacets {
+			country {
+				id
+				isoCode
+			}
+		}
+	}
+	general {
+		excluded_countries: uiConfigSetting(key: "excluded_countries") {
+			key
+			value
 		}
 	}
 }
