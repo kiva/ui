@@ -8,12 +8,12 @@
 				<account-overview-card />
 				<giving-fund-card />
 			</div>
-			<div v-else class="tw-grid tw-grid-cols-12 tw-gap-3">
+			<div v-else class="tw-grid tw-grid-cols-12 tw-gap-3 lg:tw-gap-x-4">
 				<account-overview-card class="tw-col-span-12 lg:tw-col-span-8" />
 			</div>
 		</div>
 
-		<div class="tw-grid tw-grid-cols-12 tw-gap-3">
+		<div class="tw-grid tw-grid-cols-12 tw-gap-3 lg:tw-gap-x-4">
 			<div class="tw-col-span-12 lg:tw-col-span-8 tw-min-w-0 tw-flex tw-flex-col tw-gap-3">
 				<h2 class="tw-text-h3">
 					Your impact diversity

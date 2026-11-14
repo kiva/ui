@@ -27,3 +27,11 @@ useHead({ title: 'Your impact' });
 
 const { firstName } = useImpactStats();
 </script>
+
+<style lang="postcss" scoped>
+/* KvPageContainer sets max-width inline at 1200px; 1280px leaves 1152px of content inside its 64px lg padding */
+:deep(header .tw-mx-auto[style*=max-width]),
+:deep(main .tw-mx-auto[style*=max-width]) {
+	max-width: 1280px !important;
+}
+</style>
