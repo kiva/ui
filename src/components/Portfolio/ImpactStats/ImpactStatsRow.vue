@@ -3,7 +3,8 @@
 		aria-label="Impact stats"
 		data-testid="impact-stats"
 		class="tw-grid tw-grid-cols-2 tw-gap-1
-			md:tw-grid-cols-4 md:tw-gap-0 md:tw-bg-white md:tw-rounded md:tw-shadow-lg"
+			md:tw-grid-cols-[minmax(max-content,1fr)_minmax(0,1fr)_minmax(max-content,1fr)_minmax(0,1fr)]
+			md:tw-gap-x-3 md:tw-gap-y-0 md:tw-px-2.5 md:tw-py-2 md:tw-bg-white md:tw-rounded md:tw-shadow-lg"
 	>
 		<ImpactStat
 			:class="[cellClass, 'tw-col-span-2 md:tw-col-span-1']"
@@ -110,8 +111,8 @@ const {
 } = useImpactStats();
 
 // KvTextLink is inline-flex, which pushes its arrow to the far edge when the text wraps
-const linkClass = '!tw-inline [&>span]:tw-align-middle';
+const linkClass = '!tw-inline [&>span]:tw-align-middle md:tw-whitespace-nowrap';
 
 const cellClass = `tw-bg-white tw-rounded tw-shadow-lg tw-p-2
-	md:tw-bg-transparent md:tw-rounded-none md:tw-shadow-[0_0_#0000] md:tw-px-2.5 md:tw-py-2`;
+	md:tw-bg-transparent md:tw-rounded-none md:tw-shadow-[0_0_#0000] md:tw-p-0`;
 </script>
