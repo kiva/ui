@@ -2,8 +2,7 @@
 	<section
 		aria-label="Impact stats"
 		data-testid="impact-stats"
-		class="tw-grid tw-grid-cols-2 tw-gap-1
-			md:tw-grid-cols-[minmax(max-content,1fr)_minmax(0,1fr)_minmax(max-content,1fr)_minmax(0,1fr)]
+		class="impact-stats-row tw-grid tw-grid-cols-2 tw-gap-1
 			md:tw-gap-x-3 md:tw-gap-y-0 md:tw-px-2.5 md:tw-py-2 md:tw-bg-white md:tw-rounded md:tw-shadow-lg"
 	>
 		<ImpactStat
@@ -110,9 +109,31 @@ const {
 	loading,
 } = useImpactStats();
 
-// KvTextLink is inline-flex, which pushes its arrow to the far edge when the text wraps
-const linkClass = '!tw-inline [&>span]:tw-align-middle md:tw-whitespace-nowrap';
+const linkClass = 'impact-stats-row__link md:tw-whitespace-nowrap';
 
-const cellClass = `tw-bg-white tw-rounded tw-shadow-lg tw-p-2
-	md:tw-bg-transparent md:tw-rounded-none md:tw-shadow-[0_0_#0000] md:tw-p-0`;
+const cellClass = `impact-stats-row__cell tw-bg-white tw-rounded tw-shadow-lg tw-p-2
+	md:tw-bg-transparent md:tw-rounded-none md:tw-p-0`;
 </script>
+
+<style lang="postcss" scoped>
+.impact-stats-row {
+	@screen md {
+		grid-template-columns: minmax(max-content, 1fr) minmax(0, 1fr) minmax(max-content, 1fr) minmax(0, 1fr);
+	}
+}
+
+.impact-stats-row__cell {
+	@screen md {
+		box-shadow: none;
+	}
+}
+
+/* KvTextLink is inline-flex, which pushes its arrow to the far edge when the text wraps */
+.impact-stats-row__link {
+	display: inline;
+}
+
+.impact-stats-row__link > :deep(span) {
+	vertical-align: middle;
+}
+</style>
