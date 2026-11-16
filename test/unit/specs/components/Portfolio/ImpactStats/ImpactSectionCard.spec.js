@@ -84,6 +84,86 @@ describe('ImpactSectionCard', () => {
 		expect(flushFrame.classList).toContain('tw-overflow-hidden');
 	});
 
+	describe('loading', () => {
+		const loadingSlots = { loading: '<div data-testid="skeleton"></div>', pill: '7 of 32 countries' };
+
+		it('shows the loading slot instead of the body', () => {
+			const { getByTestId, queryByText } = renderCard({ props: { loading: true }, slots: loadingSlots });
+
+			getByTestId('skeleton');
+			expect(queryByText('Body')).toBeNull();
+		});
+
+		it('keeps the title and a subtitle prop real', () => {
+			const { getByRole, getByTestId } = renderCard({
+				props: { loading: true, subtitle: 'Countries where you have lent' },
+				slots: loadingSlots,
+			});
+
+			getByRole('heading', { level: 3, name: 'Geographic Reach' });
+			expect(getByTestId('impact-section-subtitle').textContent.trim()).toBe('Countries where you have lent');
+		});
+
+		it('shows loading text in place of the pill', () => {
+			const { getByTestId, queryByText } = renderCard({ props: { loading: true }, slots: loadingSlots });
+
+			expect(getByTestId('impact-section-pill').querySelector('.kv-loading-text')).not.toBeNull();
+			expect(queryByText('7 of 32 countries')).toBeNull();
+		});
+
+		it('shows loading text in place of a slotted subtitle', () => {
+			const { getByTestId, queryByText } = renderCard({
+				props: { loading: true },
+				slots: { ...loadingSlots, subtitle: 'You lent to Rosa M on March 13, 2020' },
+			});
+
+			expect(getByTestId('impact-section-subtitle').querySelector('.kv-loading-text')).not.toBeNull();
+			expect(queryByText('You lent to Rosa M on March 13, 2020')).toBeNull();
+		});
+	});
+
+	describe('error', () => {
+		it('replaces the body with the error message, keeping the title and hiding the pill', () => {
+			const {
+				getByRole, queryByRole, queryByText, queryByTestId
+			} = renderCard({
+				props: { error: true },
+				slots: { pill: '7 of 32 countries' },
+			});
+			const alert = getByRole('alert');
+
+			expect(alert.textContent).toContain('We couldn\'t load this right now.');
+			expect(alert.textContent).toContain('Your loans are safe. Refresh the page to try again.');
+			expect(queryByRole('button')).toBeNull();
+			getByRole('heading', { level: 3, name: 'Geographic Reach' });
+			expect(queryByText('Body')).toBeNull();
+			expect(queryByTestId('impact-section-pill')).toBeNull();
+		});
+
+		it('shows the skeleton, not the error, when loading is also set', () => {
+			const { getByTestId, queryByRole } = renderCard({
+				props: { loading: true, error: true },
+				slots: { loading: '<div data-testid="skeleton"></div>' },
+			});
+
+			getByTestId('skeleton');
+			expect(queryByRole('alert')).toBeNull();
+		});
+
+		it('keeps the insets in a flush card', () => {
+			const { getByRole } = renderCard({ props: { flush: true, error: true } });
+
+			expect(getByRole('alert').parentElement.classList).toContain('tw-px-2.5');
+		});
+
+		it('shows in an untitled card', () => {
+			const { getByRole, queryByRole } = renderCard({ props: { title: '', error: true } });
+
+			getByRole('alert');
+			expect(queryByRole('heading')).toBeNull();
+		});
+	});
+
 	it('puts fallthrough attributes on the section', () => {
 		const { container } = renderCard({ attrs: { 'data-testid': 'impact-geographic-reach' } });
 
