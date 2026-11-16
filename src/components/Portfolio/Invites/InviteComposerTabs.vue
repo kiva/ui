@@ -38,7 +38,14 @@
 					</div>
 				</KvTabPanel>
 				<KvTabPanel id="invite-tab-facebook">
-					<div class="tw-pt-1 tw-flex tw-flex-col tw-gap-2">
+					<div class="tw-flex tw-flex-col tw-gap-2">
+						<h3 class="tw-text-h4">
+							Post an invitation
+						</h3>
+						<p>
+							Please sign into Facebook (if needed) in the Facebook pop-up window, then complete your post
+							in the window.
+						</p>
 						<div>
 							<KvButton
 								:state="sharing.FACEBOOK ? 'loading' : ''"

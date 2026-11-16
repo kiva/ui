@@ -1,4 +1,5 @@
 import { formatPossessiveName } from '#src/util/stringParserUtils';
+import { parseMoney } from '#src/util/numberUtils';
 
 /**
  * Well-known giving fund IDs, keyed by fund identity.
@@ -51,6 +52,28 @@ export function isDisasterReliefFundOnlySupporter(my) {
 	return (my?.givingFunds?.totalCount ?? 0) === 0
 		&& reliefFundDonationCount > 0
 		&& reliefFundDonationCount === (my?.givingFundParticipation?.totalCount ?? 0);
+}
+
+/**
+ * Whether a lender has contributed to any giving fund or owns one
+ *
+ * @param {Object} my Query data with givingFundParticipation totals and the givingFunds count
+ * @returns {boolean}
+ */
+export function hasGivingFundActivity(my) {
+	return (my?.givingFundParticipation?.totalCount ?? 0) > 0
+		|| parseMoney(my?.givingFundParticipation?.totalAmount) > 0
+		|| (my?.givingFunds?.totalCount ?? 0) > 0;
+}
+
+/**
+ * Total raised across giving funds, summing each fund's currentAmountDonated
+ *
+ * @param {Object[]} funds Giving funds carrying currentAmountDonated
+ * @returns {number}
+ */
+export function sumCurrentAmountDonated(funds) {
+	return (funds ?? []).reduce((sum, fund) => sum + parseMoney(fund?.currentAmountDonated), 0);
 }
 
 /**

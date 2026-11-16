@@ -1,5 +1,5 @@
 import {
-	readJSONSetting, hashCode, readBoolSetting, readDateSetting, settingWithinDateRange
+	readJSONSetting, hashCode, readBoolSetting, readDateSetting, readListSetting, settingWithinDateRange
 } from '#src/util/settingsUtils';
 
 describe('settingsUtils.js', () => {
@@ -129,6 +129,24 @@ describe('settingsUtils.js', () => {
 			const result = readDateSetting({ dateKey: dateStringWithQuotes }, 'dateKey');
 			expect(result).toBeInstanceOf(Date);
 			expect(result.getFullYear()).toBe(2023);
+		});
+	});
+
+	describe('readListSetting', () => {
+		it('reads a quoted, spaced list', () => {
+			expect(readListSetting({ value: '"VI, GU, CA"' }, 'value')).toEqual(['VI', 'GU', 'CA']);
+		});
+
+		it('reads an unquoted list', () => {
+			expect(readListSetting({ value: 'VI,GU' }, 'value')).toEqual(['VI', 'GU']);
+		});
+
+		it.each([null, undefined, '', '""'])('returns an empty list for %j', value => {
+			expect(readListSetting({ value }, 'value')).toEqual([]);
+		});
+
+		it('returns an empty list without data', () => {
+			expect(readListSetting()).toEqual([]);
 		});
 	});
 

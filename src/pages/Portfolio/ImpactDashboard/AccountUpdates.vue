@@ -66,7 +66,7 @@
 		<!-- all updates link -->
 		<p v-if="totalCount > 3 || loading" class="tw-text-center tw-mt-4">
 			<router-link
-				to="/blog/myloans"
+				to="/portfolio/borrower-messages"
 				class="tw-inline-block tw-p-1"
 				v-kv-track-event="['portfolio', 'click', 'borrower-updates-view-all-updates']"
 			>
@@ -121,7 +121,7 @@ export default {
 
 			return {
 				id: update.id,
-				url: `/blog/loan/${update.id}`,
+				url: `/portfolio/borrower-messages/${update.id}`,
 				authorName: update.authorName,
 				date: format(new Date(update.date), 'P'),
 				imageUrl,

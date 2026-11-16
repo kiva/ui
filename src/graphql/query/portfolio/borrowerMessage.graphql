@@ -38,6 +38,10 @@ query borrowerMessage($id: Int!) {
 					partner {
 						id
 						name
+						image {
+							id
+							...borrowerMessagePhoto
+						}
 					}
 				}
 			}

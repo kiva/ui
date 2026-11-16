@@ -69,10 +69,10 @@ describe('useBorrowerMessage', () => {
 			await expect(promise).rejects.toEqual({ path: '/portfolio/borrower-messages' });
 		});
 
-		it('redirects partner updates to the monolith page', async () => {
+		it('loads partner updates without leaving the page', async () => {
 			const { promise } = preFetch({ update: { id: 123, type: 'partner' } });
 
-			await expect(promise).rejects.toEqual({ path: '/blog/partner/123' });
+			await expect(promise).resolves.toBeUndefined();
 		});
 	});
 });

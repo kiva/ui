@@ -38,12 +38,8 @@ const operation = {
 					? { path: BORROWER_MESSAGES_LIST_PATH }
 					: { path: '/ui-login', query: { doneUrl: route.fullPath } });
 			}
-			const update = data?.general?.update;
-			if (!update) {
+			if (!data?.general?.update) {
 				return Promise.reject({ path: BORROWER_MESSAGES_LIST_PATH });
-			}
-			if (update.type === 'partner') {
-				return Promise.reject({ path: `/blog/partner/${id}` });
 			}
 		});
 	},
@@ -53,7 +49,7 @@ export const preFetchOperations = [operation];
 
 /**
  * The borrower message (loan update) named by the route's id param.
- * Its prefetch redirects away when the update is missing, private to the viewer, or a partner update.
+ * Its prefetch redirects away when the update is missing or private to the viewer.
  *
  * @returns {{
  *   message: import('vue').ComputedRef<object|null>,

@@ -1,8 +1,10 @@
 import parseGivingFundCookie, {
 	COLOMBIA_RELIEF_NEXT_STEP_END,
+	hasGivingFundActivity,
 	hasSupportedColombiaReliefFund,
 	isColombiaReliefNextStepActive,
 	isDisasterReliefFundOnlySupporter,
+	sumCurrentAmountDonated,
 } from '#src/util/givingFundUtils';
 
 describe('isColombiaReliefNextStepActive', () => {
@@ -261,5 +263,56 @@ describe('parseGivingFundCookie', () => {
 				action: 'edit'
 			});
 		});
+	});
+});
+
+describe('hasGivingFundActivity', () => {
+	const activity = ({
+		count = 0, amount = '0.00', funds = 0, relief = 0,
+	} = {}) => ({
+		givingFundParticipation: { totalCount: count, totalAmount: amount },
+		reliefFundParticipation: { totalCount: relief },
+		givingFunds: { totalCount: funds },
+	});
+
+	it('is true for a lender with participation records', () => {
+		expect(hasGivingFundActivity(activity({ count: 2, amount: '50.00' }))).toBe(true);
+	});
+
+	it('is true for a deposit amount with no counted records', () => {
+		expect(hasGivingFundActivity(activity({ amount: '25.00' }))).toBe(true);
+	});
+
+	it('is true for a fund owner who never deposited', () => {
+		expect(hasGivingFundActivity(activity({ funds: 1 }))).toBe(true);
+	});
+
+	it('is true for a relief-fund-only supporter', () => {
+		expect(hasGivingFundActivity(activity({ count: 1, amount: '25.00', relief: 1 }))).toBe(true);
+	});
+
+	it('is false with $0.00 deposits, no records and no funds', () => {
+		expect(hasGivingFundActivity(activity())).toBe(false);
+	});
+
+	it('is false for null', () => {
+		expect(hasGivingFundActivity(null)).toBe(false);
+	});
+});
+
+describe('sumCurrentAmountDonated', () => {
+	it('sums what each fund raised', () => {
+		expect(sumCurrentAmountDonated([
+			{ currentAmountDonated: '1000.00' },
+			{ currentAmountDonated: '25.00' },
+		])).toBe(1025);
+	});
+
+	it('counts a null amount as 0', () => {
+		expect(sumCurrentAmountDonated([{ currentAmountDonated: null }, { currentAmountDonated: '25.00' }])).toBe(25);
+	});
+
+	it('returns 0 for a null list', () => {
+		expect(sumCurrentAmountDonated(null)).toBe(0);
 	});
 });

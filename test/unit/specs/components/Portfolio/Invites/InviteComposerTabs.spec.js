@@ -88,6 +88,14 @@ describe('InviteComposerTabs', () => {
 		expect(window.location.href).toBe(before);
 	});
 
+	it('explains the Facebook pop-up above the share button', async () => {
+		const { getByTestId, getByRole, getByText } = renderTabs();
+		await fireEvent.click(tabButton(getByTestId, 'facebook'));
+		expect(getByRole('heading', { name: 'Post an invitation' })).toBeTruthy();
+		expect(getByText(/Please sign into Facebook \(if needed\) in the Facebook pop-up window/)).toBeTruthy();
+		expect(openSpy).not.toHaveBeenCalled();
+	});
+
 	it('opens the Facebook share dialog with a new share link', async () => {
 		const {
 			mutate, kvTrackEvent, getByTestId, emitted,

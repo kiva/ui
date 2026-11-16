@@ -1,3 +1,39 @@
+## [3.102.0-rc.1](https://github.com/kiva/ui/compare/v3.101.0...v3.102.0-rc.1) (2026-11-16)
+
+### 🎉 New Features
+
+* add account balances to the impact stats query ([dac9d68](https://github.com/kiva/ui/commit/dac9d6892f408d9f6c6573568b60ac35da67006f))
+* add account overview card to the impact beta page ([e39e554](https://github.com/kiva/ui/commit/e39e55476b125f00a7cdf3e2a1009de5629eee57))
+* add account stat card for the impact beta page ([5c59867](https://github.com/kiva/ui/commit/5c598678c88ee79c2a3b4cba7343588162e61878))
+* add giving fund card to the impact beta page ([f40f943](https://github.com/kiva/ui/commit/f40f94316191966a0dc50e472af1db1a34a40058))
+* add giving fund totals to the impact stats query ([b6ae64e](https://github.com/kiva/ui/commit/b6ae64e095f2ba609abac0d15062342339657a91))
+* add impact stat cell for the impact beta page ([e9c7931](https://github.com/kiva/ui/commit/e9c7931c80fe191d8f718dae357e5d34c0e40e9c))
+* add impact stats row to the impact beta page ([a78379e](https://github.com/kiva/ui/commit/a78379e3e2a93bae52679608e5ed397e00f3be6b))
+* add lending stats to the impact stats query ([9804014](https://github.com/kiva/ui/commit/9804014cb58343d04c6b324a0afc86acee3ebba8))
+* add list setting reader and country reach composable ([8ddf2ba](https://github.com/kiva/ui/commit/8ddf2babd507271230fa789b4b9766f69fcbdbff))
+* cit-5688 render partner journals on the borrower message pages ([c47cf7a](https://github.com/kiva/ui/commit/c47cf7a9a1232c381d108fe7e6b45cb061af8ded))
+
+### 🐛 Bugfixes
+
+* add copy to facebook invites section ([#7393](https://github.com/kiva/ui/issues/7393)) ([5bd5194](https://github.com/kiva/ui/commit/5bd5194773d72d1d7b7dca3acb5cbb647992d1d4))
+* cit-5605 point borrower update links at /portfolio/borrower-messages ([96de18c](https://github.com/kiva/ui/commit/96de18cb85c9b130477b39b19f4dbaf33a021cda))
+* keep account data when the giving fund query fails ([a80d335](https://github.com/kiva/ui/commit/a80d3358f8377988b0650cf8727454c9d9304378))
+* keep impact stat cells flat on desktop and links tidy when they wrap ([5dc5d6f](https://github.com/kiva/ui/commit/5dc5d6f574c17b3d2d9739e1124754365d95b64e))
+* keep the impact stat loading text inside its value ([7d4af85](https://github.com/kiva/ui/commit/7d4af85f6e4e7096dfd9e02b4990e447212bfb55))
+* keep the impact stats links on one line from md up ([b6216b1](https://github.com/kiva/ui/commit/b6216b185607c518b4de3e1aca59f496d8268f88))
+* show no amount when a balance or fund list field fails to load ([6acedeb](https://github.com/kiva/ui/commit/6acedebb7409002254f4de07cefec6e76ae228d6))
+* widen the impact beta page to the design's 1152px content width ([a66ab4c](https://github.com/kiva/ui/commit/a66ab4cc5bc4db6a5cbab3a1bfb53555d02c2598))
+* wrap both account cards' buttons at the same card width ([f63d8bb](https://github.com/kiva/ui/commit/f63d8bbd69a029d7fd495c1902eac8f9c7db1acd))
+
+### 🪚 Refactors
+
+* format account card amounts with the numeral filter ([3cd4a72](https://github.com/kiva/ui/commit/3cd4a72d4da85e28856f45d0a2df82f4d708a3c0))
+* replace arbitrary Tailwind values in the impact stats row with CSS ([9e81d1c](https://github.com/kiva/ui/commit/9e81d1cde43d84db0c730c019f1a6a954987117e))
+
+### 🧹 Chores
+
+* update kv-components and kv-shop to latest versions ([a403e9c](https://github.com/kiva/ui/commit/a403e9c9eedd3ce40368e7abba4892521b5bc06b))
+
 ## [3.101.0](https://github.com/kiva/ui/compare/v3.100.0...v3.101.0) (2026-11-11)
 
 ### 🎉 New Features
