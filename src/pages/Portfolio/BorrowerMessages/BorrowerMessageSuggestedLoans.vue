@@ -36,6 +36,8 @@
 				:loan-id="suggestedLoan.id"
 				show-light-view
 				custom-loan-details
+				external-links
+				:custom-href="`/lend/${suggestedLoan.id}`"
 				:photo-path="appConfig.photoPath"
 				:kv-track-function="kvTrackEvent"
 				@show-loan-details="router.push(`/lend/${suggestedLoan.id}`)"
@@ -56,6 +58,7 @@ import { mdiChevronRight } from '@mdi/js';
 import { KvCompactLoanCard, KvTextLink } from '@kiva/kv-components';
 import KvClassicLoanCardContainer from '#src/components/LoanCards/KvClassicLoanCardContainer';
 import useBorrowerMessageSuggestedLoans from '#src/composables/useBorrowerMessageSuggestedLoans';
+import { getPossessiveLoanName } from '#src/util/borrowerMessage';
 
 defineOptions({ name: 'BorrowerMessageSuggestedLoans' });
 
@@ -72,7 +75,7 @@ const router = useRouter();
 
 const { loans, isFallback } = useBorrowerMessageSuggestedLoans(props.loan.partner.id);
 
-const borrowerName = computed(() => props.loan.name);
+const possessiveBorrowerName = computed(() => getPossessiveLoanName(props.loan.name));
 
 const partner = computed(() => props.loan.partner);
 
@@ -80,14 +83,14 @@ const country = computed(() => props.loan.geocode?.country?.name);
 
 const heading = computed(() => (isFallback.value
 	? 'Loans you might like'
-	: `More loans from ${borrowerName.value}'s community`));
+	: `More loans from ${possessiveBorrowerName.value} community`));
 
 const subhead = computed(() => {
 	if (isFallback.value) {
 		return 'Entrepreneurs raising funds on Kiva right now.';
 	}
 	const where = country.value ? ` in ${country.value}` : '';
-	return `${partner.value.name}, the lending partner behind ${borrowerName.value}'s loan, `
+	return `${partner.value.name}, the lending partner behind ${possessiveBorrowerName.value} loan, `
 		+ `is raising funds for these entrepreneurs${where} right now.`;
 });
 
@@ -107,8 +110,7 @@ const link = computed(() => (isFallback.value
 <style lang="postcss" scoped>
 .suggested-loans__classic-row {
 	@screen md {
-		grid-auto-flow: column;
-		grid-auto-columns: minmax(17rem, 1fr);
+		grid-template-columns: repeat(3, minmax(17rem, 1fr));
 		overflow-x: auto;
 	}
 }
