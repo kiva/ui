@@ -330,6 +330,13 @@ describe('BorrowerMessagePage', () => {
 			expect(queryByTestId('suggested-loans')).toBeNull();
 		});
 
+		it('hides suggested loans for a partner message', () => {
+			mockSuggestedLoansEnabled.value = true;
+			const { queryByTestId } = renderPage(buildMessage({ type: 'partner' }));
+
+			expect(queryByTestId('suggested-loans')).toBeNull();
+		});
+
 		it('remounts suggested loans for another message', async () => {
 			mockSuggestedLoansEnabled.value = true;
 			renderPage(buildMessage());

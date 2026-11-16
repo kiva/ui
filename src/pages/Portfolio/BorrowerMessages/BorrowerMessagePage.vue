@@ -189,7 +189,9 @@ const originalBody = computed(() => sanitizeLimitedHtml(message.value?.body));
 
 const showCommentLink = computed(() => !isPartner.value && !!loan.value.id && !!loan.value.userProperties?.lentTo);
 
-const showSuggestedLoans = computed(() => suggestedLoansEnabled.value && !!loan.value.partner?.id);
+const showSuggestedLoans = computed(() => suggestedLoansEnabled.value
+	&& !isPartner.value
+	&& !!loan.value.partner?.id);
 
 const pageTitle = computed(() => getBorrowerMessageTitle(message.value));
 
