@@ -2,6 +2,7 @@ import { computed } from 'vue';
 import { useRoute } from 'vue-router';
 import borrowerMessageQuery from '#src/graphql/query/portfolio/borrowerMessage.graphql';
 import useApolloQuery from '#src/composables/useApolloQuery';
+import { readBoolSetting } from '#src/util/settingsUtils';
 
 export const BORROWER_MESSAGES_LIST_PATH = '/portfolio/borrower-messages';
 
@@ -54,6 +55,7 @@ export const preFetchOperations = [operation];
  * @returns {{
  *   message: import('vue').ComputedRef<object|null>,
  *   isLoggedIn: import('vue').ComputedRef<boolean>,
+ *   suggestedLoansEnabled: import('vue').ComputedRef<boolean>,
  *   loading: import('vue').Ref<boolean>,
  * }}
  */
@@ -64,6 +66,9 @@ export default function useBorrowerMessage() {
 	return {
 		message: computed(() => result.value?.general?.update ?? null),
 		isLoggedIn: computed(() => !!result.value?.my?.id),
+		suggestedLoansEnabled: computed(
+			() => readBoolSetting(result.value, 'general.suggestedLoansEnabled.value') ?? false
+		),
 		loading,
 	};
 }

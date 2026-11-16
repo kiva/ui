@@ -3,6 +3,10 @@ query borrowerMessage($id: Int!) {
 		id
 	}
 	general {
+		suggestedLoansEnabled: uiConfigSetting(key: "borrower_messages_suggested_loans") {
+			key
+			value
+		}
 		update(id: $id) {
 			id
 			type

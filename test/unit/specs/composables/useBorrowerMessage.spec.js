@@ -1,4 +1,15 @@
-import { getMessageId, preFetchOperations } from '#src/composables/useBorrowerMessage';
+import { ref } from 'vue';
+import useBorrowerMessage, { getMessageId, preFetchOperations } from '#src/composables/useBorrowerMessage';
+
+const mockResult = ref(null);
+
+vi.mock('#src/composables/useApolloQuery', () => ({
+	default: () => ({ result: mockResult, loading: ref(false) }),
+}));
+
+vi.mock('vue-router', () => ({
+	useRoute: () => ({ params: { id: '123' } }),
+}));
 
 const [operation] = preFetchOperations;
 
@@ -73,6 +84,28 @@ describe('useBorrowerMessage', () => {
 			const { promise } = preFetch({ update: { id: 123, type: 'partner' } });
 
 			await expect(promise).resolves.toBeUndefined();
+		});
+	});
+
+	describe('suggestedLoansEnabled', () => {
+		const setting = value => ({
+			general: { suggestedLoansEnabled: { key: 'ui.borrower_messages_suggested_loans', value } },
+		});
+
+		it('is true when the setting is true', () => {
+			mockResult.value = setting('true');
+
+			expect(useBorrowerMessage().suggestedLoansEnabled.value).toBe(true);
+		});
+
+		it.each([
+			['false', setting('false')],
+			['missing', { general: { suggestedLoansEnabled: null } }],
+			['not loaded', null],
+		])('is false when the setting is %s', (_, result) => {
+			mockResult.value = result;
+
+			expect(useBorrowerMessage().suggestedLoansEnabled.value).toBe(false);
 		});
 	});
 });
