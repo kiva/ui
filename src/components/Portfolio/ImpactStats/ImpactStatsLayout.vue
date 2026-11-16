@@ -8,21 +8,17 @@
 				<account-overview-card />
 				<giving-fund-card />
 			</div>
-			<div v-else class="tw-grid tw-grid-cols-12 tw-gap-3">
+			<div v-else class="tw-grid tw-grid-cols-12 tw-gap-3 lg:tw-gap-x-4">
 				<account-overview-card class="tw-col-span-12 lg:tw-col-span-8" />
 			</div>
 		</div>
 
-		<div class="tw-grid tw-grid-cols-12 tw-gap-3">
+		<div class="tw-grid tw-grid-cols-12 tw-gap-3 lg:tw-gap-x-4">
 			<div class="tw-col-span-12 lg:tw-col-span-8 tw-min-w-0 tw-flex tw-flex-col tw-gap-3">
 				<h2 class="tw-text-h3">
 					Your impact diversity
 				</h2>
-				<section class="tw-bg-white tw-rounded tw-p-2 md:tw-p-3" data-testid="impact-stats">
-					<h3 class="tw-text-h4">
-						Impact stats
-					</h3>
-				</section>
+				<impact-stats-row />
 				<section class="tw-bg-white tw-rounded tw-p-2 md:tw-p-3" data-testid="impact-geographic-reach">
 					<h3 class="tw-text-h4">
 						Geographic reach
@@ -85,6 +81,7 @@
 <script setup>
 import AccountOverviewCard from '#src/components/Portfolio/ImpactStats/AccountOverviewCard';
 import GivingFundCard from '#src/components/Portfolio/ImpactStats/GivingFundCard';
+import ImpactStatsRow from '#src/components/Portfolio/ImpactStats/ImpactStatsRow';
 import useImpactStats from '#src/composables/useImpactStats';
 
 defineOptions({ name: 'ImpactStatsLayout' });

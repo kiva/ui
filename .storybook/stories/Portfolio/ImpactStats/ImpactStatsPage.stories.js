@@ -1,6 +1,7 @@
 import apolloStoryMixin from '../../../mixins/apollo-story-mixin';
 import cookieStoreStoryMixin from '../../../mixins/cookie-store-story-mixin';
 import kvAuth0StoryMixin from '../../../mixins/kv-auth0-story-mixin';
+import { impactStatsLender, impactStatsPublicData } from '../../../mock-data/impact-stats-data-mock';
 import WwwPageAccount from '#src/components/WwwFrame/WwwPageAccount';
 import ImpactStatsLayout from '#src/components/Portfolio/ImpactStats/ImpactStatsLayout';
 
@@ -8,13 +9,7 @@ export default {
 	title: 'Portfolio/ImpactStats/ImpactStatsPage',
 };
 
-const lender = {
-	id: 1,
-	userAccount: {
-		id: 1, firstName: 'James', balance: '847.23', promoBalance: '0.00',
-	},
-	userStats: { amount_outstanding: '3240.00' },
-};
+const lender = impactStatsLender();
 
 const givingFundLender = {
 	...lender,
@@ -28,7 +23,7 @@ const givingFundLender = {
 const story = my => {
 	const template = () => ({
 		components: { WwwPageAccount, ImpactStatsLayout },
-		mixins: [apolloStoryMixin({ queryResult: { data: { my } } }), cookieStoreStoryMixin(), kvAuth0StoryMixin],
+		mixins: [apolloStoryMixin({ queryResult: { data: { my, ...impactStatsPublicData } } }), cookieStoreStoryMixin(), kvAuth0StoryMixin],
 		template: `
 			<www-page-account
 				eyebrow="Your account"
