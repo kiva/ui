@@ -12,11 +12,14 @@
 						{{ title }}
 					</h3>
 					<div
-						v-if="subtitle || $slots.subtitle"
+						v-if="subtitle || ($slots.subtitle && !showError)"
 						class="tw-text-caption tw-text-secondary"
 						data-testid="impact-section-subtitle"
 					>
 						<KvLoadingText v-if="loading && $slots.subtitle" />
+						<template v-else-if="showError">
+							{{ subtitle }}
+						</template>
 						<slot v-else name="subtitle">
 							{{ subtitle }}
 						</slot>

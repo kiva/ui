@@ -160,6 +160,22 @@ describe('ImpactSectionCard', () => {
 			expect(queryByTestId('impact-section-pill')).toBeNull();
 		});
 
+		it('hides a slotted subtitle, whose data failed to load', () => {
+			const { queryByTestId, queryByText } = renderCard({
+				props: { title: 'Your first loan on Kiva', error: true },
+				slots: { subtitle: 'You lent to Rosa M on March 13, 2020' },
+			});
+
+			expect(queryByText('You lent to Rosa M on March 13, 2020')).toBeNull();
+			expect(queryByTestId('impact-section-subtitle')).toBeNull();
+		});
+
+		it('keeps a subtitle prop', () => {
+			const { getByTestId } = renderCard({ props: { error: true, subtitle: 'Countries where you have lent' } });
+
+			expect(getByTestId('impact-section-subtitle').textContent.trim()).toBe('Countries where you have lent');
+		});
+
 		it('shows the skeleton, not the error, when loading is also set', () => {
 			const { getByTestId, queryByRole } = renderCard({
 				props: { loading: true, error: true },
