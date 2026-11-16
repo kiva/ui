@@ -50,6 +50,26 @@ describe('ImpactSectionCard', () => {
 		expect(pill.classList).toContain('tw-bg-gray-100');
 	});
 
+	it('top-aligns the pill on mobile and centers it against the title and subtitle from md', () => {
+		const { getByRole } = renderCard({ slots: { pill: '7 of 32 countries' } });
+		const header = getByRole('heading').parentElement.parentElement.classList;
+
+		expect(header).toContain('tw-items-start');
+		expect(header).toContain('md:tw-items-center');
+	});
+
+	it('insets the header top 20px, 24px from md, and 16px when flush', () => {
+		const header = renderCard().getByRole('heading').parentElement.parentElement.classList;
+		expect(header).toContain('tw-pt-2.5');
+		expect(header).toContain('md:tw-pt-3');
+
+		const { container } = renderCard({ props: { flush: true } });
+		const flushHeader = within(container).getByRole('heading').parentElement.parentElement.classList;
+		expect(flushHeader).toContain('tw-pt-2');
+		expect(flushHeader).not.toContain('tw-pt-2.5');
+		expect(flushHeader).not.toContain('md:tw-pt-3');
+	});
+
 	it('shows no pill without the slot', () => {
 		const { queryByTestId } = renderCard();
 
