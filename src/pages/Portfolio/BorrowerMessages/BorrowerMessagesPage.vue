@@ -25,7 +25,7 @@
 							:src="gemUrl"
 							width="72"
 							height="72"
-							alt=""
+							alt="Illustration of a gem"
 						>
 						<div class="tw-flex tw-flex-col tw-gap-1">
 							<h2 class="tw-text-headline-two">

@@ -120,6 +120,7 @@ describe('BorrowerMessagesPage', () => {
 			const { getByTestId, queryByText } = renderEmpty({ suggestedLoansEnabled: true });
 			const panel = within(getByTestId('messages-empty'));
 
+			panel.getByRole('img', { name: 'Illustration of a gem' });
 			panel.getByRole('heading', { level: 2, name: 'No borrower messages yet' });
 			panel.getByText('Borrower messages are rare little gems. Not every loan comes with one, '
 				+ 'which makes them extra special when they arrive. '
