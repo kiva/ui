@@ -25,8 +25,10 @@
 						</div>
 					</div>
 					<div class="tw-flex-auto">
-						<!-- eslint-disable-next-line max-len -->
-						<p>{{ borrowerName }} has {{ daysLeftLanguage }} to earn the support of {{ lendersNeeded }} lenders through their network. Once they reach this goal, we'll share their loan with Kiva's global lending community.</p>
+						<p data-testid="bp-pfp-banner-copy">
+							<!-- eslint-disable-next-line max-len -->
+							{{ borrowerName }} has {{ timeLeftLanguage }} to earn the support of {{ lendersNeeded }} lenders through their network. Once they reach this goal, we'll share their loan with Kiva's global lending community.
+						</p>
 						<p class="tw-mt-2">
 							<!-- eslint-disable-next-line max-len -->
 							The <strong>Private Fundraising Period</strong> is a core part of Kiva's social underwriting model, which relies on community trust rather than credit scores or collateral. Your contribution is a signal that says: <em>“I know this person. I trust their character. I believe they will use this loan responsibly and repay it.”</em>
@@ -58,9 +60,10 @@ export default {
 			type: Number,
 			default: 0,
 		},
-		daysLeft: {
-			type: Number,
-			default: 0,
+		// Same value as the loan progress bar (fundraisingTimeLeft), so both show the same time left
+		timeLeft: {
+			type: String,
+			default: '',
 		},
 		borrowerName: {
 			type: String,
@@ -73,16 +76,9 @@ export default {
 		};
 	},
 	computed: {
-		daysLeftLanguage() {
-			switch (this.daysLeft) {
-				case this.daysLeft < 1:
-					return 'less than 1 day';
-				case this.daysLeft === 1:
-					return `${this.daysLeft} day`;
-				default:
-					return `${this.daysLeft} days`;
-			}
-		}
-	}
+		timeLeftLanguage() {
+			return this.timeLeft || 'limited time';
+		},
+	},
 };
 </script>
