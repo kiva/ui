@@ -122,7 +122,7 @@ describe('BorrowerMessagesPage', () => {
 
 			panel.getByRole('img', { name: 'Illustration of a gem' });
 			panel.getByRole('heading', { level: 2, name: 'No borrower messages yet' });
-			panel.getByText('Borrower messages are rare little gems. Not every loan comes with one, '
+			panel.getByText('Borrower messages are rare gems. Not every loan comes with one, '
 				+ 'which makes them extra special when they arrive. '
 				+ "Any message from a borrower you've supported will show up right here.");
 			expect(queryByText(/You don't have any messages from borrowers yet/)).toBeNull();

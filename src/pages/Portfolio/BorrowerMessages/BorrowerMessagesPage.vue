@@ -32,7 +32,7 @@
 								No borrower messages yet
 							</h2>
 							<p class="borrower-messages__empty-body tw-text-gray-600">
-								Borrower messages are rare little gems. Not every loan comes with one, which makes them
+								Borrower messages are rare gems. Not every loan comes with one, which makes them
 								extra special when they arrive. Any message from a borrower you've supported will show
 								up right here.
 							</p>
