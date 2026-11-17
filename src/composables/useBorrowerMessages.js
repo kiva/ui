@@ -3,6 +3,7 @@ import { useRoute } from 'vue-router';
 import borrowerMessagesQuery from '#src/graphql/query/portfolio/borrowerMessages.graphql';
 import logReadQueryError from '#src/util/logReadQueryError';
 import useApolloQuery from '#src/composables/useApolloQuery';
+import { readBoolSetting } from '#src/util/settingsUtils';
 
 export const BORROWER_MESSAGES_PAGE_LIMIT = 10;
 
@@ -39,6 +40,7 @@ export const preFetchOperations = [operation];
  *   offset: import('vue').ComputedRef<number>,
  *   loading: import('vue').ComputedRef<boolean>,
  *   error: import('vue').Ref<Error|object[]|null>,
+ *   suggestedLoansEnabled: import('vue').ComputedRef<boolean>,
  * }}
  */
 export default function useBorrowerMessages() {
@@ -67,5 +69,8 @@ export default function useBorrowerMessages() {
 		offset: computed(() => variables.value.offset),
 		loading: computed(() => !error.value && (loading.value || resultOffset.value !== variables.value.offset)),
 		error,
+		suggestedLoansEnabled: computed(
+			() => readBoolSetting(result.value, 'general.suggestedLoansEnabled.value') ?? false
+		),
 	};
 }

@@ -1,4 +1,4 @@
-import { render, fireEvent } from '@testing-library/vue';
+import { render, fireEvent, within } from '@testing-library/vue';
 import { ref } from 'vue';
 import BorrowerMessagesPage from '#src/pages/Portfolio/BorrowerMessages/BorrowerMessagesPage';
 
@@ -19,6 +19,11 @@ vi.mock('#src/composables/useBorrowerMessages', () => ({
 	default: () => mockState,
 }));
 
+const SECTION_STUB = {
+	props: ['loanContext'],
+	template: '<div data-testid="suggested-loans">{{ loanContext }}</div>',
+};
+
 const buildMessages = count => Array.from({ length: count }, (_, i) => ({ id: i + 1, subject: `Message ${i + 1}` }));
 
 const renderPage = (options = {}) => {
@@ -28,6 +33,8 @@ const renderPage = (options = {}) => {
 		loading = false,
 		error = null,
 		query = {},
+		suggestedLoansEnabled = false,
+		sectionStub = SECTION_STUB,
 	} = options;
 	mockRoute.query = query;
 	Object.assign(mockState, {
@@ -37,6 +44,7 @@ const renderPage = (options = {}) => {
 		offset: ref(offset),
 		loading: ref(loading),
 		error: ref(error),
+		suggestedLoansEnabled: ref(suggestedLoansEnabled),
 	});
 
 	return render(BorrowerMessagesPage, {
@@ -50,6 +58,7 @@ const renderPage = (options = {}) => {
 					props: ['message'],
 					template: '<div data-testid="borrower-message">{{ message.subject }}</div>',
 				},
+				BorrowerMessageSuggestedLoans: sectionStub,
 				KvPagination: {
 					props: ['total', 'limit', 'offset'],
 					emits: ['page-changed'],
@@ -94,6 +103,40 @@ describe('BorrowerMessagesPage', () => {
 
 		getByTestId('messages-empty');
 		expect(queryByTestId('pagination')).toBeNull();
+	});
+
+	describe('zero state', () => {
+		const renderEmpty = options => renderPage({ updates: [], totalCount: 0, ...options });
+
+		it('shows the one-line empty message when suggested loans are off', () => {
+			const { getByTestId, queryByTestId } = renderEmpty();
+
+			expect(getByTestId('messages-empty').textContent)
+				.toContain("You don't have any messages from borrowers yet.");
+			expect(queryByTestId('suggested-loans')).toBeNull();
+		});
+
+		it('shows the no messages panel and suggested loans when suggested loans are on', () => {
+			const { getByTestId, queryByText } = renderEmpty({ suggestedLoansEnabled: true });
+			const panel = within(getByTestId('messages-empty'));
+
+			panel.getByRole('heading', { level: 2, name: 'No borrower messages yet' });
+			panel.getByText('Borrower messages are rare little gems. Not every loan comes with one, '
+				+ 'which makes them extra special when they arrive. '
+				+ "Any message from a borrower you've supported will show up right here.");
+			expect(queryByText(/You don't have any messages from borrowers yet/)).toBeNull();
+			expect(getByTestId('suggested-loans').textContent).toBe('empty');
+		});
+
+		it('keeps the panel when the suggested loans section renders nothing', () => {
+			const { getByTestId } = renderEmpty({
+				suggestedLoansEnabled: true,
+				sectionStub: { template: '<template></template>' },
+			});
+
+			within(getByTestId('messages-empty'))
+				.getByRole('heading', { level: 2, name: 'No borrower messages yet' });
+		});
 	});
 
 	it('shows the error state', () => {

@@ -1,0 +1,16 @@
+<svg preserveAspectRatio="none" overflow="visible" style="display: block;" width="72" height="72" viewBox="0 0 72 72" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="Gem illustration" clip-path="url(#clip0_0_4)">
+<path id="Vector" d="M26 18H54L68 34L40 66L12 34L26 18Z" fill="#F4B536"/>
+<path id="Vector_2" d="M22 14H50L64 30L36 62L8 30L22 14Z" fill="white" stroke-width="3" stroke="#223829"/>
+<path id="Vector_3" d="M8 30H64" stroke-width="3" stroke="#223829"/>
+<path id="Vector_4" d="M22 14L28 30L36 62" stroke-width="3" stroke="#223829"/>
+<path id="Vector_5" d="M50 14L44 30L36 62" stroke-width="3" stroke="#223829"/>
+<path id="Vector_6" d="M28 30L36 14L44 30" stroke-width="3" stroke="#223829"/>
+<path id="Vector_7" d="M62 3L63.9 8.6L69.5 10.5L63.9 12.4L62 18L60.1 12.4L54.5 10.5L60.1 8.6L62 3Z" fill="#F4B536" stroke-width="2" stroke="#223829"/>
+</g>
+<defs>
+<clipPath id="clip0_0_4">
+<rect width="72" height="72" fill="white"/>
+</clipPath>
+</defs>
+</svg>
