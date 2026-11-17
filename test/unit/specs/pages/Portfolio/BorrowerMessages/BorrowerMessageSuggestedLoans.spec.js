@@ -82,7 +82,7 @@ describe('BorrowerMessageSuggestedLoans', () => {
 	it('passes the partner id to the loans composable', () => {
 		renderSection();
 
-		expect(useBorrowerMessageSuggestedLoans).toHaveBeenCalledWith(3);
+		expect(useBorrowerMessageSuggestedLoans).toHaveBeenCalledWith([3]);
 	});
 
 	it('renders nothing until loans load', () => {

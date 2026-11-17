@@ -73,7 +73,7 @@ const appConfig = inject('$appConfig', {});
 const kvTrackEvent = inject('$kvTrackEvent');
 const router = useRouter();
 
-const { loans, isFallback } = useBorrowerMessageSuggestedLoans(props.loan.partner.id);
+const { loans, isFallback } = useBorrowerMessageSuggestedLoans([props.loan.partner.id]);
 
 const possessiveBorrowerName = computed(() => getPossessiveLoanName(props.loan.name));
 
