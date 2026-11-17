@@ -1,10 +1,12 @@
 import { render } from '@testing-library/vue';
-import { ref } from 'vue';
+import { nextTick, ref } from 'vue';
 import { useHead } from '@unhead/vue';
 import BorrowerMessagePage from '#src/pages/Portfolio/BorrowerMessages/BorrowerMessagePage';
 
 const mockMessage = ref(null);
 const mockIsLoggedIn = ref(false);
+const mockSuggestedLoansEnabled = ref(false);
+const { mockSectionMounted } = vi.hoisted(() => ({ mockSectionMounted: vi.fn() }));
 
 vi.mock('vue-router', () => ({
 	useRoute: () => ({ path: '/portfolio/borrower-messages/123', params: { id: '123' } }),
@@ -15,8 +17,22 @@ vi.mock('@unhead/vue', () => ({
 }));
 
 vi.mock('#src/composables/useBorrowerMessage', () => ({
-	default: () => ({ message: mockMessage, isLoggedIn: mockIsLoggedIn, loading: ref(false) }),
+	default: () => ({
+		message: mockMessage,
+		isLoggedIn: mockIsLoggedIn,
+		suggestedLoansEnabled: mockSuggestedLoansEnabled,
+		loading: ref(false),
+	}),
 	BORROWER_MESSAGES_LIST_PATH: '/portfolio/borrower-messages',
+}));
+
+vi.mock('#src/pages/Portfolio/BorrowerMessages/BorrowerMessageSuggestedLoans', () => ({
+	default: {
+		name: 'BorrowerMessageSuggestedLoans',
+		props: ['loan'],
+		mounted: mockSectionMounted,
+		template: '<div data-testid="suggested-loans">{{ loan.id }}</div>',
+	},
 }));
 
 const buildMessage = overrides => ({
@@ -73,6 +89,8 @@ const getHead = () => useHead.mock.calls.at(-1)[0].value;
 
 beforeEach(() => {
 	useHead.mockClear();
+	mockSuggestedLoansEnabled.value = false;
+	mockSectionMounted.mockClear();
 });
 
 describe('BorrowerMessagePage', () => {
@@ -288,6 +306,45 @@ describe('BorrowerMessagePage', () => {
 			expect(getHead().title).toBe('Update from CrediCampo');
 			expect(getHead().meta)
 				.toContainEqual({ property: 'og:image', content: 'https://example.com/partner-share.jpg' });
+		});
+	});
+
+	describe('suggested loans', () => {
+		it('shows suggested loans for a partner loan when the setting is on', () => {
+			mockSuggestedLoansEnabled.value = true;
+			const { getByTestId } = renderPage(buildMessage());
+
+			expect(getByTestId('suggested-loans').textContent).toBe('456');
+		});
+
+		it('hides suggested loans when the setting is off', () => {
+			const { queryByTestId } = renderPage(buildMessage());
+
+			expect(queryByTestId('suggested-loans')).toBeNull();
+		});
+
+		it('hides suggested loans for a direct loan', () => {
+			mockSuggestedLoansEnabled.value = true;
+			const { queryByTestId } = renderPage(buildMessage({ loan: { partner: undefined } }));
+
+			expect(queryByTestId('suggested-loans')).toBeNull();
+		});
+
+		it('hides suggested loans for a partner message', () => {
+			mockSuggestedLoansEnabled.value = true;
+			const { queryByTestId } = renderPage(buildMessage({ type: 'partner' }));
+
+			expect(queryByTestId('suggested-loans')).toBeNull();
+		});
+
+		it('remounts suggested loans for another message', async () => {
+			mockSuggestedLoansEnabled.value = true;
+			renderPage(buildMessage());
+
+			mockMessage.value = buildMessage({ id: 124, loan: { partner: { id: 4, name: 'Other' } } });
+			await nextTick();
+
+			expect(mockSectionMounted).toHaveBeenCalledTimes(2);
 		});
 	});
 });

@@ -3,6 +3,7 @@ import {
 	getBorrowerMessagePhoto,
 	getBorrowerMessageSubject,
 	getBorrowerMessageTitle,
+	getPossessiveLoanName,
 } from '#src/util/borrowerMessage';
 
 const loan = { name: 'Maria', partner: { name: 'NWTF' } };
@@ -59,6 +60,27 @@ describe('borrowerMessage', () => {
 		it('returns null when there is no image', () => {
 			expect(getBorrowerMessagePhoto({ loan })).toBeNull();
 			expect(getBorrowerMessagePhoto({ type: 'partner', loan: { ...loan, image: loanImage } })).toBeNull();
+		});
+	});
+
+	describe('getPossessiveLoanName', () => {
+		it.each([
+			['Maria', 'Maria\'s'],
+			['Carlos', 'Carlos\''],
+			[' Maria ', 'Maria\'s'],
+			['Sunrise Group', 'Sunrise Group\'s'],
+			['', ''],
+			[undefined, ''],
+		])('makes %j possessive as %j', (name, possessive) => {
+			expect(getPossessiveLoanName(name)).toBe(possessive);
+		});
+
+		it.each([
+			'Sokha\'s Group',
+			'Andres\' Group',
+			'Sokha\'s group',
+		])('leaves the group name %j as it is', name => {
+			expect(getPossessiveLoanName(name)).toBe(name);
 		});
 	});
 
