@@ -2767,6 +2767,80 @@ describe('useGoalData', () => {
 			expect(result.showRenewedAnnualGoalToast).toBe(false);
 		});
 
+		it('shows the toast when an older completed goal sits beside the goal being expired', async () => {
+			const { setMyKivaGoal, setUserPreferenceKeys } = await import('#src/util/userPreferenceUtils');
+			const oldGoal = {
+				goalName: 'Old goal',
+				category: 'womens-equality',
+				target: 3,
+				status: 'completed',
+				dateStarted: '2025-02-10T00:00:00Z',
+			};
+			const goal = {
+				goalName: 'Goal',
+				category: 'womens-equality',
+				target: 20,
+				status: 'in-progress',
+				dateStarted: '2026-03-01T00:00:00Z',
+			};
+			mockApollo.query = vi.fn().mockResolvedValue({
+				data: {
+					my: {
+						userPreferences: {
+							id: 'new-pref-id',
+							preferences: JSON.stringify({ goals: [oldGoal, goal] }),
+						},
+						loans: { totalCount: 0 },
+					},
+				},
+			});
+			setMyKivaGoal.mockClear();
+			setUserPreferenceKeys.mockClear();
+
+			const today = new Date('2027-01-15T00:00:00Z');
+			const result = await composable.renewAnnualGoal(today);
+
+			expect(result.expiredGoals).toHaveLength(1);
+			expect(result.expiredGoals[0].goalName).toBe('Goal');
+			expect(result.showRenewedAnnualGoalToast).toBe(true);
+			expect(setMyKivaGoal).toHaveBeenCalledWith(mockApollo, {
+				category: goal.category,
+				target: goal.target,
+				dateStarted: goal.dateStarted,
+				status: GOAL_STATUS.EXPIRED,
+			});
+			expect(setUserPreferenceKeys).toHaveBeenCalledWith(mockApollo, {
+				goals: [oldGoal, { ...goal, status: GOAL_STATUS.EXPIRED, loansTowardGoal: 0 }],
+				goalsRenewedDate: today.toISOString(),
+			});
+		});
+
+		it('shows the toast when a completed goal and an unfinished goal share the prior year', async () => {
+			mockApollo.query = vi.fn().mockResolvedValue({
+				data: {
+					my: {
+						userPreferences: {
+							id: 'new-pref-id',
+							preferences: JSON.stringify({
+								goals: [
+									{ goalName: 'Done goal', status: 'completed', dateStarted: '2026-02-01T00:00:00Z' },
+									{ goalName: 'Goal', status: 'in-progress', dateStarted: '2026-09-01T00:00:00Z' },
+								],
+							}),
+						},
+						loans: { totalCount: 0 },
+					},
+				},
+			});
+
+			const today = new Date('2027-01-15T00:00:00Z');
+			const result = await composable.renewAnnualGoal(today);
+
+			expect(result.expiredGoals).toHaveLength(1);
+			expect(result.expiredGoals[0].goalName).toBe('Goal');
+			expect(result.showRenewedAnnualGoalToast).toBe(true);
+		});
+
 		it('should expire a 2027 goal and show toast when today is Jan 2028', async () => {
 			mockApollo.query = vi.fn().mockResolvedValue({
 				data: {
