@@ -191,11 +191,8 @@ export default function useGoalData({ apollo } = {}) {
 		const activeGoals = goals.filter(g => {
 			// Filter out expired goals
 			if (g.status === GOAL_STATUS.EXPIRED) return false;
-			// Filter out goals completed in previous years
-			if (g.status === GOAL_STATUS.COMPLETED && g.dateStarted) {
-				const goalYear = new Date(g.dateStarted).getFullYear();
-				if (goalYear < currentYear) return false;
-			}
+			// Goals from past years are never the active goal, even if still marked in progress
+			if (g.dateStarted && new Date(g.dateStarted).getFullYear() < currentYear) return false;
 			return true;
 		});
 		userGoal.value = { ...activeGoals[0] };

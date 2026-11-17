@@ -570,7 +570,7 @@ describe('useGoalData', () => {
 					goalName: 'test-goal',
 					category: ID_WOMENS_EQUALITY,
 					target: 5,
-					dateStarted: `${currentYear}-01-01`,
+					dateStarted: `${currentYear}-06-01`,
 					status: GOAL_STATUS.IN_PROGRESS,
 				}],
 			};
@@ -1058,7 +1058,7 @@ describe('useGoalData', () => {
 					goalName: 'existing-goal',
 					category: ID_BASIC_NEEDS,
 					target: 10,
-					dateStarted: '2026-01-01',
+					dateStarted: `${GOALS_CURRENT_YEAR}-06-01`,
 					status: GOAL_STATUS.IN_PROGRESS,
 				}],
 			};
@@ -1100,7 +1100,7 @@ describe('useGoalData', () => {
 			expect(setMyKivaGoal).toHaveBeenCalledWith(mockApollo, {
 				category: ID_BASIC_NEEDS,
 				target: 15,
-				dateStarted: '2026-01-01',
+				dateStarted: `${GOALS_CURRENT_YEAR}-06-01`,
 				status: GOAL_STATUS.IN_PROGRESS,
 			});
 			expect(composable.userGoal.value.target).toBe(15);
@@ -1286,7 +1286,7 @@ describe('useGoalData', () => {
 						category: ID_WOMENS_EQUALITY,
 						target: 5,
 						status: GOAL_STATUS.IN_PROGRESS,
-						dateStarted: '2026-01-01',
+						dateStarted: `${GOALS_CURRENT_YEAR}-06-01`,
 					},
 					{
 						goalName: 'goal-to-keep',
@@ -1341,7 +1341,7 @@ describe('useGoalData', () => {
 						category: ID_WOMENS_EQUALITY,
 						target: 5,
 						status: GOAL_STATUS.IN_PROGRESS,
-						dateStarted: '2026-01-01',
+						dateStarted: `${GOALS_CURRENT_YEAR}-06-01`,
 					},
 				],
 			};
@@ -1397,7 +1397,7 @@ describe('useGoalData', () => {
 						category: ID_WOMENS_EQUALITY,
 						target: 5,
 						status: GOAL_STATUS.IN_PROGRESS,
-						dateStarted: '2026-01-01',
+						dateStarted: `${GOALS_CURRENT_YEAR}-06-01`,
 					},
 				],
 			};
@@ -1436,7 +1436,7 @@ describe('useGoalData', () => {
 				...mockPrefs.goals[0],
 				category: ID_SUPPORT_ALL,
 				status: GOAL_STATUS.IN_PROGRESS,
-				dateStarted: '2026-01-01',
+				dateStarted: `${GOALS_CURRENT_YEAR}-06-01`,
 			};
 
 			await composable.updateCurrentGoal(previousGoal, updatedGoal);
@@ -1454,7 +1454,7 @@ describe('useGoalData', () => {
 						category: ID_WOMENS_EQUALITY,
 						target: 5,
 						status: GOAL_STATUS.IN_PROGRESS,
-						dateStarted: '2026-01-01T00:00:00.000Z',
+						dateStarted: `${GOALS_CURRENT_YEAR}-06-01T00:00:00.000Z`,
 					},
 				],
 			};
@@ -1487,7 +1487,7 @@ describe('useGoalData', () => {
 
 			expect(composable.userGoal.value.target).toBe(20);
 			// dateStarted stays the original created date, not the edit date
-			expect(composable.userGoal.value.dateStarted).toBe('2026-01-01T00:00:00.000Z');
+			expect(composable.userGoal.value.dateStarted).toBe(`${GOALS_CURRENT_YEAR}-06-01T00:00:00.000Z`);
 			// updatedAt captures the edit as a valid ISO timestamp
 			expect(composable.userGoal.value.updatedAt).toEqual(expect.any(String));
 			expect(Number.isNaN(Date.parse(composable.userGoal.value.updatedAt))).toBe(false);
@@ -1505,7 +1505,7 @@ describe('useGoalData', () => {
 					goalName: 'test-goal',
 					category: ID_WOMENS_EQUALITY,
 					target: 10,
-					dateStarted: `${currentYear}-01-01`,
+					dateStarted: `${currentYear}-06-01`,
 					count: 0,
 					status: GOAL_STATUS.IN_PROGRESS,
 				}],
@@ -1571,7 +1571,7 @@ describe('useGoalData', () => {
 					goalName: 'test-goal',
 					category: ID_BASIC_NEEDS,
 					target: 5,
-					dateStarted: `${currentYear}-01-01`,
+					dateStarted: `${currentYear}-06-01`,
 					count: 0,
 					status: GOAL_STATUS.IN_PROGRESS,
 				}],
@@ -1833,7 +1833,7 @@ describe('useGoalData', () => {
 					goalName: 'test-goal',
 					category: ID_WOMENS_EQUALITY,
 					target: 1,
-					dateStarted: '2026-01-01',
+					dateStarted: `${GOALS_CURRENT_YEAR}-06-01`,
 					loanTotalAtStart: 0,
 					status: GOAL_STATUS.IN_PROGRESS,
 				}],
@@ -5500,6 +5500,26 @@ describe('useGoalData', () => {
 			// goalProgress would coerce the missing count to a confident zero.
 			expect(composable.hydrateFromCache({ year: GOALS_CURRENT_YEAR })).toBe(false);
 			expect(composable.loading.value).toBe(true);
+		});
+
+		it('does not show last year\'s unfinished goal as the active goal on the first visit of a new year', () => {
+			vi.useFakeTimers();
+			vi.setSystemTime(new Date(2027, 0, 5));
+			const lastYearGoal = { ...inProgressGoal, dateStarted: '2026-03-10T12:00:00.000Z' };
+			mockApollo.readQuery = vi.fn().mockReturnValue(preferencesFor([lastYearGoal]));
+
+			let result;
+			try {
+				result = composable.hydrateFromCache({
+					tieredAchievements: [{ id: ID_WOMENS_EQUALITY, progressForYear: 0, totalProgressToAchievement: 9 }],
+					year: 2027,
+				});
+			} finally {
+				vi.useRealTimers();
+			}
+
+			expect(result).toBe(true);
+			expect(composable.userHasGoal.value).toBe(false);
 		});
 
 		it('renders a lender with no goal at all without needing achievement data', () => {
