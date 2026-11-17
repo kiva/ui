@@ -1219,6 +1219,7 @@ export default function useGoalData({ apollo } = {}) {
 	 * loan count toward the goal is captured so the impact-progress row can
 	 * decide whether to surface them). Prior-year completed goals keep their
 	 * COMPLETED status so they continue to appear in the row across years.
+	 * `showRenewedAnnualGoalToast` is true whenever a goal was expired on this visit.
 	 */
 	async function renewAnnualGoal(today = new Date()) {
 		const parsedPrefs = await loadPreferences();
@@ -1233,11 +1234,6 @@ export default function useGoalData({ apollo } = {}) {
 				showRenewedAnnualGoalToast: false,
 			};
 		}
-
-		const hadCompletedGoal = goals.some(g => {
-			const goalYear = g.dateStarted ? new Date(g.dateStarted).getFullYear() : null;
-			return goalYear < currentYear && g.status === GOAL_STATUS.COMPLETED;
-		});
 
 		const expiredGoals = await Promise.all(
 			goals
@@ -1271,11 +1267,9 @@ export default function useGoalData({ apollo } = {}) {
 			setGoalState({ goals: renewedGoals });
 		}
 
-		const showRenewedAnnualGoalToast = !!expiredGoals.length && !hadCompletedGoal;
-
 		return {
 			expiredGoals,
-			showRenewedAnnualGoalToast,
+			showRenewedAnnualGoalToast: expiredGoals.length > 0,
 		};
 	}
 
