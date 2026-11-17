@@ -29,9 +29,9 @@ vi.mock('#src/composables/useBorrowerMessage', () => ({
 vi.mock('#src/pages/Portfolio/BorrowerMessages/BorrowerMessageSuggestedLoans', () => ({
 	default: {
 		name: 'BorrowerMessageSuggestedLoans',
-		props: ['loan'],
+		props: ['loan', 'loanContext'],
 		mounted: mockSectionMounted,
-		template: '<div data-testid="suggested-loans">{{ loan.id }}</div>',
+		template: '<div data-testid="suggested-loans">{{ loanContext }}:{{ loan.id }}</div>',
 	},
 }));
 
@@ -314,7 +314,7 @@ describe('BorrowerMessagePage', () => {
 			mockSuggestedLoansEnabled.value = true;
 			const { getByTestId } = renderPage(buildMessage());
 
-			expect(getByTestId('suggested-loans').textContent).toBe('456');
+			expect(getByTestId('suggested-loans').textContent).toBe('message:456');
 		});
 
 		it('hides suggested loans when the setting is off', () => {

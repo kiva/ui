@@ -77,6 +77,7 @@
 				<borrower-message-suggested-loans
 					v-if="showSuggestedLoans"
 					:key="message.id"
+					loan-context="message"
 					:loan="loan"
 				/>
 			</template>

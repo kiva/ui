@@ -57,15 +57,22 @@ import { useRouter } from 'vue-router';
 import { mdiChevronRight } from '@mdi/js';
 import { KvCompactLoanCard, KvTextLink } from '@kiva/kv-components';
 import KvClassicLoanCardContainer from '#src/components/LoanCards/KvClassicLoanCardContainer';
-import useBorrowerMessageSuggestedLoans from '#src/composables/useBorrowerMessageSuggestedLoans';
+import useBorrowerMessageSuggestedLoans, {
+	BORROWER_MESSAGE_JOURNALING_PARTNER_IDS,
+} from '#src/composables/useBorrowerMessageSuggestedLoans';
 import { getPossessiveLoanName } from '#src/util/borrowerMessage';
 
 defineOptions({ name: 'BorrowerMessageSuggestedLoans' });
 
 const props = defineProps({
+	loanContext: {
+		type: String,
+		required: true,
+		validator: value => ['message', 'empty'].includes(value),
+	},
 	loan: {
 		type: Object,
-		required: true,
+		default: null,
 	},
 });
 
@@ -73,7 +80,11 @@ const appConfig = inject('$appConfig', {});
 const kvTrackEvent = inject('$kvTrackEvent');
 const router = useRouter();
 
-const { loans, isFallback } = useBorrowerMessageSuggestedLoans([props.loan.partner.id]);
+const isEmptyContext = props.loanContext === 'empty';
+
+const { loans, isFallback } = useBorrowerMessageSuggestedLoans(
+	isEmptyContext ? BORROWER_MESSAGE_JOURNALING_PARTNER_IDS : [props.loan.partner.id]
+);
 
 const possessiveBorrowerName = computed(() => getPossessiveLoanName(props.loan.name));
 
@@ -81,30 +92,50 @@ const partner = computed(() => props.loan.partner);
 
 const country = computed(() => props.loan.geocode?.country?.name);
 
-const heading = computed(() => (isFallback.value
-	? 'Loans you might like'
-	: `More loans from ${possessiveBorrowerName.value} community`));
+const heading = computed(() => {
+	if (isFallback.value) {
+		return 'Loans you might like';
+	}
+	if (isEmptyContext) {
+		return 'Want to hear from a borrower?';
+	}
+	return `More loans from ${possessiveBorrowerName.value} community`;
+});
 
 const subhead = computed(() => {
 	if (isFallback.value) {
 		return 'Entrepreneurs raising funds on Kiva right now.';
+	}
+	if (isEmptyContext) {
+		return 'These lending partners share borrower messages more often than most. '
+			+ 'Support one of their borrowers and you may hear back.';
 	}
 	const where = country.value ? ` in ${country.value}` : '';
 	return `${partner.value.name}, the lending partner behind ${possessiveBorrowerName.value} loan, `
 		+ `is raising funds for these entrepreneurs${where} right now.`;
 });
 
-const link = computed(() => (isFallback.value
-	? {
-		text: 'View more loans',
-		href: '/lend-by-category',
-		trackEvent: ['portfolio', 'click', 'Borrower message view more loans'],
+const link = computed(() => {
+	if (isFallback.value) {
+		return {
+			text: 'View more loans',
+			href: '/lend-by-category',
+			trackEvent: ['portfolio', 'click', 'Borrower message view more loans'],
+		};
 	}
-	: {
+	if (isEmptyContext) {
+		return {
+			text: 'See more loans like these',
+			href: `/lend/filter?partner=${BORROWER_MESSAGE_JOURNALING_PARTNER_IDS.join(',')}`,
+			trackEvent: ['portfolio', 'click', 'Borrower messages empty see more loans'],
+		};
+	}
+	return {
 		text: `View all ${partner.value.name} loans`,
 		href: `/lend/filter?partner=${partner.value.id}`,
 		trackEvent: ['portfolio', 'click', 'Borrower message view partner loans', partner.value.id],
-	}));
+	};
+});
 </script>
 
 <style lang="postcss" scoped>
