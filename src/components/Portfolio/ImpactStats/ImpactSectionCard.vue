@@ -8,7 +8,7 @@
 				:class="flush ? 'tw-pt-2' : 'tw-pt-2.5 md:tw-pt-3'"
 			>
 				<div class="tw-flex tw-flex-col tw-gap-0.5 tw-min-w-0">
-					<h3 :id="titleId" class="tw-text-h4 tw-text-primary">
+					<h3 :id="titleId" class="tw-text-title">
 						{{ title }}
 					</h3>
 					<div
