@@ -152,8 +152,8 @@ describe('ImpactSectionCard', () => {
 			});
 			const alert = getByRole('alert');
 
-			expect(alert.textContent).toContain('We couldn\'t load this right now.');
-			expect(alert.textContent).toContain('Your loans are safe. Refresh the page to try again.');
+			within(alert).getByText('We couldn\'t load this right now.');
+			within(alert).getByText('Refresh the page to try again.');
 			expect(queryByRole('button')).toBeNull();
 			getByRole('heading', { level: 3, name: 'Geographic Reach' });
 			expect(queryByText('Body')).toBeNull();

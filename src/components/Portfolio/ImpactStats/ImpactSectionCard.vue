@@ -50,7 +50,7 @@
 						We couldn't load this right now.
 					</p>
 					<p class="tw-text-caption tw-text-secondary">
-						Your loans are safe. Refresh the page to try again.
+						Refresh the page to try again.
 					</p>
 				</div>
 				<slot v-else></slot>
