@@ -12,6 +12,10 @@ const LEFT = [
 	'impact-partner',
 ];
 const RIGHT = ['impact-goal', 'impact-percentile', 'impact-badges', 'impact-first-loan'];
+const SECTION_TITLES = [
+	'Geographic Reach', 'By Sector', 'By Activity', 'By Gender', 'By Lending Partner',
+	'Goal', 'Lending percentile', 'Badges', 'Your first loan on Kiva',
+];
 
 const mockState = {};
 
@@ -47,6 +51,18 @@ describe('ImpactStatsLayout', () => {
 		const { getByRole } = renderLayout();
 
 		GROUP_HEADINGS.forEach(name => getByRole('heading', { level: 2, name }));
+	});
+
+	it('titles each section card with an h3', () => {
+		const { getByRole } = renderLayout();
+
+		SECTION_TITLES.forEach(name => getByRole('heading', { level: 3, name }));
+	});
+
+	it('names each section card by its title', () => {
+		const { getByRole } = renderLayout();
+
+		SECTION_TITLES.forEach(name => getByRole('region', { name }));
 	});
 
 	it('renders a card per section', () => {
