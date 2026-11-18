@@ -270,7 +270,7 @@ export default {
 			if (props.goalsRowEnabled) return true;
 			// hideGoalCard would retire the card on the next visit, the visit the recap arrives on.
 			if (keepGoalCardForRecap.value) return false;
-			return Boolean(goalData.hideGoalCard?.value);
+			return Boolean(goalData.goalCardHiddenByPreference?.value);
 		});
 
 		return {

@@ -50,7 +50,7 @@ const buildGoalData = ({
 } = {}) => ({
 	checkCompletedGoal: vi.fn().mockResolvedValue(),
 	goalProgress: ref(0),
-	hideGoalCard: ref(hideGoalCard),
+	goalCardHiddenByPreference: ref(hideGoalCard),
 	loading: ref(loading),
 	loadGoalData: vi.fn().mockResolvedValue(),
 	loadPreferences: vi.fn().mockResolvedValue(),

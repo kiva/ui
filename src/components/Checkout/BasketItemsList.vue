@@ -64,6 +64,7 @@ import KivaCardItem from '#src/components/Checkout/KivaCardItem';
 import DepositIncentiveUpsell from '#src/components/Checkout/DepositIncentiveUpsell';
 import { userUsLoanCheckout } from '#src/util/optimizelyUserMetrics';
 import useGoalData from '#src/composables/useGoalData';
+import useGoalNow from '#src/composables/useGoalNow';
 
 export default {
 	name: 'BasketItemsList',
@@ -180,7 +181,7 @@ export default {
 		async loadAndCalculateGoalProgress() {
 			await this.loadGoalData();
 			// Calculate progress including basket loans (don't increment counter, just check current state)
-			const year = new Date().getFullYear();
+			const year = this.getGoalNow().getFullYear();
 			const { totalProgress } = await this.getPostCheckoutProgressByLoans({
 				loans: this.loans.map(loan => ({ id: loan.id })),
 				addBasketLoans: true,
@@ -251,8 +252,10 @@ export default {
 			getPostCheckoutProgressByLoans,
 			suppressAchievementNudges,
 		} = useGoalData({ apollo });
+		const { getGoalNow } = useGoalNow();
 
 		return {
+			getGoalNow,
 			loadGoalData,
 			userGoal,
 			goalProgress,

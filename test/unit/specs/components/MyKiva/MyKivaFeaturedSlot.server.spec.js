@@ -2,7 +2,7 @@
 import { createSSRApp, h, ref } from 'vue';
 import { renderToString } from 'vue/server-renderer';
 import MyKivaFeaturedSlot from '#src/components/MyKiva/MyKivaFeaturedSlot';
-import { GOAL_STATUS, GOALS_CURRENT_YEAR } from '#src/composables/useGoalData';
+import { GOAL_STATUS } from '#src/composables/useGoalData';
 import { ID_US_ECONOMIC_EQUALITY } from '#src/composables/useBadgeData';
 
 const currentRoute = { value: { path: '/mykiva', query: {} } };
@@ -62,14 +62,14 @@ describe('MyKivaFeaturedSlot (server)', () => {
 		currentRoute.value.query = {};
 	});
 
-	describe('the recapDate override', () => {
+	describe('the goalDate override', () => {
 		// The signup ask hides for the stretch around the recap's release, so the override
 		// decides whether this slot renders. The server has to answer as the client does, or
 		// it sends a slot the client drops.
 		const RECAP_START = '2026-12-01';
 
-		const renderWithOverride = recapDate => {
-			currentRoute.value.query = { recapDate };
+		const renderWithOverride = date => {
+			currentRoute.value.query = { goalDate: date };
 			return renderSlot(buildGoalData(), vi.fn(), { goalInReviewInProgressStart: RECAP_START });
 		};
 
@@ -119,8 +119,18 @@ describe('MyKivaFeaturedSlot (server)', () => {
 
 		// Reading decides what renders and must happen here; writing is a mutation and
 		// belongs to the browser pass.
-		expect(goalData.hasViewedCompletedGoalForYear).toHaveBeenCalledWith(GOALS_CURRENT_YEAR);
+		expect(goalData.hasViewedCompletedGoalForYear).toHaveBeenCalledWith(new Date().getFullYear());
 		expect(goalData.setViewedGoalCompletePreference).not.toHaveBeenCalled();
+	});
+
+	it('takes the viewed snapshot for the goal year the route goalDate previews', async () => {
+		currentRoute.value.query = { goalDate: '2031-06-01' };
+		const { goalData } = await renderSlot(buildGoalData({
+			status: GOAL_STATUS.COMPLETED,
+			hasViewedCompletedGoal: false,
+		}));
+
+		expect(goalData.hasViewedCompletedGoalForYear).toHaveBeenCalledWith(2031);
 	});
 
 	it('sends no analytics from the server pass', async () => {

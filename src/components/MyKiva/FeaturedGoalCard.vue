@@ -39,7 +39,7 @@
 						v-kv-track-event="['portfolio', 'click', 'set-a-goal']"
 						@click="$emit('set-goal-click')"
 					>
-						Set {{ GOALS_CURRENT_YEAR }} goal
+						Set {{ goalYear }} goal
 					</KvButton>
 				</div>
 			</div>
@@ -56,7 +56,7 @@
 							name="annual-goal-flag"
 						/>
 						<p class="tw-text-label tw-text-secondary">
-							Your {{ GOALS_CURRENT_YEAR }} goal to support {{ categoryName }}
+							Your {{ goalYear }} goal to support {{ categoryName }}
 						</p>
 					</div>
 					<KvUtilityMenu
@@ -122,7 +122,7 @@
 									name="annual-goal-flag"
 								/>
 								<p class="tw-text-label tw-text-secondary">
-									Your {{ GOALS_CURRENT_YEAR }} goal to support {{ categoryName }}
+									Your {{ goalYear }} goal to support {{ categoryName }}
 								</p>
 							</div>
 							<h3 class="tw-text-title">
@@ -158,7 +158,7 @@ import {
 } from '@kiva/kv-components';
 import KvIcon from '#src/components/Kv/KvIcon';
 import goalCopy from '#src/util/goalCopy';
-import { GOALS_CURRENT_YEAR } from '#src/composables/useGoalData';
+import useGoalNow from '#src/composables/useGoalNow';
 import { RECAP_CTA_LABEL } from '#src/util/goalInReview';
 import { showConfetti } from '#src/util/animation/confettiUtils';
 
@@ -228,10 +228,14 @@ const resolvedState = computed(() => (
 	VALID_STATES.includes(props.state) ? props.state : STATE_NO_GOAL
 ));
 
+// Read from the route, so the server render and the browser agree on the ?goalDate override.
+const { goalNow, goalYear } = useGoalNow();
+
 const noGoalTitle = computed(() => goalCopy.titleGoalSignupLastYear(props.prevYearLoans, {
 	chooseAsIGoDefault: props.chooseAsIGoDefault,
+	date: goalNow.value,
 }));
-const noGoalSubtitle = goalCopy.subtitleNoGoalYetEntrypoint();
+const noGoalSubtitle = computed(() => goalCopy.subtitleNoGoalYetEntrypoint(goalNow.value));
 
 const visibleProgress = computed(() => Math.min(props.goalProgress, props.goalTarget));
 

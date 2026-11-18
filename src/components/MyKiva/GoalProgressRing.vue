@@ -113,7 +113,7 @@ import { useRouter } from 'vue-router';
 
 import { KvButton, KvProgressCircle, KvMaterialIcon } from '@kiva/kv-components';
 import { COMPLETED_GOAL_THRESHOLD, HALF_GOAL_THRESHOLD, getGoalYearDaysLeft } from '#src/composables/useGoalData';
-import { getGoalInReviewNow } from '#src/composables/useGoalInReview';
+import useGoalNow from '#src/composables/useGoalNow';
 import goalCopy from '#src/util/goalCopy';
 import { RECAP_CTA_LABEL } from '#src/util/goalInReview';
 import {
@@ -253,11 +253,12 @@ const isModalVariant = computed(() => props.variant === 'modal');
 // Days left in the goal year, resolved once in the browser. A single read after mount is
 // enough: the card renders this ring only while a goal exists (so mounting coincides with the
 // goal appearing), the goal year never changes while mounted, and completion is gated
-// reactively in showDaysLeft. It is never computed during SSR, which knows neither the
-// user's timezone nor the ?recapDate QA override.
+// reactively in showDaysLeft. It is never computed during SSR, which does not know the
+// user's timezone.
+const { getGoalNow, goalYear } = useGoalNow();
 const daysLeft = ref(null);
 onMounted(() => {
-	daysLeft.value = getGoalYearDaysLeft({ dateStarted: props.goalDateStarted }, getGoalInReviewNow());
+	daysLeft.value = getGoalYearDaysLeft({ dateStarted: props.goalDateStarted }, getGoalNow());
 });
 
 const showDaysLeft = computed(() => (
@@ -300,12 +301,12 @@ const titleText = computed(() => {
 		return goalCopy.RING_TITLE_GOAL_SET;
 	}
 	if (props.categoryId === ID_SUPPORT_ALL) {
-		return goalCopy.RING_TITLE_SUPPORT_ALL_CARD;
+		return goalCopy.ringTitleSupportAllCard(goalYear.value);
 	}
 	if (props.categoryId === ID_US_ECONOMIC_EQUALITY) {
-		return goalCopy.RING_TITLE_US_ENTREPRENEURS_CARD;
+		return goalCopy.ringTitleUsEntrepreneursCard(goalYear.value);
 	}
-	return goalCopy.ringTitleCategoryCard(props.categoryName?.toLowerCase() || '');
+	return goalCopy.ringTitleCategoryCard(props.categoryName?.toLowerCase() || '', goalYear.value);
 });
 
 // Card variant only
@@ -322,7 +323,7 @@ const descriptionText = computed(() => {
 	if (props.goalProgressPercentage < COMPLETED_GOAL_THRESHOLD) {
 		return goalCopy.RING_DESC_PROGRESS_ALMOST_DONE;
 	}
-	return goalCopy.ringDescProgressCompleted(props.goalLoans);
+	return goalCopy.ringDescProgressCompleted(props.goalLoans, goalYear.value);
 });
 
 const buttonText = computed(() => {

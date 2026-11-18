@@ -27,7 +27,6 @@ vi.mock('#src/composables/useGoalData', async importOriginal => {
 			getCategoryLoansLastYear: () => 0,
 			hasGoal: goal => !!goal && Object.keys(goal).length > 0,
 		}),
-		GOALS_CURRENT_YEAR: new Date().getFullYear(),
 	};
 });
 

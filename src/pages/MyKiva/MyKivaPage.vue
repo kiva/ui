@@ -71,9 +71,10 @@ import {
 	setupGoalDefaultCategoryExp,
 } from '#src/util/goalSignupCopyVariant';
 import { readBoolSetting, readDateSetting } from '#src/util/settingsUtils';
-import useGoalData, { LAST_YEAR_KEY } from '#src/composables/useGoalData';
+import useGoalData from '#src/composables/useGoalData';
 import { shouldHideGoalSignup } from '#src/util/goalInReview';
-import { getGoalInReviewNow } from '#src/composables/useGoalInReview';
+import useGoalNow from '#src/composables/useGoalNow';
+import { getCurrentGoalYear } from '#src/util/goalDate';
 import {
 	hasSupportedColombiaReliefFund,
 	isColombiaReliefNextStepActive,
@@ -86,7 +87,6 @@ import useBadgeData, {
 import { inject, provide } from 'vue';
 import { getContentfulEntries } from '#src/util/contentfulUtils';
 
-const CURRENT_YEAR = new Date().getFullYear();
 const GOALS_ROW_EXP_KEY = 'mykiva_goals_row';
 const FUNDRAISERS_ROW_EXP_KEY = 'mykiva_fundraisers_row';
 const HOLIDAY_FUNDRAISER_CARD_EXP_KEY = 'holiday_fundraiser_card';
@@ -107,6 +107,11 @@ export default {
 		const apollo = inject('apollo');
 
 		const goalDataComposable = useGoalData({ apollo });
+		const {
+			goalNow,
+			goalYear,
+			lastGoalYear,
+		} = useGoalNow();
 		const { combineBadgeData } = useBadgeData();
 		provide('goalData', goalDataComposable);
 		// One state per page load, so reopening the goal modal does not log the exposure again
@@ -116,6 +121,9 @@ export default {
 		return {
 			combineBadgeData,
 			goalDefaultCategoryExp,
+			goalNow,
+			goalYear,
+			lastGoalYear,
 			userHasGoal: goalDataComposable.userHasGoal,
 			fixIncorrectlyCompletedGoals: goalDataComposable.fixIncorrectlyCompletedGoals,
 			hydrateGoalDataFromCache: goalDataComposable.hydrateFromCache,
@@ -203,8 +211,10 @@ export default {
 		}
 	},
 	apollo: {
-		preFetch(_, client, { route }) {
+		preFetch(_, client, { cookieStore, route }) {
 			const loanId = route?.query?.loanId ?? null;
+			const goalYear = getCurrentGoalYear(route?.query, cookieStore);
+			const lastGoalYear = goalYear - 1;
 
 			return Promise.all([
 				client.query({ query: myKivaQuery }),
@@ -212,7 +222,7 @@ export default {
 				// useGoalData reads it back out of the normalized cache without its own request.
 				client.query({
 					query: myKivaLendingStatsQuery,
-					variables: { year: CURRENT_YEAR },
+					variables: { year: goalYear },
 				}),
 				client.query({ query: countryListQuery }),
 				// Prefetch user preferences so MyKivaFeaturedSlot can decide
@@ -222,7 +232,7 @@ export default {
 				client.query({
 					query: userAchievementProgressQuery,
 					variables: {
-						year: LAST_YEAR_KEY,
+						year: lastGoalYear,
 						loanPurchasesLimit: FRESH_PROGRESS_LOAN_PURCHASE_LIMIT,
 					},
 					fetchPolicy: 'network-only',
@@ -230,7 +240,7 @@ export default {
 				client.query({
 					query: userAchievementProgressQuery,
 					variables: {
-						year: CURRENT_YEAR,
+						year: goalYear,
 						loanPurchasesLimit: FRESH_PROGRESS_LOAN_PURCHASE_LIMIT,
 					},
 					fetchPolicy: 'network-only',
@@ -264,7 +274,7 @@ export default {
 				}),
 				client.query({
 					query: loanStatsByYearQuery,
-					variables: { year: LAST_YEAR_KEY },
+					variables: { year: lastGoalYear },
 				}),
 			]).catch(error => {
 				logReadQueryError(error, 'myKivaPage Prefetch');
@@ -276,7 +286,7 @@ export default {
 			if (this.goalDefaultCategoryExp.tracked || this.userHasGoal) return;
 			const hideGoalSignup = shouldHideGoalSignup({
 				recapStartDate: this.goalInReviewInProgressStart,
-				now: getGoalInReviewNow(this.$route?.query?.recapDate),
+				now: this.goalNow,
 			});
 			if (hideGoalSignup) return;
 			// eslint-disable-next-line max-len
@@ -347,7 +357,7 @@ export default {
 				const prefsString = goalDataResult?.my?.userPreferences?.preferences;
 				if (!prefsString) return true;
 				const parsed = JSON.parse(prefsString);
-				return !parsed.viewedGoalComplete?.[CURRENT_YEAR];
+				return !parsed.viewedGoalComplete?.[this.goalYear];
 			} catch (e) {
 				// Fall through to default: render the slot.
 				return true;
@@ -359,7 +369,7 @@ export default {
 				const myKivaQueryResult = this.apollo.readQuery({ query: myKivaQuery });
 				const lendingStatsQueryResult = this.apollo.readQuery({
 					query: myKivaLendingStatsQuery,
-					variables: { year: CURRENT_YEAR },
+					variables: { year: this.goalYear },
 				});
 				const loanId = this.$router.currentRoute?.value?.query?.loanId ?? null;
 				const bpSidesheetLoan = loanId ? this.apollo.readQuery({
@@ -447,8 +457,8 @@ export default {
 	created() {
 		try {
 			this.fetchMyKivaData();
-			this.heroTieredAchievements = this.readTieredAchievementsFromCache(LAST_YEAR_KEY);
-			this.currentYearTieredAchievements = this.readTieredAchievementsFromCache(CURRENT_YEAR);
+			this.heroTieredAchievements = this.readTieredAchievementsFromCache(this.lastGoalYear);
+			this.currentYearTieredAchievements = this.readTieredAchievementsFromCache(this.goalYear);
 			// Apply centralized fresh progress during creation to avoid initial stale render.
 			this.applyMyKivaFreshProgress();
 			// Populate goal state from the prefetched cache so the featured goal card, the
@@ -459,7 +469,7 @@ export default {
 				tieredAchievements: this.currentYearTieredAchievements,
 				freshProgressLoans: this.recentTransactionLoans,
 				transactions: this.transactions,
-				year: CURRENT_YEAR,
+				year: this.goalYear,
 			});
 			this.heroSlides = this.readContentfulSlides();
 			this.heroBadgeContentfulData = this.readContentfulBadgeData();
@@ -505,7 +515,10 @@ export default {
 
 		this.setupGoalDefaultCategoryExpIfShown();
 		try {
-			const stats = this.apollo.readQuery({ query: loanStatsByYearQuery, variables: { year: LAST_YEAR_KEY } });
+			const stats = this.apollo.readQuery({
+				query: loanStatsByYearQuery,
+				variables: { year: this.lastGoalYear },
+			});
 			this.goalDefaultCategoryExp.peopleLoansLastYear = stats?.my?.lendingStats?.loanStatsByYear?.count ?? 0;
 		} catch (e) {
 			logReadQueryError(e, 'MyKivaPage loanStatsByYear');
@@ -536,11 +549,8 @@ export default {
 				},
 			});
 
-			// Param to force goals renewal in a specific year
-			const { renewYear } = this.$route.query;
-			const today = renewYear ? new Date(`${renewYear}-01-15T00:00:00Z`) : undefined;
-
-			const { showRenewedAnnualGoalToast, expiredGoals } = await this.renewAnnualGoal(today);
+			// Renews for the goal year the ?goalDate override sets, when there is one
+			const { showRenewedAnnualGoalToast, expiredGoals } = await this.renewAnnualGoal();
 
 			// Fix goals incorrectly marked as completed due to progress double-counting bug
 			const { wasFixed } = await this.fixIncorrectlyCompletedGoals({
@@ -550,9 +560,8 @@ export default {
 			});
 
 			if (showRenewedAnnualGoalToast) {
-				const goalYear = (today || new Date()).getFullYear();
 				// eslint-disable-next-line max-len
-				this.$showTipMsg(`It's time for your ${goalYear} impact goal - a fresh start and new opportunity to make a difference.`);
+				this.$showTipMsg(`It's time for your ${this.goalYear} impact goal - a fresh start and new opportunity to make a difference.`);
 			}
 
 			if (expiredGoals.length || wasFixed) {
@@ -567,7 +576,7 @@ export default {
 		}
 
 		await this.loadGoalData({
-			year: CURRENT_YEAR,
+			year: this.goalYear,
 			freshProgressLoans: this.recentTransactionLoans,
 			tieredAchievements: this.currentYearTieredAchievements,
 			transactions: this.transactions,

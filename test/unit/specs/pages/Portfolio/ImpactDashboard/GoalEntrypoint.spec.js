@@ -8,11 +8,9 @@ const routerPush = vi.fn();
 let routeQuery = {};
 
 vi.mock('vue-router', () => ({
-	useRoute: () => ({
-		query: routeQuery,
-	}),
 	useRouter: () => ({
 		push: routerPush,
+		currentRoute: { value: { query: routeQuery } },
 	}),
 }));
 
@@ -92,7 +90,7 @@ describe('Portfolio GoalEntrypoint', () => {
 
 		expect(wrapper.text()).toContain('Lenders like you help 3 women a year');
 		expect(wrapper.text()).toContain(goalCopy.TITLE_HOW_MANY_LOANS_GENERIC);
-		expect(wrapper.text()).toContain(goalCopy.BUTTON_SET_GOAL);
+		expect(wrapper.text()).toContain(goalCopy.buttonSetGoal(2026));
 		expect(wrapper.text()).not.toContain(goalCopy.CARD_NO_GOAL_YET_EXPERIMENT);
 	});
 
@@ -106,7 +104,7 @@ describe('Portfolio GoalEntrypoint', () => {
 
 		expect(wrapper.text()).toContain('Last year, you helped 2 women shape their futures');
 		expect(wrapper.text()).toContain(goalCopy.TITLE_HOW_MANY_LOANS_GENERIC);
-		expect(wrapper.text()).toContain(goalCopy.BUTTON_SET_GOAL);
+		expect(wrapper.text()).toContain(goalCopy.buttonSetGoal(2026));
 		expect(wrapper.text()).not.toContain(goalCopy.CARD_NO_GOAL_YET_EXPERIMENT);
 	});
 
@@ -120,16 +118,16 @@ describe('Portfolio GoalEntrypoint', () => {
 
 		expect(wrapper.text()).toContain(goalCopy.CARD_NO_GOAL_YET_EXPERIMENT);
 		expect(wrapper.text()).toContain(goalCopy.CARD_HABIT_PROMPT_SINGLE_LINE);
-		expect(wrapper.text()).toContain(goalCopy.BUTTON_SET_GOAL);
+		expect(wrapper.text()).toContain(goalCopy.buttonSetGoal(2026));
 		expect(wrapper.text()).not.toContain('Last year, you helped');
 		expect(wrapper.text()).not.toContain('Lenders like you');
 		expect(wrapper.text()).not.toContain(goalCopy.TITLE_HOW_MANY_LOANS_GENERIC);
 	});
 
-	it('uses the goalSignupDate query override for the January through March copy', async () => {
-		const { wrapper } = mountComponent({
+	it('uses the goalDate route override for the copy, the year and last year\'s loans', async () => {
+		const { apollo, wrapper } = mountComponent({
 			now: new Date('2026-06-22T12:00:00'),
-			query: { goalSignupDate: '2026-03-31' },
+			query: { goalDate: '2031-03-31' },
 			womenLoansLastYear: 0,
 		});
 
@@ -138,5 +136,7 @@ describe('Portfolio GoalEntrypoint', () => {
 		expect(wrapper.text()).toContain('Lenders like you help 3 women a year');
 		expect(wrapper.text()).toContain(goalCopy.TITLE_HOW_MANY_LOANS_GENERIC);
 		expect(wrapper.text()).not.toContain(goalCopy.CARD_HABIT_PROMPT_SINGLE_LINE);
+		expect(wrapper.text()).toContain(goalCopy.buttonSetGoal(2031));
+		expect(apollo.query).toHaveBeenCalledWith(expect.objectContaining({ variables: { year: 2030 } }));
 	});
 });

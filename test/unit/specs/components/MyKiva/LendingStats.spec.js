@@ -1,4 +1,10 @@
+import { createApp, ref } from 'vue';
 import LendingStats from '#src/components/MyKiva/LendingStats';
+
+vi.mock('vue-router', async importOriginal => ({
+	...(await importOriginal()),
+	useRouter: () => ({ currentRoute: { value: { query: {} } } }),
+}));
 
 describe('LendingStats', () => {
 	describe('props', () => {
@@ -72,6 +78,36 @@ describe('LendingStats', () => {
 
 			expect(context.showPostLendingNextStepsCards).toBe(true);
 			expect(context.cookieStore.remove).toHaveBeenCalled();
+		});
+	});
+
+	describe('hideCompletedGoalCard', () => {
+		const goalCardHidden = ({ hideGoalCard, goalCardHiddenByPreference }) => {
+			let state;
+			const Host = {
+				setup() {
+					state = LendingStats.setup({ goalsRowEnabled: false, goalInReviewEnable: false });
+					return {};
+				},
+				template: '<div></div>',
+			};
+			const app = createApp(Host);
+			app.provide('goalData', {
+				userGoal: ref({ goalName: 'goal-women-2027', status: 'in-progress' }),
+				hideGoalCard: ref(hideGoalCard),
+				goalCardHiddenByPreference: ref(goalCardHiddenByPreference),
+				goalProgress: ref(0),
+				loading: ref(false),
+				hasViewedGoalRecapForYear: () => false,
+			});
+			app.provide('cookieStore', { get: () => undefined });
+			app.mount(document.createElement('div'));
+			return state.hideCompletedGoalCard.value;
+		};
+
+		it('follows goalCardHiddenByPreference, not the raw hideGoalCard flag', () => {
+			expect(goalCardHidden({ hideGoalCard: true, goalCardHiddenByPreference: false })).toBe(false);
+			expect(goalCardHidden({ hideGoalCard: true, goalCardHiddenByPreference: true })).toBe(true);
 		});
 	});
 

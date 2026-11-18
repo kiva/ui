@@ -24,7 +24,7 @@
 					v-kv-track-event="['portfolio', 'click', 'set-a-goal']"
 					@click="$emit('open-goal-modal')"
 				>
-					{{ goalCopy.BUTTON_SET_GOAL }}
+					{{ goalCopy.buttonSetGoal(goalYear) }}
 				</KvButton>
 			</div>
 			<GoalProgressRing
@@ -58,6 +58,7 @@ import {
 } from '@kiva/kv-components';
 import { COMPLETED_GOAL_THRESHOLD } from '#src/composables/useGoalData';
 import goalCopy, { GOAL_SIGNUP_COPY_NO_GOAL_YET } from '#src/util/goalCopy';
+import useGoalNow from '#src/composables/useGoalNow';
 import { useRouter } from 'vue-router';
 import confetti from 'canvas-confetti';
 import GoalProgressRing from '#src/components/MyKiva/GoalProgressRing';
@@ -109,6 +110,8 @@ const {
 	goalProgressPercentage,
 } = goalData;
 
+const { goalNow, goalYear } = useGoalNow();
+
 const isUpdatingGoal = ref(false);
 const hasHandledGoalCompletion = ref(false);
 
@@ -126,10 +129,11 @@ const title = computed(() => (
 	goalCopy.titleGoalSignupLastYear(props.prevYearLoans, {
 		chooseAsIGoDefault: props.chooseAsIGoDefault,
 		cssClass: 'tw-text-action',
+		date: goalNow.value,
 	})
 ));
 const subtitle = computed(() => {
-	if (goalCopy.getGoalSignupCopyVariant() === GOAL_SIGNUP_COPY_NO_GOAL_YET) {
+	if (goalCopy.getGoalSignupCopyVariant(goalNow.value) === GOAL_SIGNUP_COPY_NO_GOAL_YET) {
 		return goalCopy.CARD_HABIT_PROMPT_EXPERIMENT;
 	}
 	return goalCopy.TITLE_HOW_MANY_LOANS_GENERIC;
