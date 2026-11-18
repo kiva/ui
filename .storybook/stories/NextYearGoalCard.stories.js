@@ -1,4 +1,5 @@
-import { computed, provide } from 'vue';
+import { computed, provide, ref } from 'vue';
+import { useRouter } from 'vue-router';
 import MyKivaNextYearGoalCard from '#src/components/MyKiva/NextYearGoalCard.vue';
 
 export default {
@@ -6,7 +7,7 @@ export default {
 	component: MyKivaNextYearGoalCard,
 };
 
-const story = (args = {}, { recapDate = null } = {}) => {
+const story = (args = {}, { goalDate = null } = {}) => {
 	const mergedArgs = {
 		loading: false,
 		...args,
@@ -14,15 +15,12 @@ const story = (args = {}, { recapDate = null } = {}) => {
 	const template = () => ({
 		components: { MyKivaNextYearGoalCard },
 		setup() {
-			// The card reads the QA date override from the URL after mount (as on MyKiva), so a story
-			// pins "today" by setting ?recapDate before mount. Storybook's own params are preserved.
-			const url = new URL(window.location.href);
-			if (recapDate) {
-				url.searchParams.set('recapDate', recapDate);
-			} else {
-				url.searchParams.delete('recapDate');
-			}
-			window.history.replaceState({}, '', url);
+			// The card reads the ?goalDate QA override from the route, so a story pins "today" by
+			// setting it on Storybook's in-memory router and mounting the card once that has applied.
+			const router = useRouter();
+			const routeReady = ref(false);
+			router.replace({ query: goalDate ? { goalDate } : {} })
+				.finally(() => { routeReady.value = true; });
 
 			const goalProgressPercentage = computed(() => {
 				const target = mergedArgs?.userGoal?.target || 0;
@@ -49,11 +47,12 @@ const story = (args = {}, { recapDate = null } = {}) => {
 			return {
 				cardStyle,
 				componentArgs,
+				routeReady,
 			};
 		},
 		template: `
 			<div style="width: 379px;">
-				<MyKivaNextYearGoalCard v-bind="componentArgs" :style="cardStyle" />
+				<MyKivaNextYearGoalCard v-if="routeReady" v-bind="componentArgs" :style="cardStyle" />
 			</div>
 		`,
 	});
@@ -138,7 +137,7 @@ export const FiveDigitsGoalLoans = story({
 	goalProgress: 90870,
 });
 
-// A 2026 goal started in February; the countdown states below pin "today" via recapDate.
+// A 2026 goal started in February; the countdown states below pin "today" via goalDate.
 const inWindowGoal = {
 	target: 10,
 	category: 'ID_WOMENS_EQUALITY',
@@ -150,18 +149,18 @@ export const UserGoalDaysLeft = story({
 	prevYearLoans: 8,
 	userGoal: inWindowGoal,
 	goalProgress: 2,
-}, { recapDate: '2026-11-15' });
+}, { goalDate: '2026-11-15' });
 
 /** Dec 31 → singular "1 day left!". */
 export const UserGoalLastDayLeft = story({
 	prevYearLoans: 8,
 	userGoal: inWindowGoal,
 	goalProgress: 8,
-}, { recapDate: '2026-12-31' });
+}, { goalDate: '2026-12-31' });
 
 /** Completed goal inside the window → no countdown. */
 export const UserGoalCompletedInWindow = story({
 	prevYearLoans: 8,
 	userGoal: inWindowGoal,
 	goalProgress: 10,
-}, { recapDate: '2026-11-15' });
+}, { goalDate: '2026-11-15' });

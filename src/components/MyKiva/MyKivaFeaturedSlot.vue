@@ -39,9 +39,9 @@ import { useRouter } from 'vue-router';
 import FeaturedGoalCard from '#src/components/MyKiva/FeaturedGoalCard';
 import useGoalData, {
 	GOAL_STATUS,
-	GOALS_CURRENT_YEAR,
 	COMPLETED_GOAL_THRESHOLD,
 } from '#src/composables/useGoalData';
+import useGoalNow from '#src/composables/useGoalNow';
 import logReadQueryError from '#src/util/logReadQueryError';
 import { getGoalYear } from '#src/util/goalInReview';
 import { GOAL_DEFAULT_CATEGORY_EXP_STATE } from '#src/util/goalSignupCopyVariant';
@@ -83,6 +83,7 @@ const goalData = inject('goalData');
 const goalDefaultCategoryExp = inject(GOAL_DEFAULT_CATEGORY_EXP_STATE, null);
 const $kvTrackEvent = inject('$kvTrackEvent');
 const { getCategoryLoansLastYear } = useGoalData();
+const { goalYear: currentGoalYear } = useGoalNow();
 
 // Goal state is hydrated from the Apollo cache during server render, so `cardLoading`
 // is already false while SSR runs and the watchers below fire on the server too. Reads
@@ -158,10 +159,10 @@ watch(
 		if (alreadyViewedSnapshot.value !== null) return;
 		if (cardLoading.value) return;
 		if (goalStatus.value !== GOAL_STATUS.COMPLETED) return;
-		const viewed = Boolean(goalData?.hasViewedCompletedGoalForYear?.(GOALS_CURRENT_YEAR));
+		const viewed = Boolean(goalData?.hasViewedCompletedGoalForYear?.(currentGoalYear.value));
 		alreadyViewedSnapshot.value = viewed;
 		if (!viewed && isBrowser) {
-			goalData.setViewedGoalCompletePreference(GOALS_CURRENT_YEAR).catch(error => {
+			goalData.setViewedGoalCompletePreference(currentGoalYear.value).catch(error => {
 				logReadQueryError(error, 'MyKivaFeaturedSlot setViewedGoalComplete');
 			});
 		}

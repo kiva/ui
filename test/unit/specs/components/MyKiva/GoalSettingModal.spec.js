@@ -20,8 +20,8 @@ const goalDataMocks = vi.hoisted(() => ({
 	userGoal: { value: null },
 }));
 
-vi.mock('#src/composables/useGoalData', () => ({
-	GOALS_CURRENT_YEAR: 2026,
+vi.mock('#src/composables/useGoalData', async importOriginal => ({
+	buildNewGoal: (await importOriginal()).buildNewGoal,
 	default: () => ({
 		getCtaHref: vi.fn(() => '/lend'),
 		getCategories: vi.fn(() => [

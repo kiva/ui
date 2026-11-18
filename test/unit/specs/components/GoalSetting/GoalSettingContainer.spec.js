@@ -12,9 +12,9 @@ vi.mock('vue-router', () => ({
 	useRouter: () => ({ push: vi.fn() }),
 }));
 
-vi.mock('#src/composables/useGoalData', () => ({
+vi.mock('#src/composables/useGoalData', async importOriginal => ({
+	buildNewGoal: (await importOriginal()).buildNewGoal,
 	GOAL_STATUS: { COMPLETED: 'completed' },
-	GOALS_CURRENT_YEAR: 2026,
 	default: () => ({
 		userGoal: ref(null),
 		loadGoalData: vi.fn().mockResolvedValue(),

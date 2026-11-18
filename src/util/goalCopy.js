@@ -1,4 +1,3 @@
-import { GOALS_CURRENT_YEAR } from '#src/composables/useGoalData';
 import getGoalSignupCopyVariant, {
 	GOAL_SIGNUP_COPY_VARIANT,
 } from '#src/util/goalSignupCopyVariant';
@@ -25,6 +24,9 @@ const goalCopy = {
 	/**
 	 * Jan 1 through Mar 31 uses prior-year impact copy; Apr 1 onward uses
 	 * the direct no-goal-yet copy for the new annual goal cycle.
+	 *
+	 * Every date-aware string below takes the date to decide by. Pass useGoalNow's date so the
+	 * ?goalDate override applies; without one, the real date is used.
 	 */
 	getGoalSignupCopyVariant(date) {
 		return getGoalSignupCopyVariant(date ? { now: date } : undefined);
@@ -172,10 +174,10 @@ const goalCopy = {
 	// ─── Goal selector / NextYearGoalCard buttons ──────────────────────────────
 
 	/** Primary CTA to confirm setting a new goal */
-	BUTTON_SET_GOAL: `Set ${GOALS_CURRENT_YEAR} goal`,
+	buttonSetGoal: year => `Set ${year} goal`,
 
 	/** Primary CTA to confirm updating an existing goal */
-	BUTTON_UPDATE_GOAL: `Update ${GOALS_CURRENT_YEAR} goal`,
+	buttonUpdateGoal: year => `Update ${year} goal`,
 
 	/** Secondary action: go back to change the goal category (from settings or after editing) */
 	BUTTON_EDIT_GOAL_CATEGORY: 'Edit goal category',
@@ -252,13 +254,13 @@ const goalCopy = {
 	RING_TITLE_GOAL_SET: 'Goal set!',
 
 	/** Card: Support All category — no specific group mentioned */
-	RING_TITLE_SUPPORT_ALL_CARD: `Your ${GOALS_CURRENT_YEAR} goal`,
+	ringTitleSupportAllCard: year => `Your ${year} goal`,
 
 	/** Card: US Economic Equality category */
-	RING_TITLE_US_ENTREPRENEURS_CARD: `Your ${GOALS_CURRENT_YEAR} goal to U.S entrepreneurs`,
+	ringTitleUsEntrepreneursCard: year => `Your ${year} goal to U.S entrepreneurs`,
 
 	/** Card: specific named category */
-	ringTitleCategoryCard: categoryName => `Your ${GOALS_CURRENT_YEAR} goal to ${categoryName}`,
+	ringTitleCategoryCard: (categoryName, year) => `Your ${year} goal to ${categoryName}`,
 
 	// ─── GoalProgressRing — goal-year countdown ────────────────────────────────
 
@@ -281,7 +283,7 @@ const goalCopy = {
 
 	/** Progress at 100%: goal completed */
 	// eslint-disable-next-line max-len
-	ringDescProgressCompleted: loans => `Incredible! You reached your ${GOALS_CURRENT_YEAR} <br>goal and changed ${loans} lives!`,
+	ringDescProgressCompleted: (loans, year) => `Incredible! You reached your ${year} <br>goal and changed ${loans} lives!`,
 
 	// ─── GoalProgressRing — buttons ────────────────────────────────────────────
 

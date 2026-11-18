@@ -209,8 +209,9 @@ import HandsPlant from '#src/assets/images/thanks-page/hands-plant-v3.png';
 import LoanNumberSelector from '#src/components/MyKiva/GoalSetting/LoanNumberSelector';
 import GoalProgressRing from '#src/components/MyKiva/GoalProgressRing';
 import GoalCustomAmountInput from '#src/components/MyKiva/GoalSetting/GoalCustomAmountInput';
-import useGoalData, { LAST_YEAR_KEY, GOAL_STATUS } from '#src/composables/useGoalData';
+import useGoalData, { buildNewGoal } from '#src/composables/useGoalData';
 import goalCopy, { GOAL_SIGNUP_COPY_NO_GOAL_YET } from '#src/util/goalCopy';
+import useGoalNow from '#src/composables/useGoalNow';
 import { trackExperimentVersion } from '#src/util/experiment/experimentUtils';
 import {
 	GOAL_DEFAULT_CATEGORY_EXP_ACTION,
@@ -230,6 +231,12 @@ const goalDefaultCategoryExp = inject(
 const $kvTrackEvent = inject('$kvTrackEvent');
 
 const { getCategoryLoansLastYear, getCategoryLoanCountByYear, getSupportAllLoanCountByYear } = useGoalData();
+const {
+	getGoalNow,
+	goalNow,
+	goalYear,
+	lastGoalYear,
+} = useGoalNow();
 
 const props = defineProps({
 	/**
@@ -408,7 +415,7 @@ const isSubmitting = ref(false);
 const customGoalAmount = ref(null);
 const validCustomAmount = ref(null);
 const customGoalAmountError = ref('');
-const goalSignupCopyVariant = goalCopy.getGoalSignupCopyVariant();
+const goalSignupCopyVariant = computed(() => goalCopy.getGoalSignupCopyVariant(goalNow.value));
 
 const loansLastYear = computed(() => {
 	if (props.selectedCategoryId === ID_SUPPORT_ALL) {
@@ -426,13 +433,13 @@ const loadingLoanCounts = computed(() => loadingCurrentYear.value || loadingPrev
 
 const showLoanQuestionPrompt = computed(() => {
 	if (props.useDirectQuestionTitle) return false;
-	return goalSignupCopyVariant === GOAL_SIGNUP_COPY_NO_GOAL_YET
+	return goalSignupCopyVariant.value === GOAL_SIGNUP_COPY_NO_GOAL_YET
 		|| loansLastYear.value > 0
 		|| props.selectedCategoryId === defaultCategoryId.value;
 });
 
 const loanQuestionPrompt = computed(() => {
-	if (goalSignupCopyVariant === GOAL_SIGNUP_COPY_NO_GOAL_YET && !props.useDirectQuestionTitle) {
+	if (goalSignupCopyVariant.value === GOAL_SIGNUP_COPY_NO_GOAL_YET && !props.useDirectQuestionTitle) {
 		return goalCopy.titleLoanQuestionForCategory(props.selectedCategoryId, props.selectedCategoryName);
 	}
 	return goalCopy.TITLE_HOW_MANY_LOANS_GENERIC;
@@ -477,8 +484,7 @@ const loadLoansThisYear = async () => {
 	}
 
 	loadingCurrentYear.value = true;
-	const currentYear = new Date().getFullYear();
-	const count = await getCategoryLoanCountByYear(props.selectedCategoryId, currentYear);
+	const count = await getCategoryLoanCountByYear(props.selectedCategoryId, goalYear.value);
 	fetchedCurrentYearLoans.value = count;
 	loadingCurrentYear.value = false;
 };
@@ -487,7 +493,7 @@ const loadPrevSupportAllCount = async () => {
 	if (props.selectedCategoryId !== ID_SUPPORT_ALL) return;
 
 	loadingPrevSupportAllCount.value = true;
-	prevSupportAllCount.value = await getSupportAllLoanCountByYear(LAST_YEAR_KEY, 'cache-first') ?? 0;
+	prevSupportAllCount.value = await getSupportAllLoanCountByYear(lastGoalYear.value, 'cache-first') ?? 0;
 	loadingPrevSupportAllCount.value = false;
 };
 
@@ -498,7 +504,7 @@ const titleText = computed(() => {
 		});
 	}
 
-	if (goalSignupCopyVariant === GOAL_SIGNUP_COPY_NO_GOAL_YET) {
+	if (goalSignupCopyVariant.value === GOAL_SIGNUP_COPY_NO_GOAL_YET) {
 		return goalCopy.titleNoGoalYetSelectorEntrypoint({ compactIntro: props.compactNoGoalYetTitle });
 	}
 
@@ -529,9 +535,9 @@ const subtitleText = computed(() => {
 
 const buttonText = computed(() => {
 	if (editGoalFromSettings.value || props.isUpdatingGoal) {
-		return goalCopy.BUTTON_UPDATE_GOAL;
+		return goalCopy.buttonUpdateGoal(goalYear.value);
 	}
-	return goalCopy.BUTTON_SET_GOAL;
+	return goalCopy.buttonSetGoal(goalYear.value);
 });
 
 const selectedTarget = computed(() => {
@@ -622,18 +628,9 @@ const handleContinue = () => {
 		if (isSubmitting.value) return;
 		isSubmitting.value = true;
 	}
-	const currentYear = new Date().getFullYear();
-	const goalName = `goal-${props.selectedCategoryId}-${currentYear}`;
-	const target = selectedTarget.value;
-	const dateStarted = new Date().toISOString();
-	const loanTotalAtStart = props.categoriesLoanCount?.[props.selectedCategoryId] || 0;
 	const preferences = {
-		goalName,
-		category: props.selectedCategoryId,
-		target,
-		dateStarted,
-		status: GOAL_STATUS.IN_PROGRESS,
-		loanTotalAtStart,
+		...buildNewGoal({ category: props.selectedCategoryId, target: selectedTarget.value, now: getGoalNow() }),
+		loanTotalAtStart: props.categoriesLoanCount?.[props.selectedCategoryId] || 0,
 	};
 
 	const label = props.isUpdatingGoal ? 'confirm-edit-goal' : 'set-annual-goal';
@@ -679,7 +676,7 @@ const updateGoalOptions = () => {
 		goalOptions.value = [
 			{
 				loansNumber: suggestion1,
-				optionText: `Same as ${LAST_YEAR_KEY}`,
+				optionText: `Same as ${lastGoalYear.value}`,
 				selected: false
 			},
 			{

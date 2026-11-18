@@ -1,4 +1,5 @@
 import ImpactDashboardPage from '#src/pages/Portfolio/ImpactDashboard/ImpactDashboardPage';
+import { getGoalNow } from '#src/util/goalDate';
 
 const IN_PROGRESS_RELEASE = new Date('2026-11-15T00:00:00Z');
 
@@ -96,11 +97,15 @@ describe('ImpactDashboardPage', () => {
 	describe('hideGoalSignup', () => {
 		// This decides whether the goal entry point renders, on a server rendered page, so the
 		// override has to come off the route. The server has no address bar, and would
-		// otherwise answer with the real date and disagree with the hydrating client.
-		const hideGoalSignupWith = recapDate => ImpactDashboardPage.computed.hideGoalSignup.call({
-			goalInReviewInProgressStart: new Date('2026-12-01T00:00:00Z'),
-			$route: { query: recapDate ? { recapDate } : {} },
-		});
+		// otherwise answer with the real date and disagree with the hydrating client. setup()
+		// resolves the route query to goalNow, as getGoalNow does here.
+		const hideGoalSignupWith = date => {
+			const query = date ? { goalDate: date } : {};
+			return ImpactDashboardPage.computed.hideGoalSignup.call({
+				goalInReviewInProgressStart: new Date('2026-12-01T00:00:00Z'),
+				goalNow: getGoalNow(query),
+			});
+		};
 
 		it('hides the ask when the route override lands inside the window', () => {
 			expect(hideGoalSignupWith('2026-12-05')).toBe(true);

@@ -1,9 +1,10 @@
 import { render } from '@testing-library/vue';
 import userEvent from '@testing-library/user-event';
+import { ref } from 'vue';
+import { routerKey } from 'vue-router';
 import GoalSelector from '#src/components/MyKiva/GoalSetting/GoalSelector';
 import goalCopy from '#src/util/goalCopy';
 import { GOAL_DEFAULT_CATEGORY_EXP_STATE } from '#src/util/goalSignupCopyVariant';
-import { LAST_YEAR_KEY } from '#src/composables/useGoalData';
 import {
 	ID_BASIC_NEEDS,
 	ID_CLIMATE_ACTION,
@@ -853,10 +854,11 @@ describe('GoalSelector', () => {
 	describe('default category experiment tests (version b: choose as I go)', () => {
 		const LOANS_LAST_YEAR = 8;
 
-		const renderChooseAsIGo = () => {
+		// Last year as of the (possibly pinned) clock, or as of the route goalDate when given
+		const renderChooseAsIGo = ({ routeQuery = {}, lastYear = new Date().getFullYear() - 1 } = {}) => {
 			// Total loans per year, as useGoalData's loanStatsByYear query returns them
 			const query = vi.fn(({ variables }) => {
-				const count = variables?.year === LAST_YEAR_KEY ? LOANS_LAST_YEAR : 0;
+				const count = variables?.year === lastYear ? LOANS_LAST_YEAR : 0;
 				return Promise.resolve({ data: { my: { lendingStats: { loanStatsByYear: { count, amount: 0 } } } } });
 			});
 			return render(GoalSelector, {
@@ -867,6 +869,7 @@ describe('GoalSelector', () => {
 						apollo: { ...globalOptions.provide.apollo, query },
 						$kvTrackEvent: vi.fn(),
 						[GOAL_DEFAULT_CATEGORY_EXP_STATE]: { tracked: false, chooseAsIGoDefault: true },
+						[routerKey]: { currentRoute: ref({ path: '/mykiva', query: routeQuery }) },
 					},
 				},
 				props: {
@@ -898,6 +901,37 @@ describe('GoalSelector', () => {
 			await flushPromises();
 
 			expect(getLoanNumbers(container)).toEqual(getExpectedGoalOptions({ lastYear: LOANS_LAST_YEAR }));
+		});
+
+		it('reads last year and the January through March title from the route goalDate', async () => {
+			vi.useFakeTimers();
+			vi.setSystemTime(new Date('2026-06-01T12:00:00'));
+
+			const { getByRole, getByText } = renderChooseAsIGo({
+				routeQuery: { goalDate: '2031-02-01' },
+				lastYear: 2030,
+			});
+			await vi.runAllTimersAsync();
+
+			expect(getByRole('heading', { level: 2 }).textContent)
+				.toBe(`Last year, you helped ${LOANS_LAST_YEAR} people shape their futures`);
+			expect(getByText('Set 2031 goal')).toBeTruthy();
+		});
+
+		it('saves a goal set under the route goalDate with that date and year', async () => {
+			vi.useFakeTimers();
+			vi.setSystemTime(new Date('2026-06-01T12:00:00'));
+
+			const { getByText, emitted } = renderChooseAsIGo({
+				routeQuery: { goalDate: '2031-02-01' },
+				lastYear: 2030,
+			});
+			await vi.runAllTimersAsync();
+			await getByText('Set 2031 goal').click();
+
+			const [[goal]] = emitted()['set-goal'];
+			expect(goal.goalName).toBe(`goal-${ID_SUPPORT_ALL}-2031`);
+			expect(new Date(goal.dateStarted).toISOString().slice(0, 10)).toBe('2031-02-01');
 		});
 	});
 });

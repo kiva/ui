@@ -112,7 +112,7 @@ import {
 	watch,
 } from 'vue';
 import { KvLightbox } from '@kiva/kv-components';
-import { getGoalInReviewCurrentYear } from '#src/composables/useGoalInReview';
+import useGoalNow from '#src/composables/useGoalNow';
 import { getNamedSectorCount, getSectorChartValues } from '#src/util/goalInReview';
 import KvSocialShareButton from '#src/components/Kv/KvSocialShareButton';
 import goalCopy from '#src/util/goalCopy';
@@ -165,8 +165,8 @@ const $kvTrackEvent = inject('$kvTrackEvent', () => {});
 // How long after the recap opens its close button (the X) appears.
 const CLOSE_BUTTON_SHOW_DELAY_MS = 3000;
 
-// Single source of truth for "now". Add ?recapDate=YYYY-MM-DD to the url for QA specific dates
-const currentYear = getGoalInReviewCurrentYear();
+// Add ?goalDate=YYYY-MM-DD to the url to see the recap on another date
+const { goalYear: currentYear } = useGoalNow();
 
 // KvLightbox emits `lightbox-closed` again when it unmounts (the parent v-if
 // tears it down while `visible` is still true), so a single close would track

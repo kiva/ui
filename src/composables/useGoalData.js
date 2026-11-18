@@ -13,6 +13,7 @@ import loanStatsByYearQuery from '#src/graphql/query/loanStatsByYear.graphql';
 import logFormatter from '#src/util/logFormatter';
 import { getTransactionTimestamp } from '#src/util/myKivaUtils';
 import { setUserPreference, setUserPreferenceKeys, setMyKivaGoal } from '#src/util/userPreferenceUtils';
+import useGoalNow from '#src/composables/useGoalNow';
 import { runLoansQuery } from '#src/util/loanSearch/dataUtils';
 import { FLSS_ORIGIN_GOAL_RECOMMENDED_LOAN } from '#src/util/flssUtils';
 
@@ -68,8 +69,6 @@ export const GOAL_STATUS = {
 	IN_PROGRESS: 'in-progress',
 };
 
-export const GOALS_CURRENT_YEAR = new Date().getFullYear();
-export const LAST_YEAR_KEY = GOALS_CURRENT_YEAR - 1;
 export const COMPLETED_GOAL_THRESHOLD = 100;
 export const HALF_GOAL_THRESHOLD = 50;
 
@@ -83,8 +82,8 @@ export const GOAL_YEAR_COUNTDOWN_WINDOW_DAYS = 90;
  * date, its year is already over (local Jan 1 onward), or more than the countdown window remains.
  *
  * @param {Object|null} goal Goal with an ISO `dateStarted`; its calendar year is the goal year.
- * @param {Date} [now] The effective "now". Pass getGoalInReviewNow() to honor the QA date
- *   override; defaults to the browser clock.
+ * @param {Date} [now] The effective "now". Pass useGoalNow's date to honor the ?goalDate override;
+ *   defaults to the browser clock.
  * @returns {number|null} Days left (1..GOAL_YEAR_COUNTDOWN_WINDOW_DAYS), or null when hidden.
  */
 export function getGoalYearDaysLeft(goal, now = new Date()) {
@@ -95,6 +94,25 @@ export function getGoalYearDaysLeft(goal, now = new Date()) {
 	const daysLeft = differenceInCalendarDays(endOfYear(new Date(goalYear, 0, 1)), now) + 1;
 	if (daysLeft < 1 || daysLeft > GOAL_YEAR_COUNTDOWN_WINDOW_DAYS) return null;
 	return daysLeft;
+}
+
+/**
+ * A new in-progress goal, named and dated for the goal year `now` falls in.
+ *
+ * @param {Object} options
+ * @param {string} options.category Goal category id.
+ * @param {number} options.target Loans the goal is for.
+ * @param {Date} options.now The effective "now", from useGoalNow so the ?goalDate override applies.
+ * @returns {Object} The goal preferences to save.
+ */
+export function buildNewGoal({ category, target, now }) {
+	return {
+		goalName: `goal-${category}-${now.getFullYear()}`,
+		category,
+		target,
+		dateStarted: now.toISOString(),
+		status: GOAL_STATUS.IN_PROGRESS,
+	};
 }
 
 const MIN_CATEGORY_LOANS_AMOUNT = 100;
@@ -127,6 +145,9 @@ function getGoalDisplayName(target, category) {
 export default function useGoalData({ apollo } = {}) {
 	const apolloClient = apollo || inject('apollo');
 	const $kvTrackEvent = inject('$kvTrackEvent');
+	// Every date this reads honors the ?goalDate QA override.
+	const { getGoalNow } = useGoalNow();
+	const getCurrentGoalYear = () => getGoalNow().getFullYear();
 	const currentYearProgress = ref([]);
 	// Raw achievement-service progress with NO client-side fresh-progress added. Used to verify a
 	// goal is genuinely complete before persisting a completed status, so optimistic adjustments
@@ -187,7 +208,7 @@ export default function useGoalData({ apollo } = {}) {
 	function setGoalState(parsedPrefs) {
 		if (!parsedPrefs) return;
 		const goals = parsedPrefs.goals || [];
-		const currentYear = new Date().getFullYear();
+		const currentYear = getCurrentGoalYear();
 		const activeGoals = goals.filter(g => {
 			// Filter out expired goals
 			if (g.status === GOAL_STATUS.EXPIRED) return false;
@@ -213,7 +234,7 @@ export default function useGoalData({ apollo } = {}) {
 
 		return goals
 			.filter(g => g.dateStarted)
-			.filter(g => new Date(g.dateStarted).getFullYear() < GOALS_CURRENT_YEAR)
+			.filter(g => new Date(g.dateStarted).getFullYear() < getCurrentGoalYear())
 			.filter(g => {
 				if (g.status === GOAL_STATUS.COMPLETED) return true;
 				if (g.status === GOAL_STATUS.EXPIRED) return (g.loansTowardGoal || 0) > 0;
@@ -426,7 +447,7 @@ export default function useGoalData({ apollo } = {}) {
 	}
 
 	function findMostRecentActiveGoal(goals) {
-		const currentYear = new Date().getFullYear();
+		const currentYear = getCurrentGoalYear();
 		return goals.find(g => {
 			if (g.status === GOAL_STATUS.EXPIRED) return false;
 			if (g.status === GOAL_STATUS.COMPLETED && g.dateStarted) {
@@ -785,13 +806,13 @@ export default function useGoalData({ apollo } = {}) {
 			goals[goalIndex] = {
 				...updatedGoal,
 				dateStarted: goals[goalIndex].dateStarted ?? updatedGoal.dateStarted,
-				updatedAt: new Date().toISOString(),
+				updatedAt: getGoalNow().toISOString(),
 			};
 		}
 
 		// If the updated category is support-all, we need to load the latest yearly loan count to set accurate progress
 		if (updatedGoal?.category === ID_SUPPORT_ALL) {
-			const stats = await getLoanStatsByYear(GOALS_CURRENT_YEAR, 'network-only');
+			const stats = await getLoanStatsByYear(getCurrentGoalYear(), 'network-only');
 			yearlyLoanCount.value = stats?.count || 0;
 		}
 
@@ -842,7 +863,7 @@ export default function useGoalData({ apollo } = {}) {
 				// so we have not loaded support-all loan count on loadGoalData.
 				// We need to get the total loan count in this step.
 				if (!userGoal.value?.category) {
-					yearlyLoanCount.value = await getSupportAllLoanCountByYear(GOALS_CURRENT_YEAR, 'network-only');
+					yearlyLoanCount.value = await getSupportAllLoanCountByYear(getCurrentGoalYear(), 'network-only');
 				}
 				loanTotalAtStart = totalLoanCount.value || 0;
 			} else {
@@ -906,7 +927,7 @@ export default function useGoalData({ apollo } = {}) {
 			return Boolean(byYear.value?.[year]);
 		}
 
-		async function setForYear(year = GOALS_CURRENT_YEAR) {
+		async function setForYear(year = getCurrentGoalYear()) {
 			if (!year) return;
 			const parsedPrefs = await loadPreferences('network-only');
 			const prev = parsedPrefs?.[preferenceKey] || {};
@@ -1033,7 +1054,7 @@ export default function useGoalData({ apollo } = {}) {
 			.filter(({ g }) => (
 				g.status === GOAL_STATUS.EXPIRED
 				&& g.dateStarted
-				&& new Date(g.dateStarted).getFullYear() < GOALS_CURRENT_YEAR
+				&& new Date(g.dateStarted).getFullYear() < getCurrentGoalYear()
 				&& g.loansTowardGoal === undefined
 			));
 		if (!missing.length) return;
@@ -1095,7 +1116,7 @@ export default function useGoalData({ apollo } = {}) {
 		tieredAchievements = [],
 		freshProgressLoans = [],
 		transactions = [],
-		year = GOALS_CURRENT_YEAR,
+		year = getCurrentGoalYear(),
 	} = {}) {
 		let parsedPrefs;
 		try {
@@ -1157,7 +1178,7 @@ export default function useGoalData({ apollo } = {}) {
 	async function loadGoalData({
 		freshProgressLoans = [], // Loans used to reconcile missing achievement progress (e.g. recent transactions)
 		supportAllCounterLoans = [], // Loans used to initialize in-page support-all counter state
-		year = new Date().getFullYear(),
+		year = getCurrentGoalYear(),
 		tieredAchievements = [], // Tiered achievements from achievement service to calculate fresh progress
 		transactions = [], // User transactions to get purchase dates for year filtering
 		fetchPolicy = 'cache-first', // Apollo fetch policy for loading preferences
@@ -1221,7 +1242,7 @@ export default function useGoalData({ apollo } = {}) {
 	 * COMPLETED status so they continue to appear in the row across years.
 	 * `showRenewedAnnualGoalToast` is true whenever a goal was expired on this visit.
 	 */
-	async function renewAnnualGoal(today = new Date()) {
+	async function renewAnnualGoal(today = getGoalNow()) {
 		const parsedPrefs = await loadPreferences();
 		const goals = parsedPrefs.goals || [];
 		const currentYear = today.getFullYear();
@@ -1293,6 +1314,8 @@ export default function useGoalData({ apollo } = {}) {
 	} = {}) {
 		const parsedPrefs = await loadPreferences('network-only');
 		const goals = parsedPrefs.goals || [];
+		// The real year, not the ?goalDate override: under an override set in a past year, a goal
+		// completed with loans from a later year would look incomplete and be reopened for good.
 		const currentYear = new Date().getFullYear();
 
 		const isGoalCardHidden = parsedPrefs.hideGoalCard || false;

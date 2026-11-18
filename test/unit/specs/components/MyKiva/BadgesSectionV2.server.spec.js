@@ -92,7 +92,7 @@ describe('BadgesSectionV2 (server)', () => {
 	});
 
 	it('places an achieved goal ahead of the badges while its year runs', async () => {
-		currentRoute.value.query = { recapDate: '2026-12-31' };
+		currentRoute.value.query = { goalDate: '2026-12-31' };
 
 		const { goal, badge } = tileOrder(await renderRow(completedGoal));
 
@@ -101,11 +101,11 @@ describe('BadgesSectionV2 (server)', () => {
 		expect(goal).toBeLessThan(badge);
 	});
 
-	it('honors the recapDate override so the client hydrates the same order', async () => {
+	it('honors the goalDate override so the client hydrates the same order', async () => {
 		// The client has to hydrate against whatever order the server picks. If the override
 		// reached only the browser, the two would disagree on Jan 1 and the moved tile's icon
 		// would throw on a detached node.
-		currentRoute.value.query = { recapDate: '2027-01-01' };
+		currentRoute.value.query = { goalDate: '2027-01-01' };
 
 		const { goal, badge } = tileOrder(await renderRow(completedGoal));
 

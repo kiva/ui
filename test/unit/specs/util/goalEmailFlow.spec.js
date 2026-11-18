@@ -1,13 +1,17 @@
 import { buildEmailFlowGoalData } from '#src/util/goalEmailFlow';
 import { GOAL_STATUS } from '#src/composables/useGoalData';
 
-vi.mock('#src/composables/useGoalData', () => ({
-	GOAL_STATUS: {
-		COMPLETED: 'completed',
-		EXPIRED: 'expired',
-		IN_PROGRESS: 'in-progress',
-	},
-}));
+vi.mock('#src/composables/useGoalData', async importOriginal => {
+	const { buildNewGoal } = await importOriginal();
+	return {
+		buildNewGoal,
+		GOAL_STATUS: {
+			COMPLETED: 'completed',
+			EXPIRED: 'expired',
+			IN_PROGRESS: 'in-progress',
+		},
+	};
+});
 
 const CATEGORY = 'climate-action';
 const OTHER_CATEGORY = 'womens-equality';
@@ -39,6 +43,19 @@ describe('goalEmailFlow.js', () => {
 
 			expect(newGoalPrefs.goalName).toBe(`goal-${CATEGORY}-${currentYear}`);
 			expect(newGoalPrefs.dateStarted).toBeTruthy();
+		});
+
+		it('names and dates the new goal for the now it is given', () => {
+			const now = new Date(2031, 0, 5, 12);
+			const { newGoalPrefs } = buildEmailFlowGoalData({
+				allGoals: [],
+				category: CATEGORY,
+				validEmailTarget: 5,
+				now,
+			});
+
+			expect(newGoalPrefs.goalName).toBe(`goal-${CATEGORY}-2031`);
+			expect(newGoalPrefs.dateStarted).toBe(now.toISOString());
 		});
 
 		it('returns null newGoalPrefs when an in-progress goal already exists for the category', () => {

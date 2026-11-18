@@ -1,7 +1,8 @@
 /* eslint-disable import/no-extraneous-dependencies */
 import { mount } from '@vue/test-utils';
+import { ref } from 'vue';
+import { routerKey } from 'vue-router';
 import FeaturedGoalCard from '#src/components/MyKiva/FeaturedGoalCard';
-import { GOALS_CURRENT_YEAR } from '#src/composables/useGoalData';
 import goalCopy from '#src/util/goalCopy';
 
 const stripHtml = html => html.replace(/<[^>]*>/g, '');
@@ -44,7 +45,7 @@ vi.mock('#src/components/Kv/KvIcon', () => ({
 
 const trackEventSpy = vi.fn();
 
-const mountCard = (props = {}) => mount(FeaturedGoalCard, {
+const mountCard = (props = {}, routeQuery = {}) => mount(FeaturedGoalCard, {
 	props: {
 		state: 'no-goal',
 		loading: false,
@@ -62,6 +63,7 @@ const mountCard = (props = {}) => mount(FeaturedGoalCard, {
 		},
 		provide: {
 			$kvTrackEvent: trackEventSpy,
+			[routerKey]: { currentRoute: ref({ path: '/mykiva', query: routeQuery }) },
 		},
 	},
 });
@@ -124,7 +126,17 @@ describe('FeaturedGoalCard copy', () => {
 		});
 
 		it('renders the year-stamped Set Goal CTA', () => {
-			expect(buildNoGoal().text()).toContain(`Set ${GOALS_CURRENT_YEAR} goal`);
+			expect(buildNoGoal().text()).toContain(`Set ${new Date().getFullYear()} goal`);
+		});
+
+		it('takes the year and the date-aware copy from the route goalDate', () => {
+			vi.useFakeTimers();
+			vi.setSystemTime(new Date('2026-04-15T12:00:00'));
+
+			const text = mountCard({ state: 'no-goal' }, { goalDate: '2027-03-01' }).text();
+			expect(text).toContain('Set 2027 goal');
+			expect(text).toContain(goalCopy.TITLE_HOW_MANY_LOANS_GENERIC);
+			expect(text).not.toContain(goalCopy.CARD_NO_GOAL_YET_EXPERIMENT);
 		});
 
 		it('does not render any active-goal copy', () => {
@@ -144,7 +156,7 @@ describe('FeaturedGoalCard copy', () => {
 				goalProgressPercentage: 40,
 				categoryName: 'US entrepreneurs',
 			});
-			expect(wrapper.text()).toContain(`Your ${GOALS_CURRENT_YEAR} goal to support US entrepreneurs`);
+			expect(wrapper.text()).toContain(`Your ${new Date().getFullYear()} goal to support US entrepreneurs`);
 		});
 	});
 
@@ -355,7 +367,7 @@ describe('FeaturedGoalCard copy', () => {
 
 			const wrapper = mountCard({ state: 'something-unsupported' });
 			expect(wrapper.text()).toContain(goalCopy.TITLE_HOW_MANY_LOANS_GENERIC);
-			expect(wrapper.text()).toContain(`Set ${GOALS_CURRENT_YEAR} goal`);
+			expect(wrapper.text()).toContain('Set 2026 goal');
 		});
 	});
 });

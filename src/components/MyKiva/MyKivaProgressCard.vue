@@ -72,7 +72,7 @@ import KvButton from '#src/components/Kv/KvButton';
 import {
 	ID_WOMENS_EQUALITY, ID_BASIC_NEEDS, ID_CLIMATE_ACTION, ID_REFUGEE_EQUALITY, MAX_TIERED_BADGE_LOANS
 } from '#src/composables/useBadgeData';
-import { GOALS_CURRENT_YEAR } from '#src/composables/useGoalData';
+import useGoalNow from '#src/composables/useGoalNow';
 import { RECAP_CTA_LABEL } from '#src/util/goalInReview';
 import numeral from 'numeral';
 import { metaGlobReader } from '#src/util/importHelpers';
@@ -96,10 +96,10 @@ const props = defineProps({
 		type: Boolean,
 		default: false,
 	},
-	// Year shown in the annual-goal tag; historical tiles override this.
+	// Year shown in the annual-goal tag; defaults to the goal year in progress.
 	year: {
 		type: Number,
-		default: () => GOALS_CURRENT_YEAR,
+		default: null,
 	},
 	isHistoricalGoal: {
 		type: Boolean,
@@ -110,6 +110,8 @@ const props = defineProps({
 		default: false,
 	},
 });
+
+const { goalYear } = useGoalNow();
 
 const goalProgressPercentage = computed(() => {
 	// Annual goals: progress based on overall target
@@ -149,7 +151,7 @@ const goalRemainingLoans = computed(() => {
 
 const title = computed(() => {
 	if (props.isAnnualGoal) {
-		return `Your ${props.year} goal`;
+		return `Your ${props.year ?? goalYear.value} goal`;
 	}
 	return props.goal.name;
 });

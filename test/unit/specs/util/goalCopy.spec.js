@@ -1,4 +1,3 @@
-import { GOALS_CURRENT_YEAR } from '#src/composables/useGoalData';
 import goalCopy, {
 	GOAL_SIGNUP_COPY_LAST_YEAR,
 	GOAL_SIGNUP_COPY_NO_GOAL_YET,
@@ -13,6 +12,9 @@ import {
 } from '#src/composables/useBadgeData';
 
 const stripHtml = html => html.replace(/<[^>]*>/g, '');
+
+// Not the real year, so a string that ignored its year argument would fail.
+const GOAL_YEAR = 2031;
 
 describe('goalCopy', () => {
 	describe('titleNoHistoryWomensDefault', () => {
@@ -293,38 +295,37 @@ describe('goalCopy', () => {
 		});
 	});
 
-	describe('year-dependent constants', () => {
-		it('BUTTON_SET_GOAL contains the current year', () => {
-			expect(goalCopy.BUTTON_SET_GOAL).toContain(String(GOALS_CURRENT_YEAR));
-			expect(goalCopy.BUTTON_SET_GOAL).toContain('goal');
+	describe('year-dependent strings', () => {
+		it('buttonSetGoal names the year it is given', () => {
+			expect(goalCopy.buttonSetGoal(GOAL_YEAR)).toBe(`Set ${GOAL_YEAR} goal`);
 		});
 
-		it('BUTTON_UPDATE_GOAL contains the current year', () => {
-			expect(goalCopy.BUTTON_UPDATE_GOAL).toContain(String(GOALS_CURRENT_YEAR));
+		it('buttonUpdateGoal names the year it is given', () => {
+			expect(goalCopy.buttonUpdateGoal(GOAL_YEAR)).toBe(`Update ${GOAL_YEAR} goal`);
 		});
 
-		it('RING_TITLE_SUPPORT_ALL_CARD contains the current year', () => {
-			expect(goalCopy.RING_TITLE_SUPPORT_ALL_CARD).toContain(String(GOALS_CURRENT_YEAR));
+		it('ringTitleSupportAllCard names the year it is given', () => {
+			expect(goalCopy.ringTitleSupportAllCard(GOAL_YEAR)).toContain(String(GOAL_YEAR));
 		});
 
-		it('RING_TITLE_US_ENTREPRENEURS_CARD contains the current year', () => {
-			expect(goalCopy.RING_TITLE_US_ENTREPRENEURS_CARD).toContain(String(GOALS_CURRENT_YEAR));
+		it('ringTitleUsEntrepreneursCard names the year it is given', () => {
+			expect(goalCopy.ringTitleUsEntrepreneursCard(GOAL_YEAR)).toContain(String(GOAL_YEAR));
 		});
 	});
 
 	describe('ringTitleCategoryCard', () => {
 		it('includes the year and the category name', () => {
-			const result = goalCopy.ringTitleCategoryCard('basic needs');
-			expect(result).toContain(String(GOALS_CURRENT_YEAR));
+			const result = goalCopy.ringTitleCategoryCard('basic needs', GOAL_YEAR);
+			expect(result).toContain(String(GOAL_YEAR));
 			expect(result).toContain('basic needs');
 		});
 	});
 
 	describe('ringDescProgressCompleted', () => {
-		it('includes the loan count and current year', () => {
-			const result = goalCopy.ringDescProgressCompleted(10);
+		it('includes the loan count and the year it is given', () => {
+			const result = goalCopy.ringDescProgressCompleted(10, GOAL_YEAR);
 			expect(result).toContain('10 lives');
-			expect(result).toContain(String(GOALS_CURRENT_YEAR));
+			expect(result).toContain(String(GOAL_YEAR));
 		});
 	});
 
