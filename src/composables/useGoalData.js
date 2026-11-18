@@ -207,10 +207,12 @@ export default function useGoalData({ apollo } = {}) {
 	const completedGoalsHistory = computed(() => {
 		const parsedPrefs = JSON.parse(userPreferences.value?.preferences || '{}');
 		const goals = parsedPrefs.goals || [];
+		// Read at compute time: GOALS_CURRENT_YEAR goes stale on a server worker that outlives the year.
+		const currentYear = new Date().getFullYear();
 
 		return goals
 			.filter(g => g.dateStarted)
-			.filter(g => new Date(g.dateStarted).getFullYear() < GOALS_CURRENT_YEAR)
+			.filter(g => new Date(g.dateStarted).getFullYear() < currentYear)
 			.filter(g => {
 				if (g.status === GOAL_STATUS.COMPLETED) return true;
 				if (g.status === GOAL_STATUS.EXPIRED) return (g.loansTowardGoal || 0) > 0;
@@ -1025,12 +1027,13 @@ export default function useGoalData({ apollo } = {}) {
 	// are already hidden by the completedGoalsHistory filter.
 	async function backfillExpiredGoalProgress(parsedPrefs) {
 		const goals = parsedPrefs?.goals || [];
+		const currentYear = new Date().getFullYear();
 		const missing = goals
 			.map((g, i) => ({ g, i }))
 			.filter(({ g }) => (
 				g.status === GOAL_STATUS.EXPIRED
 				&& g.dateStarted
-				&& new Date(g.dateStarted).getFullYear() < GOALS_CURRENT_YEAR
+				&& new Date(g.dateStarted).getFullYear() < currentYear
 				&& g.loansTowardGoal === undefined
 			));
 		if (!missing.length) return;

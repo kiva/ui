@@ -1,6 +1,7 @@
 import goalInReviewCopy, {
 	MAX_BORROWER_CARDS,
 	OTHER_SECTOR_LABEL,
+	findGoalForYear,
 	getBorrowerCards,
 	getCategoryName,
 	getGoalLoans,
@@ -291,6 +292,48 @@ const recap = (overrides = {}) => ({
 	photos: [],
 	stats: [],
 	...overrides,
+});
+
+describe('findGoalForYear', () => {
+	const goalIn = (year, status, month = '02') => ({
+		goalName: `${year}-${status}-${month}`,
+		status,
+		dateStarted: `${year}-${month}-01T12:00:00.000Z`,
+	});
+
+	it('finds the goal that ran in the year, whatever its status', () => {
+		const expired = goalIn(2026, 'expired');
+		expect(findGoalForYear([goalIn(2025, 'completed'), expired], 2026)).toBe(expired);
+	});
+
+	it('accepts the year as a string, as it arrives from the route', () => {
+		const goal = goalIn(2026, 'completed');
+		expect(findGoalForYear([goal], '2026')).toBe(goal);
+	});
+
+	it('prefers a completed goal over one that expired in the same year', () => {
+		const finished = goalIn(2026, 'completed');
+		expect(findGoalForYear([goalIn(2026, 'expired'), finished], 2026)).toBe(finished);
+	});
+
+	it('prefers an expired goal over one still in progress', () => {
+		const expired = goalIn(2026, 'expired');
+		expect(findGoalForYear([goalIn(2026, 'in-progress'), expired], 2026)).toBe(expired);
+	});
+
+	it('breaks a tie by the latest start', () => {
+		const later = goalIn(2026, 'completed', '09');
+		expect(findGoalForYear([goalIn(2026, 'completed', '03'), later], 2026)).toBe(later);
+	});
+
+	it('finds nothing when no goal ran that year', () => {
+		expect(findGoalForYear([goalIn(2025, 'completed')], 2026)).toBeNull();
+	});
+
+	it('finds nothing without a year or goals', () => {
+		expect(findGoalForYear([goalIn(2026, 'completed')], null)).toBeNull();
+		expect(findGoalForYear(undefined, 2026)).toBeNull();
+	});
 });
 
 describe('goalInReviewPayload.js', () => {
