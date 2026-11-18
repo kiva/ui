@@ -6,7 +6,7 @@
 		<router-view />
 		<vue-progress-bar v-if="dataHydrated" />
 		<the-tip-message />
-		<!-- Outside production only, after hydration, so other pages never load it -->
+		<!-- Not loaded in production. Elsewhere it loads after hydration, outside the server render -->
 		<goal-date-override v-if="dataHydrated && !$appConfig.host?.includes('www.kiva.org')" />
 	</div>
 </template>
