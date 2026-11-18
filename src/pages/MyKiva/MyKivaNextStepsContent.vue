@@ -464,7 +464,7 @@ const shouldShowPostLendingNextStepsCards = hasPostLendingCookie || postLendingQ
 const {
 	checkCompletedGoal,
 	goalProgress,
-	hideGoalCard: hideCompletedGoalCard,
+	goalCardHiddenByPreference: hideCompletedGoalCard,
 	loading: goalProgressLoading,
 	loadGoalData,
 	loadPreferences,

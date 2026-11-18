@@ -146,7 +146,7 @@ export default function useGoalData({ apollo } = {}) {
 	const apolloClient = apollo || inject('apollo');
 	const $kvTrackEvent = inject('$kvTrackEvent');
 	// Every date this reads honors the ?goalDate QA override.
-	const { getGoalNow } = useGoalNow();
+	const { getGoalNow, goalDateOverride } = useGoalNow();
 	const getCurrentGoalYear = () => getGoalNow().getFullYear();
 	const currentYearProgress = ref([]);
 	// Raw achievement-service progress with NO client-side fresh-progress added. Used to verify a
@@ -904,6 +904,17 @@ export default function useGoalData({ apollo } = {}) {
 		return parsedPrefs.hideGoalCard || false;
 	});
 
+	// Whether hideGoalCard should hide the current goal's card. Use this to show or hide the card;
+	// hideGoalCard itself still answers "has a completed goal been celebrated".
+	// hideGoalCard is one flag for every goal, not per goal. It is set after a completed goal is
+	// celebrated so that goal's card stops showing, and the user's next goal only appears because
+	// fixIncorrectlyCompletedGoals clears the flag when it finds this year's goal. That check always
+	// uses the real year, so under a ?goalDate override in a later year it never sees the new goal,
+	// and the flag left from last year's goal would hide it. With an override, let the flag hide only
+	// a completed goal.
+	const goalCardHiddenByPreference = computed(() => hideGoalCard.value
+		&& (!goalDateOverride.value || userGoal.value?.status === GOAL_STATUS.COMPLETED));
+
 	async function setHideGoalCardPreference(hide = true) {
 		await setUserPreference(apolloClient, 'hideGoalCard', hide);
 		// Persist only; do not copy the hidden preference into local state.
@@ -1450,6 +1461,7 @@ export default function useGoalData({ apollo } = {}) {
 		fixIncorrectlyCompletedGoals,
 		renewAnnualGoal,
 		hideGoalCard,
+		goalCardHiddenByPreference,
 		setHideGoalCardPreference,
 		viewedGoalCompleteByYear: viewedGoalComplete.byYear,
 		hasViewedCompletedGoalForYear: viewedGoalComplete.hasForYear,

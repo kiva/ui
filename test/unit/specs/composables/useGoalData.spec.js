@@ -6180,6 +6180,41 @@ describe('useGoalData', () => {
 			expect(prefUtils.setMyKivaGoal).not.toHaveBeenCalled();
 			expect(prefUtils.setUserPreferenceKeys).not.toHaveBeenCalled();
 		});
+
+		describe('goalCardHiddenByPreference', () => {
+			// hideGoalCard is left set from a goal celebrated earlier.
+			const goalCardHidden = async ({ status, query = {} }) => {
+				currentRoute.value = { query };
+				mockApollo.query = vi.fn().mockResolvedValue({
+					data: {
+						my: {
+							userPreferences: { id: 'pref-1', preferences: JSON.stringify({ hideGoalCard: true }) },
+							loans: { totalCount: 4 },
+						},
+					},
+				});
+				const goalData = mountGoalData();
+				await goalData.loadPreferences();
+				goalData.userGoal.value = { ...lastYearGoal, goalName: 'goal-women-2027', status };
+				return goalData.goalCardHiddenByPreference.value;
+			};
+
+			it('shows an in-progress goal under an override', async () => {
+				expect(await goalCardHidden({
+					status: GOAL_STATUS.IN_PROGRESS, query: { goalDate: '2027-02-01' },
+				})).toBe(false);
+			});
+
+			it('still hides a completed goal under an override', async () => {
+				expect(await goalCardHidden({
+					status: GOAL_STATUS.COMPLETED, query: { goalDate: '2027-02-01' },
+				})).toBe(true);
+			});
+
+			it('hides any goal without an override, as the flag always has', async () => {
+				expect(await goalCardHidden({ status: GOAL_STATUS.IN_PROGRESS })).toBe(true);
+			});
+		});
 	});
 });
 
