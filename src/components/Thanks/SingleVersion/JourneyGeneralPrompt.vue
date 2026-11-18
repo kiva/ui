@@ -21,7 +21,6 @@
 
 		<div
 			class="journey-art tw-mt-2 tw-w-full tw-bg-cover tw-bg-center"
-			:style="{ backgroundImage: `url(${journeyTexture})` }"
 		>
 			<JourneyArt class="tw-w-full tw-h-full" />
 		</div>
@@ -89,6 +88,7 @@ import { KvButton, KvMaterialIcon } from '@kiva/kv-components';
 import KvExpandable from '#src/components/Kv/KvExpandable';
 import JourneyArt from '#src/assets/images/thanks-page/journey.svg';
 import journeyTexture from '#src/assets/images/thanks-page/journey-texture.jpg';
+import journeyTextureDesktop from '#src/assets/images/thanks-page/journey-texture-desktop.jpg';
 import BorrowerAvatarsContainer from '#src/components/Thanks/BorrowerAvatarsContainer';
 import useMyKivaHome from '#src/composables/useMyKivaHome';
 
@@ -113,6 +113,10 @@ const props = defineProps({
 		default: () => ([]),
 	},
 });
+
+// v-bind names its css var after the expression; url() in it breaks that in dev
+const journeyTextureUrl = `url(${journeyTexture})`;
+const journeyTextureDesktopUrl = `url(${journeyTextureDesktop})`;
 
 const openImpactJourneys = ref(false);
 
@@ -146,9 +150,11 @@ const handleClickContinue = () => {
 /* The art is drawn on the desktop canvas; its preserveAspectRatio slice shows the centre 305px on mobile */
 .journey-art {
 	aspect-ratio: 305 / 314;
+	background-image: v-bind(journeyTextureUrl);
 
 	@screen md {
 		aspect-ratio: 559 / 314;
+		background-image: v-bind(journeyTextureDesktopUrl);
 	}
 }
 </style>
