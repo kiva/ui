@@ -13,15 +13,43 @@
 			<p v-if="error" data-testid="messages-error">
 				We couldn't load your messages right now. Please refresh the page to try again.
 			</p>
-			<p v-else-if="totalCount === 0" data-testid="messages-empty">
-				You don't have any messages from borrowers yet.
-				<router-link
-					to="/lend-by-category"
-					v-kv-track-event="['portfolio', 'click', 'Borrower messages empty find a loan']"
-				>
-					Find a borrower to support
-				</router-link>
-			</p>
+			<template v-else-if="totalCount === 0">
+				<template v-if="suggestedLoansEnabled">
+					<div
+						class="tw-flex tw-flex-col tw-gap-2 tw-p-3 tw-bg-white tw-rounded
+							md:tw-flex-row md:tw-items-center md:tw-gap-4 md:tw-p-4"
+						data-testid="messages-empty"
+					>
+						<img
+							class="tw-shrink-0 tw-w-7 tw-h-7 md:tw-w-9 md:tw-h-9"
+							:src="gemUrl"
+							width="72"
+							height="72"
+							alt="Illustration of a gem"
+						>
+						<div class="tw-flex tw-flex-col tw-gap-1">
+							<h2 class="tw-text-headline-two">
+								No borrower messages yet
+							</h2>
+							<p class="borrower-messages__empty-body tw-text-gray-600">
+								Borrower messages are rare gems. Not every loan comes with one, which makes them
+								extra special when they arrive. Any message from a borrower you've supported will show
+								up right here.
+							</p>
+						</div>
+					</div>
+					<borrower-message-suggested-loans loan-context="empty" />
+				</template>
+				<p v-else data-testid="messages-empty">
+					You don't have any messages from borrowers yet.
+					<router-link
+						to="/lend-by-category"
+						v-kv-track-event="['portfolio', 'click', 'Borrower messages empty find a loan']"
+					>
+						Find a borrower to support
+					</router-link>
+				</p>
+			</template>
 			<p v-else-if="isPastLastPage" data-testid="messages-past-last-page">
 				There are no messages on this page.
 				<router-link
@@ -91,7 +119,9 @@ import {
 } from '@kiva/kv-components';
 import WwwPage from '#src/components/WwwFrame/WwwPage';
 import useBorrowerMessages from '#src/composables/useBorrowerMessages';
+import gemUrl from '#src/assets/images/borrower-messages-gem.svg?url';
 import BorrowerMessageRow from './BorrowerMessageRow';
+import BorrowerMessageSuggestedLoans from './BorrowerMessageSuggestedLoans';
 
 defineOptions({ name: 'BorrowerMessagesPage' });
 
@@ -108,6 +138,7 @@ const {
 	offset,
 	loading,
 	error,
+	suggestedLoansEnabled,
 } = useBorrowerMessages();
 
 const showPagination = computed(() => totalCount.value > limit);
@@ -125,3 +156,9 @@ const handlePageChange = ({ pageOffset }) => {
 	router.push({ query: pageQuery(pageOffset / limit + 1) });
 };
 </script>
+
+<style lang="postcss" scoped>
+.borrower-messages__empty-body {
+	max-width: 45rem;
+}
+</style>

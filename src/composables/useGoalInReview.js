@@ -12,6 +12,7 @@ import contentfulEntriesQuery from '#src/graphql/query/contentfulEntries.graphql
 import useGoalData from '#src/composables/useGoalData';
 import { ID_SUPPORT_ALL } from '#src/composables/useBadgeData';
 import {
+	findGoalForYear,
 	getCategoryName,
 	getGoalLoans,
 	getGoalYear,
@@ -180,9 +181,11 @@ export default function useGoalInReview({ apollo, goalData } = {}) {
 		}
 	}
 
-	async function loadGoalSummary() {
+	// Resolved by year so a link or tile can reach a goal that expired or ended in an earlier year.
+	async function loadGoalSummary(year) {
 		try {
-			return await getGoalSummary();
+			const parsedPrefs = await loadPreferences();
+			return await getGoalSummary(findGoalForYear(parsedPrefs?.goals, year)?.goalName);
 		} catch (error) {
 			logFormatter('useGoalInReview failed to load the goal summary', 'error', { error: error?.message });
 			return null;
@@ -197,7 +200,7 @@ export default function useGoalInReview({ apollo, goalData } = {}) {
 	 */
 	async function fetchGoalInReview(year) {
 		const [summary, lenderData, contentfulData] = await Promise.all([
-			loadGoalSummary(),
+			loadGoalSummary(year),
 			query(goalInReviewLenderQuery),
 			query(contentfulEntriesQuery, { contentType: 'challenge', limit: 200 }, 'cache-first'),
 		]);

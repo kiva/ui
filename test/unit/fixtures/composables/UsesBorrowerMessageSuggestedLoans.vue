@@ -11,11 +11,11 @@ import useBorrowerMessageSuggestedLoans from '#src/composables/useBorrowerMessag
 defineOptions({ name: 'UsesBorrowerMessageSuggestedLoans' });
 
 const props = defineProps({
-	partnerId: {
-		type: Number,
+	partnerIds: {
+		type: Array,
 		required: true,
 	},
 });
 
-const { loans, isFallback } = useBorrowerMessageSuggestedLoans(props.partnerId);
+const { loans, isFallback } = useBorrowerMessageSuggestedLoans(props.partnerIds);
 </script>

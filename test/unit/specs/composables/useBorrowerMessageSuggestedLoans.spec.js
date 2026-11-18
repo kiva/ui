@@ -10,8 +10,8 @@ const flushPromises = () => new Promise(resolve => { setTimeout(resolve); });
 
 const page = values => ({ data: { fundraisingLoans: { values } } });
 
-const renderComposable = apollo => render(UsesBorrowerMessageSuggestedLoans, {
-	props: { partnerId: 3 },
+const renderComposable = (apollo, partnerIds = [3]) => render(UsesBorrowerMessageSuggestedLoans, {
+	props: { partnerIds },
 	global: { ...globalOptions, provide: { ...globalOptions.provide, apollo } },
 });
 
@@ -41,7 +41,7 @@ describe('useBorrowerMessageSuggestedLoans', () => {
 
 		expect(apollo.query).toHaveBeenCalledTimes(1);
 		expect(getOperationName(apollo.query.mock.calls[0][0].query)).toBe('borrowerMessagePartnerLoans');
-		expect(apollo.query.mock.calls[0][0].variables).toEqual({ partnerId: 3, origin: 'web:borrower-message' });
+		expect(apollo.query.mock.calls[0][0].variables).toEqual({ partnerIds: [3], origin: 'web:borrower-message' });
 		expect(readLoans(getByTestId)).toEqual([{ id: 1 }, { id: 2 }, { id: 3 }]);
 		expect(getByTestId('is-fallback').textContent).toBe('false');
 	});
@@ -55,6 +55,18 @@ describe('useBorrowerMessageSuggestedLoans', () => {
 		expect(apollo.query).toHaveBeenCalledTimes(2);
 		expect(getOperationName(apollo.query.mock.calls[1][0].query)).toBe('borrowerMessageFallbackLoans');
 		expect(apollo.query.mock.calls[1][0].variables).toEqual({ origin: 'web:borrower-message' });
+		expect(readLoans(getByTestId)).toEqual([{ id: 9 }]);
+		expect(getByTestId('is-fallback').textContent).toBe('true');
+	});
+
+	it('skips the partner query when there are no partner ids', async () => {
+		apollo.query.mockResolvedValueOnce(page([{ id: 9 }]));
+
+		const { getByTestId } = renderComposable(apollo, []);
+		await flushPromises();
+
+		expect(apollo.query).toHaveBeenCalledTimes(1);
+		expect(getOperationName(apollo.query.mock.calls[0][0].query)).toBe('borrowerMessageFallbackLoans');
 		expect(readLoans(getByTestId)).toEqual([{ id: 9 }]);
 		expect(getByTestId('is-fallback').textContent).toBe('true');
 	});

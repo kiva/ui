@@ -9,7 +9,8 @@ vi.mock('vue-router', () => ({
 	useRouter: () => ({ push: mockPush }),
 }));
 
-vi.mock('#src/composables/useBorrowerMessageSuggestedLoans', () => ({
+vi.mock('#src/composables/useBorrowerMessageSuggestedLoans', async importOriginal => ({
+	...(await importOriginal()),
 	default: vi.fn(),
 }));
 
@@ -23,10 +24,15 @@ const buildLoan = overrides => ({
 	...overrides,
 });
 
-const renderSection = ({ loans = LOANS, isFallback = false, loan = buildLoan() } = {}) => {
+const renderSection = ({
+	loans = LOANS,
+	isFallback = false,
+	loanContext = 'message',
+	loan = loanContext === 'message' ? buildLoan() : undefined,
+} = {}) => {
 	useBorrowerMessageSuggestedLoans.mockReturnValue({ loans: ref(loans), isFallback: ref(isFallback) });
 	return render(BorrowerMessageSuggestedLoans, {
-		props: { loan },
+		props: { loanContext, loan },
 		global: {
 			provide: {
 				$appConfig: { photoPath: 'https://www.kiva.org/img/' },
@@ -82,7 +88,7 @@ describe('BorrowerMessageSuggestedLoans', () => {
 	it('passes the partner id to the loans composable', () => {
 		renderSection();
 
-		expect(useBorrowerMessageSuggestedLoans).toHaveBeenCalledWith(3);
+		expect(useBorrowerMessageSuggestedLoans).toHaveBeenCalledWith([3]);
 	});
 
 	it('renders nothing until loans load', () => {
@@ -178,5 +184,42 @@ describe('BorrowerMessageSuggestedLoans', () => {
 		await fireEvent.click(card);
 
 		expect(mockPush).toHaveBeenCalledWith('/lend/101');
+	});
+
+	describe('empty context', () => {
+		const renderEmpty = options => renderSection({ loanContext: 'empty', ...options });
+
+		it('suggests loans from the journaling partners', () => {
+			renderEmpty();
+
+			expect(useBorrowerMessageSuggestedLoans).toHaveBeenCalledWith([80, 319]);
+		});
+
+		it('shows the zero-state copy', () => {
+			const { getByRole, getByText } = renderEmpty();
+
+			getByRole('heading', { level: 2, name: 'Want to hear from a borrower?' });
+			getByText('These lending partners share borrower messages more often than most. '
+				+ 'Support one of their borrowers and you may hear back.');
+		});
+
+		it("links to the journaling partners' loans", () => {
+			const { getAllByRole } = renderEmpty();
+			const links = getAllByRole('link', { name: 'See more loans like these' });
+
+			expect(links).toHaveLength(2);
+			links.forEach(link => {
+				expect(link.getAttribute('href')).toBe('/lend/filter?partner=80,319');
+				expect(JSON.parse(link.dataset.trackEvent))
+					.toEqual(['portfolio', 'click', 'Borrower messages empty see more loans']);
+			});
+		});
+
+		it('shows the fallback copy and link', () => {
+			const { getByRole, getAllByRole } = renderEmpty({ isFallback: true });
+
+			getByRole('heading', { level: 2, name: 'Loans you might like' });
+			expect(getAllByRole('link', { name: 'View more loans' })).toHaveLength(2);
+		});
 	});
 });

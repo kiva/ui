@@ -135,6 +135,30 @@ export function getGoalYear(goal) {
 }
 
 /**
+ * The lender's goal for a recap year, any status, since the active-goal default drops expired
+ * and prior-year goals. Completed outranks expired outranks open; ties go to the latest start.
+ *
+ * @param {Array} goals The lender's goals, from preferences.
+ * @param {number|string|null} year The recap year.
+ * @returns {object|null} The goal for that year, or null when none ran then.
+ */
+export function findGoalForYear(goals = [], year = null) {
+	if (!year) {
+		return null;
+	}
+	// Read GOAL_STATUS here, not at module load: specs mock useGoalData without it.
+	const rank = ({ status }) => {
+		if (status === GOAL_STATUS.COMPLETED) return 0;
+		if (status === GOAL_STATUS.EXPIRED) return 1;
+		return 2;
+	};
+	return goals
+		.filter(goal => getGoalYear(goal) === Number(year))
+		.sort((a, b) => rank(a) - rank(b)
+			|| new Date(b.dateStarted).getTime() - new Date(a.dateStarted).getTime())[0] ?? null;
+}
+
+/**
  * Last moment a past goal's recap entry point is offered.
  *
  * @param {number|string} goalYear The year the goal ran.
