@@ -16,14 +16,14 @@
 </template>
 
 <script setup>
-import {
-	computed, onMounted, ref, watch,
-} from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import useGoalNow from '#src/composables/useGoalNow';
 import { formatGoalDate } from '#src/util/goalDate';
 
 // Keeps a ?goalDate QA override for the browser session and shows the tester it is on.
 // Example: /mykiva?goalDate=2027-01-05 (YYYY-MM-DD) runs goal features as if it were January 5, 2027.
+// The cookie is saved from the URL of the full page load only. A ?goalDate added by in-app navigation
+// applies to that page but isn't saved for later pages.
 const { goalDateOverride, routeQuery, saveGoalDate } = useGoalNow();
 const formattedDate = computed(() => (goalDateOverride.value ? formatGoalDate(goalDateOverride.value) : ''));
 
@@ -43,6 +43,6 @@ const clearHref = computed(() => {
 
 onMounted(() => {
 	isMounted.value = true;
-	watch(routeQuery, saveGoalDate, { immediate: true });
+	saveGoalDate();
 });
 </script>

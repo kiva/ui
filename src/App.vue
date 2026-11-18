@@ -6,14 +6,15 @@
 		<router-view />
 		<vue-progress-bar v-if="dataHydrated" />
 		<the-tip-message />
-		<goal-date-override />
+		<!-- Outside production only, after hydration, so other pages never load it -->
+		<goal-date-override v-if="dataHydrated && !$appConfig.host?.includes('www.kiva.org')" />
 	</div>
 </template>
 
 <script>
+import { defineAsyncComponent } from 'vue';
 import '#src/assets/scss/tailwind/tailwind.css';
 import TheTipMessage from '#src/components/WwwFrame/TheTipMessage';
-import GoalDateOverride from '#src/components/GoalSetting/GoalDateOverride';
 import unbounceEventMixin from '#src/plugins/unbounce-event-mixin';
 import { metaGlobReader } from '#src/util/importHelpers';
 
@@ -28,7 +29,7 @@ export default {
 		};
 	},
 	components: {
-		GoalDateOverride,
+		GoalDateOverride: defineAsyncComponent(() => import('#src/components/GoalSetting/GoalDateOverride')),
 		TheTipMessage,
 	},
 	mixins: [unbounceEventMixin],

@@ -72,7 +72,7 @@ describe('GoalDateOverride', () => {
 		expect(queryByTestId('goal-date-override-badge')).toBeNull();
 	});
 
-	it('follows in-app navigation: saves a new date, then clears it with ?goalDate=off', async () => {
+	it('saves the cookie from the page load only, not from in-app navigation', async () => {
 		const cookieStore = createCookieStore();
 		const { queryByTestId } = renderWith(cookieStore);
 		await nextTick();
@@ -81,14 +81,8 @@ describe('GoalDateOverride', () => {
 		currentRoute.value = { query: { goalDate: '2027-01-05' } };
 		await nextTick();
 		await nextTick();
-		expect(cookieStore.cookies.get(GOAL_DATE_COOKIE)).toBe('2027-01-05');
 		expect(queryByTestId('goal-date-override-badge').textContent).toContain('2027-01-05');
-
-		currentRoute.value = { query: { goalDate: 'off' } };
-		await nextTick();
-		await nextTick();
-		expect(cookieStore.cookies.has(GOAL_DATE_COOKIE)).toBe(false);
-		expect(queryByTestId('goal-date-override-badge')).toBeNull();
+		expect(cookieStore.set).not.toHaveBeenCalled();
 	});
 
 	it('links to this page with ?goalDate=off, keeping the other params', async () => {
