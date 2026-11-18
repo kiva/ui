@@ -253,6 +253,8 @@ describe('GoalProgressRing days left countdown', () => {
 describe('GoalProgressRing card title year', () => {
 	afterEach(() => {
 		currentRoute.value.query = {};
+		// A ?goalDate on the route is saved to the cookie, which the next test would read.
+		document.cookie = 'kv_goal_date=; path=/; max-age=0';
 	});
 
 	it('names the goal year from the route goalDate', () => {

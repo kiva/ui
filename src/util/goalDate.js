@@ -1,7 +1,10 @@
 /**
- * QA date override for every goal surface: /mykiva?goalDate=2027-01-05 runs the goal features as if
- * it were that date, saves included (use a test account). The date sticks for the browser session
- * through a cookie, so later page loads keep it without the param; ?goalDate=off clears it.
+ * QA date override for every goal surface, outside production only: goal features run as if it were
+ * the given date, saves included (use a test account).
+ *
+ * Open a goal page with ?goalDate=YYYY-MM-DD, e.g. /mykiva?goalDate=2027-01-05. The date is saved to
+ * a session cookie, so later pages keep it without the param. Stop with ?goalDate=off on a goal page.
+ * Nothing on the page shows that an override is on.
  */
 const GOAL_DATE_QUERY_PARAM = 'goalDate';
 export const GOAL_DATE_COOKIE = 'kv_goal_date';
@@ -85,30 +88,43 @@ export function getLastGoalYear(query, cookieStore) {
 	return getCurrentGoalYear(query, cookieStore) - 1;
 }
 
-/**
- * @param {Date} date A local date.
- * @returns {string} The date as YYYY-MM-DD.
- */
-export function formatGoalDate(date) {
-	const pad = value => String(value).padStart(2, '0');
-	return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`;
-}
+const formatGoalDate = date => [
+	date.getFullYear(),
+	String(date.getMonth() + 1).padStart(2, '0'),
+	String(date.getDate()).padStart(2, '0'),
+].join('-');
 
 /**
- * Saves a goal date param to the session cookie, or clears the cookie when the param isn't a valid
- * date (?goalDate=off). A query without the param leaves the cookie as it is. Browser only: a
- * Set-Cookie on a server render could be cached by the CDN for other visitors.
+ * Keeps the goal date cookie in step with the query: a valid ?goalDate is saved as a session cookie,
+ * and any other value (?goalDate=off) deletes it. A query without the param leaves the cookie as it
+ * is. Writes only when the cookie would change. Browser only: a Set-Cookie on a server render could be
+ * cached by the CDN for other visitors.
  *
- * @param {object} query The route query.
- * @param {object} cookieStore The app's CookieStore.
+ * @param {object} [query] The route query.
+ * @param {object} [cookieStore] The app's CookieStore.
  */
-export function saveGoalDateCookie(query, cookieStore) {
-	if (!cookieStore || !hasGoalDateParam(query)) return;
+export function syncGoalDateCookie(query, cookieStore) {
+	if (typeof window === 'undefined' || !cookieStore || !hasGoalDateParam(query)) return;
 	const date = getQueryOverride(query);
 	if (date) {
-		// No expiry: a session cookie, gone when the browser closes.
-		cookieStore.set(GOAL_DATE_COOKIE, formatGoalDate(date), { path: '/' });
+		const value = formatGoalDate(date);
+		if (cookieStore.get(GOAL_DATE_COOKIE) !== value) {
+			// No expiry: a session cookie, gone when the browser closes.
+			cookieStore.set(GOAL_DATE_COOKIE, value, { path: '/' });
+		}
 	} else if (cookieStore.has(GOAL_DATE_COOKIE)) {
 		cookieStore.remove(GOAL_DATE_COOKIE, { path: '/' });
 	}
+}
+
+/**
+ * Whether the app is the production deployment. Reads the host the deployment is configured with
+ * ($appConfig.host, "www.kiva.org" in production), not the address in the visitor's browser, so
+ * kiva.org without www, other subdomains or a proxy can't change the answer.
+ *
+ * @param {string} [host] The configured host.
+ * @returns {boolean} Whether it's production.
+ */
+export function isProductionHost(host) {
+	return host === 'www.kiva.org';
 }

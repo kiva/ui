@@ -12,7 +12,12 @@ const localDay = date => [date.getFullYear(), date.getMonth() + 1, date.getDate(
 
 const createCookieStore = (initial = {}) => {
 	const cookies = new Map(Object.entries(initial));
-	return { get: vi.fn(name => cookies.get(name)) };
+	return {
+		get: vi.fn(name => cookies.get(name)),
+		has: vi.fn(name => cookies.has(name)),
+		set: vi.fn((name, value) => cookies.set(name, value)),
+		remove: vi.fn(name => cookies.delete(name)),
+	};
 };
 
 describe('useGoalNow', () => {
@@ -21,7 +26,7 @@ describe('useGoalNow', () => {
 		currentRoute.value = { query: {} };
 	});
 
-	const mountWith = cookieStore => {
+	const mountWith = (cookieStore, appConfig) => {
 		let state;
 		const app = createApp({
 			name: 'GoalNowTest',
@@ -31,9 +36,60 @@ describe('useGoalNow', () => {
 			},
 		});
 		if (cookieStore) app.provide('cookieStore', cookieStore);
+		if (appConfig) app.provide('$appConfig', appConfig);
 		app.mount(document.createElement('div'));
 		return state;
 	};
+
+	it('ignores the param and the cookie in production', () => {
+		vi.useFakeTimers();
+		vi.setSystemTime(new Date('2026-11-05T12:00:00'));
+		currentRoute.value = { query: { goalDate: '2030-01-05' } };
+		const state = mountWith(
+			createCookieStore({ [GOAL_DATE_COOKIE]: '2031-01-05' }),
+			{ host: 'www.kiva.org' },
+		);
+
+		expect(state.goalDateOverride.value).toBeNull();
+		expect(state.goalYear.value).toBe(2026);
+		expect(state.getGoalNow().getFullYear()).toBe(2026);
+	});
+
+	it('deletes the cookie with ?goalDate=off outside production', () => {
+		currentRoute.value = { query: { goalDate: 'off' } };
+		const cookieStore = createCookieStore({ [GOAL_DATE_COOKIE]: '2027-01-05' });
+		const state = mountWith(cookieStore, { host: 'kiva-ui.local' });
+
+		expect(cookieStore.remove).toHaveBeenCalledWith(GOAL_DATE_COOKIE, { path: '/' });
+		expect(state.goalDateOverride.value).toBeNull();
+	});
+
+	it('saves ?goalDate to the cookie outside production', () => {
+		currentRoute.value = { query: { goalDate: '2027-01-05' } };
+		const cookieStore = createCookieStore();
+		mountWith(cookieStore, { host: 'kiva-ui.local' });
+
+		expect(cookieStore.set).toHaveBeenCalledWith(GOAL_DATE_COOKIE, '2027-01-05', { path: '/' });
+	});
+
+	it('leaves the cookie alone in production', () => {
+		currentRoute.value = { query: { goalDate: 'off' } };
+		const cookieStore = createCookieStore({ [GOAL_DATE_COOKIE]: '2027-01-05' });
+		mountWith(cookieStore, { host: 'www.kiva.org' });
+
+		expect(cookieStore.remove).not.toHaveBeenCalled();
+
+		currentRoute.value = { query: { goalDate: '2027-01-05' } };
+		mountWith(cookieStore, { host: 'www.kiva.org' });
+		expect(cookieStore.set).not.toHaveBeenCalled();
+	});
+
+	it('applies the override outside production', () => {
+		currentRoute.value = { query: { goalDate: '2030-01-05' } };
+		const state = mountWith(createCookieStore(), { host: 'www.staging.kiva.org' });
+
+		expect(state.goalYear.value).toBe(2030);
+	});
 
 	it('reads the override from the route', () => {
 		currentRoute.value = { query: { goalDate: '2027-01-05' } };
