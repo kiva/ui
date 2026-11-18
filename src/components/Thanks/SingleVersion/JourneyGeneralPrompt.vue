@@ -19,12 +19,12 @@
 			You’ve made progress toward your next achievement{{ isOptedIn ? '.' : '!' }}
 		</h2>
 
-		<JourneyImg
-			class="tw-mx-auto tw-mt-2 md:tw-hidden tw-w-full"
-		/>
-		<JourneyDesktopImg
-			class="tw-mx-auto tw-mt-2 tw-hidden md:tw-block tw-w-full"
-		/>
+		<div
+			class="journey-art tw-mt-2 tw-w-full tw-bg-cover tw-bg-center"
+			:style="{ backgroundImage: `url(${journeyTexture})` }"
+		>
+			<JourneyArt class="tw-w-full tw-h-full" />
+		</div>
 
 		<KvButton
 			class="tw-mt-2 tw-w-full"
@@ -87,8 +87,8 @@ import { useRouter } from 'vue-router';
 import { mdiArrowRight, mdiChevronDown } from '@mdi/js';
 import { KvButton, KvMaterialIcon } from '@kiva/kv-components';
 import KvExpandable from '#src/components/Kv/KvExpandable';
-import JourneyImg from '#src/assets/images/thanks-page/journey.svg';
-import JourneyDesktopImg from '#src/assets/images/thanks-page/journey-desktop.svg';
+import JourneyArt from '#src/assets/images/thanks-page/journey.svg';
+import journeyTexture from '#src/assets/images/thanks-page/journey-texture.jpg';
 import BorrowerAvatarsContainer from '#src/components/Thanks/BorrowerAvatarsContainer';
 import useMyKivaHome from '#src/composables/useMyKivaHome';
 
@@ -143,8 +143,12 @@ const handleClickContinue = () => {
 </script>
 
 <style lang="postcss" scoped>
-.smaller-borrower-avatar :deep(img) {
-	height: 36px;
-	width: 36px;
+/* The art is drawn on the desktop canvas; its preserveAspectRatio slice shows the centre 305px on mobile */
+.journey-art {
+	aspect-ratio: 305 / 314;
+
+	@screen md {
+		aspect-ratio: 559 / 314;
+	}
 }
 </style>
