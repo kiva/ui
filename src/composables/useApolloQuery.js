@@ -5,7 +5,6 @@ import {
 	onMounted,
 	onBeforeUnmount,
 	getCurrentInstance,
-	getCurrentScope,
 } from 'vue';
 import { routeLocationKey } from 'vue-router';
 import getOperationVariables from '#src/util/operationVariables';
@@ -127,34 +126,31 @@ export default function useApolloQuery(operation, variables = () => ({})) {
 	}
 
 	const getVariables = typeof variables === 'function' ? variables : () => variables;
-	const scope = getCurrentScope();
 	let subscription = null;
 	let lazyObserver = null;
+	let unmounted = false;
 
-	const start = () => {
-		// A lazy start runs after setup, so its variables watch must join the component's scope to stop on unmount
-		scope.run(() => {
-			({ subscription } = watchApolloOperation({
-				client: apollo,
-				operation,
-				commonVars,
-				getVariables,
-				watchVariables: (getter, callback) => watch(getter, callback, { deep: true }),
-				next: apolloResult => {
-					if (apolloResult?.data) {
-						result.value = apolloResult.data;
-					}
-					if (apolloResult?.errors?.length) {
-						error.value = apolloResult.errors;
-					}
-					loading.value = false;
-				},
-				error: e => {
-					error.value = e;
-					loading.value = false;
-				},
-			}));
-		});
+	const subscribe = watchVariables => {
+		({ subscription } = watchApolloOperation({
+			client: apollo,
+			operation,
+			commonVars,
+			getVariables,
+			watchVariables,
+			next: apolloResult => {
+				if (apolloResult?.data) {
+					result.value = apolloResult.data;
+				}
+				if (apolloResult?.errors?.length) {
+					error.value = apolloResult.errors;
+				}
+				loading.value = false;
+			},
+			error: e => {
+				error.value = e;
+				loading.value = false;
+			},
+		}));
 	};
 
 	if (lazyConfig) {
@@ -162,15 +158,21 @@ export default function useApolloQuery(operation, variables = () => ({})) {
 			lazyObserver = observeLazyOperation({
 				instance: vm.proxy,
 				lazyConfig,
-				start,
+				start: () => {
+					if (!unmounted) {
+						// Outside setup, only $watch binds the watch to the component for unmount and error handling
+						subscribe((getter, callback) => vm.proxy.$watch(() => getter(), callback, { deep: true }));
+					}
+				},
 				label: `useApolloQuery ${vm.type?.name ?? 'unknown component'}`,
 			});
 		});
 	} else {
-		start();
+		subscribe((getter, callback) => watch(getter, callback, { deep: true }));
 	}
 
 	onBeforeUnmount(() => {
+		unmounted = true;
 		lazyObserver?.disconnect();
 		subscription?.unsubscribe?.();
 	});

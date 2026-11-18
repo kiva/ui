@@ -392,6 +392,18 @@ describe('useApolloQuery (client)', () => {
 			expect(apollo.watchQuery).not.toHaveBeenCalled();
 		});
 
+		it('does not start when a queued report arrives after unmount', () => {
+			mock = mockIntersectionObserver();
+			const apollo = makeApollo();
+			const { app } = runInSetup({ apollo }, () => useApolloQuery({ query: dummyQuery, lazy: true }), {
+				render: () => h('div'),
+			});
+
+			app.unmount();
+			mock.trigger(1);
+			expect(apollo.watchQuery).not.toHaveBeenCalled();
+		});
+
 		it('follows variables once started and stops following them after unmount', async () => {
 			mock = mockIntersectionObserver();
 			const setVariables = vi.fn();
@@ -415,6 +427,30 @@ describe('useApolloQuery (client)', () => {
 			await nextTick();
 			expect(setVariables).not.toHaveBeenCalledWith({ id: 3 });
 			expect(unsubscribe).toHaveBeenCalled();
+		});
+
+		it('reports a variables error after a lazy start to the app error handler', async () => {
+			mock = mockIntersectionObserver();
+			const apollo = makeApollo();
+			const failure = new Error('bad variables');
+			const broken = ref(false);
+			const getVariables = () => {
+				if (broken.value) throw failure;
+				return {};
+			};
+			const { app } = runInSetup(
+				{ apollo },
+				() => useApolloQuery({ query: dummyQuery, lazy: true }, getVariables),
+				{ render: () => h('div') },
+			);
+			const errorHandler = vi.fn();
+			app.config.errorHandler = errorHandler;
+
+			mock.trigger(1);
+			broken.value = true;
+			await nextTick();
+
+			expect(errorHandler).toHaveBeenCalledWith(failure, expect.anything(), expect.anything());
 		});
 	});
 });
