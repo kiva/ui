@@ -203,7 +203,7 @@ export default {
 }
 ```
 
-By default the observer watches the component's root element (`$el`). To observe a different element, pass a `target` string matching a template `ref`:
+By default the observer watches the component's root element (`$el`). To observe a different element, pass a `target` string matching a template `ref`; a `ref` on a child component observes that component's root element:
 ```html
 <template>
 	<div>
@@ -288,6 +288,23 @@ Nothing else is required: a component prefetches the operations of every composa
 
 Derive state from `result` and `loading` so "not loaded yet" stays representable, and never initialize a ref to a guessed value to cover the load window.
 
+### Lazy loading
+
+An operation for a section below the fold can start its query when the section nears the viewport instead of on the server. Add `lazy` to the operation and leave it out of `preFetchOperations`:
+
+```javascript
+const operation = { query: myQuery, lazy: true };
+
+export default function useMySection() {
+	const { result, loading, error } = useApolloQuery(operation);
+	// ...
+}
+```
+
+`lazy` takes the same values as in a component `apollo` block (see "Lazy loading queries" above): `true` observes the calling component's root element with a 500px margin, and an object overrides any `IntersectionObserver` option or names a template `ref` of the calling component as its `target`. The server renders the "not loaded" state without a cache-miss warning, and the client starts the subscription on the observer's first report, which is immediate when the element is already in range at mount.
+
+As with component blocks, a prefetched operation ignores `lazy`: adding a lazy operation to `preFetchOperations`, or letting its `shouldPreFetch` pass, renders it on the server.
+
 ### Operation options
 
 A registered operation takes the same options as a component `apollo` block operation (see the component sections above), with the same meanings, run by the same implementation: `preFetchVariables` and `shouldPreFetch` are evaluated with the same context both kinds get, `errorHandlers` run at prefetch time, and `fetchPolicy` applies to the client subscription. The complete list of differences:
@@ -295,7 +312,6 @@ A registered operation takes the same options as a component `apollo` block oper
 - Registration replaces `preFetch: true`: listing an operation in a `preFetchOperations` export opts it in, and an operation that authors its own `preFetch` value keeps it.
 - Results come back as the three refs instead of a `result()` callback.
 - Client variables are `useApolloQuery`'s second argument instead of a `this`-bound `variables` method: a plain object, or a getter over the composable's own reactive state, re-evaluated into the subscription whenever those values change.
-- `lazy` stays component-block-only.
 
 ```javascript
 import { ref } from 'vue';

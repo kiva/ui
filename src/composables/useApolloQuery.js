@@ -2,13 +2,16 @@ import {
 	ref,
 	inject,
 	watch,
+	onMounted,
 	onBeforeUnmount,
 	getCurrentInstance,
+	getCurrentScope,
 } from 'vue';
 import { routeLocationKey } from 'vue-router';
 import getOperationVariables from '#src/util/operationVariables';
 import logReadQueryError from '#src/util/logReadQueryError';
 import watchApolloOperation from '#src/util/watchApolloOperation';
+import { parseLazy, observeLazyOperation } from '#src/util/lazyApolloOperation';
 
 const isServer = typeof window === 'undefined';
 
@@ -43,9 +46,12 @@ function warnAboutCacheMiss(vm, operation, preFetched, prefetchContext) {
  * When the operation was prefetched (attached to the component and not opted
  * out), the prefetched value is read from the cache. The server never fetches
  * beyond that read: a miss renders the "not loaded" state and warns in dev.
- * On the client a watch query subscription loads and follows the value.
+ * On the client a watch query subscription loads and follows the value. A
+ * lazy operation that was not prefetched starts its subscription once the
+ * component's element nears the viewport; a prefetched one ignores `lazy`.
  *
- * @param {object} operation - Operation registered in a composable's preFetchOperations export
+ * @param {object} operation - Operation registered in a composable's preFetchOperations export,
+ *   optionally carrying the component block `lazy` option
  * @param {object|Function} [variables] - The operation's client variables: a plain object or a
  *   reactive getter, watched like a component operation's variables method
  * @returns {{
@@ -109,37 +115,65 @@ export default function useApolloQuery(operation, variables = () => ({})) {
 		}
 	}
 
+	const lazyConfig = preFetched ? null : parseLazy(operation.lazy);
+
 	if (isServer) {
 		// No fetch during server render: a miss renders the "not loaded" state
 		// and the client subscription loads the value after hydration
-		if (result.value === null && process.env.NODE_ENV !== 'production') {
+		if (result.value === null && !lazyConfig && process.env.NODE_ENV !== 'production') {
 			warnAboutCacheMiss(vm, operation, preFetched, prefetchContext);
 		}
 		return { result, loading, error };
 	}
 
 	const getVariables = typeof variables === 'function' ? variables : () => variables;
-	const { subscription } = watchApolloOperation({
-		client: apollo,
-		operation,
-		commonVars,
-		getVariables,
-		watchVariables: (getter, callback) => watch(getter, callback, { deep: true }),
-		next: apolloResult => {
-			if (apolloResult?.data) {
-				result.value = apolloResult.data;
-			}
-			if (apolloResult?.errors?.length) {
-				error.value = apolloResult.errors;
-			}
-			loading.value = false;
-		},
-		error: e => {
-			error.value = e;
-			loading.value = false;
-		},
+	const scope = getCurrentScope();
+	let subscription = null;
+	let lazyObserver = null;
+
+	const start = () => {
+		// A lazy start runs after setup, so its variables watch must join the component's scope to stop on unmount
+		scope.run(() => {
+			({ subscription } = watchApolloOperation({
+				client: apollo,
+				operation,
+				commonVars,
+				getVariables,
+				watchVariables: (getter, callback) => watch(getter, callback, { deep: true }),
+				next: apolloResult => {
+					if (apolloResult?.data) {
+						result.value = apolloResult.data;
+					}
+					if (apolloResult?.errors?.length) {
+						error.value = apolloResult.errors;
+					}
+					loading.value = false;
+				},
+				error: e => {
+					error.value = e;
+					loading.value = false;
+				},
+			}));
+		});
+	};
+
+	if (lazyConfig) {
+		onMounted(() => {
+			lazyObserver = observeLazyOperation({
+				instance: vm.proxy,
+				lazyConfig,
+				start,
+				label: `useApolloQuery ${vm.type?.name ?? 'unknown component'}`,
+			});
+		});
+	} else {
+		start();
+	}
+
+	onBeforeUnmount(() => {
+		lazyObserver?.disconnect();
+		subscription?.unsubscribe?.();
 	});
-	onBeforeUnmount(() => subscription?.unsubscribe?.());
 
 	return { result, loading, error };
 }
