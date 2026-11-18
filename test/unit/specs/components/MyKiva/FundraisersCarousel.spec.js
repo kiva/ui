@@ -61,7 +61,7 @@ describe('FundraisersCarousel', () => {
 		expect(wrapper.text()).toContain('Fundraisers with Kiva');
 		expect(wrapper.text()).toContain('New!');
 		expect(wrapper.text()).toContain(
-			'Easily create and share fundraisers that support the communities and places you choose.'
+			'Easily create and share fundraisers that support the kinds of loans you love.'
 		);
 	});
 
@@ -69,21 +69,16 @@ describe('FundraisersCarousel', () => {
 		const wrapper = mountComponent();
 		fundraiserOccasionCards.forEach(card => {
 			expect(wrapper.text()).toContain(card.title);
+			expect(wrapper.text()).toContain(card.description);
 		});
 	});
 
 	it('points each occasion card at its own configure deep link', () => {
 		const wrapper = mountComponent();
 		const hrefs = wrapper.findAll('a').map(a => a.attributes('href'));
-		expect(hrefs).toContain('/gf/configure?occasion=holiday');
-		expect(hrefs).toContain('/gf/configure?occasion=memorial');
-	});
-
-	it('keeps the landing-page card last', () => {
-		// It is not an occasion, so it must not be sorted in among the create-flow cards.
-		const last = fundraiserOccasionCards[fundraiserOccasionCards.length - 1];
-		expect(last.linkLabel).toBe('More about fundraisers');
-		expect(last.to).toBe('/lp/event-fundraiser');
+		fundraiserOccasionCards.forEach(card => {
+			expect(hrefs).toContain(`/gf/configure?occasion=${card.id}`);
+		});
 	});
 
 	it('links the tooltip to the fundraiser landing page', () => {
