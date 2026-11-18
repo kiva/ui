@@ -23,7 +23,12 @@ const getCtaHref = vi.fn(() => '/lend/filter?header=finish');
 // Only the composable is stubbed; the recap decisions read the real GOAL_STATUS.
 vi.mock('#src/composables/useGoalData', async importOriginal => ({
 	...await importOriginal(),
-	default: () => ({ getGoalSummary, getCategories, getCtaHref }),
+	default: () => ({
+		getGoalSummary,
+		getCategories,
+		getCtaHref,
+		loadPreferences: () => Promise.resolve({ goals: [] }),
+	}),
 }));
 
 const supportAllSummary = {
@@ -418,29 +423,81 @@ describe('useGoalInReview', () => {
 		});
 	});
 
+	const THIS_YEAR = new Date().getFullYear();
+
+	const goalOf = (status, year = THIS_YEAR) => ({
+		goalName: `${year} impact goal`,
+		status,
+		dateStarted: `${year}-02-01T00:00:00.000Z`,
+	});
+
+	// Stands in for useGoalData; findMostRecentActiveGoal has its own spec.
+	const goalDataWith = ({
+		goal = null,
+		goals = goal ? [goal] : [],
+		hasViewed = false,
+		announced = true,
+	} = {}) => ({
+		findMostRecentActiveGoal: list => list[0] ?? null,
+		getCategories,
+		getCtaHref,
+		getGoalSummary,
+		hasViewedGoalRecapForYear: () => hasViewed,
+		hideGoalCard: ref(announced),
+		loadPreferences: vi.fn(() => Promise.resolve({ goals })),
+		setGoalRecapViewedPreference: vi.fn(),
+		hasSubmittedGoalFeedbackForYear: () => false,
+		setGoalFeedbackSubmittedPreference: vi.fn(),
+	});
+
+	describe('the goal the recap is for', () => {
+		const LAST_YEAR = THIS_YEAR - 1;
+
+		it('reaches a goal that expired, which the active-goal default drops', async () => {
+			const goal = { ...goalOf('expired', LAST_YEAR), loansTowardGoal: 14 };
+			const { loadGoalInReview } = useGoalInReview({ apollo: makeApollo(), goalData: goalDataWith({ goal }) });
+
+			await loadGoalInReview({ year: LAST_YEAR });
+
+			expect(getGoalSummary).toHaveBeenCalledWith(goal.goalName);
+		});
+
+		it('reaches a goal completed in an earlier year', async () => {
+			const goal = goalOf('completed', LAST_YEAR);
+			const { loadGoalInReview } = useGoalInReview({ apollo: makeApollo(), goalData: goalDataWith({ goal }) });
+
+			await loadGoalInReview({ year: LAST_YEAR });
+
+			expect(getGoalSummary).toHaveBeenCalledWith(goal.goalName);
+		});
+
+		it('picks the year asked for, not the goal that happens to be active', async () => {
+			const lastYear = goalOf('completed', LAST_YEAR);
+			const thisYear = goalOf('in-progress');
+			const { loadGoalInReview } = useGoalInReview({
+				apollo: makeApollo(),
+				goalData: goalDataWith({ goals: [thisYear, lastYear] }),
+			});
+
+			await loadGoalInReview({ year: LAST_YEAR });
+
+			expect(getGoalSummary).toHaveBeenCalledWith(lastYear.goalName);
+		});
+
+		it('leaves the choice to the active-goal default when no goal ran that year', async () => {
+			const { loadGoalInReview } = useGoalInReview({
+				apollo: makeApollo(),
+				goalData: goalDataWith({ goal: goalOf('completed') }),
+			});
+
+			await loadGoalInReview({ year: LAST_YEAR });
+
+			expect(getGoalSummary).toHaveBeenCalledWith(undefined);
+		});
+	});
+
 	describe('opening the recap by itself', () => {
-		const THIS_YEAR = new Date().getFullYear();
 		const dayOffset = days => new Date(Date.now() + days * 24 * 60 * 60 * 1000);
-
-		const goalOf = (status, year = THIS_YEAR) => ({
-			goalName: `${year} impact goal`,
-			status,
-			dateStarted: `${year}-02-01T00:00:00.000Z`,
-		});
-
-		// Stands in for useGoalData; findMostRecentActiveGoal has its own spec.
-		const goalDataWith = ({ goal = null, hasViewed = false, announced = true } = {}) => ({
-			findMostRecentActiveGoal: goals => goals[0] ?? null,
-			getCategories,
-			getCtaHref,
-			getGoalSummary,
-			hasViewedGoalRecapForYear: () => hasViewed,
-			hideGoalCard: ref(announced),
-			loadPreferences: vi.fn(() => Promise.resolve({ goals: goal ? [goal] : [] })),
-			setGoalRecapViewedPreference: vi.fn(),
-			hasSubmittedGoalFeedbackForYear: () => false,
-			setGoalFeedbackSubmittedPreference: vi.fn(),
-		});
 
 		it('loads the recap and opens it for a completed goal', async () => {
 			const apollo = makeApollo();

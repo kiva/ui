@@ -4987,6 +4987,15 @@ describe('useGoalData', () => {
 			expect(composable.completedGoalsHistory.value[0].target).toBe(6);
 		});
 
+		it('includes last year\'s goal once the year turns over, on a worker loaded before it did', async () => {
+			// The module loaded under the real clock; only a compute-time year sees that year as past.
+			vi.setSystemTime(new Date(`${GOALS_CURRENT_YEAR + 1}-01-01T12:00:00Z`));
+			await loadPrefsWithGoals([
+				{ status: GOAL_STATUS.COMPLETED, dateStarted: `${GOALS_CURRENT_YEAR}-06-10`, target: 6 },
+			]);
+			expect(composable.completedGoalsHistory.value).toHaveLength(1);
+		});
+
 		it('sorts prior-year completed goals newest year first', async () => {
 			// Use mid-year dates so timezone offsets can't bump the year boundary.
 			await loadPrefsWithGoals([
