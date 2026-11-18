@@ -134,12 +134,6 @@ export function getGoalYear(goal) {
 	return goal?.dateStarted ? new Date(goal.dateStarted).getFullYear() : null;
 }
 
-// Rank for picking one goal among several from the same year.
-const GOAL_RANK_BY_STATUS = {
-	[GOAL_STATUS.COMPLETED]: 0,
-	[GOAL_STATUS.EXPIRED]: 1,
-};
-
 /**
  * The lender's goal for a recap year, any status, since the active-goal default drops expired
  * and prior-year goals. Completed outranks expired outranks open; ties go to the latest start.
@@ -152,7 +146,12 @@ export function findGoalForYear(goals = [], year = null) {
 	if (!year) {
 		return null;
 	}
-	const rank = goal => GOAL_RANK_BY_STATUS[goal.status] ?? 2;
+	// Read GOAL_STATUS here, not at module load: specs mock useGoalData without it.
+	const rank = ({ status }) => {
+		if (status === GOAL_STATUS.COMPLETED) return 0;
+		if (status === GOAL_STATUS.EXPIRED) return 1;
+		return 2;
+	};
 	return goals
 		.filter(goal => getGoalYear(goal) === Number(year))
 		.sort((a, b) => rank(a) - rank(b)
