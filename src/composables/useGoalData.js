@@ -886,12 +886,19 @@ export default function useGoalData({ apollo } = {}) {
 				goalToStore.status = GOAL_STATUS.IN_PROGRESS;
 			}
 		}
-		await setMyKivaGoal(apolloClient, {
+		const result = await setMyKivaGoal(apolloClient, {
 			category: goalToStore.category,
 			target: goalToStore.target,
 			dateStarted: goalToStore.dateStarted,
 			status: goalToStore.status,
 		});
+		// Mutations resolve with `errors` instead of rejecting, so a goal the server refused (for
+		// example a second new goal in the same year) would otherwise be shown as saved.
+		if (result?.errors?.length) {
+			const error = new Error(`setMyKivaGoal failed: ${result.errors.map(e => e.message).join('; ')}`);
+			error.graphQLErrors = result.errors;
+			throw error;
+		}
 		if (updateLocalState) {
 			setGoalState({ goals }); // Refresh local state after update
 		}
@@ -1002,7 +1009,15 @@ export default function useGoalData({ apollo } = {}) {
 					...goal,
 					status: GOAL_STATUS.COMPLETED
 				};
-				await storeGoalPreferences({ ...userGoal.value });
+				try {
+					await storeGoalPreferences({ ...userGoal.value });
+				} catch (error) {
+					// The goal stays in progress on the server, so don't celebrate it; a later load
+					// retries the completion.
+					logFormatter('Failed to persist completed goal', 'error', { error, category: goalCategory });
+					userGoal.value = goal;
+					return;
+				}
 				if (persistHideGoalCard) {
 					await setHideGoalCardPreference();
 				}
@@ -1046,10 +1061,14 @@ export default function useGoalData({ apollo } = {}) {
 			logFormatter('Negative goal progress detected, correcting loanTotalAtStart', 'warn', debugData);
 
 			// Correct the goal by updating loanTotalAtStart to allTimeProgress
-			await storeGoalPreferences({
-				...goal,
-				loanTotalAtStart: allTimeProgress,
-			});
+			try {
+				await storeGoalPreferences({
+					...goal,
+					loanTotalAtStart: allTimeProgress,
+				});
+			} catch (error) {
+				logFormatter('Failed to correct negative goal progress', 'error', { error, ...debugData });
+			}
 		}
 	}
 

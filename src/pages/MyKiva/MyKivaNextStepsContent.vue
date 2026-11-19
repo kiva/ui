@@ -358,6 +358,8 @@ import {
 	checkPostLendingCardCookie, removePostLendingCardCookie, TRANSACTION_LOANS_KEY, MY_KIVA_CARD_HEIGHT
 } from '#src/util/myKivaUtils';
 import useBreakpoints from '#src/composables/useBreakpoints';
+import useTipMessage from '#src/composables/useTipMessage';
+import logFormatter from '#src/util/logFormatter';
 
 defineOptions({ name: 'MyKivaNextStepsContent' });
 
@@ -451,9 +453,11 @@ const props = defineProps({
 	},
 });
 
+const apollo = inject('apollo');
 const cookieStore = inject('cookieStore');
 const $kvTrackEvent = inject('$kvTrackEvent');
 const goalData = inject('goalData');
+const { $showTipMsg } = useTipMessage(apollo);
 const router = useRouter();
 const { isMobile } = useBreakpoints();
 const postLendingQueryExists = router.currentRoute.value.query.postLending === 'true';
@@ -689,7 +693,13 @@ const setGoal = async preferences => {
 		await updateCurrentGoal(userGoal.value, preferences);
 		$kvTrackEvent('portfolio', 'click', 'confirm-edit-goal');
 	} else {
-		await storeGoalPreferences(preferences, false);
+		try {
+			await storeGoalPreferences(preferences, false);
+		} catch (error) {
+			logFormatter('MyKivaNextStepsContent: failed to set up goal', 'error', { error });
+			$showTipMsg('There was a problem setting up your goal', 'error');
+			return;
+		}
 	}
 	isGoalSet.value = true;
 };

@@ -1172,6 +1172,63 @@ describe('useGoalData', () => {
 			});
 		});
 
+		describe('when the server answers the save', () => {
+			const currentYear = new Date().getFullYear();
+			const existingGoal = {
+				goalName: `goal-${ID_WOMENS_EQUALITY}-${currentYear}`,
+				category: ID_WOMENS_EQUALITY,
+				target: 3,
+				dateStarted: `${currentYear}-01-02T00:00:00.000Z`,
+				status: GOAL_STATUS.IN_PROGRESS,
+			};
+			const newGoal = {
+				goalName: `goal-${ID_BASIC_NEEDS}-${currentYear}`,
+				category: ID_BASIC_NEEDS,
+				target: 5,
+				dateStarted: `${currentYear}-01-03T00:00:00.000Z`,
+				status: GOAL_STATUS.IN_PROGRESS,
+			};
+
+			beforeEach(async () => {
+				mockApollo.query = vi.fn()
+					.mockResolvedValueOnce({
+						data: {
+							my: {
+								userPreferences: {
+									id: 'pref-123',
+									preferences: JSON.stringify({ goals: [existingGoal] }),
+								},
+								loans: { totalCount: 0 },
+							},
+						},
+					})
+					.mockResolvedValue({
+						data: { userAchievementProgress: { tieredLendingAchievements: [] } },
+					});
+				await composable.loadGoalData();
+			});
+
+			it('rejects and keeps the local goal when the mutation returns errors', async () => {
+				const { setMyKivaGoal } = await import('#src/util/userPreferenceUtils');
+				setMyKivaGoal.mockResolvedValueOnce({
+					data: null,
+					errors: [{ message: 'Cannot create a new goal while another goal is in progress' }],
+				});
+
+				await expect(composable.storeGoalPreferences({ ...newGoal }))
+					.rejects.toThrow('Cannot create a new goal while another goal is in progress');
+				expect(composable.userGoal.value.goalName).toBe(existingGoal.goalName);
+			});
+
+			it('resolves and updates the local goal when the mutation succeeds', async () => {
+				const { setMyKivaGoal } = await import('#src/util/userPreferenceUtils');
+				setMyKivaGoal.mockResolvedValueOnce({ data: { my: { setMyKivaGoal: true } } });
+
+				await expect(composable.storeGoalPreferences({ ...newGoal })).resolves.toBeUndefined();
+				expect(composable.userGoal.value.goalName).toBe(newGoal.goalName);
+			});
+		});
+
 		it('downgrades a completed status to in-progress when authoritative progress is below target', async () => {
 			const { setMyKivaGoal } = await import('#src/util/userPreferenceUtils');
 
