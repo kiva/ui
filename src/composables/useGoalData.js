@@ -3,7 +3,7 @@ import {
 	inject,
 	ref,
 } from 'vue';
-import { differenceInCalendarDays, endOfYear } from 'date-fns';
+import { differenceInCalendarDays, endOfYear, formatISO } from 'date-fns';
 
 import useGoalDataQuery from '#src/graphql/query/useGoalData.graphql';
 import useGoalDataProgressQuery from '#src/graphql/query/useGoalDataProgress.graphql';
@@ -110,7 +110,11 @@ export function buildNewGoal({ category, target, now }) {
 		goalName: `goal-${category}-${now.getFullYear()}`,
 		category,
 		target,
-		dateStarted: now.toISOString(),
+		// Written with the lender's UTC offset, not as UTC, so the year in the string is their local
+		// year. The server names the goal and picks which year's loans count from the year written in
+		// the string; a UTC date would put a goal set late on Dec 31 (west of UTC) or early on Jan 1
+		// (east of UTC) in a different year from the one the lender sees.
+		dateStarted: formatISO(now),
 		status: GOAL_STATUS.IN_PROGRESS,
 	};
 }
@@ -205,18 +209,26 @@ export default function useGoalData({ apollo } = {}) {
 
 	// --- Functions ---
 
+	/**
+	 * The lender's active goal: the most recently started goal of the current goal year that hasn't
+	 * expired, which is how the server picks it too. A goal from a past year is never the active goal,
+	 * even while it's still saved as in progress. A goal with no start date counts as this year's.
+	 *
+	 * @param {Array} goals The lender's saved goals.
+	 * @returns {Object|undefined} The active goal, or undefined when there is none.
+	 */
+	function findMostRecentActiveGoal(goals) {
+		const currentYear = getCurrentGoalYear();
+		const isFromPastYear = g => g.dateStarted && new Date(g.dateStarted).getFullYear() < currentYear;
+		const startedAt = g => (g.dateStarted ? new Date(g.dateStarted).getTime() : -Infinity);
+		return goals
+			.filter(g => g.status !== GOAL_STATUS.EXPIRED && !isFromPastYear(g))
+			.reduce((newest, g) => (!newest || startedAt(g) > startedAt(newest) ? g : newest), undefined);
+	}
+
 	function setGoalState(parsedPrefs) {
 		if (!parsedPrefs) return;
-		const goals = parsedPrefs.goals || [];
-		const currentYear = getCurrentGoalYear();
-		const activeGoals = goals.filter(g => {
-			// Filter out expired goals
-			if (g.status === GOAL_STATUS.EXPIRED) return false;
-			// Goals from past years are never the active goal, even if still marked in progress
-			if (g.dateStarted && new Date(g.dateStarted).getFullYear() < currentYear) return false;
-			return true;
-		});
-		userGoal.value = { ...activeGoals[0] };
+		userGoal.value = { ...findMostRecentActiveGoal(parsedPrefs.goals || []) };
 	}
 
 	/**
@@ -441,17 +453,6 @@ export default function useGoalData({ apollo } = {}) {
 			logFormatter('Failed to load preferences', 'error', { error });
 			return null;
 		}
-	}
-
-	function findMostRecentActiveGoal(goals) {
-		const currentYear = getCurrentGoalYear();
-		return goals.find(g => {
-			if (g.status === GOAL_STATUS.EXPIRED) return false;
-			if (g.status === GOAL_STATUS.COMPLETED && g.dateStarted) {
-				return new Date(g.dateStarted).getFullYear() >= currentYear;
-			}
-			return true;
-		});
 	}
 
 	/**
@@ -1243,26 +1244,19 @@ export default function useGoalData({ apollo } = {}) {
 	}
 
 	/**
-	 * Annual goal renewal — runs once per calendar year on the lender's first
-	 * MyKiva visit. Prior-year in-progress goals are expired (and their final
+	 * Annual goal renewal — runs on every MyKiva visit and acts on the first one of
+	 * a new year. Prior-year in-progress goals are expired (and their final
 	 * loan count toward the goal is captured so the impact-progress row can
 	 * decide whether to surface them). Prior-year completed goals keep their
-	 * COMPLETED status so they continue to appear in the row across years.
+	 * COMPLETED status so they continue to appear in the row across years, and
+	 * goals already expired are left as they are. Once a year's goals are expired
+	 * there is nothing left to change, so later visits write nothing.
 	 * `showRenewedAnnualGoalToast` is true whenever a goal was expired on this visit.
 	 */
 	async function renewAnnualGoal(today = getGoalNow()) {
 		const parsedPrefs = await loadPreferences();
-		const goals = parsedPrefs.goals || [];
+		const goals = parsedPrefs?.goals || [];
 		const currentYear = today.getFullYear();
-		const renewedYear = parsedPrefs.goalsRenewedDate ? new Date(parsedPrefs.goalsRenewedDate).getFullYear() : null;
-		const areGoalsRenewed = goals.some(goal => goal.status === GOAL_STATUS.EXPIRED);
-
-		if (renewedYear > currentYear || areGoalsRenewed) {
-			return {
-				expiredGoals: [],
-				showRenewedAnnualGoalToast: false,
-			};
-		}
 
 		const expiredGoals = await Promise.all(
 			goals
@@ -1270,7 +1264,8 @@ export default function useGoalData({ apollo } = {}) {
 					const goalYear = g.dateStarted ? new Date(g.dateStarted).getFullYear() : null;
 					return goalYear !== null
 						&& goalYear < currentYear
-						&& g.status !== GOAL_STATUS.COMPLETED;
+						&& g.status !== GOAL_STATUS.COMPLETED
+						&& g.status !== GOAL_STATUS.EXPIRED;
 				})
 				.map(async goal => {
 					const goalYear = new Date(goal.dateStarted).getFullYear();

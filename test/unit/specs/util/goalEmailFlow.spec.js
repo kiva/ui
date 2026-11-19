@@ -55,7 +55,7 @@ describe('goalEmailFlow.js', () => {
 			});
 
 			expect(newGoalPrefs.goalName).toBe(`goal-${CATEGORY}-2031`);
-			expect(newGoalPrefs.dateStarted).toBe(now.toISOString());
+			expect(new Date(newGoalPrefs.dateStarted).getTime()).toBe(now.getTime());
 		});
 
 		it('returns null newGoalPrefs when an in-progress goal already exists for the category', () => {

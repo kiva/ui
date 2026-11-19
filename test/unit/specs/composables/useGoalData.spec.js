@@ -2,6 +2,7 @@ import { createApp } from 'vue';
 import useGoalData, {
 	GOAL_STATUS,
 	GOAL_YEAR_COUNTDOWN_WINDOW_DAYS,
+	buildNewGoal,
 	getGoalYearDaysLeft,
 } from '#src/composables/useGoalData';
 import {
@@ -2876,6 +2877,130 @@ describe('useGoalData', () => {
 			expect(result.expiredGoals).toHaveLength(1);
 			expect(result.expiredGoals[0].status).toBe(GOAL_STATUS.EXPIRED);
 			expect(result.showRenewedAnnualGoalToast).toBe(true);
+		});
+	});
+
+	describe('renewAnnualGoal with goals already expired in an earlier year', () => {
+		const expired2025 = {
+			goalName: 'goal-womens-equality-2025',
+			category: 'womens-equality',
+			target: 5,
+			status: GOAL_STATUS.EXPIRED,
+			loansTowardGoal: 2,
+			dateStarted: '2025-03-01T20:00:00.000Z',
+		};
+		const inProgress2026 = {
+			goalName: 'goal-womens-equality-2026',
+			category: 'womens-equality',
+			target: 20,
+			status: GOAL_STATUS.IN_PROGRESS,
+			dateStarted: '2026-06-25T21:44:57.928Z',
+		};
+		const mockPrefs = prefs => {
+			mockApollo.query = vi.fn().mockResolvedValue({
+				data: {
+					my: {
+						userPreferences: { id: 'new-pref-id', preferences: JSON.stringify(prefs) },
+						loans: { totalCount: 0 },
+					},
+				},
+			});
+		};
+
+		it('expires last year\'s unfinished goal and leaves the older expired goal as it was', async () => {
+			const { setMyKivaGoal, setUserPreferenceKeys } = await import('#src/util/userPreferenceUtils');
+			mockPrefs({ goals: [expired2025, inProgress2026], goalsRenewedDate: '2026-01-10T20:00:00.000Z' });
+			setMyKivaGoal.mockClear();
+			setUserPreferenceKeys.mockClear();
+
+			const today = new Date('2027-01-10T20:00:00Z');
+			const result = await composable.renewAnnualGoal(today);
+
+			expect(result.expiredGoals.map(g => g.goalName)).toEqual(['goal-womens-equality-2026']);
+			expect(result.showRenewedAnnualGoalToast).toBe(true);
+			expect(setMyKivaGoal).toHaveBeenCalledWith(mockApollo, {
+				category: inProgress2026.category,
+				target: inProgress2026.target,
+				dateStarted: inProgress2026.dateStarted,
+				status: GOAL_STATUS.EXPIRED,
+			});
+			expect(setUserPreferenceKeys).toHaveBeenCalledWith(mockApollo, {
+				goals: [expired2025, { ...inProgress2026, status: GOAL_STATUS.EXPIRED, loansTowardGoal: 0 }],
+				goalsRenewedDate: today.toISOString(),
+			});
+		});
+
+		it('writes nothing on a later visit the same year, once the goals are expired', async () => {
+			const { setMyKivaGoal, setUserPreferenceKeys } = await import('#src/util/userPreferenceUtils');
+			mockPrefs({
+				goals: [expired2025, { ...inProgress2026, status: GOAL_STATUS.EXPIRED, loansTowardGoal: 4 }],
+				goalsRenewedDate: '2027-01-10T20:00:00.000Z',
+			});
+			setMyKivaGoal.mockClear();
+			setUserPreferenceKeys.mockClear();
+
+			const result = await composable.renewAnnualGoal(new Date('2027-03-01T20:00:00Z'));
+
+			expect(result).toEqual({ expiredGoals: [], showRenewedAnnualGoalToast: false });
+			expect(setMyKivaGoal).not.toHaveBeenCalled();
+			expect(setUserPreferenceKeys).not.toHaveBeenCalled();
+		});
+
+		it('writes nothing when preferences fail to load', async () => {
+			const { setUserPreferenceKeys } = await import('#src/util/userPreferenceUtils');
+			mockApollo.query = vi.fn().mockRejectedValue(new Error('network'));
+			setUserPreferenceKeys.mockClear();
+
+			const result = await composable.renewAnnualGoal(new Date('2027-01-10T20:00:00Z'));
+
+			expect(result).toEqual({ expiredGoals: [], showRenewedAnnualGoalToast: false });
+			expect(setUserPreferenceKeys).not.toHaveBeenCalled();
+		});
+	});
+
+	describe('findMostRecentActiveGoal', () => {
+		const goal = (goalName, status, dateStarted) => ({ goalName, status, dateStarted });
+
+		beforeEach(() => {
+			vi.useFakeTimers();
+			vi.setSystemTime(new Date(2027, 1, 1, 12));
+		});
+
+		afterEach(() => {
+			vi.useRealTimers();
+		});
+
+		it('ignores last year\'s goal still saved as in progress', () => {
+			expect(composable.findMostRecentActiveGoal([
+				goal('2025', GOAL_STATUS.EXPIRED, '2025-03-01T20:00:00.000Z'),
+				goal('2026', GOAL_STATUS.IN_PROGRESS, '2026-06-25T21:44:57.928Z'),
+			])).toBeUndefined();
+		});
+
+		it('picks this year\'s goal over last year\'s, whatever the order', () => {
+			expect(composable.findMostRecentActiveGoal([
+				goal('2026', GOAL_STATUS.IN_PROGRESS, '2026-06-25T21:44:57.928Z'),
+				goal('2027', GOAL_STATUS.COMPLETED, '2027-01-05T20:00:00.000Z'),
+			])?.goalName).toBe('2027');
+		});
+
+		it('picks the most recently started of this year\'s goals, as the server does', () => {
+			expect(composable.findMostRecentActiveGoal([
+				goal('first', GOAL_STATUS.COMPLETED, '2027-01-05T20:00:00.000Z'),
+				goal('second', GOAL_STATUS.IN_PROGRESS, '2027-01-20T20:00:00.000Z'),
+			])?.goalName).toBe('second');
+		});
+
+		it('counts a goal with no start date as this year\'s', () => {
+			expect(composable.findMostRecentActiveGoal([
+				goal('undated', GOAL_STATUS.IN_PROGRESS, undefined),
+			])?.goalName).toBe('undated');
+		});
+
+		it('never picks an expired goal', () => {
+			expect(composable.findMostRecentActiveGoal([
+				goal('expired', GOAL_STATUS.EXPIRED, '2027-01-05T20:00:00.000Z'),
+			])).toBeUndefined();
 		});
 	});
 
@@ -6296,5 +6421,22 @@ describe('getGoalYearDaysLeft', () => {
 		expect(getGoalYearDaysLeft(null, localDate(2026, 11, 31))).toBeNull();
 		expect(getGoalYearDaysLeft({}, localDate(2026, 11, 31))).toBeNull();
 		expect(getGoalYearDaysLeft({ dateStarted: 'not-a-date' }, localDate(2026, 11, 31))).toBeNull();
+	});
+});
+
+describe('buildNewGoal', () => {
+	// Built from local components, so these hold in any timezone the suite runs in.
+	const pad = n => String(n).padStart(2, '0');
+	const localPrefix = d => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}`;
+
+	it.each([
+		['late on Dec 31', new Date(2026, 11, 31, 23, 30)],
+		['early on Jan 1', new Date(2027, 0, 1, 0, 30)],
+	])('writes dateStarted in local time %s, so its year is the goal\'s year', (_, now) => {
+		const { goalName, dateStarted } = buildNewGoal({ category: 'womens-equality', target: 3, now });
+
+		expect(goalName).toBe(`goal-womens-equality-${now.getFullYear()}`);
+		expect(dateStarted.startsWith(localPrefix(now))).toBe(true);
+		expect(new Date(dateStarted).getTime()).toBe(now.getTime());
 	});
 });
