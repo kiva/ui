@@ -838,6 +838,86 @@ export default function useGoalData({ apollo } = {}) {
 	}
 
 	/**
+	 * Annual goal renewal — runs on every MyKiva visit and acts on the first one of
+	 * a new year. Prior-year in-progress goals are expired (and their final
+	 * loan count toward the goal is captured so the impact-progress row can
+	 * decide whether to surface them). Prior-year completed goals keep their
+	 * COMPLETED status so they continue to appear in the row across years, and
+	 * goals already expired are left as they are. Once a year's goals are expired
+	 * there is nothing left to change, so later visits write nothing.
+	 * `showRenewedAnnualGoalToast` is true whenever a goal was expired on this visit.
+	 */
+	async function renewAnnualGoal(today = getGoalNow()) {
+		const parsedPrefs = await loadPreferences();
+		const goals = parsedPrefs?.goals || [];
+		const currentYear = today.getFullYear();
+
+		const expiredGoals = await Promise.all(
+			goals
+				.filter(g => {
+					const goalYear = g.dateStarted ? new Date(g.dateStarted).getFullYear() : null;
+					return goalYear !== null
+						&& goalYear < currentYear
+						&& g.status !== GOAL_STATUS.COMPLETED
+						&& g.status !== GOAL_STATUS.EXPIRED;
+				})
+				.map(async goal => {
+					const goalYear = new Date(goal.dateStarted).getFullYear();
+					const loansTowardGoal = await getCategoryLoanCountByYear(goal.category, goalYear);
+					return {
+						...goal,
+						status: GOAL_STATUS.EXPIRED,
+						loansTowardGoal: loansTowardGoal || 0,
+					};
+				}),
+		);
+		const renewedGoals = goals.map(g => expiredGoals.find(e => e.goalName === g.goalName) ?? g);
+
+		if (expiredGoals.length > 0) {
+			const firstExpired = expiredGoals[0];
+			await setMyKivaGoal(apolloClient, {
+				category: firstExpired.category,
+				target: firstExpired.target,
+				dateStarted: firstExpired.dateStarted,
+				status: firstExpired.status,
+			});
+			await setUserPreferenceKeys(apolloClient, { goals: renewedGoals, goalsRenewedDate: today.toISOString() });
+			setGoalState({ goals: renewedGoals });
+		}
+
+		return {
+			expiredGoals,
+			showRenewedAnnualGoalToast: expiredGoals.length > 0,
+		};
+	}
+
+	/**
+	 * Expires last year's unfinished goals before a new goal is saved, the same way the MyKiva
+	 * renewal does. The server rejects a new goal while a goal from its current year is in progress,
+	 * and it takes the year from Pacific time. Until midnight Pacific on January 1, a lender further
+	 * east would have last year's goal counted as current and couldn't set this year's goal.
+	 *
+	 * @param {Array} goals The lender's goals, from preferences.
+	 * @returns {Promise<Array>} The goals, with any it expired replaced by their expired versions.
+	 */
+	async function expirePriorYearGoals(goals) {
+		const currentYear = getCurrentGoalYear();
+		const hasUnfinishedPriorYearGoal = goals.some(g => g.dateStarted
+			&& new Date(g.dateStarted).getFullYear() < currentYear
+			&& g.status !== GOAL_STATUS.COMPLETED
+			&& g.status !== GOAL_STATUS.EXPIRED);
+		if (!hasUnfinishedPriorYearGoal) return goals;
+		try {
+			const { expiredGoals } = await renewAnnualGoal();
+			return goals.map(g => expiredGoals.find(e => e.goalName === g.goalName) ?? g);
+		} catch (error) {
+			// Save the new goal anyway: outside the hours before midnight Pacific the server accepts it.
+			logFormatter('Failed to expire prior-year goals before saving a new goal', 'error', { error });
+			return goals;
+		}
+	}
+
+	/**
 	 * Store goal preferences to backend
 	 * @param {Object} updates - Goal data to store
 	 * @param {boolean} updateLocalState - Whether to update local userGoal state (default: true)
@@ -845,8 +925,11 @@ export default function useGoalData({ apollo } = {}) {
 	 */
 	async function storeGoalPreferences(updates, updateLocalState = true) {
 		const parsedPrefs = JSON.parse(userPreferences.value?.preferences || '{}');
-		const goals = parsedPrefs.goals || [];
+		let goals = parsedPrefs.goals || [];
 		const goalIndex = goals.findIndex(g => g.goalName === updates.goalName);
+		if (goalIndex === -1) {
+			goals = await expirePriorYearGoals(goals);
+		}
 		let goalToStore;
 		if (goalIndex !== -1) {
 			goals[goalIndex] = { ...goals[goalIndex], ...updates };
@@ -1258,60 +1341,6 @@ export default function useGoalData({ apollo } = {}) {
 			});
 		}
 		loading.value = false;
-	}
-
-	/**
-	 * Annual goal renewal — runs on every MyKiva visit and acts on the first one of
-	 * a new year. Prior-year in-progress goals are expired (and their final
-	 * loan count toward the goal is captured so the impact-progress row can
-	 * decide whether to surface them). Prior-year completed goals keep their
-	 * COMPLETED status so they continue to appear in the row across years, and
-	 * goals already expired are left as they are. Once a year's goals are expired
-	 * there is nothing left to change, so later visits write nothing.
-	 * `showRenewedAnnualGoalToast` is true whenever a goal was expired on this visit.
-	 */
-	async function renewAnnualGoal(today = getGoalNow()) {
-		const parsedPrefs = await loadPreferences();
-		const goals = parsedPrefs?.goals || [];
-		const currentYear = today.getFullYear();
-
-		const expiredGoals = await Promise.all(
-			goals
-				.filter(g => {
-					const goalYear = g.dateStarted ? new Date(g.dateStarted).getFullYear() : null;
-					return goalYear !== null
-						&& goalYear < currentYear
-						&& g.status !== GOAL_STATUS.COMPLETED
-						&& g.status !== GOAL_STATUS.EXPIRED;
-				})
-				.map(async goal => {
-					const goalYear = new Date(goal.dateStarted).getFullYear();
-					const loansTowardGoal = await getCategoryLoanCountByYear(goal.category, goalYear);
-					return {
-						...goal,
-						status: GOAL_STATUS.EXPIRED,
-						loansTowardGoal: loansTowardGoal || 0,
-					};
-				}),
-		);
-		const renewedGoals = goals.map(g => expiredGoals.find(e => e.goalName === g.goalName) ?? g);
-
-		if (expiredGoals.length > 0) {
-			const firstExpired = expiredGoals[0];
-			await setMyKivaGoal(apolloClient, {
-				category: firstExpired.category,
-				target: firstExpired.target,
-				dateStarted: firstExpired.dateStarted,
-				status: firstExpired.status,
-			});
-			await setUserPreferenceKeys(apolloClient, { goals: renewedGoals, goalsRenewedDate: today.toISOString() });
-			setGoalState({ goals: renewedGoals });
-		}
-
-		return {
-			expiredGoals,
-			showRenewedAnnualGoalToast: expiredGoals.length > 0,
-		};
 	}
 
 	/**
