@@ -120,6 +120,17 @@ describe('GeographicReachCard', () => {
 		expect(indonesia).not.toContain('Lent to');
 	});
 
+	it('wraps and hyphenates a long name in its own space, clear of the share', () => {
+		const { getByRole } = renderCard();
+		const link = getByRole('link', { name: 'Philippines' });
+
+		expect(link.parentElement.classList).toContain('tw-flex-1');
+		expect(link.parentElement.classList).toContain('tw-min-w-0');
+		expect(link.parentElement.classList).toContain('tw-break-words');
+		expect(link.parentElement.classList).toContain('tw-hyphens-auto');
+		expect(link.classList).not.toContain('tw-flex-1');
+	});
+
 	it('marks complete regions', () => {
 		const { getAllByTestId } = renderCard();
 		const complete = getAllByTestId('impact-region-complete');

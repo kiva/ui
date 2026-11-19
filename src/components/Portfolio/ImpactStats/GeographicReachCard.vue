@@ -77,12 +77,14 @@
 						<span v-else class="tw-flex tw-items-center tw-justify-center tw-w-2 tw-h-2 tw-shrink-0">
 							<span class="geographic-reach__dot tw-rounded-full tw-bg-gray-300"></span>
 						</span>
-						<a
-							v-kv-track-event="['portfolio', 'click', 'geographic-reach-country', country.isoCode]"
-							:href="`/lend/filter?country=${country.isoCode}`"
-							class="tw-flex-1 tw-min-w-0 tw-text-caption tw-underline"
-							:class="country.tier !== null ? 'tw-text-action' : 'tw-text-primary'"
-						>{{ country.name }}</a>
+						<span class="tw-flex-1 tw-min-w-0 tw-break-words tw-hyphens-auto">
+							<a
+								v-kv-track-event="['portfolio', 'click', 'geographic-reach-country', country.isoCode]"
+								:href="`/lend/filter?country=${country.isoCode}`"
+								class="tw-text-caption tw-underline"
+								:class="country.tier !== null ? 'tw-text-action' : 'tw-text-primary'"
+							>{{ country.name }}</a>
+						</span>
 						<span v-if="country.share !== null" class="tw-shrink-0 tw-text-caption tw-text-tertiary">
 							{{ formatShare(country.share) }}
 						</span>
