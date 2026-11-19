@@ -9,7 +9,8 @@
 const GOAL_DATE_QUERY_PARAM = 'goalDate';
 export const GOAL_DATE_COOKIE = 'kv_goal_date';
 
-const DATE_PATTERN = /^(\d{4})-(\d{2})-(\d{2})$/;
+// Month and day may skip the leading zero: 2027-2-1 reads as 2027-02-01.
+const DATE_PATTERN = /^(\d{4})-(\d{1,2})-(\d{1,2})$/;
 
 const firstValue = value => (Array.isArray(value) ? value[0] : value);
 
@@ -27,9 +28,9 @@ function toLocalDate(year, monthIndex, day) {
 }
 
 /**
- * Parses a YYYY-MM-DD date as that day in the viewer's time zone, at noon. `new Date('2027-04-01')`
- * would read it as UTC midnight, which is the previous evening west of Greenwich. Impossible dates
- * (2027-02-30) and any other format return null.
+ * Parses a YYYY-MM-DD date (leading zeros optional) as that day in the viewer's time zone, at noon.
+ * `new Date('2027-04-01')` would read it as UTC midnight, which is the previous evening west of
+ * Greenwich. Impossible dates (2027-02-30) and any other format return null.
  *
  * @param {string|string[]} value The value; a repeated query param uses its first value.
  * @returns {Date|null} The local date, or null when the value is not a valid YYYY-MM-DD date.

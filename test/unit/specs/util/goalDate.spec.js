@@ -41,12 +41,19 @@ describe('goalDate', () => {
 			expect(date.toISOString().slice(0, 10)).toBe('2027-01-01');
 		});
 
+		it('accepts a month and day without leading zeros', () => {
+			expect(localDay(parseGoalDate('2027-2-1'))).toEqual([2027, 2, 1]);
+			expect(localDay(parseGoalDate('2027-12-5'))).toEqual([2027, 12, 5]);
+		});
+
 		it('uses the first value of a repeated param', () => {
 			expect(localDay(parseGoalDate(['2027-04-01', '2026-01-01']))).toEqual([2027, 4, 1]);
 		});
 
 		it.each([
 			['an impossible day', '2027-02-30'],
+			['an impossible month', '2027-13-1'],
+			['a three-digit day', '2027-01-001'],
 			['a bare year', '2027'],
 			['a date with a time', '2027-01-01T10:00:00'],
 			['a word', 'off'],
