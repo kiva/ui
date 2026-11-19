@@ -115,6 +115,13 @@ describe('geographicReach', () => {
 			expect(regions.map(region => region.complete)).toEqual([false, false]);
 		});
 
+		it('names a country without a name by its code', () => {
+			const regions = buildRegions([], [c('XX', null, 'Asia'), PH]);
+
+			expect(names(regionNamed(regions, 'Asia'))).toEqual(['PH', 'XX']);
+			expect(countryIn(regions, 'Asia', 'XX').name).toBe('XX');
+		});
+
 		it('skips stats without a country', () => {
 			const regions = buildRegions([{ loanCount: 4, country: null }, stat(PH, 1)], [PH]);
 

@@ -70,7 +70,7 @@ export function buildRegions(stats, availableCountries) {
 		}
 		regions.get(name).push({
 			isoCode: country.isoCode,
-			name: country.name,
+			name: country.name ?? country.isoCode,
 			loanCount,
 			share: loanCount > 0 ? loanCount / totalLoans : null,
 			tier: loanCountTier(loanCount),
