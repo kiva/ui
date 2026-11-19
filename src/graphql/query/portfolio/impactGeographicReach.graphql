@@ -1,0 +1,33 @@
+query impactGeographicReach {
+	my {
+		id
+		statsPerCountry {
+			values {
+				id
+				loanCount
+				country {
+					id
+					isoCode
+					name
+					region
+				}
+			}
+		}
+	}
+	lend {
+		countryFacets {
+			country {
+				id
+				isoCode
+				name
+				region
+			}
+		}
+	}
+	general {
+		excluded_countries: uiConfigSetting(key: "excluded_countries") {
+			key
+			value
+		}
+	}
+}

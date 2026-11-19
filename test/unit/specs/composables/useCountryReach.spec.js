@@ -13,6 +13,11 @@ describe('useCountryReach', () => {
 		expect(availableCountryCount.value).toBe(2);
 	});
 
+	it('lists the facet countries that are not excluded', () => {
+		const { availableCountries } = useCountryReach(() => data(['KE', 'ZA', 'PE'], '"ZA, CA"'));
+		expect(availableCountries.value.map(country => country.isoCode)).toEqual(['KE', 'PE']);
+	});
+
 	it('counts every facet country when the setting is missing', () => {
 		const { availableCountryCount } = useCountryReach(() => data(['KE', 'ZA']));
 		expect(availableCountryCount.value).toBe(2);
