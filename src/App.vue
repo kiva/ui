@@ -6,14 +6,12 @@
 		<router-view />
 		<vue-progress-bar v-if="dataHydrated" />
 		<the-tip-message />
-		<goal-date-override />
 	</div>
 </template>
 
 <script>
 import '#src/assets/scss/tailwind/tailwind.css';
 import TheTipMessage from '#src/components/WwwFrame/TheTipMessage';
-import GoalDateOverride from '#src/components/GoalSetting/GoalDateOverride';
 import unbounceEventMixin from '#src/plugins/unbounce-event-mixin';
 import { metaGlobReader } from '#src/util/importHelpers';
 
@@ -28,7 +26,6 @@ export default {
 		};
 	},
 	components: {
-		GoalDateOverride,
 		TheTipMessage,
 	},
 	mixins: [unbounceEventMixin],

@@ -34,6 +34,7 @@ import { KvPageContainer } from '@kiva/kv-components';
 import WwwPage from '#src/components/WwwFrame/WwwPage';
 import GoalSettingContainer from '#src/components/GoalSetting/GoalSettingContainer';
 import { getLastGoalYear } from '#src/util/goalDate';
+import useGoalNow from '#src/composables/useGoalNow';
 import { readBoolSetting } from '#src/util/settingsUtils';
 import borrowerProfileExpMixin from '#src/plugins/borrower-profile-exp-mixin';
 
@@ -82,15 +83,12 @@ export default {
 	},
 	setup() {
 		const { getAllCategoryLoanCounts } = useBadgeData();
+		const { lastGoalYear } = useGoalNow();
 
 		return {
 			getAllCategoryLoanCounts,
+			lastGoalYear,
 		};
-	},
-	computed: {
-		lastGoalYear() {
-			return getLastGoalYear(this.$route?.query, this.cookieStore);
-		},
 	},
 	methods: {
 		// Exclude the user's most recent loans from the recommended-loan fetch.

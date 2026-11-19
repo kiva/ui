@@ -1,12 +1,12 @@
 import {
 	GOAL_DATE_COOKIE,
-	formatGoalDate,
 	getCurrentGoalYear,
 	getGoalDateOverride,
 	getGoalNow,
 	getLastGoalYear,
+	isProductionHost,
 	parseGoalDate,
-	saveGoalDateCookie,
+	syncGoalDateCookie,
 } from '#src/util/goalDate';
 
 const localDay = date => [date.getFullYear(), date.getMonth() + 1, date.getDate()];
@@ -111,41 +111,50 @@ describe('goalDate', () => {
 		});
 	});
 
-	describe('formatGoalDate', () => {
-		it('formats a local date as YYYY-MM-DD', () => {
-			expect(formatGoalDate(new Date(2027, 0, 5))).toBe('2027-01-05');
+	describe('isProductionHost', () => {
+		it('is true only for the production host', () => {
+			expect(isProductionHost('www.kiva.org')).toBe(true);
+			expect(isProductionHost('kiva.org')).toBe(false);
+			expect(isProductionHost('www.development.kiva.org')).toBe(false);
+			expect(isProductionHost('www.staging.kiva.org')).toBe(false);
+			expect(isProductionHost('kiva-ui.local')).toBe(false);
+			expect(isProductionHost(undefined)).toBe(false);
 		});
 	});
 
-	describe('saveGoalDateCookie', () => {
-		it('saves the date as a session cookie', () => {
+	describe('syncGoalDateCookie', () => {
+		it('saves a valid date as a session cookie', () => {
 			const cookieStore = createCookieStore();
-			saveGoalDateCookie({ goalDate: '2027-01-05' }, cookieStore);
+			syncGoalDateCookie({ goalDate: '2027-01-05' }, cookieStore);
 			expect(cookieStore.set).toHaveBeenCalledWith(GOAL_DATE_COOKIE, '2027-01-05', { path: '/' });
 		});
 
-		it('clears the cookie with ?goalDate=off', () => {
+		it('skips the write when the cookie already has that date', () => {
 			const cookieStore = createCookieStore({ [GOAL_DATE_COOKIE]: '2027-01-05' });
-			saveGoalDateCookie({ goalDate: 'off' }, cookieStore);
+			syncGoalDateCookie({ goalDate: '2027-01-05' }, cookieStore);
+			expect(cookieStore.set).not.toHaveBeenCalled();
+		});
+
+		it('deletes the cookie with ?goalDate=off or another invalid value', () => {
+			const cookieStore = createCookieStore({ [GOAL_DATE_COOKIE]: '2027-01-05' });
+			syncGoalDateCookie({ goalDate: 'off' }, cookieStore);
 			expect(cookieStore.remove).toHaveBeenCalledWith(GOAL_DATE_COOKIE, { path: '/' });
+
+			cookieStore.cookies.set(GOAL_DATE_COOKIE, '2027-01-05');
+			syncGoalDateCookie({ goalDate: '2027-02-30' }, cookieStore);
 			expect(cookieStore.cookies.has(GOAL_DATE_COOKIE)).toBe(false);
 		});
 
-		it('leaves the cookie alone without a goal date param', () => {
+		it('leaves the cookie alone without the param', () => {
 			const cookieStore = createCookieStore({ [GOAL_DATE_COOKIE]: '2027-01-05' });
-			saveGoalDateCookie({ loanId: '1' }, cookieStore);
+			syncGoalDateCookie({ loanId: '1' }, cookieStore);
+			syncGoalDateCookie(undefined, cookieStore);
 			expect(cookieStore.set).not.toHaveBeenCalled();
 			expect(cookieStore.remove).not.toHaveBeenCalled();
 		});
 
-		it('writes nothing when there is no cookie to clear', () => {
-			const cookieStore = createCookieStore();
-			saveGoalDateCookie({ goalDate: 'off' }, cookieStore);
-			expect(cookieStore.remove).not.toHaveBeenCalled();
-		});
-
 		it('does nothing without a cookie store', () => {
-			expect(() => saveGoalDateCookie({ goalDate: '2027-01-05' }, null)).not.toThrow();
+			expect(() => syncGoalDateCookie({ goalDate: '2027-01-05' }, null)).not.toThrow();
 		});
 	});
 });

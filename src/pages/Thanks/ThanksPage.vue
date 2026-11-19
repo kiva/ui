@@ -68,6 +68,7 @@ import ThanksPageSingleVersion from '#src/components/Thanks/ThanksPageSingleVers
 import userAchievementProgressQuery from '#src/graphql/query/userAchievementProgress.graphql';
 import useBadgeData, { ID_WOMENS_EQUALITY } from '#src/composables/useBadgeData';
 import { getCurrentGoalYear, getLastGoalYear } from '#src/util/goalDate';
+import useGoalNow from '#src/composables/useGoalNow';
 import userYearlyProgressQuery from '#src/graphql/query/userYearlyProgress.graphql';
 import { clearPromoCreditBannerCookie, getPromoCreditBannerCookie } from '#src/util/promoCreditCookie';
 import { readBoolSetting, readDateSetting } from '#src/util/settingsUtils';
@@ -241,9 +242,6 @@ export default {
 		}
 	},
 	computed: {
-		goalYear() {
-			return getCurrentGoalYear(this.$route?.query, this.cookieStore);
-		},
 		showDafThanks() {
 			return !!this.$route?.query?.show_daf_thanks;
 		},
@@ -275,9 +273,11 @@ export default {
 	},
 	setup() {
 		const { allAchievementsCompleted } = useBadgeData();
+		const { goalYear } = useGoalNow();
 
 		return {
 			allAchievementsCompleted,
+			goalYear,
 		};
 	},
 	created() {
