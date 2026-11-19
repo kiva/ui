@@ -838,14 +838,9 @@ export default function useGoalData({ apollo } = {}) {
 	}
 
 	/**
-	 * Annual goal renewal — runs on every MyKiva visit and acts on the first one of
-	 * a new year. Prior-year in-progress goals are expired (and their final
-	 * loan count toward the goal is captured so the impact-progress row can
-	 * decide whether to surface them). Prior-year completed goals keep their
-	 * COMPLETED status so they continue to appear in the row across years, and
-	 * goals already expired are left as they are. Once a year's goals are expired
-	 * there is nothing left to change, so later visits write nothing.
-	 * `showRenewedAnnualGoalToast` is true whenever a goal was expired on this visit.
+	 * Expires unfinished goals from earlier years and saves each one's final loan count.
+	 * Completed and already-expired goals are left alone, so once this has run, later calls write nothing.
+	 * Runs on MyKiva load and before a new goal is saved.
 	 */
 	async function renewAnnualGoal(today = getGoalNow()) {
 		const parsedPrefs = await loadPreferences();
