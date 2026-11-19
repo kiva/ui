@@ -759,6 +759,20 @@ onMounted(async () => {
 	}
 });
 
+// /goal-setting can hand over last year's achievements after the presets were first built, so
+// rebuild them when last year's count changes. The option the lender picked stays selected, and a
+// custom number they typed is kept.
+watch(loansLastYear, () => {
+	const customAmount = customGoalAmount.value;
+	const customAmountValid = validCustomAmount.value;
+	updateGoalOptions();
+	if (isCustomIndex.value) {
+		customGoalAmount.value = customAmount;
+		validCustomAmount.value = customAmountValid;
+		emit('set-goal-target', selectedTarget.value);
+	}
+});
+
 const editGoalCopy = computed(() => {
 	if (allowBackToCategorySelection.value || !props.inGoalSettingsPage) {
 		return goalCopy.BUTTON_EDIT_GOAL_CATEGORY;
