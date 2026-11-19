@@ -467,6 +467,30 @@ describe('apollo-plugin', () => {
 		mock.restore();
 	});
 
+	it('observes the root element of a child component ref named by target', () => {
+		setBrowser();
+		const customEl = document.createElement('article');
+		const ctx = makeCtx({
+			apolloConfig: {
+				lazy: { target: 'lazyRoot' },
+				query: 'Q',
+				variables: () => ({}),
+				result: vi.fn(),
+			},
+			$el: document.createElement('div'),
+		});
+		ctx.$refs = { lazyRoot: { $el: customEl } };
+		const mock = mockIntersectionObserver(ctx);
+
+		runCreated(ctx);
+		runMounted(ctx);
+
+		expect(mock.instances).toHaveLength(1);
+		expect(mock.instances[0].observe).toHaveBeenCalledWith(customEl);
+		expect(ctx.apollo.watchQuery).not.toHaveBeenCalled();
+		mock.restore();
+	});
+
 	it('disconnects lazy observers on beforeUnmount', () => {
 		setBrowser();
 		const ctx = makeCtx({

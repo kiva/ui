@@ -2,6 +2,7 @@ import {
 	ref,
 	inject,
 	watch,
+	onMounted,
 	onBeforeUnmount,
 	getCurrentInstance,
 } from 'vue';
@@ -9,6 +10,7 @@ import { routeLocationKey } from 'vue-router';
 import getOperationVariables from '#src/util/operationVariables';
 import logReadQueryError from '#src/util/logReadQueryError';
 import watchApolloOperation from '#src/util/watchApolloOperation';
+import { parseLazy, observeLazyOperation } from '#src/util/lazyApolloOperation';
 
 const isServer = typeof window === 'undefined';
 
@@ -43,9 +45,12 @@ function warnAboutCacheMiss(vm, operation, preFetched, prefetchContext) {
  * When the operation was prefetched (attached to the component and not opted
  * out), the prefetched value is read from the cache. The server never fetches
  * beyond that read: a miss renders the "not loaded" state and warns in dev.
- * On the client a watch query subscription loads and follows the value.
+ * On the client a watch query subscription loads and follows the value. A
+ * lazy operation that was not prefetched starts its subscription once the
+ * component's element nears the viewport; a prefetched one ignores `lazy`.
  *
- * @param {object} operation - Operation registered in a composable's preFetchOperations export
+ * @param {object} operation - Operation registered in a composable's preFetchOperations export,
+ *   optionally carrying the component block `lazy` option
  * @param {object|Function} [variables] - The operation's client variables: a plain object or a
  *   reactive getter, watched like a component operation's variables method
  * @returns {{
@@ -109,37 +114,68 @@ export default function useApolloQuery(operation, variables = () => ({})) {
 		}
 	}
 
+	const lazyConfig = preFetched ? null : parseLazy(operation.lazy);
+
 	if (isServer) {
 		// No fetch during server render: a miss renders the "not loaded" state
 		// and the client subscription loads the value after hydration
-		if (result.value === null && process.env.NODE_ENV !== 'production') {
+		if (result.value === null && !lazyConfig && process.env.NODE_ENV !== 'production') {
 			warnAboutCacheMiss(vm, operation, preFetched, prefetchContext);
 		}
 		return { result, loading, error };
 	}
 
 	const getVariables = typeof variables === 'function' ? variables : () => variables;
-	const { subscription } = watchApolloOperation({
-		client: apollo,
-		operation,
-		commonVars,
-		getVariables,
-		watchVariables: (getter, callback) => watch(getter, callback, { deep: true }),
-		next: apolloResult => {
-			if (apolloResult?.data) {
-				result.value = apolloResult.data;
-			}
-			if (apolloResult?.errors?.length) {
-				error.value = apolloResult.errors;
-			}
-			loading.value = false;
-		},
-		error: e => {
-			error.value = e;
-			loading.value = false;
-		},
+	let subscription = null;
+	let lazyObserver = null;
+	let unmounted = false;
+
+	const subscribe = watchVariables => {
+		({ subscription } = watchApolloOperation({
+			client: apollo,
+			operation,
+			commonVars,
+			getVariables,
+			watchVariables,
+			next: apolloResult => {
+				if (apolloResult?.data) {
+					result.value = apolloResult.data;
+				}
+				if (apolloResult?.errors?.length) {
+					error.value = apolloResult.errors;
+				}
+				loading.value = false;
+			},
+			error: e => {
+				error.value = e;
+				loading.value = false;
+			},
+		}));
+	};
+
+	if (lazyConfig) {
+		onMounted(() => {
+			lazyObserver = observeLazyOperation({
+				instance: vm.proxy,
+				lazyConfig,
+				start: () => {
+					if (!unmounted) {
+						// Outside setup, only $watch binds the watch to the component for unmount and error handling
+						subscribe((getter, callback) => vm.proxy.$watch(() => getter(), callback, { deep: true }));
+					}
+				},
+				label: `useApolloQuery ${vm.type?.name ?? 'unknown component'}`,
+			});
+		});
+	} else {
+		subscribe((getter, callback) => watch(getter, callback, { deep: true }));
+	}
+
+	onBeforeUnmount(() => {
+		unmounted = true;
+		lazyObserver?.disconnect();
+		subscription?.unsubscribe?.();
 	});
-	onBeforeUnmount(() => subscription?.unsubscribe?.());
 
 	return { result, loading, error };
 }

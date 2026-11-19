@@ -1,6 +1,9 @@
-import { createApp, ref, nextTick } from 'vue';
+import {
+	createApp, h, ref, nextTick,
+} from 'vue';
 import useApolloQuery from '#src/composables/useApolloQuery';
 import logReadQueryError from '#src/util/logReadQueryError';
+import mockIntersectionObserver from '../../helpers/mockIntersectionObserver';
 
 vi.mock('#src/util/logReadQueryError', () => ({ default: vi.fn() }));
 
@@ -11,21 +14,22 @@ const apps = [];
 // Mount a bare host component so the composable runs with real setup context.
 // hostExtras lands on the host definition, standing in for the operations the
 // transform attaches.
-function runInSetup(provides, run, { hostExtras = {} } = {}) {
+function runInSetup(provides, run, { hostExtras = {}, render = () => null } = {}) {
 	let out;
 	const HostComponent = {
 		name: 'HostComponent',
 		...hostExtras,
 		setup() {
 			out = run();
-			return () => null;
+			return render;
 		},
 	};
 	const app = createApp(HostComponent);
 	Object.entries(provides).forEach(([key, value]) => app.provide(key, value));
-	app.mount(document.createElement('div'));
+	const container = document.createElement('div');
+	app.mount(container);
 	apps.push(app);
-	return { out, app };
+	return { out, app, container };
 }
 
 describe('useApolloQuery (client)', () => {
@@ -254,5 +258,199 @@ describe('useApolloQuery (client)', () => {
 		expect(out.result.value).toBeNull();
 		expect(out.loading.value).toBe(true);
 		expect(out.error.value).toBeNull();
+	});
+
+	describe('lazy', () => {
+		let mock;
+
+		function makeApollo({ cached = null, setVariables = vi.fn(), unsubscribe = vi.fn() } = {}) {
+			return {
+				readQuery: vi.fn(() => cached),
+				watchQuery: vi.fn(() => ({
+					setVariables,
+					subscribe: () => ({ unsubscribe }),
+				})),
+			};
+		}
+
+		afterEach(() => {
+			mock?.restore();
+			mock = undefined;
+		});
+
+		it('defers the watch query until the root element intersects', () => {
+			mock = mockIntersectionObserver();
+			const apollo = makeApollo();
+			const { container } = runInSetup({ apollo }, () => useApolloQuery({ query: dummyQuery, lazy: true }), {
+				render: () => h('div'),
+			});
+
+			expect(apollo.watchQuery).not.toHaveBeenCalled();
+			expect(mock.instances[0].observe).toHaveBeenCalledWith(container.firstElementChild);
+			expect(mock.instances[0].options.rootMargin).toBe('500px');
+
+			mock.trigger(1);
+			expect(apollo.watchQuery).toHaveBeenCalledTimes(1);
+		});
+
+		it('starts once when the observer reports intersecting twice', () => {
+			mock = mockIntersectionObserver();
+			const apollo = makeApollo();
+			runInSetup({ apollo }, () => useApolloQuery({ query: dummyQuery, lazy: true }), {
+				render: () => h('div'),
+			});
+			expect(apollo.watchQuery).not.toHaveBeenCalled();
+
+			mock.trigger(1);
+			mock.trigger(1);
+			expect(apollo.watchQuery).toHaveBeenCalledTimes(1);
+		});
+
+		it('starts immediately when IntersectionObserver is unavailable', () => {
+			mock = mockIntersectionObserver({ supported: false });
+			const apollo = makeApollo();
+			runInSetup({ apollo }, () => useApolloQuery({ query: dummyQuery, lazy: true }), {
+				render: () => h('div'),
+			});
+
+			expect(apollo.watchQuery).toHaveBeenCalledTimes(1);
+		});
+
+		it('reads the cache and subscribes immediately when a lazy operation was prefetched', () => {
+			mock = mockIntersectionObserver();
+			const cached = { general: { setting: 'value' } };
+			const apollo = makeApollo({ cached });
+			const operation = { query: dummyQuery, lazy: true };
+			const { out } = runInSetup({ apollo }, () => useApolloQuery(operation), {
+				hostExtras: { preFetchOperations: [operation] },
+				render: () => h('div'),
+			});
+
+			expect(out.result.value).toEqual(cached);
+			expect(apollo.watchQuery).toHaveBeenCalledTimes(1);
+			expect(mock.instances).toHaveLength(0);
+		});
+
+		it('applies lazy when shouldPreFetch declines', () => {
+			mock = mockIntersectionObserver();
+			const apollo = makeApollo();
+			const operation = { query: dummyQuery, lazy: true, shouldPreFetch: () => false };
+			runInSetup({ apollo }, () => useApolloQuery(operation), {
+				hostExtras: { preFetchOperations: [operation] },
+				render: () => h('div'),
+			});
+
+			expect(apollo.readQuery).not.toHaveBeenCalled();
+			expect(apollo.watchQuery).not.toHaveBeenCalled();
+			expect(mock.instances).toHaveLength(1);
+		});
+
+		it('does not read the cache for a lazy operation that was not prefetched', () => {
+			mock = mockIntersectionObserver();
+			const apollo = makeApollo({ cached: { general: { setting: 'value' } } });
+			const { out } = runInSetup({ apollo }, () => useApolloQuery({ query: dummyQuery, lazy: true }), {
+				render: () => h('div'),
+			});
+
+			expect(apollo.readQuery).not.toHaveBeenCalled();
+			expect(out.loading.value).toBe(true);
+			expect(out.result.value).toBeNull();
+		});
+
+		it('observes the template ref named by target', () => {
+			mock = mockIntersectionObserver();
+			const apollo = makeApollo();
+			const operation = { query: dummyQuery, lazy: { target: 'lazyRoot' } };
+			const { container } = runInSetup({ apollo }, () => useApolloQuery(operation), {
+				render: () => h('div', [h('p'), h('section', { ref: 'lazyRoot' })]),
+			});
+
+			expect(mock.instances[0].observe).toHaveBeenCalledWith(container.querySelector('section'));
+		});
+
+		it('observes the root element of a child component named by target', () => {
+			mock = mockIntersectionObserver();
+			const apollo = makeApollo();
+			const Child = { name: 'ChildComponent', render: () => h('article') };
+			const operation = { query: dummyQuery, lazy: { target: 'lazyRoot' } };
+			const { container } = runInSetup({ apollo }, () => useApolloQuery(operation), {
+				render: () => h('div', [h('p'), h(Child, { ref: 'lazyRoot' })]),
+			});
+
+			expect(mock.instances[0].observe).toHaveBeenCalledWith(container.querySelector('article'));
+		});
+
+		it('disconnects the observer when unmounted before it fires', () => {
+			mock = mockIntersectionObserver();
+			const apollo = makeApollo();
+			const { app } = runInSetup({ apollo }, () => useApolloQuery({ query: dummyQuery, lazy: true }), {
+				render: () => h('div'),
+			});
+
+			app.unmount();
+			expect(mock.instances[0].disconnect).toHaveBeenCalled();
+			expect(apollo.watchQuery).not.toHaveBeenCalled();
+		});
+
+		it('does not start when a queued report arrives after unmount', () => {
+			mock = mockIntersectionObserver();
+			const apollo = makeApollo();
+			const { app } = runInSetup({ apollo }, () => useApolloQuery({ query: dummyQuery, lazy: true }), {
+				render: () => h('div'),
+			});
+
+			app.unmount();
+			mock.trigger(1);
+			expect(apollo.watchQuery).not.toHaveBeenCalled();
+		});
+
+		it('follows variables once started and stops following them after unmount', async () => {
+			mock = mockIntersectionObserver();
+			const setVariables = vi.fn();
+			const unsubscribe = vi.fn();
+			const apollo = makeApollo({ setVariables, unsubscribe });
+			const id = ref(1);
+			const { app } = runInSetup(
+				{ apollo },
+				() => useApolloQuery({ query: dummyQuery, lazy: true }, () => ({ id: id.value })),
+				{ render: () => h('div') },
+			);
+			expect(apollo.watchQuery).not.toHaveBeenCalled();
+
+			mock.trigger(1);
+			id.value = 2;
+			await nextTick();
+			expect(setVariables).toHaveBeenCalledWith({ id: 2 });
+
+			app.unmount();
+			id.value = 3;
+			await nextTick();
+			expect(setVariables).not.toHaveBeenCalledWith({ id: 3 });
+			expect(unsubscribe).toHaveBeenCalled();
+		});
+
+		it('reports a variables error after a lazy start to the app error handler', async () => {
+			mock = mockIntersectionObserver();
+			const apollo = makeApollo();
+			const failure = new Error('bad variables');
+			const broken = ref(false);
+			const getVariables = () => {
+				if (broken.value) throw failure;
+				return {};
+			};
+			const { app } = runInSetup(
+				{ apollo },
+				() => useApolloQuery({ query: dummyQuery, lazy: true }, getVariables),
+				{ render: () => h('div') },
+			);
+			const errorHandler = vi.fn();
+			app.config.errorHandler = errorHandler;
+
+			mock.trigger(1);
+			broken.value = true;
+			await nextTick();
+
+			expect(errorHandler).toHaveBeenCalledWith(failure, expect.anything(), expect.anything());
+		});
 	});
 });

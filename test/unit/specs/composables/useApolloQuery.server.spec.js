@@ -144,4 +144,32 @@ describe('useApolloQuery (server)', () => {
 			route,
 		});
 	});
+
+	it('renders the not-loaded state without warning for a lazy operation that was not prefetched', async () => {
+		const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
+		const apollo = {
+			readQuery: vi.fn(() => null),
+			query: vi.fn(),
+		};
+		const out = await renderWithComposable(apollo, () => useApolloQuery({ query: dummyQuery, lazy: true }));
+		expect(apollo.readQuery).not.toHaveBeenCalled();
+		expect(apollo.query).not.toHaveBeenCalled();
+		expect(out.loading.value).toBe(true);
+		expect(out.result.value).toBeNull();
+		expect(warn).not.toHaveBeenCalled();
+	});
+
+	it('uses the prefetched value for a registered lazy operation', async () => {
+		const cached = { general: { setting: 'value' } };
+		const apollo = {
+			readQuery: vi.fn(() => cached),
+			query: vi.fn(),
+		};
+		const operation = { query: dummyQuery, lazy: true };
+		const out = await renderWithComposable(apollo, () => useApolloQuery(operation), {
+			hostExtras: { preFetchOperations: [operation] },
+		});
+		expect(out.result.value).toEqual(cached);
+		expect(out.loading.value).toBe(false);
+	});
 });
