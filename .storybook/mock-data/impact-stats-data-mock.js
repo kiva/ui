@@ -1,11 +1,30 @@
-const facetCodes = [
-	'KE', 'PE', 'ZA', 'CA', 'KH', 'WS', 'MZ', 'PH', 'UG', 'RW', 'TZ', 'NG', 'GH', 'SN', 'ML', 'BF', 'TG',
-	'BJ', 'CO', 'EC', 'BO', 'PY', 'GT', 'HN', 'SV', 'NI', 'MX', 'US', 'PK', 'IN', 'ID', 'VN', 'TJ', 'KG',
+import countryFacetsMock from './country-facets-data-mock';
+
+const facetCountries = countryFacetsMock.data.lend.countryFacets.map(({ country }, index) => ({
+	id: index + 1,
+	isoCode: country.isoCode,
+	name: country.name,
+	region: country.region,
+}));
+
+const facetCountryByIsoCode = Object.fromEntries(facetCountries.map(country => [country.isoCode, country]));
+
+const countriesNoLongerLentIn = {
+	MA: { id: 1001, isoCode: 'MA', name: 'Morocco', region: 'Africa' },
+	VC: { id: 1002, isoCode: 'VC', name: 'Saint Vincent and the Grenadines', region: 'North America' },
+};
+
+const middleEastLoans = facetCountries
+	.filter(country => country.region === 'Middle East')
+	.map(country => [country.isoCode, 1]);
+
+const designLenderLoans = [
+	['PH', 32], ['KE', 22], ['CO', 18], ['MA', 14], ['PE', 9], ['HT', 3], ['DO', 2], ['VC', 1], ...middleEastLoans,
 ];
 
 export const impactStatsPublicData = {
 	lend: {
-		countryFacets: facetCodes.map((isoCode, index) => ({ country: { id: index + 1, isoCode } })),
+		countryFacets: facetCountries.map(country => ({ country })),
 	},
 	general: {
 		excluded_countries: { key: 'ui.excluded_countries', value: '"ZA, CA, AU"' },
@@ -16,7 +35,8 @@ export const impactStatsLender = ({
 	balance = '847.23',
 	amountOutstanding = '3240.00',
 	borrowers = 284,
-	countries = 7,
+	loans = designLenderLoans,
+	countries = loans.length,
 	donated = '120.00',
 	lifetimeLent = '4240.00',
 } = {}) => ({
@@ -31,5 +51,12 @@ export const impactStatsLender = ({
 			borrowers: { totalCount: borrowers },
 			countries: { totalCount: countries },
 		},
+	},
+	statsPerCountry: {
+		values: loans.map(([isoCode, loanCount]) => ({
+			id: `country-${isoCode}`,
+			loanCount,
+			country: facetCountryByIsoCode[isoCode] ?? countriesNoLongerLentIn[isoCode],
+		})),
 	},
 });
