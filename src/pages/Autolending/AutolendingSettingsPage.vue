@@ -1,19 +1,34 @@
 <template>
 	<div class="autolending-settings-page">
-		<div class="row">
+		<div v-if="hasSavedSearch" class="row">
 			<div class="column large-8">
-				<autolending-status />
-
-				<!-- When your balance will be lent -->
-				<autolending-when />
-
-				<!-- Who you'll support-->
-				<autolending-who />
+				<kv-settings-card>
+					<template #content>
+						<p>
+							Your auto-lending is currently managed by Kiva. To make changes, please
+							<!-- eslint-disable-next-line vue/singleline-html-element-content-newline -->
+							<router-link to="/help/contact-us">contact support</router-link>.
+						</p>
+					</template>
+				</kv-settings-card>
 			</div>
 		</div>
-		<div class="row column">
-			<save-button v-if="isChanged" />
-		</div>
+		<template v-else>
+			<div class="row">
+				<div class="column large-8">
+					<autolending-status />
+
+					<!-- When your balance will be lent -->
+					<autolending-when />
+
+					<!-- Who you'll support-->
+					<autolending-who />
+				</div>
+			</div>
+			<div class="row column">
+				<save-button v-if="isChanged" />
+			</div>
+		</template>
 	</div>
 </template>
 
@@ -22,6 +37,7 @@ import _get from 'lodash/get';
 import { gql } from 'graphql-tag';
 import initAutolending from '#src/graphql/mutation/autolending/initAutolending.graphql';
 import logFormatter from '#src/util/logFormatter';
+import KvSettingsCard from '#src/components/Kv/KvSettingsCard';
 import SaveButton from './SaveButton';
 import AutolendingStatus from './AutolendingStatus';
 import AutolendingWhen from './AutolendingWhen';
@@ -36,7 +52,15 @@ const pageQuery = gql`query autolendProfileEnabled {
 			isEnabled
 		}
 	}
-
+	my {
+		id
+		autolendProfile {
+			id
+			savedSearch {
+				id
+			}
+		}
+	}
 }`;
 
 export default {
@@ -46,10 +70,12 @@ export default {
 		AutolendingWho,
 		AutolendingStatus,
 		AutolendingWhen,
+		KvSettingsCard,
 		SaveButton,
 	},
 	data() {
 		return {
+			hasSavedSearch: false,
 			isChanged: false,
 			isEnabled: false,
 			showAdvanced: false,
@@ -95,6 +121,7 @@ export default {
 			});
 		},
 		result({ data }) {
+			this.hasSavedSearch = !!_get(data, 'my.autolendProfile.savedSearch.id');
 			this.isChanged = !!_get(data, 'autolending.profileChanged');
 			this.isEnabled = !!_get(data, 'autolending.currentProfile.isEnabled');
 			this.kivaChooses = !!_get(data, 'autolending.currentProfile.kivaChooses');
