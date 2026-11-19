@@ -192,15 +192,15 @@ describe('BorrowerMessageSuggestedLoans', () => {
 		it('suggests loans from the journaling partners', () => {
 			renderEmpty();
 
-			expect(useBorrowerMessageSuggestedLoans).toHaveBeenCalledWith([80, 319]);
+			expect(useBorrowerMessageSuggestedLoans).toHaveBeenCalledWith([222, 55, 63, 181, 145]);
 		});
 
 		it('shows the zero-state copy', () => {
 			const { getByRole, getByText } = renderEmpty();
 
-			getByRole('heading', { level: 2, name: 'Want to hear from a borrower?' });
-			getByText('These lending partners share borrower messages more often than most. '
-				+ 'Support one of their borrowers and you may hear back.');
+			getByRole('heading', { level: 2, name: 'Interested in hearing from borrowers?' });
+			getByText('These lending partners share borrower updates more frequently. '
+				+ 'Lend to one of their borrowers for a greater chance of receiving an update.');
 		});
 
 		it("links to the journaling partners' loans", () => {
@@ -209,7 +209,7 @@ describe('BorrowerMessageSuggestedLoans', () => {
 
 			expect(links).toHaveLength(2);
 			links.forEach(link => {
-				expect(link.getAttribute('href')).toBe('/lend/filter?partner=80,319');
+				expect(link.getAttribute('href')).toBe('/lend/filter?partner=222,55,63,181,145');
 				expect(JSON.parse(link.dataset.trackEvent))
 					.toEqual(['portfolio', 'click', 'Borrower messages empty see more loans']);
 			});

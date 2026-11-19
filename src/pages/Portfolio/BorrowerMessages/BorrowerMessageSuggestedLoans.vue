@@ -97,7 +97,7 @@ const heading = computed(() => {
 		return 'Loans you might like';
 	}
 	if (isEmptyContext) {
-		return 'Want to hear from a borrower?';
+		return 'Interested in hearing from borrowers?';
 	}
 	return `More loans from ${possessiveBorrowerName.value} community`;
 });
@@ -107,8 +107,8 @@ const subhead = computed(() => {
 		return 'Entrepreneurs raising funds on Kiva right now.';
 	}
 	if (isEmptyContext) {
-		return 'These lending partners share borrower messages more often than most. '
-			+ 'Support one of their borrowers and you may hear back.';
+		return 'These lending partners share borrower updates more frequently. '
+			+ 'Lend to one of their borrowers for a greater chance of receiving an update.';
 	}
 	const where = country.value ? ` in ${country.value}` : '';
 	return `${partner.value.name}, the lending partner behind ${possessiveBorrowerName.value} loan, `

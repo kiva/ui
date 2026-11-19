@@ -4,7 +4,7 @@ import { KV_COMPACT_LOAN_CARD_FRAGMENT, KV_COMPACT_LOAN_CARD_USER_FRAGMENT } fro
 import { FLSS_ORIGIN_BORROWER_MESSAGE } from '#src/util/flssUtils';
 import logReadQueryError from '#src/util/logReadQueryError';
 
-export const BORROWER_MESSAGE_JOURNALING_PARTNER_IDS = [80, 319];
+export const BORROWER_MESSAGE_JOURNALING_PARTNER_IDS = [222, 55, 63, 181, 145];
 
 export const partnerLoansQuery = gql`
 	${KV_COMPACT_LOAN_CARD_FRAGMENT}

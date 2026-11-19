@@ -29,12 +29,11 @@
 						>
 						<div class="tw-flex tw-flex-col tw-gap-1">
 							<h2 class="tw-text-headline-two">
-								No borrower messages yet
+								Borrower messages will appear here
 							</h2>
 							<p class="borrower-messages__empty-body tw-text-gray-600">
-								Borrower messages are rare gems. Not every loan comes with one, which makes them
-								extra special when they arrive. Any message from a borrower you've supported will show
-								up right here.
+								Borrowers are busy running their businesses, so personal messages are rare gems. If a
+								borrower you've supported sends a message, you'll find it here.
 							</p>
 						</div>
 					</div>

@@ -121,10 +121,9 @@ describe('BorrowerMessagesPage', () => {
 			const panel = within(getByTestId('messages-empty'));
 
 			panel.getByRole('img', { name: 'Illustration of a gem' });
-			panel.getByRole('heading', { level: 2, name: 'No borrower messages yet' });
-			panel.getByText('Borrower messages are rare gems. Not every loan comes with one, '
-				+ 'which makes them extra special when they arrive. '
-				+ "Any message from a borrower you've supported will show up right here.");
+			panel.getByRole('heading', { level: 2, name: 'Borrower messages will appear here' });
+			panel.getByText('Borrowers are busy running their businesses, so personal messages are rare gems. '
+				+ "If a borrower you've supported sends a message, you'll find it here.");
 			expect(queryByText(/You don't have any messages from borrowers yet/)).toBeNull();
 			expect(getByTestId('suggested-loans').textContent).toBe('empty');
 		});
@@ -136,7 +135,7 @@ describe('BorrowerMessagesPage', () => {
 			});
 
 			within(getByTestId('messages-empty'))
-				.getByRole('heading', { level: 2, name: 'No borrower messages yet' });
+				.getByRole('heading', { level: 2, name: 'Borrower messages will appear here' });
 		});
 	});
 
