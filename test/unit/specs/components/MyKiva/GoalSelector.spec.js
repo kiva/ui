@@ -205,6 +205,52 @@ describe('GoalSelector', () => {
 		await expectCategoryOptions('category-support-all', getExpectedGoalOptions({ useDefault: true }));
 	});
 
+	describe('when last year\'s achievements arrive after mount', () => {
+		const lastYearAchievements = [{ id: ID_WOMENS_EQUALITY, progressForYear: 40 }];
+
+		const renderWithoutAchievements = () => render(TestWrapper, {
+			global: {
+				...globalOptions,
+				provide: {
+					...globalOptions.provide,
+					$kvTrackEvent: vi.fn(),
+				},
+			},
+			props: { tieredAchievements: [] },
+		});
+
+		const getLoanNumberEls = container => Array.from(container.querySelectorAll('.loan-number-selector__number'));
+		const getLoanNumbers = container => getLoanNumberEls(container)
+			.map(el => Number(el.textContent.trim())).filter(Number.isFinite);
+		const getSelectedNumber = container => getLoanNumberEls(container)
+			.find(el => el.closest('.\\!tw-border-eco-green-3'))?.textContent.trim();
+
+		it('rebuilds the presets from last year\'s lending', async () => {
+			const { container, rerender } = renderWithoutAchievements();
+			await flushPromises();
+			expect(getLoanNumbers(container)).toEqual([3, 4, 5]);
+
+			await rerender({ tieredAchievements: lastYearAchievements });
+			await flushPromises();
+
+			expect(getLoanNumbers(container)).toEqual(getExpectedGoalOptions({ lastYear: 40 }));
+		});
+
+		it('keeps the option the lender already picked', async () => {
+			const user = userEvent.setup();
+			const { container, rerender } = renderWithoutAchievements();
+			await flushPromises();
+			const third = getLoanNumberEls(container).find(el => el.textContent.trim() === '5');
+			await user.click(third);
+			expect(getSelectedNumber(container)).toBe('5');
+
+			await rerender({ tieredAchievements: lastYearAchievements });
+			await flushPromises();
+
+			expect(getSelectedNumber(container)).toBe(String(getExpectedGoalOptions({ lastYear: 40 })[2]));
+		});
+	});
+
 	it('can render current-year progress copy before loan number options', async () => {
 		const tieredAchievements = [
 			{

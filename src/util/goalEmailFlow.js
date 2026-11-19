@@ -14,9 +14,13 @@ import { buildNewGoal, GOAL_STATUS } from '#src/composables/useGoalData';
 export function buildEmailFlowGoalData({
 	allGoals, category, validEmailTarget, now = new Date(),
 }) {
-	const existingGoal = allGoals.find(
-		g => g.status === GOAL_STATUS.IN_PROGRESS || g.status === GOAL_STATUS.COMPLETED,
-	) ?? null;
+	// Only a goal for the goal year in progress counts, the rule MyKiva uses for the active goal: a goal
+	// from an earlier year, completed or still saved as in progress, mustn't stop this year's being set.
+	const currentYear = now.getFullYear();
+	const existingGoal = allGoals.find(g => {
+		if (g.status !== GOAL_STATUS.IN_PROGRESS && g.status !== GOAL_STATUS.COMPLETED) return false;
+		return !g.dateStarted || new Date(g.dateStarted).getFullYear() >= currentYear;
+	}) ?? null;
 
 	let newGoalPrefs = null;
 	if (!existingGoal && validEmailTarget != null) {

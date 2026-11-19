@@ -68,7 +68,7 @@ import TheMyKivaSecondaryMenu from '#src/components/WwwFrame/Menus/TheMyKivaSeco
 import ThePortfolioTertiaryMenu from '#src/components/WwwFrame/Menus/ThePortfolioTertiaryMenu';
 import { gql } from 'graphql-tag';
 import { readBoolSetting, readDateSetting } from '#src/util/settingsUtils';
-import { shouldHideGoalSignup } from '#src/util/goalInReview';
+import { getGoalYear, shouldHideGoalSignup } from '#src/util/goalInReview';
 import { GOAL_STATUS } from '#src/composables/useGoalData';
 import useGoalInReview from '#src/composables/useGoalInReview';
 import useGoalNow from '#src/composables/useGoalNow';
@@ -200,6 +200,24 @@ export default {
 		},
 	},
 	methods: {
+		/**
+		 * Whether the lender already has a goal for the goal year in progress, which hides the goal
+		 * entry point. A goal from an earlier year still saved as in progress doesn't count: only
+		 * MyKiva saves those as expired, so a lender who hasn't opened MyKiva since the year changed
+		 * would otherwise never be asked to set this year's goal.
+		 *
+		 * @param {Array} goals The lender's goals, from preferences.
+		 * @returns {boolean} Whether this goal year's goal is set.
+		 */
+		hasGoalForCurrentYear(goals) {
+			return goals.some(goal => {
+				const goalYear = getGoalYear(goal);
+				if (goal?.status === GOAL_STATUS.IN_PROGRESS) {
+					return goalYear === null || goalYear >= this.goalYear;
+				}
+				return goal?.status === GOAL_STATUS.COMPLETED && goalYear === this.goalYear;
+			});
+		},
 		// Called from mounted: the decision reads user preferences and writes one back,
 		// so it must not run during server render.
 		async openGoalRecapIfDue() {
@@ -294,12 +312,7 @@ export default {
 
 		const parsedPrefs = JSON.parse(this.userPreferences?.preferences || '{}');
 		const goals = parsedPrefs.goals || [];
-		const goalInProgress = goals.some(goal => goal.status === GOAL_STATUS.IN_PROGRESS);
-		const goalAchieved = goals.some(goal => {
-			const goalYear = goal.dateStarted ? new Date(goal.dateStarted).getFullYear() : null;
-			return goal?.status === GOAL_STATUS.COMPLETED && goalYear === this.goalYear;
-		});
-		this.isEmptyGoal = !goalInProgress && !goalAchieved;
+		this.isEmptyGoal = !this.hasGoalForCurrentYear(goals);
 
 		if (this.isEmptyGoal && !this.hideGoalSignup) {
 			// eslint-disable-next-line max-len

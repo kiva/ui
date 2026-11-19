@@ -4,6 +4,50 @@ import { getGoalNow } from '#src/util/goalDate';
 const IN_PROGRESS_RELEASE = new Date('2026-11-15T00:00:00Z');
 
 describe('ImpactDashboardPage', () => {
+	describe('hasGoalForCurrentYear', () => {
+		const hasGoal = goals => ImpactDashboardPage.methods.hasGoalForCurrentYear.call({ goalYear: 2027 }, goals);
+		const goal = (status, dateStarted) => ({
+			goalName: 'goal-womens-equality',
+			category: 'womens-equality',
+			status,
+			dateStarted,
+		});
+
+		it('is false without goals, so the entry point shows', () => {
+			expect(hasGoal([])).toBe(false);
+		});
+
+		it('ignores last year\'s goal still saved as in progress', () => {
+			expect(hasGoal([goal('in-progress', '2026-06-25T21:44:57.928Z')])).toBe(false);
+		});
+
+		it('ignores it alongside an older expired goal', () => {
+			expect(hasGoal([
+				goal('expired', '2025-03-01T20:00:00.000Z'),
+				goal('in-progress', '2026-06-25T21:44:57.928Z'),
+			])).toBe(false);
+		});
+
+		it('counts this year\'s goal in progress', () => {
+			expect(hasGoal([goal('in-progress', '2027-02-01T20:00:00.000Z')])).toBe(true);
+		});
+
+		it('counts this year\'s completed goal', () => {
+			expect(hasGoal([goal('completed', '2027-02-01T20:00:00.000Z')])).toBe(true);
+		});
+
+		it('ignores last year\'s completed or expired goal', () => {
+			expect(hasGoal([
+				goal('completed', '2026-06-25T21:44:57.928Z'),
+				goal('expired', '2026-06-25T21:44:57.928Z'),
+			])).toBe(false);
+		});
+
+		it('counts an in-progress goal with no start date, as MyKiva does', () => {
+			expect(hasGoal([goal('in-progress', undefined)])).toBe(true);
+		});
+	});
+
 	describe('openGoalRecapIfDue', () => {
 		const makeContext = overrides => ({
 			goalInReviewEnable: true,
