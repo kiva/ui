@@ -550,9 +550,11 @@ async function handleEmailFlow() {
 		now: getGoalNow(),
 	});
 
+	let savedNewGoal = false;
 	if (newGoalPrefs) {
 		try {
 			await storeGoalPreferences(newGoalPrefs);
+			savedNewGoal = true;
 
 			$kvTrackEvent(
 				'event-tracking',
@@ -568,13 +570,17 @@ async function handleEmailFlow() {
 		}
 	}
 
+	// storeGoalPreferences already put the saved goal in local state. Reloading here would replace
+	// it with preferences read before the save landed, which don't have the new goal yet.
 	if (existingGoal ?? newGoalPrefs) {
-		await loadGoalData();
+		if (!savedNewGoal) await loadGoalData();
 	} else {
 		logFormatter('GoalSettingContainer: no goal found for email flow', 'error', { category });
 	}
 
 	applyGoalState();
+	// The "Goal set!" header shows the goal details only once the saved goal is loaded.
+	if (savedNewGoal) loadedSetData.value = true;
 
 	emailLoading.value = false;
 	$kvTrackEvent('event-tracking', 'view', 'goals-page-email');
