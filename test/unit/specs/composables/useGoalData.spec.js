@@ -6471,8 +6471,37 @@ describe('useGoalData', () => {
 				})).toBe(true);
 			});
 
-			it('hides any goal without an override, as the flag always has', async () => {
-				expect(await goalCardHidden({ status: GOAL_STATUS.IN_PROGRESS })).toBe(true);
+			it('shows an in-progress goal without an override', async () => {
+				expect(await goalCardHidden({ status: GOAL_STATUS.IN_PROGRESS })).toBe(false);
+			});
+
+			it('hides a completed goal without an override', async () => {
+				expect(await goalCardHidden({ status: GOAL_STATUS.COMPLETED })).toBe(true);
+			});
+
+			it('shows the sign-up tile when last year\'s goal is completed and none is set this year', async () => {
+				vi.useFakeTimers({ toFake: ['Date'] });
+				vi.setSystemTime(new Date(2027, 0, 5));
+				onTestFinished(() => vi.useRealTimers());
+				currentRoute.value = { query: {} };
+				mockApollo.query = vi.fn().mockResolvedValue({
+					data: {
+						my: {
+							userPreferences: {
+								id: 'pref-1',
+								preferences: JSON.stringify({
+									hideGoalCard: true,
+									goals: [{ ...lastYearGoal, status: GOAL_STATUS.COMPLETED }],
+								}),
+							},
+							loans: { totalCount: 4 },
+						},
+					},
+				});
+				const goalData = mountGoalData();
+				await goalData.loadPreferences();
+				expect(goalData.userGoal.value?.status).toBeUndefined();
+				expect(goalData.goalCardHiddenByPreference.value).toBe(false);
 			});
 		});
 	});

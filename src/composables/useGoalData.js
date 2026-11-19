@@ -911,13 +911,12 @@ export default function useGoalData({ apollo } = {}) {
 
 	// Whether hideGoalCard should hide the current goal's card. Use this to show or hide the card;
 	// hideGoalCard itself still answers "has a completed goal been celebrated".
-	// hideGoalCard is one flag for every goal, not per goal. It is set after a completed goal is
-	// celebrated so that goal's card stops showing, and the user's next goal only appears because
-	// fixIncorrectlyCompletedGoals clears the flag when it finds this year's goal. That check doesn't
-	// run under a ?goalDate override, so the flag left from last year's goal would hide the new one.
-	// With an override, let the flag hide only a completed goal.
+	// hideGoalCard is one flag for every goal, not per goal, and nothing clears it when a new year
+	// starts. It is set after a completed goal is celebrated so that goal's card stops showing, so
+	// it only hides a completed goal. Otherwise the flag left from last year's goal would hide this
+	// year's sign-up tile or in-progress goal.
 	const goalCardHiddenByPreference = computed(() => hideGoalCard.value
-		&& (!goalDateOverride.value || userGoal.value?.status === GOAL_STATUS.COMPLETED));
+		&& userGoal.value?.status === GOAL_STATUS.COMPLETED);
 
 	async function setHideGoalCardPreference(hide = true) {
 		await setUserPreference(apolloClient, 'hideGoalCard', hide);
