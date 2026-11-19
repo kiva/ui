@@ -3482,6 +3482,42 @@ describe('useGoalData', () => {
 	});
 
 	describe('fixIncorrectlyCompletedGoals', () => {
+		it('never reopens an expired goal, even with the goal card hidden', async () => {
+			vi.useFakeTimers();
+			vi.setSystemTime(new Date('2026-06-15T12:00:00'));
+			const { setMyKivaGoal } = await import('#src/util/userPreferenceUtils');
+			setMyKivaGoal.mockClear();
+			mockApollo.query = vi.fn().mockResolvedValue({
+				data: {
+					my: {
+						userPreferences: {
+							id: 'pref-123',
+							preferences: JSON.stringify({
+								hideGoalCard: true,
+								goals: [{
+									goalName: 'goal-womens-equality-2026',
+									category: ID_WOMENS_EQUALITY,
+									target: 300,
+									status: GOAL_STATUS.EXPIRED,
+									dateStarted: '2026-06-01T20:00:00.000Z',
+								}],
+							}),
+						},
+						loans: { totalCount: 0 },
+					},
+				},
+			});
+
+			try {
+				const result = await composable.fixIncorrectlyCompletedGoals();
+
+				expect(result).toEqual({ wasFixed: false });
+				expect(setMyKivaGoal).not.toHaveBeenCalled();
+			} finally {
+				vi.useRealTimers();
+			}
+		});
+
 		it('should return wasFixed: false when no current year goal exists', async () => {
 			const mockPrefs = {
 				goals: [{
@@ -6280,6 +6316,19 @@ describe('useGoalData', () => {
 				status: GOAL_STATUS.EXPIRED,
 			}));
 			expect(renewedYear()).toBe(2031);
+		});
+
+		it('skips the completed-goal check, which would compare test goals with real loans', async () => {
+			mockGoals([{ ...lastYearGoal, status: GOAL_STATUS.COMPLETED }]);
+			currentRoute.value = { query: { goalDate: '2026-12-05' } };
+			const goalData = mountGoalData();
+			mockApollo.query.mockClear();
+
+			const result = await goalData.fixIncorrectlyCompletedGoals();
+
+			expect(result).toEqual({ wasFixed: false });
+			expect(mockApollo.query).not.toHaveBeenCalled();
+			expect(prefUtils.setMyKivaGoal).not.toHaveBeenCalled();
 		});
 
 		it('takes the override from the cookie when the URL has no param', async () => {

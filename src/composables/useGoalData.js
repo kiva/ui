@@ -1302,7 +1302,9 @@ export default function useGoalData({ apollo } = {}) {
 	 * Checks current year goals and resets status to in-progress and unhides the goal card
 	 * if the actual yearly progress doesn't meet the target. Accepts fresh progress data
 	 * to compensate for achievement service indexing lag, preventing false reverts of
-	 * legitimately completed goals.
+	 * legitimately completed goals. Skipped under a ?goalDate override: its progress counts come from
+	 * real loans, so a goal set or completed while testing another date would look incomplete and be
+	 * reopened on the server.
 	 *
 	 * @param {Object} options - Configuration options
 	 * @param {Array} options.freshProgressLoans - Recent transaction loans for reconciling missing achievement progress
@@ -1315,16 +1317,20 @@ export default function useGoalData({ apollo } = {}) {
 		tieredAchievements = [],
 		transactions = [],
 	} = {}) {
+		if (goalDateOverride.value) {
+			return { wasFixed: false };
+		}
+
 		const parsedPrefs = await loadPreferences('network-only');
-		const goals = parsedPrefs.goals || [];
-		// The real year, not the ?goalDate override: under an override set in a past year, a goal
-		// completed with loans from a later year would look incomplete and be reopened for good.
-		const currentYear = new Date().getFullYear();
+		const goals = parsedPrefs?.goals || [];
+		const currentYear = getCurrentGoalYear();
 
-		const isGoalCardHidden = parsedPrefs.hideGoalCard || false;
+		const isGoalCardHidden = parsedPrefs?.hideGoalCard || false;
 
-		// Find current year goal that is completed or hidden
+		// Find current year goal that is completed or hidden. An expired goal's year is over, so it is
+		// never reopened.
 		const goalToFix = goals.find(goal => {
+			if (goal.status === GOAL_STATUS.EXPIRED) return false;
 			if (goal.status !== GOAL_STATUS.COMPLETED && !isGoalCardHidden) return false;
 			const goalYear = goal.dateStarted ? new Date(goal.dateStarted).getFullYear() : null;
 			return goalYear === currentYear;
