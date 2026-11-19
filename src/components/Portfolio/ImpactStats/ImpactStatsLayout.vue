@@ -19,7 +19,7 @@
 					Your impact diversity
 				</h2>
 				<impact-stats-row />
-				<impact-section-card title="Geographic Reach" data-testid="impact-geographic-reach" />
+				<geographic-reach-card />
 				<impact-section-card title="By Sector" data-testid="impact-sector" />
 				<impact-section-card title="By Activity" data-testid="impact-activity" />
 				<impact-section-card title="By Gender" data-testid="impact-gender" />
@@ -44,6 +44,7 @@
 
 <script setup>
 import AccountOverviewCard from '#src/components/Portfolio/ImpactStats/AccountOverviewCard';
+import GeographicReachCard from '#src/components/Portfolio/ImpactStats/GeographicReachCard';
 import GivingFundCard from '#src/components/Portfolio/ImpactStats/GivingFundCard';
 import ImpactSectionCard from '#src/components/Portfolio/ImpactStats/ImpactSectionCard';
 import ImpactStatsRow from '#src/components/Portfolio/ImpactStats/ImpactStatsRow';
