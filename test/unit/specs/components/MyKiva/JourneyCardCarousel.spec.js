@@ -3,7 +3,7 @@ import { mount } from '@vue/test-utils';
 import { defineComponent, h, ref } from 'vue';
 import JourneyCardCarousel from '#src/components/MyKiva/JourneyCardCarousel';
 import CookieStore from '#src/util/cookieStore';
-import { ID_WOMENS_EQUALITY } from '#src/composables/useBadgeData';
+import { ID_BASIC_NEEDS, ID_WOMENS_EQUALITY } from '#src/composables/useBadgeData';
 
 vi.mock('vue-router', () => ({
 	useRouter: () => ({
@@ -590,6 +590,83 @@ describe('JourneyCardCarousel', () => {
 			const { trackEvent } = mountForImpression({ props: { inLendingStats: false } });
 
 			expect(goalImpressions(trackEvent)).toHaveLength(0);
+		});
+	});
+
+	describe('goal category achievement order', () => {
+		const buildSlide = achievementKey => ({
+			fields: {
+				richText: {
+					content: [{
+						data: {
+							target: {
+								sys: { contentType: { sys: { id: 'uiSetting' } } },
+								fields: { dataObject: { achievementKey } },
+							},
+						},
+					}],
+				},
+			},
+		});
+		const buildBadge = (id, totalProgressToAchievement, target) => ({
+			id,
+			contentfulData: [{ id, level: 1, imageUrl: '/badge.svg' }],
+			achievementData: {
+				id,
+				totalProgressToAchievement,
+				tiers: [{
+					level: 1, target, completedDate: null, learnMoreURL: '',
+				}],
+			},
+			hasStarted: true,
+			level: 1,
+		});
+
+		it('keeps the goal category achievement last when the latest loan is in that category', () => {
+			const wrapper = mount(JourneyCardCarousel, {
+				props: {
+					inLendingStats: true,
+					slidesNumber: 3,
+					goalProgressLoading: false,
+					userGoal: { category: ID_WOMENS_EQUALITY, target: 5 },
+					slides: [buildSlide(ID_WOMENS_EQUALITY), buildSlide(ID_BASIC_NEEDS)],
+					heroBadgeData: [
+						buildBadge(ID_WOMENS_EQUALITY, 6, 10),
+						buildBadge(ID_BASIC_NEEDS, 2, 5),
+					],
+					userInfo: {
+						userPreferences: { preferences: '{}' },
+						transactions: {
+							values: [{
+								type: 'loan_purchase',
+								createTime: new Date().toISOString(),
+								loan: { gender: 'female' },
+							}],
+						},
+					},
+				},
+				global: {
+					provide: {
+						apollo: {},
+						cookieStore: new CookieStore({}),
+						$kvTrackEvent: vi.fn(),
+					},
+					directives: {
+						kvTrackEvent: () => ({}),
+					},
+					stubs: {
+						MyKivaCard: {
+							props: ['title'],
+							template: '<div class="my-kiva-card-title">{{ title }}</div>',
+						},
+						MyKivaSharingModal: true,
+						NextYearGoalCard: true,
+					},
+				},
+			});
+
+			const titles = wrapper.findAll('.my-kiva-card-title').map(card => card.text());
+			expect(titles).toEqual(['Your progress: 2/5 loans', 'Your progress: 6/10 loans']);
 		});
 	});
 });

@@ -1,3 +1,4 @@
+import { subDays } from 'date-fns';
 import { defaultBadges } from '#src/util/achievementUtils';
 import {
 	buildAchievementSlides,
@@ -11,6 +12,8 @@ import {
 	handlePrimaryCtaClick,
 	handleSecondaryCtaClick,
 	isLoanAnonymous,
+	moveGoalCategoryAchievementLast,
+	sortAchievementSlidesByLatestLoan,
 	MYKIVA_INPUT_FORM_KEY,
 	PRIORITY_CARD_EMAIL,
 	PRIORITY_CARD_GOAL,
@@ -698,68 +701,55 @@ describe('myKivaJourneyCardUtils', () => {
 			});
 			expect(result).toEqual([]);
 		});
+	});
 
-		it('moves goal category achievement to the end when userGoalCategory is set', () => {
-			const customBadgesData = [
-				{
-					id: 'womens-equality',
-					achievementData: { totalProgressToAchievement: 1 },
-					contentfulData: [{ level: 1, imageUrl: 'url1' }],
-				},
-				{
-					id: 'climate-action',
-					achievementData: { totalProgressToAchievement: 2 },
-					contentfulData: [{ level: 1, imageUrl: 'url2' }],
-				},
-				{
-					id: 'basic-needs',
-					achievementData: { totalProgressToAchievement: 3 },
-					contentfulData: [{ level: 1, imageUrl: 'url3' }],
-				},
-			];
-			const customSlides = ['womens-equality', 'climate-action', 'basic-needs']
-				.map(key => buildSlide(key));
-
-			const result = buildAchievementSlides({
-				badgesData: customBadgesData,
-				slides: customSlides,
-				isTieredAchievementComplete,
-				getActiveTierData,
-				userGoalCategory: 'womens-equality',
-			});
-
-			expect(result).toHaveLength(3);
-			expect(result[0].badgeKey).toBe('basic-needs');
-			expect(result[1].badgeKey).toBe('climate-action');
-			expect(result[2].badgeKey).toBe('womens-equality');
+	describe('sortAchievementSlidesByLatestLoan', () => {
+		const slides = () => ['basic-needs', 'womens-equality'].map(badgeKey => ({ badgeKey }));
+		const loanPurchase = (daysAgo, loan) => ({
+			type: 'loan_purchase',
+			createTime: subDays(new Date(), daysAgo).toISOString(),
+			loan,
 		});
 
-		it('does not reorder when userGoalCategory is null (not set)', () => {
-			const customBadgesData = [
-				{
-					id: 'womens-equality',
-					achievementData: { totalProgressToAchievement: 1 },
-					contentfulData: [{ level: 1, imageUrl: 'url1' }],
-				},
-				{
-					id: 'climate-action',
-					achievementData: { totalProgressToAchievement: 2 },
-					contentfulData: [{ level: 1, imageUrl: 'url2' }],
-				},
-			];
-			const customSlides = ['womens-equality', 'climate-action'].map(key => buildSlide(key));
+		it('moves the achievements of a loan from the last 30 days to the front', () => {
+			const result = sortAchievementSlidesByLatestLoan(slides(), [loanPurchase(10, { gender: 'female' })]);
 
-			const result = buildAchievementSlides({
-				badgesData: customBadgesData,
-				slides: customSlides,
-				isTieredAchievementComplete,
-				getActiveTierData,
-				userGoalCategory: null,
-			});
+			expect(result.map(s => s.badgeKey)).toEqual(['womens-equality', 'basic-needs']);
+		});
 
-			expect(result).toHaveLength(2);
-			expect(result[0].badgeKey).toBe('womens-equality');
-			expect(result[1].badgeKey).toBe('climate-action');
+		it('ignores loans older than 30 days and non-loan transactions', () => {
+			const result = sortAchievementSlidesByLatestLoan(slides(), [
+				loanPurchase(31, { gender: 'female' }),
+				{ ...loanPurchase(1, { gender: 'female' }), type: 'deposit' },
+			]);
+
+			expect(result.map(s => s.badgeKey)).toEqual(['basic-needs', 'womens-equality']);
+		});
+
+		it('leaves the order alone without transactions', () => {
+			const result = sortAchievementSlidesByLatestLoan(slides(), undefined);
+
+			expect(result.map(s => s.badgeKey)).toEqual(['basic-needs', 'womens-equality']);
+		});
+	});
+
+	describe('moveGoalCategoryAchievementLast', () => {
+		it('moves the goal category achievement to the end in place', () => {
+			const slides = ['womens-equality', 'climate-action', 'basic-needs'].map(badgeKey => ({ badgeKey }));
+
+			const result = moveGoalCategoryAchievementLast(slides, 'womens-equality');
+
+			expect(result).toBe(slides);
+			expect(slides.map(s => s.badgeKey)).toEqual(['climate-action', 'basic-needs', 'womens-equality']);
+		});
+
+		it('leaves the order alone without a goal category or a matching slide', () => {
+			const slides = [{ badgeKey: 'womens-equality' }, { badgeKey: 'climate-action' }];
+
+			moveGoalCategoryAchievementLast(slides, null);
+			moveGoalCategoryAchievementLast(slides, 'basic-needs');
+
+			expect(slides.map(s => s.badgeKey)).toEqual(['womens-equality', 'climate-action']);
 		});
 	});
 });
