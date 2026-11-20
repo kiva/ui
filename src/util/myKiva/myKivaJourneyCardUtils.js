@@ -1,9 +1,14 @@
+import { parseISO, differenceInDays } from 'date-fns';
+import { getJourneysByLoan } from '#src/composables/useBadgeData';
 import { isNonBadgeSlide, defaultBadges } from '#src/util/achievementUtils';
+import { TRANSACTION_LOANS_KEY } from '#src/util/myKivaUtils';
 import {
 	getRichTextUiSettingsData,
 	getSlidePrimaryCtaText,
 	getSlideSecondaryCtaText,
 } from '#src/util/myKiva/myKivaContentfulUtils';
+
+const TRANSACTION_DAYS_LIMIT = 30;
 
 export const MYKIVA_INPUT_FORM_KEY = 'mykiva-input-form';
 export const REFER_FRIEND_MODAL_KEY = 'refer-friend';
@@ -233,6 +238,42 @@ export const getTopRowAchievementKeys = ({
 };
 
 /**
+ * Sorts the achievements matching the journeys of the user's latest loan (last 30 days) to the front
+ * @param {Array} achievementSlides
+ * @param {Array} transactions - userInfo.transactions.values
+ * @returns {Array} The same array, reordered in place
+ */
+export const sortAchievementSlidesByLatestLoan = (achievementSlides, transactions) => {
+	const transactionLoans = (transactions ?? []).filter(t => {
+		const diffInDays = differenceInDays(new Date(), parseISO(t.createTime));
+		return t.type === TRANSACTION_LOANS_KEY && diffInDays <= TRANSACTION_DAYS_LIMIT;
+	});
+	if (!transactionLoans.length) return achievementSlides;
+
+	const loanJourneys = getJourneysByLoan(transactionLoans[0]?.loan ?? {});
+	if (loanJourneys.length) {
+		achievementSlides.sort((a, b) => loanJourneys.indexOf(b.badgeKey) - loanJourneys.indexOf(a.badgeKey));
+	}
+	return achievementSlides;
+};
+
+/**
+ * Moves the achievement matching the user's goal category to the end, so it sits apart from the goal card
+ * @param {Array} achievementSlides
+ * @param {String} userGoalCategory
+ * @returns {Array} The same array, reordered in place
+ */
+export const moveGoalCategoryAchievementLast = (achievementSlides, userGoalCategory) => {
+	if (!userGoalCategory) return achievementSlides;
+	const goalAchievementIndex = achievementSlides.findIndex(slide => slide.badgeKey === userGoalCategory);
+	if (goalAchievementIndex > -1) {
+		const [goalAchievement] = achievementSlides.splice(goalAchievementIndex, 1);
+		achievementSlides.push(goalAchievement);
+	}
+	return achievementSlides;
+};
+
+/**
  * Build achievement slides from badge data and contentful slides
  *
  * @param {Object} options
@@ -241,7 +282,6 @@ export const getTopRowAchievementKeys = ({
  * @param {Boolean} options.includeMilestoneDiff - Whether to include milestoneDiff
  * @param {Function} options.isTieredAchievementComplete - From useBadgeData
  * @param {Function} options.getActiveTierData - From useBadgeData
- * @param {String} options.userGoalCategory - User's goal category ID (optional)
  * @returns {Array} Achievement slide objects
  */
 export const buildAchievementSlides = ({
@@ -251,7 +291,6 @@ export const buildAchievementSlides = ({
 	isTieredAchievementComplete,
 	includeMilestoneDiff = false,
 	sortByMilestoneDiff = false,
-	userGoalCategory = null,
 }) => {
 	const achievementSlides = [];
 	defaultBadges.forEach(badgeKey => {
@@ -286,15 +325,6 @@ export const buildAchievementSlides = ({
 
 	if (sortByMilestoneDiff) {
 		achievementSlides.sort((a, b) => a.milestoneDiff - b.milestoneDiff);
-	}
-
-	// If user has a goal set, move the goal category achievement to the end
-	if (userGoalCategory) {
-		const goalAchievementIndex = achievementSlides.findIndex(slide => slide.badgeKey === userGoalCategory);
-		if (goalAchievementIndex > -1) {
-			const [goalAchievement] = achievementSlides.splice(goalAchievementIndex, 1);
-			achievementSlides.push(goalAchievement);
-		}
 	}
 
 	return achievementSlides;
