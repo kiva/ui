@@ -6165,6 +6165,61 @@ describe('useGoalData', () => {
 				expect(setUserPreferenceKeys).not.toHaveBeenCalled();
 			});
 
+			describe('hideGoalCard', () => {
+				const climateGoal = {
+					goalName: 'goal-climate-2026',
+					category: ID_CLIMATE_ACTION,
+					target: 3,
+					status: GOAL_STATUS.IN_PROGRESS,
+				};
+
+				it('clears it when a new goal is created', async () => {
+					mockApollo.query = vi.fn().mockResolvedValue(prefsResponse({
+						goals: [{ ...womenGoal, status: GOAL_STATUS.COMPLETED }],
+						hideGoalCard: true,
+					}));
+					await composable.loadGoalData();
+
+					await composable.storeGoalPreferences(climateGoal);
+
+					expect(setUserPreference).toHaveBeenCalledWith(mockApollo, 'hideGoalCard', false);
+				});
+
+				it('writes nothing extra for a new goal when it is already clear', async () => {
+					mockApollo.query = vi.fn().mockResolvedValue(prefsResponse({ goals: [], hideGoalCard: false }));
+					await composable.loadGoalData();
+
+					await composable.storeGoalPreferences(climateGoal);
+
+					expect(setUserPreference).not.toHaveBeenCalled();
+				});
+
+				it('leaves it set when an existing goal is edited', async () => {
+					mockApollo.query = vi.fn().mockResolvedValue(prefsResponse({
+						goals: [womenGoal],
+						hideGoalCard: true,
+					}));
+					await composable.loadGoalData();
+
+					await composable.storeGoalPreferences({ ...womenGoal, target: 7 });
+
+					expect(setUserPreference).not.toHaveBeenCalled();
+				});
+
+				it('leaves it set when the server rejects the new goal', async () => {
+					mockApollo.query = vi.fn().mockResolvedValue(prefsResponse({
+						goals: [womenGoal],
+						hideGoalCard: true,
+					}));
+					await composable.loadGoalData();
+					setMyKivaGoal.mockResolvedValueOnce({ data: null, errors: [{ message: 'rejected' }] });
+
+					await expect(composable.storeGoalPreferences(climateGoal)).rejects.toThrow('rejected');
+
+					expect(setUserPreference).not.toHaveBeenCalled();
+				});
+			});
+
 			describe('saving a new goal in January', () => {
 				const goal2027 = {
 					goalName: 'goal-basic-needs-2027',

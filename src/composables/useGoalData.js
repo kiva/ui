@@ -977,6 +977,12 @@ export default function useGoalData({ apollo } = {}) {
 			error.graphQLErrors = result.errors;
 			throw error;
 		}
+		// hideGoalCard records that a completed goal has been celebrated. It is one flag for every
+		// goal, so clear it when a new goal starts; otherwise completing the new goal reads as
+		// already celebrated. Editing an existing goal leaves it alone.
+		if (goalIndex === -1 && parsedPrefs.hideGoalCard) {
+			await setUserPreference(apolloClient, 'hideGoalCard', false);
+		}
 		if (updateLocalState) {
 			setGoalState({ goals }); // Refresh local state after update
 		}
