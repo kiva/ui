@@ -524,7 +524,9 @@ describe('useGoalInReview', () => {
 				goalData: goalDataWith({ goal: goalOf('in-progress') }),
 			});
 
-			const result = await loadAutoOpenRecap({ enabled: true, inProgressStartDate: dayOffset(-1) });
+			// The start of this year: a day earlier would be last year's date on Jan 1.
+			const startOfYear = new Date(new Date().getFullYear(), 0, 1);
+			const result = await loadAutoOpenRecap({ enabled: true, inProgressStartDate: startOfYear });
 
 			expect(result).not.toBeNull();
 			expect(getGoalSummary).toHaveBeenCalled();

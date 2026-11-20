@@ -67,6 +67,27 @@ describe('goalInReviewTrigger.js', () => {
 		it('stays shut when the release date cannot be parsed', () => {
 			expect(shouldAutoOpenRecap({ ...inProgress, inProgressStartDate: 'not-a-date' })).toBe(false);
 		});
+
+		it('opens through the last moment of the release year', () => {
+			expect(shouldAutoOpenRecap({ ...inProgress, now: new Date(2026, 11, 31, 23, 59, 59) })).toBe(true);
+		});
+
+		it('stays shut from Jan 1 when the release date is still last year\'s', () => {
+			const nextYear = { ...inProgress, goalYear: 2027, currentGoalYear: 2027 };
+			expect(shouldAutoOpenRecap({ ...nextYear, now: new Date(2027, 0, 1) })).toBe(false);
+			expect(shouldAutoOpenRecap({ ...nextYear, now: new Date(2027, 5, 1) })).toBe(false);
+			expect(shouldAutoOpenRecap({ ...nextYear, now: new Date(2027, 11, 1) })).toBe(false);
+		});
+
+		it('opens again once the release date is moved to the new year', () => {
+			expect(shouldAutoOpenRecap({
+				...inProgress,
+				goalYear: 2027,
+				currentGoalYear: 2027,
+				inProgressStartDate: new Date(2027, 10, 15),
+				now: new Date(2027, 10, 15),
+			})).toBe(true);
+		});
 	});
 
 	describe('completed goals are not held back by the in-progress date', () => {
