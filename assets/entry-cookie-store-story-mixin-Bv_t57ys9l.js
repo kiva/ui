@@ -1,0 +1,1 @@
+const d=({cookies:t={},setCookies:r=[]}={})=>({provide:{cookieStore:{get(e){return t[e]},getAll(){return{...t}},getSetCookies(){return[...r]},has(e){return typeof t[e]<"u"},remove(e){delete t[e],r.push(`${e}=deleted`)},set(e,n){t[e]=n,r.push(`${e}=${encodeURIComponent(n)}`)}}}});export{d as c};
