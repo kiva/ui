@@ -1,10 +1,13 @@
 import { createApp } from 'vue';
-import useGoalData, { GOAL_STATUS, GOALS_CURRENT_YEAR } from '#src/composables/useGoalData';
+import useGoalData, { GOAL_STATUS } from '#src/composables/useGoalData';
 import { ID_BASIC_NEEDS, ID_WOMENS_EQUALITY } from '#src/composables/useBadgeData';
 import setUserPreferenceMutation from '#src/graphql/mutation/accountSettings/setUserPreference.graphql';
 import setMyKivaGoalMutation from '#src/graphql/mutation/accountSettings/setMyKivaGoal.graphql';
 
 vi.mock('#src/util/logFormatter', () => ({ default: vi.fn() }));
+
+// The goal year with no goalDate preview on the route: the real clock's year.
+const CURRENT_YEAR = new Date().getFullYear();
 
 // Real util, mocked Apollo: pins the mutation, key, encoding and write order that reach the server.
 describe('useGoalData preference writes', () => {
@@ -72,16 +75,16 @@ describe('useGoalData preference writes', () => {
 
 	it('marks a year-keyed flag with the merged map as the value', async () => {
 		mockApollo.query.mockResolvedValue(prefsResponse({
-			viewedGoalComplete: { [GOALS_CURRENT_YEAR - 1]: true },
+			viewedGoalComplete: { [CURRENT_YEAR - 1]: true },
 		}));
 
-		await composable.setViewedGoalCompletePreference(GOALS_CURRENT_YEAR);
+		await composable.setViewedGoalCompletePreference(CURRENT_YEAR);
 
 		expect(mockApollo.mutate).toHaveBeenCalledWith({
 			mutation: setUserPreferenceMutation,
 			variables: {
 				key: 'viewedGoalComplete',
-				value: JSON.stringify({ [GOALS_CURRENT_YEAR - 1]: true, [GOALS_CURRENT_YEAR]: true }),
+				value: JSON.stringify({ [CURRENT_YEAR - 1]: true, [CURRENT_YEAR]: true }),
 			},
 		});
 	});

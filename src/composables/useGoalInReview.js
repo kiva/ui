@@ -5,14 +5,14 @@ import {
 	toValue,
 	watch,
 } from 'vue';
-import { useRouter } from 'vue-router';
 
 import goalInReviewQuery from '#src/graphql/query/goalInReview.graphql';
 import goalInReviewLenderQuery from '#src/graphql/query/goalInReviewLender.graphql';
 import contentfulEntriesQuery from '#src/graphql/query/contentfulEntries.graphql';
-import useGoalData, { GOALS_CURRENT_YEAR } from '#src/composables/useGoalData';
+import useGoalData from '#src/composables/useGoalData';
 import { ID_SUPPORT_ALL } from '#src/composables/useBadgeData';
 import {
+	findGoalForYear,
 	getCategoryName,
 	getGoalLoans,
 	getGoalYear,
@@ -26,60 +26,13 @@ import {
 } from '#src/util/goalInReview';
 import logFormatter from '#src/util/logFormatter';
 import { getContentfulEntries } from '#src/util/contentfulUtils';
+import useGoalNow from '#src/composables/useGoalNow';
 
 // Open the Goal In Review recap from MyKiva with /mykiva?goTo=goal-recap.
 export const GOAL_RECAP_DEEP_LINK = 'goal-recap';
 
 /**
- * Returns the current date, applying the ?recapDate=YYYY-MM-DD URL override (dev/QA only; production
- * users never pass it). A bare date is read as the user's LOCAL midnight. The override is permanent
- * QA tooling shared by the goal recap and the goal-card countdown; without it, the browser clock wins.
- *
- * Example: /mykiva?goTo=goal-recap&recapDate=2027-01-01
- *
- * @param {string} [recapDate] The override, read from the route rather than the address bar, which
- *   does not exist on the server. Anything deciding what the server renders has to pass it, or the
- *   server resolves the real date and the client then hydrates something else.
- * @returns {Date} The effective "now" for Goal In Review logic.
- */
-export function getGoalInReviewNow(recapDate = null) {
-	const param = recapDate || (typeof window !== 'undefined'
-		? new URLSearchParams(window.location.search).get('recapDate')
-		: null);
-	if (param) {
-		// Parse a bare YYYY-MM-DD as LOCAL midnight, not UTC. `new Date('2027-04-01')` is
-		// UTC per spec, which in a negative-offset zone (e.g. America/Los_Angeles) lands on
-		// the previous evening — pushing the effective "now" a day back and breaking the
-		// March-31 recap cutoff and the year-boundary checks in QA. Anything with
-		// an explicit time is left as-is.
-		const override = /^\d{4}-\d{2}-\d{2}$/.test(param)
-			? new Date(`${param}T00:00:00`)
-			: new Date(param);
-		if (!Number.isNaN(override.getTime())) {
-			return override;
-		}
-	}
-	return new Date();
-}
-
-/**
- * The ?recapDate override, read off the route so the server can see it too. getGoalInReviewNow
- * otherwise falls back to the address bar, which only the browser has, so anything whose markup
- * depends on the override reads it here and both sides agree.
- *
- * @returns {{recapDate: import('vue').ComputedRef<string|string[]|null>}} The override, or null
- *   when none is set. A repeated query param arrives as an array, which getGoalInReviewNow cannot
- *   parse and treats as no override.
- */
-export function useRecapDateOverride() {
-	// Optional on purpose: this carries a QA param only, so a caller mounted without a router
-	// reads no override instead of failing, and still gets the address-bar fallback.
-	const router = useRouter();
-	return { recapDate: computed(() => router?.currentRoute?.value?.query?.recapDate ?? null) };
-}
-
-/**
- * Whether to hide the goal sign up ask, resolved against the route's ?recapDate override so the
+ * Whether to hide the goal sign up ask, resolved against the route's ?goalDate override so the
  * server and the client agree. Every surface offering the ask shares this: each one renders or
  * not on this answer, so a server that disagreed would send markup the client throws away.
  *
@@ -89,33 +42,13 @@ export function useRecapDateOverride() {
  *   hidden.
  */
 export function useHideGoalSignup(recapStartDate) {
-	const { recapDate } = useRecapDateOverride();
+	const { goalNow } = useGoalNow();
 	return {
 		hideGoalSignup: computed(() => shouldHideGoalSignup({
 			recapStartDate: toValue(recapStartDate),
-			now: getGoalInReviewNow(recapDate.value),
+			now: goalNow.value,
 		})),
 	};
-}
-
-/**
- * Gets the recap year from the provided date.
- *
- * @param {Date} date Source date for determining the recap year.
- * @returns {number} Full year used for Goal In Review data.
- */
-export function getGoalInReviewTargetYear(date = getGoalInReviewNow()) {
-	return date.getFullYear();
-}
-
-/**
- * Returns the current year, honoring the ?recapDate dev/QA override via getGoalInReviewNow().
- *
- * @param {string} [recapDate] The override read from the route, for callers that run during SSR.
- * @returns {number} The current year.
- */
-export function getGoalInReviewCurrentYear(recapDate = null) {
-	return getGoalInReviewNow(recapDate).getFullYear();
 }
 
 /**
@@ -124,7 +57,7 @@ export function getGoalInReviewCurrentYear(recapDate = null) {
  *
  * The Impact Progress row is deliberately not a caller: it offers its recap straight away.
  *
- * Resolves the current date itself, from the route's ?recapDate override, and asks callers about
+ * Resolves the current date itself, honoring the route's ?goalDate override, and asks callers about
  * the year it resolved. Callers must not resolve a year of their own, or they drift apart from
  * this one.
  *
@@ -147,8 +80,7 @@ export function useGoalRecapEntryPoint({
 	hasViewedRecap,
 	loansTowardGoal = 0,
 }) {
-	const { recapDate } = useRecapDateOverride();
-	const resolveGoalInReviewNow = () => getGoalInReviewNow(recapDate.value);
+	const { goalNow, getGoalNow } = useGoalNow();
 
 	// Snapshot: MyKiva writes `announced` mid-visit, so reading it live would show the CTA
 	// seconds after the confetti. Keyed to the goal, which resolves alongside the preference.
@@ -159,13 +91,14 @@ export function useGoalRecapEntryPoint({
 		status => {
 			if (announcedBeforeThisVisit.value !== null || !status) return;
 			announcedBeforeThisVisit.value = Boolean(toValue(announced));
-			viewedBeforeThisVisit.value = Boolean(hasViewedRecap?.(resolveGoalInReviewNow().getFullYear()));
+			viewedBeforeThisVisit.value = Boolean(hasViewedRecap?.(goalNow.value.getFullYear()));
 		},
 		{ immediate: true },
 	);
 
 	const showRecapCta = computed(() => {
-		const currentDate = resolveGoalInReviewNow();
+		// Read fresh, so a page left open across a date boundary decides by the current day.
+		const currentDate = getGoalNow();
 		return shouldShowRecapEntryPoint({
 			enabled: toValue(enabled),
 			goalStatus: toValue(goalStatus),
@@ -225,6 +158,7 @@ export default function useGoalInReview({ apollo, goalData } = {}) {
 		hasSubmittedGoalFeedbackForYear,
 		setGoalFeedbackSubmittedPreference,
 	} = goalData || useGoalData({ apollo: apolloClient });
+	const { getGoalNow } = useGoalNow();
 	const loading = ref(false);
 	const goalInReviewData = ref(null);
 
@@ -247,9 +181,11 @@ export default function useGoalInReview({ apollo, goalData } = {}) {
 		}
 	}
 
-	async function loadGoalSummary() {
+	// Resolved by year so a link or tile can reach a goal that expired or ended in an earlier year.
+	async function loadGoalSummary(year) {
 		try {
-			return await getGoalSummary();
+			const parsedPrefs = await loadPreferences();
+			return await getGoalSummary(findGoalForYear(parsedPrefs?.goals, year)?.goalName);
 		} catch (error) {
 			logFormatter('useGoalInReview failed to load the goal summary', 'error', { error: error?.message });
 			return null;
@@ -264,7 +200,7 @@ export default function useGoalInReview({ apollo, goalData } = {}) {
 	 */
 	async function fetchGoalInReview(year) {
 		const [summary, lenderData, contentfulData] = await Promise.all([
-			loadGoalSummary(),
+			loadGoalSummary(year),
 			query(goalInReviewLenderQuery),
 			query(contentfulEntriesQuery, { contentType: 'challenge', limit: 200 }, 'cache-first'),
 		]);
@@ -307,7 +243,7 @@ export default function useGoalInReview({ apollo, goalData } = {}) {
 	 * @returns {Promise<object>} Goal In Review data payload.
 	 */
 	async function loadGoalInReview({
-		year = getGoalInReviewTargetYear(),
+		year = getGoalNow().getFullYear(),
 	} = {}) {
 		loading.value = true;
 		try {
@@ -384,8 +320,8 @@ export default function useGoalInReview({ apollo, goalData } = {}) {
 		const parsedPrefs = await loadPreferences('network-only');
 		// Captured now; any later and this visit's own write could open the recap over the celebration.
 		const announcedBeforeThisVisit = hideGoalCard.value;
-		const now = getGoalInReviewNow();
-		const year = getGoalInReviewTargetYear(now);
+		const now = getGoalNow();
+		const year = now.getFullYear();
 		const hasViewedRecap = hasViewedGoalRecapForYear(year);
 		if (hasViewedRecap) {
 			return null;
@@ -398,7 +334,7 @@ export default function useGoalInReview({ apollo, goalData } = {}) {
 			enabled,
 			goalStatus: goal?.status,
 			goalYear: getGoalYear(goal),
-			currentGoalYear: GOALS_CURRENT_YEAR,
+			currentGoalYear: year,
 			hasViewedRecap,
 			holdUntilNextVisit: !announcedBeforeThisVisit,
 			inProgressStartDate,

@@ -2,16 +2,9 @@ import checkInjections from '#src/util/injectionCheck';
 import getOperationVariables from '#src/util/operationVariables';
 import logReadQueryError from '#src/util/logReadQueryError';
 import watchApolloOperation from '#src/util/watchApolloOperation';
-import { createIntersectionObserver } from '#src/util/observerUtils';
+import { parseLazy, observeLazyOperation } from '#src/util/lazyApolloOperation';
 
 const injections = ['apollo', 'cookieStore'];
-
-function parseLazy(lazy) {
-	if (!lazy) return null;
-	if (lazy === true) return { rootMargin: '500px' };
-	const { target, ...options } = lazy;
-	return { rootMargin: '500px', ...options, target };
-}
 
 function setupWatchQuery(vm, operation, commonVars) {
 	const { variables = () => {}, result = () => {} } = operation;
@@ -103,38 +96,14 @@ export default app => {
 			for (let i = 0; i < this.lazyOperations.length; i += 1) {
 				const { operation, lazyConfig, commonVars } = this.lazyOperations[i];
 
-				const { target: customTarget, ...observerOptions } = lazyConfig;
-
-				// Resolve the observation target: use a custom target ref if provided,
-				// otherwise default to this.$el. In Vue 3 fragment components, $el may
-				// be a comment/text node — walk siblings to find the first Element.
-				let target = customTarget ? this.$refs[customTarget] : this.$el;
-				while (target && !(target instanceof Element)) {
-					target = target.nextSibling;
-				}
-				if (!target) {
-					console.warn('[apollo-plugin] No Element found for IntersectionObserver in', this.$options.name);
-					setupWatchQuery(this, operation, commonVars);
-				} else {
-					const observer = createIntersectionObserver({
-						targets: [target],
-						options: observerOptions,
-						callback: entries => {
-							entries.forEach(entry => {
-								if (entry.intersectionRatio > 0) {
-									setupWatchQuery(this, operation, commonVars);
-									observer.disconnect();
-								}
-							});
-						},
-					});
-
-					if (observer) {
-						this.lazyObservers.push(observer);
-					} else {
-						// IntersectionObserver not supported — fall back to immediate setup
-						setupWatchQuery(this, operation, commonVars);
-					}
+				const observer = observeLazyOperation({
+					instance: this,
+					lazyConfig,
+					start: () => setupWatchQuery(this, operation, commonVars),
+					label: `apollo-plugin ${this.$options.name}`,
+				});
+				if (observer) {
+					this.lazyObservers.push(observer);
 				}
 			}
 		},

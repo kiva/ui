@@ -74,6 +74,12 @@
 				>
 					Post a comment on the loan page
 				</kv-text-link>
+				<borrower-message-suggested-loans
+					v-if="showSuggestedLoans"
+					:key="message.id"
+					loan-context="message"
+					:loan="loan"
+				/>
 			</template>
 			<div v-else class="tw-flex tw-flex-col tw-gap-3" data-testid="borrower-message-loading">
 				<div class="tw-text-headline tw-w-1/2">
@@ -99,6 +105,7 @@ import {
 	KvTextLink,
 } from '@kiva/kv-components';
 import WwwPage from '#src/components/WwwFrame/WwwPage';
+import BorrowerMessageSuggestedLoans from '#src/pages/Portfolio/BorrowerMessages/BorrowerMessageSuggestedLoans';
 import useBorrowerMessage, { BORROWER_MESSAGES_LIST_PATH } from '#src/composables/useBorrowerMessage';
 import {
 	getBorrowerMessageAuthor,
@@ -117,7 +124,7 @@ const SHARE_DESCRIPTION_WORDS = 60;
 
 const $appConfig = inject('$appConfig', {});
 const route = useRoute();
-const { message, isLoggedIn } = useBorrowerMessage();
+const { message, isLoggedIn, suggestedLoansEnabled } = useBorrowerMessage();
 
 const loan = computed(() => message.value?.loan ?? {});
 
@@ -182,6 +189,10 @@ const originalSubject = computed(() => htmlToText(message.value?.subject));
 const originalBody = computed(() => sanitizeLimitedHtml(message.value?.body));
 
 const showCommentLink = computed(() => !isPartner.value && !!loan.value.id && !!loan.value.userProperties?.lentTo);
+
+const showSuggestedLoans = computed(() => suggestedLoansEnabled.value
+	&& !isPartner.value
+	&& !!loan.value.partner?.id);
 
 const pageTitle = computed(() => getBorrowerMessageTitle(message.value));
 

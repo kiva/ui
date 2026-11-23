@@ -36,6 +36,7 @@ import useBadgeData, { CATEGORY_TARGETS } from '#src/composables/useBadgeData';
 import basketItemsQuery from '#src/graphql/query/basketItems.graphql';
 import { splitAchievements, filterAchievementData, getOneLoanAwayAchievement } from '#src/util/atbAchievementUtils';
 import useGoalData from '#src/composables/useGoalData';
+import useGoalNow from '#src/composables/useGoalNow';
 import userLentToQuery from '#src/graphql/query/userLentTo.graphql';
 
 const BASKET_LIMIT_SIZE_FOR_EXP = 3;
@@ -68,6 +69,7 @@ const {
 	isProgressCompletingGoal,
 	suppressAchievementNudges,
 } = useGoalData({ apollo });
+const { getGoalNow } = useGoalNow();
 
 const userData = ref({});
 const basketData = ref([]);
@@ -184,7 +186,7 @@ const fetchPostCheckoutAchievements = async loanIds => {
 		supportAllCounterLoans: loansInBasket.value,
 	});
 	// Use yearly progress with current year
-	const year = new Date().getFullYear();
+	const year = getGoalNow().getFullYear();
 	// Increment counter per add-to-basket action
 	const { totalProgress, hasContributingLoans } = await getPostCheckoutProgressByLoans({
 		loans: loanIds.map(id => ({ id })),

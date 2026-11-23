@@ -2,12 +2,17 @@
 import { mount } from '@vue/test-utils';
 import { nextTick, ref } from 'vue';
 import MyKivaFeaturedSlot from '#src/components/MyKiva/MyKivaFeaturedSlot';
-import { GOAL_STATUS, GOALS_CURRENT_YEAR } from '#src/composables/useGoalData';
+import { GOAL_STATUS } from '#src/composables/useGoalData';
 import { ID_US_ECONOMIC_EQUALITY, ID_WOMENS_EQUALITY } from '#src/composables/useBadgeData';
 
+const currentRoute = vi.hoisted(() => ({ value: { path: '/mykiva', query: {} } }));
+
 vi.mock('vue-router', () => ({
-	useRouter: () => ({}),
+	useRouter: () => ({ currentRoute }),
 }));
+
+// The goal year with no goalDate preview on the route: the real clock's year.
+const CURRENT_YEAR = new Date().getFullYear();
 
 vi.mock('#src/util/logReadQueryError', () => ({
 	default: vi.fn(),
@@ -66,6 +71,7 @@ const mountSlot = ({ goalData = buildGoalData(), props = {}, trackEvent = vi.fn(
 describe('MyKivaFeaturedSlot', () => {
 	beforeEach(() => {
 		vi.clearAllMocks();
+		currentRoute.value.query = {};
 	});
 
 	describe('state resolution', () => {
@@ -129,7 +135,7 @@ describe('MyKivaFeaturedSlot', () => {
 					hasViewedCompletedGoal: true,
 					progress: 5,
 					percentage: 100,
-					dateStarted: `${GOALS_CURRENT_YEAR}-02-01`,
+					dateStarted: `${CURRENT_YEAR}-02-01`,
 				}),
 				props: { goalInReviewEnable: true },
 			});
@@ -148,7 +154,21 @@ describe('MyKivaFeaturedSlot', () => {
 			});
 			await nextTick();
 			expect(goalData.setViewedGoalCompletePreference).toHaveBeenCalledTimes(1);
-			expect(goalData.setViewedGoalCompletePreference).toHaveBeenCalledWith(GOALS_CURRENT_YEAR);
+			expect(goalData.setViewedGoalCompletePreference).toHaveBeenCalledWith(CURRENT_YEAR);
+		});
+
+		it('keys the flag to the goal year the route goalDate previews', async () => {
+			currentRoute.value.query = { goalDate: '2031-06-01' };
+			const { goalData } = mountSlot({
+				goalData: buildGoalData({
+					status: GOAL_STATUS.COMPLETED,
+					hasViewedCompletedGoal: false,
+					percentage: 100,
+				}),
+			});
+			await nextTick();
+			expect(goalData.hasViewedCompletedGoalForYear).toHaveBeenCalledWith(2031);
+			expect(goalData.setViewedGoalCompletePreference).toHaveBeenCalledWith(2031);
 		});
 
 		it('does not persist the flag when the user has already viewed the completion', async () => {

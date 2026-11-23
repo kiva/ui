@@ -212,6 +212,7 @@ import GoalInProgress from '#src/components/Thanks/SingleVersion/GoalInProgress'
 import ExpressCheckoutModal from '#src/components/Thanks/ExpressCheckout/ExpressCheckoutModal';
 import useGoalData, { GOAL_STATUS } from '#src/composables/useGoalData';
 import { useHideGoalSignup } from '#src/composables/useGoalInReview';
+import useGoalNow from '#src/composables/useGoalNow';
 import useGoalSettingRecommendedLoan, {
 	GOAL_RECOMMENDED_LOAN_ENTRYPOINT_POST_CHECKOUT,
 } from '#src/composables/useGoalSettingRecommendedLoan';
@@ -495,6 +496,7 @@ const showJourneyModule = computed(() => {
 });
 const showLoanComment = computed(() => hasPfpLoan.value || hasTeamAttributedPartnerLoan.value);
 const { hideGoalSignup } = useHideGoalSignup(() => props.goalInReviewInProgressStart);
+const { getGoalNow, goalDateOverride } = useGoalNow();
 
 const showGoalEntrypoint = computed(() => {
 	return !props.isGuest
@@ -632,7 +634,7 @@ onMounted(async () => {
 	}
 
 	await loadGoalData();
-	const year = new Date().getFullYear();
+	const year = getGoalNow().getFullYear();
 	// Loans already in totalLoanCount after checkout
 	const { totalProgress, hasContributingLoans: contributingLoans } = await getPostCheckoutProgressByLoans({
 		loans: props.loans,
@@ -645,9 +647,14 @@ onMounted(async () => {
 	isEmptyGoal.value = Object.keys(userGoal.value || {}).length === 0;
 	// Gated together so the view cap only counts asks the lender actually saw.
 	if (!props.isGuest && isEmptyGoal.value && !hideGoalSignup.value) {
-		goalSignupThanksViewCapped.value = isGoalSignupThanksViewCapped(cookieStore);
-		if (!goalSignupThanksViewCapped.value) {
-			incrementGoalSignupThanksViewCount(cookieStore);
+		// A ?goalDate QA override bypasses the cap: the ask always shows and the view isn't counted.
+		if (goalDateOverride.value) {
+			goalSignupThanksViewCapped.value = false;
+		} else {
+			goalSignupThanksViewCapped.value = isGoalSignupThanksViewCapped(cookieStore);
+			if (!goalSignupThanksViewCapped.value) {
+				incrementGoalSignupThanksViewCount(cookieStore);
+			}
 		}
 	}
 

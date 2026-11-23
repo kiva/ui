@@ -153,7 +153,9 @@ import {
 import { useRouter } from 'vue-router';
 
 import useBreakpoints from '#src/composables/useBreakpoints';
-import useGoalData from '#src/composables/useGoalData';
+import useGoalData, { buildNewGoal } from '#src/composables/useGoalData';
+import goalCopy from '#src/util/goalCopy';
+import useGoalNow from '#src/composables/useGoalNow';
 import {
 	GOAL_DEFAULT_CATEGORY_EXP_STATE,
 	getDefaultGoalCategory,
@@ -192,6 +194,7 @@ const {
 	loadGoalData,
 	getRecommendedLoans,
 } = useGoalData();
+const { getGoalNow, goalYear } = useGoalNow();
 
 const props = defineProps({
 	show: {
@@ -361,14 +364,12 @@ const contentComponent = computed(() => {
 	}
 });
 
-const yearToDate = new Date().getFullYear();
-
 const ctaCopy = computed(() => {
 	if (isEditing.value) {
 		return 'Continue';
 	}
 
-	return `Set ${yearToDate} goal`;
+	return goalCopy.buttonSetGoal(goalYear.value);
 });
 
 const ctaHref = computed(() => {
@@ -466,18 +467,11 @@ const handleClick = () => {
 			selectedGoalNumber.value
 		);
 
-		const currentYear = new Date().getFullYear();
-		const goalName = `goal-${categorySelected}-${currentYear}`;
-		const target = selectedGoalNumber.value;
-		const dateStarted = new Date().toISOString();
-		const status = 'in-progress';
-		emit('set-goal', {
-			goalName,
+		emit('set-goal', buildNewGoal({
 			category: categorySelected,
-			target,
-			dateStarted,
-			status,
-		});
+			target: selectedGoalNumber.value,
+			now: getGoalNow(),
+		}));
 		enterRecommendedLoanStepAfterGoalSave();
 	}
 };

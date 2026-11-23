@@ -12,6 +12,10 @@ const LEFT = [
 	'impact-partner',
 ];
 const RIGHT = ['impact-goal', 'impact-percentile', 'impact-badges', 'impact-first-loan'];
+const SECTION_TITLES = [
+	'By Sector', 'By Activity', 'By Gender', 'By Lending Partner',
+	'Goal', 'Lending percentile', 'Badges', 'Your first loan on Kiva',
+];
 
 const mockState = {};
 
@@ -37,6 +41,10 @@ const renderLayout = ({ showGivingFund = false } = {}) => {
 					name: 'ImpactStatsRow',
 					template: '<div data-testid="impact-stats"></div>',
 				},
+				GeographicReachCard: {
+					name: 'GeographicReachCard',
+					template: '<div data-testid="impact-geographic-reach"></div>',
+				},
 			},
 		},
 	});
@@ -47,6 +55,25 @@ describe('ImpactStatsLayout', () => {
 		const { getByRole } = renderLayout();
 
 		GROUP_HEADINGS.forEach(name => getByRole('heading', { level: 2, name }));
+	});
+
+	it('titles each section card with an h3', () => {
+		const { getByRole } = renderLayout();
+
+		SECTION_TITLES.forEach(name => getByRole('heading', { level: 3, name }));
+	});
+
+	it('names each section card by its title', () => {
+		const { getByRole } = renderLayout();
+
+		SECTION_TITLES.forEach(name => getByRole('region', { name }));
+	});
+
+	it('shows the geographic reach card in place of its placeholder', () => {
+		const { getByTestId, queryByRole } = renderLayout();
+
+		getByTestId('impact-geographic-reach');
+		expect(queryByRole('heading', { level: 3, name: 'Geographic Reach' })).toBeNull();
 	});
 
 	it('renders a card per section', () => {

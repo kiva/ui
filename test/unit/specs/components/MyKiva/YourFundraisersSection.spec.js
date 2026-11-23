@@ -59,9 +59,9 @@ describe('YourFundraisersSection', () => {
 		expect(mountSection([fund('a', 'First fund')]).text()).toContain('Your fundraisers');
 	});
 
-	it('offers a Manage All link to the fund management page instead of the New badge', () => {
+	it('offers a Manage funds link to the fund management page instead of the New badge', () => {
 		const wrapper = mountSection([fund('a', 'First fund')]);
-		expect(wrapper.text()).toContain('Manage All');
+		expect(wrapper.text()).toContain('Manage funds');
 		expect(wrapper.text()).not.toContain('New!');
 		expect(wrapper.findAll('a').map(a => a.attributes('href'))).toContain('/gfm');
 	});
@@ -90,6 +90,6 @@ describe('YourFundraisersSection', () => {
 		const wrapper = mountSection([fund('a', 'First fund'), fund('b', 'Second fund')]);
 		const hrefs = wrapper.findAll('a').map(a => a.attributes('href'));
 		expect(hrefs.filter(href => href === '/lp/event-fundraiser')).toHaveLength(1);
-		expect(wrapper.text()).toContain("Have another event you'd like to fundraise for?");
+		expect(wrapper.text()).toContain('Have another event?');
 	});
 });

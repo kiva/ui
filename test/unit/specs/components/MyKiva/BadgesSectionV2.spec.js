@@ -397,10 +397,9 @@ describe('BadgesSectionV2', () => {
 		});
 	});
 
-	describe('completed goal placement via the recapDate override', () => {
-		// The row takes the override off the route, so QA's ?recapDate reaches the server too.
-		// These pin that route path. The address-bar fallback is what the system-clock tests
-		// exercise.
+	describe('completed goal placement via the goalDate override', () => {
+		// The row takes the override off the route, so QA's ?goalDate reaches the server too.
+		// These pin that route path; with no override the system-clock tests apply.
 		const completedUserGoal = {
 			target: 10,
 			name: 'Completed',
@@ -408,8 +407,8 @@ describe('BadgesSectionV2', () => {
 			dateStarted: '2026-06-15T12:00:00',
 		};
 
-		const renderWithOverride = recapDate => {
-			currentRoute.value.query = { recapDate };
+		const renderWithOverride = date => {
+			currentRoute.value.query = { goalDate: date };
 			return renderComponent({ badgeData: defaultBadgeData }, createGoalData({
 				loading: false,
 				userGoal: completedUserGoal,

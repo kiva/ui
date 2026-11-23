@@ -67,7 +67,8 @@ import { fetchPostCheckoutAchievements } from '#src/util/myKivaUtils';
 import ThanksPageSingleVersion from '#src/components/Thanks/ThanksPageSingleVersion';
 import userAchievementProgressQuery from '#src/graphql/query/userAchievementProgress.graphql';
 import useBadgeData, { ID_WOMENS_EQUALITY } from '#src/composables/useBadgeData';
-import { LAST_YEAR_KEY, GOALS_CURRENT_YEAR } from '#src/composables/useGoalData';
+import { getCurrentGoalYear, getLastGoalYear } from '#src/util/goalDate';
+import useGoalNow from '#src/composables/useGoalNow';
 import userYearlyProgressQuery from '#src/graphql/query/userYearlyProgress.graphql';
 import { clearPromoCreditBannerCookie, getPromoCreditBannerCookie } from '#src/util/promoCreditCookie';
 import { readBoolSetting, readDateSetting } from '#src/util/settingsUtils';
@@ -173,7 +174,7 @@ export default {
 				// Query returns both progressForYear (for specified year) and totalProgressToAchievement (all-time)
 				client.query({
 					query: userAchievementProgressQuery,
-					variables: { year: LAST_YEAR_KEY },
+					variables: { year: getLastGoalYear(route?.query, cookieStore) },
 					fetchPolicy: 'network-only',
 				}),
 				client.query({
@@ -221,7 +222,7 @@ export default {
 						fetchPostCheckoutAchievements(client, loanIds),
 						client.query({
 							query: userYearlyProgressQuery,
-							variables: { loanIds, year: GOALS_CURRENT_YEAR },
+							variables: { loanIds, year: getCurrentGoalYear(route?.query, cookieStore) },
 						}),
 					]);
 				}).catch(errorResponse => {
@@ -272,9 +273,11 @@ export default {
 	},
 	setup() {
 		const { allAchievementsCompleted } = useBadgeData();
+		const { goalYear } = useGoalNow();
 
 		return {
 			allAchievementsCompleted,
+			goalYear,
 		};
 	},
 	created() {
@@ -288,11 +291,11 @@ export default {
 				query: thanksPageQuery,
 			});
 
-			// Query with LAST_YEAR_KEY returns progressForYear for last year (goal suggestions)
+			// Query with last year returns progressForYear for last year (goal suggestions)
 			// and tiers.completedDate for all-time achievement completion check
 			userAchievements = this.apollo.readQuery({
 				query: userAchievementProgressQuery,
-				variables: { year: LAST_YEAR_KEY },
+				variables: { year: this.goalYear - 1 },
 			});
 
 			this.achievements = userAchievements?.userAchievementProgress?.tieredLendingAchievements ?? [];
@@ -375,7 +378,7 @@ export default {
 		try {
 			const response = this.apollo.readQuery({
 				query: userYearlyProgressQuery,
-				variables: { loanIds, year: GOALS_CURRENT_YEAR },
+				variables: { loanIds, year: this.goalYear },
 			});
 			const progress = response?.postCheckoutAchievements?.yearlyProgress || [];
 			const womenProgress = progress.find(p => p.achievementId === ID_WOMENS_EQUALITY);

@@ -10,7 +10,7 @@
 				class="tw-relative"
 				:lenders-needed="pfpMinLenders"
 				:borrower-name="loanData.name"
-				:days-left="diffInDays"
+				:time-left="loanData.fundraisingTimeLeft"
 			/>
 			<content-container
 				:class="[inPfp ? 'lg:tw-pt-3' : 'lg:tw-pt-8']"
@@ -311,7 +311,6 @@ import {
 import { readDefaultLoanShareAmount } from '#src/util/defaultLoanShareAmount';
 import { isActivelyInPfp } from '#src/util/loanUtils';
 import { NEW_USER_BP_EXP_INJECT_KEY } from '#src/util/newUserBorrowerProfileExp';
-import { differenceInCalendarDays, parseISO } from 'date-fns';
 import { KvLoadingPlaceholder, KvPageContainer } from '@kiva/kv-components';
 
 export const fullProfileFragment = gql`
@@ -521,11 +520,6 @@ export default {
 		},
 		numLenders() {
 			return this.loanData?.lenders?.totalCount ?? 0;
-		},
-		diffInDays() {
-			const expDate = this.loanData?.plannedExpirationDate;
-			if (!expDate) return 0;
-			return differenceInCalendarDays(parseISO(expDate), new Date());
 		},
 		isLoggedIn() {
 			return !!this.lender?.id;

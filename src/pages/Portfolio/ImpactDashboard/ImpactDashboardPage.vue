@@ -68,9 +68,10 @@ import TheMyKivaSecondaryMenu from '#src/components/WwwFrame/Menus/TheMyKivaSeco
 import ThePortfolioTertiaryMenu from '#src/components/WwwFrame/Menus/ThePortfolioTertiaryMenu';
 import { gql } from 'graphql-tag';
 import { readBoolSetting, readDateSetting } from '#src/util/settingsUtils';
-import { shouldHideGoalSignup } from '#src/util/goalInReview';
-import { GOAL_STATUS, GOALS_CURRENT_YEAR } from '#src/composables/useGoalData';
-import useGoalInReview, { getGoalInReviewNow } from '#src/composables/useGoalInReview';
+import { getGoalYear, shouldHideGoalSignup } from '#src/util/goalInReview';
+import { GOAL_STATUS } from '#src/composables/useGoalData';
+import useGoalInReview from '#src/composables/useGoalInReview';
+import useGoalNow from '#src/composables/useGoalNow';
 import GoalInReviewModal from '#src/components/MyKiva/GoalInReview/GoalInReviewModal';
 import portfolioQuery from '#src/graphql/query/portfolioQuery.graphql';
 import experimentAssignmentQuery from '#src/graphql/query/experimentAssignment.graphql';
@@ -135,8 +136,11 @@ export default {
 			hasSubmittedGoalFeedbackForYear,
 			setGoalFeedbackSubmittedPreference,
 		} = useGoalInReview();
+		const { goalNow, goalYear } = useGoalNow();
 
 		return {
+			goalNow,
+			goalYear,
 			getFinishGoalHref,
 			goalInReviewData,
 			loadAutoOpenRecap,
@@ -187,16 +191,33 @@ export default {
 	},
 	computed: {
 		hideGoalSignup() {
-			// The override comes off the route because this decides whether the entry point
-			// renders and the server has no address bar. Threaded by hand instead of through
-			// useHideGoalSignup: the start date lives in data, which setup cannot reach.
+			// Threaded by hand instead of through useHideGoalSignup: the start date lives in data,
+			// which setup cannot reach.
 			return shouldHideGoalSignup({
 				recapStartDate: this.goalInReviewInProgressStart,
-				now: getGoalInReviewNow(this.$route?.query?.recapDate),
+				now: this.goalNow,
 			});
 		},
 	},
 	methods: {
+		/**
+		 * Whether the lender already has a goal for the goal year in progress, which hides the goal
+		 * entry point. A goal from an earlier year still saved as in progress doesn't count: only
+		 * MyKiva saves those as expired, so a lender who hasn't opened MyKiva since the year changed
+		 * would otherwise never be asked to set this year's goal.
+		 *
+		 * @param {Array} goals The lender's goals, from preferences.
+		 * @returns {boolean} Whether this goal year's goal is set.
+		 */
+		hasGoalForCurrentYear(goals) {
+			return goals.some(goal => {
+				const goalYear = getGoalYear(goal);
+				if (goal?.status === GOAL_STATUS.IN_PROGRESS) {
+					return goalYear === null || goalYear >= this.goalYear;
+				}
+				return goal?.status === GOAL_STATUS.COMPLETED && goalYear === this.goalYear;
+			});
+		},
 		// Called from mounted: the decision reads user preferences and writes one back,
 		// so it must not run during server render.
 		async openGoalRecapIfDue() {
@@ -291,12 +312,7 @@ export default {
 
 		const parsedPrefs = JSON.parse(this.userPreferences?.preferences || '{}');
 		const goals = parsedPrefs.goals || [];
-		const goalInProgress = goals.some(goal => goal.status === GOAL_STATUS.IN_PROGRESS);
-		const goalAchieved = goals.some(goal => {
-			const goalYear = goal.dateStarted ? new Date(goal.dateStarted).getFullYear() : null;
-			return goal?.status === GOAL_STATUS.COMPLETED && goalYear === GOALS_CURRENT_YEAR;
-		});
-		this.isEmptyGoal = !goalInProgress && !goalAchieved;
+		this.isEmptyGoal = !this.hasGoalForCurrentYear(goals);
 
 		if (this.isEmptyGoal && !this.hideGoalSignup) {
 			// eslint-disable-next-line max-len

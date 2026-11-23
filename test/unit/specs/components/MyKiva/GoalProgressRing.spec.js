@@ -14,10 +14,10 @@ import {
 } from '#src/composables/useBadgeData';
 import { globalOptions } from '../../../specUtils';
 
+const currentRoute = vi.hoisted(() => ({ value: { path: '/goal-setting', query: {} } }));
+
 vi.mock('vue-router', () => ({
-	useRouter: () => ({
-		currentRoute: { value: { path: '/goal-setting' } },
-	}),
+	useRouter: () => ({ currentRoute }),
 }));
 
 const GOAL_LOANS = 4;
@@ -180,7 +180,7 @@ describe('GoalProgressRing', () => {
 
 describe('GoalProgressRing days left countdown', () => {
 	// The ring resolves the countdown itself after mount from the goal's start date and the
-	// recapDate-aware "now", so these tests pin "today" through the URL exactly as MyKiva QA does.
+	// goalDate-aware "now", so these tests pin "today" through the route exactly as MyKiva QA does.
 	const GOAL_DATE_STARTED = '2026-02-01T12:00:00.000Z'; // a 2026 goal in every timezone
 	const renderCard = props => renderRing({
 		variant: 'card',
@@ -188,11 +188,13 @@ describe('GoalProgressRing days left countdown', () => {
 		goalProgressPercentage: 40,
 		...props,
 	});
-	const pinToday = date => window.history.pushState({}, '', `/?recapDate=${date}`);
+	const pinToday = date => {
+		currentRoute.value.query = { goalDate: date };
+	};
 
 	afterEach(() => {
-		// Clear the recapDate so it never leaks into other tests' "now".
-		window.history.pushState({}, '', '/');
+		// Clear the goalDate so it never leaks into other tests' "now".
+		currentRoute.value.query = {};
 	});
 
 	it('shows the countdown copy with its icon in the card variant inside the window', async () => {
@@ -245,5 +247,24 @@ describe('GoalProgressRing days left countdown', () => {
 		await nextTick();
 		expect(getByTestId('goal-days-left')).toBeTruthy();
 		expect(getByRole('button', { name: 'Edit' })).toBeTruthy();
+	});
+});
+
+describe('GoalProgressRing card title year', () => {
+	afterEach(() => {
+		currentRoute.value.query = {};
+		// A ?goalDate on the route is saved to the cookie, which the next test would read.
+		document.cookie = 'kv_goal_date=; path=/; max-age=0';
+	});
+
+	it('names the goal year from the route goalDate', () => {
+		currentRoute.value.query = { goalDate: '2031-06-01' };
+		const { container } = renderRing({ variant: 'card', categoryId: ID_SUPPORT_ALL });
+		expect(container.textContent).toContain(goalCopy.ringTitleSupportAllCard(2031));
+	});
+
+	it('names the current year with no goalDate on the route', () => {
+		const { container } = renderRing({ variant: 'card', categoryId: ID_SUPPORT_ALL });
+		expect(container.textContent).toContain(goalCopy.ringTitleSupportAllCard(new Date().getFullYear()));
 	});
 });

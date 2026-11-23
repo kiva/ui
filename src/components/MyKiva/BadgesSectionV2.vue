@@ -30,7 +30,7 @@
 					:is-historical-goal="badge.isHistoricalGoal"
 					:goal-progress="badge.goalProgress"
 					:show-recap-cta="Boolean(badge.showRecapCta)"
-					:year="badge.year ?? GOALS_CURRENT_YEAR"
+					:year="badge.year ?? currentGoalYear"
 					class="tw-self-start tw-mx-auto"
 				/>
 			</div>
@@ -52,9 +52,9 @@ import useBadgeData from '#src/composables/useBadgeData';
 import { KvCarousel, KvLoadingPlaceholder } from '@kiva/kv-components';
 import MyKivaProgressCard from '#src/components/MyKiva/MyKivaProgressCard';
 import { useRouter } from 'vue-router';
-import { COMPLETED_GOAL_THRESHOLD, GOALS_CURRENT_YEAR, GOAL_STATUS } from '#src/composables/useGoalData';
+import { COMPLETED_GOAL_THRESHOLD, GOAL_STATUS } from '#src/composables/useGoalData';
 import { getGoalYear, getIsPastGoalYear, shouldShowRecapEntryPoint } from '#src/util/goalInReview';
-import { getGoalInReviewNow, useRecapDateOverride } from '#src/composables/useGoalInReview';
+import useGoalNow from '#src/composables/useGoalNow';
 
 const CARD_MIN_HEIGHT = '111px';
 const SINGLE_SLIDE_WIDTH = '336px';
@@ -107,21 +107,15 @@ const userHasGoal = computed(() => !!userGoal.value && Object.keys(userGoal.valu
 
 const userGoalYear = computed(() => getGoalYear(userGoal.value));
 
-// The server needs this override too, since it sets the row's tile order. The carousel's icons
-// hydrate asynchronously, and reordering the row mid-hydration strands one of them on a
-// detached node, which throws and leaves that tile with no icon.
-const { recapDate } = useRecapDateOverride();
-const resolveGoalInReviewNow = () => getGoalInReviewNow(recapDate.value);
+// Read from the route, since the ?goalDate override sets the row's tile order on the server too. The
+// carousel's icons hydrate asynchronously, and reordering the row mid-hydration strands one of them
+// on a detached node, which throws and leaves that tile with no icon.
+const { getGoalNow, goalYear: currentGoalYear } = useGoalNow();
 
-const isGoalYearOver = computed(() => getIsPastGoalYear(
-	userGoalYear.value,
-	resolveGoalInReviewNow().getFullYear(),
-));
+const isGoalYearOver = computed(() => getIsPastGoalYear(userGoalYear.value, currentGoalYear.value));
 
 const recapEntryPointFor = ({ goalStatus, goalYear, loansTowardGoal }) => {
-	// Read the clock once so both answers share an instant, even if the year turns over
-	// mid-render.
-	const now = resolveGoalInReviewNow();
+	const now = getGoalNow();
 	return shouldShowRecapEntryPoint({
 		enabled: props.goalInReviewEnable,
 		goalStatus,
@@ -210,7 +204,7 @@ const visibleBadges = computed(() => {
 			},
 			goalProgress: goalProgress.value || 0,
 			isAnnualGoal: true,
-			year: userGoalYear.value ?? GOALS_CURRENT_YEAR,
+			year: userGoalYear.value ?? currentGoalYear.value,
 			showRecapCta: recapEntryPointFor({
 				goalStatus: userGoal.value?.status,
 				goalYear: userGoalYear.value,
@@ -238,7 +232,7 @@ const visibleBadges = computed(() => {
 
 const badgeClicked = badge => {
 	if (badge?.showRecapCta) {
-		emit('view-goal-recap', badge.year ?? GOALS_CURRENT_YEAR);
+		emit('view-goal-recap', badge.year ?? currentGoalYear.value);
 		return;
 	}
 

@@ -1,13 +1,22 @@
 import MyKivaPage from '#src/pages/MyKiva/MyKivaPage';
 import loanStatsByYearQuery from '#src/graphql/query/loanStatsByYear.graphql';
 import { createGoalDefaultCategoryExp } from '#src/util/goalSignupCopyVariant';
-import { LAST_YEAR_KEY } from '#src/composables/useGoalData';
 import countryListQuery from '#src/graphql/query/countryList.graphql';
 import logReadQueryError from '#src/util/logReadQueryError';
+import { GOAL_DATE_COOKIE } from '#src/util/goalDate';
 
 vi.mock('#src/util/logReadQueryError', () => ({
 	default: vi.fn(),
 }));
+
+// What setup's useGoalNow() hands the options API when no ?goalDate override is set.
+const CURRENT_YEAR = new Date().getFullYear();
+const LAST_YEAR = CURRENT_YEAR - 1;
+const goalNowState = () => ({
+	goalNow: new Date(),
+	goalYear: CURRENT_YEAR,
+	lastGoalYear: LAST_YEAR,
+});
 
 describe('MyKivaPage', () => {
 	const getTimestampMinutesAgo = minutesAgo => {
@@ -397,8 +406,37 @@ describe('MyKivaPage', () => {
 
 			expect(client.query).toHaveBeenCalledWith({
 				query: loanStatsByYearQuery,
-				variables: { year: LAST_YEAR_KEY },
+				variables: { year: LAST_YEAR },
 			});
+		});
+
+		it('prefetches the goal years the route goalDate previews', async () => {
+			const client = { query: vi.fn().mockResolvedValue({ data: {} }) };
+
+			await MyKivaPage.apollo.preFetch({}, client, { route: { query: { goalDate: '2031-02-01' } } });
+
+			const years = client.query.mock.calls
+				.map(call => call[0])
+				.filter(call => call?.variables?.year != null);
+			const achievementYears = years.filter(call => call.variables.loanPurchasesLimit != null);
+			const lendingStatsYears = years.filter(call => (
+				call.variables.loanPurchasesLimit == null && call.query !== loanStatsByYearQuery
+			));
+			expect(years.find(call => call.query === loanStatsByYearQuery).variables).toEqual({ year: 2030 });
+			expect(achievementYears.map(call => call.variables.year)).toEqual([2030, 2031]);
+			expect(lendingStatsYears.map(call => call.variables)).toEqual([{ year: 2031 }]);
+		});
+
+		it('prefetches the goal years for the date saved in the cookie', async () => {
+			const client = { query: vi.fn().mockResolvedValue({ data: {} }) };
+			const cookieStore = { get: name => (name === GOAL_DATE_COOKIE ? '2031-02-01' : undefined) };
+
+			await MyKivaPage.apollo.preFetch({}, client, { cookieStore, route: { query: {} } });
+
+			const years = client.query.mock.calls
+				.map(call => call[0])
+				.filter(call => call?.variables?.year != null);
+			expect(years.find(call => call.query === loanStatsByYearQuery).variables).toEqual({ year: 2030 });
 		});
 
 		it('prefetches the fundraisers row experiment assignment', async () => {
@@ -473,10 +511,42 @@ describe('MyKivaPage', () => {
 
 			expect(applyMyKivaFreshProgress).not.toHaveBeenCalled();
 			expect(renewAnnualGoal).toHaveBeenCalledTimes(1);
+			// No date of its own: useGoalData renews for the goalDate preview's year, if any.
+			expect(renewAnnualGoal).toHaveBeenCalledWith();
 			expect(fixIncorrectlyCompletedGoals).toHaveBeenCalledTimes(1);
 			expect(context.loadGoalData).toHaveBeenCalledWith(
 				expect.objectContaining({ checkMyKivaCompletedGoalAfterLoad: true })
 			);
+		});
+
+		it('names the previewed goal year in the renewal toast and the goal load', async () => {
+			const context = {
+				apollo: {
+					watchQuery: vi.fn(() => ({
+						subscribe: vi.fn(),
+					}))
+				},
+				$showTipMsg: vi.fn(),
+				loadGoalData: vi.fn().mockResolvedValue(),
+				applyMyKivaFreshProgress: vi.fn(),
+				renewAnnualGoal: vi.fn().mockResolvedValue({
+					showRenewedAnnualGoalToast: true,
+					expiredGoals: [{ goalName: 'goal-2030' }],
+				}),
+				fixIncorrectlyCompletedGoals: vi.fn().mockResolvedValue({ wasFixed: false }),
+				setHideGoalCardPreference: vi.fn().mockResolvedValue(),
+				setupGoalDefaultCategoryExpIfShown: vi.fn(),
+				goalRefreshKey: 0,
+				userInfo: {},
+				goalNow: new Date(2031, 0, 15),
+				goalYear: 2031,
+				lastGoalYear: 2030,
+			};
+
+			await MyKivaPage.mounted.call(context);
+
+			expect(context.$showTipMsg).toHaveBeenCalledWith(expect.stringContaining('your 2031 impact goal'));
+			expect(context.loadGoalData).toHaveBeenCalledWith(expect.objectContaining({ year: 2031 }));
 		});
 	});
 
@@ -506,6 +576,7 @@ describe('MyKivaPage', () => {
 				$route: { query: {} },
 				$kvTrackEvent: vi.fn(),
 				goalDefaultCategoryExp: createGoalDefaultCategoryExp(),
+				...goalNowState(),
 			};
 
 			MyKivaPage.created.call(context);
@@ -547,6 +618,7 @@ describe('MyKivaPage', () => {
 				$route: { query: {} },
 				$kvTrackEvent: vi.fn(),
 				goalDefaultCategoryExp: createGoalDefaultCategoryExp(),
+				...goalNowState(),
 			};
 
 			MyKivaPage.created.call(context);
@@ -555,8 +627,9 @@ describe('MyKivaPage', () => {
 				tieredAchievements: currentYearTieredAchievements,
 				freshProgressLoans: recentTransactionLoans,
 				transactions,
-				year: new Date().getFullYear(),
+				year: CURRENT_YEAR,
 			});
+			expect(context.readTieredAchievementsFromCache.mock.calls).toEqual([[LAST_YEAR], [CURRENT_YEAR]]);
 			// applyMyKivaFreshProgress is what populates recentTransactionLoans, which is
 			// passed straight into the hydration above. Called the other way round, hydration
 			// gets an empty array and renders progress short by any just-purchased loan the
@@ -591,6 +664,7 @@ describe('MyKivaPage', () => {
 				$route: { query: {} },
 				$kvTrackEvent: vi.fn(),
 				goalDefaultCategoryExp: createGoalDefaultCategoryExp(),
+				...goalNowState(),
 			};
 
 			MyKivaPage.created.call(context);
@@ -622,6 +696,7 @@ describe('MyKivaPage', () => {
 				$route: { query: {} },
 				$kvTrackEvent: vi.fn(),
 				goalDefaultCategoryExp: createGoalDefaultCategoryExp(),
+				...goalNowState(),
 			};
 
 			MyKivaPage.created.call(context);
@@ -630,7 +705,7 @@ describe('MyKivaPage', () => {
 			expect(context.goalDefaultCategoryExp.peopleLoansLastYear).toBe(12);
 			expect(context.apollo.readQuery).toHaveBeenCalledWith({
 				query: loanStatsByYearQuery,
-				variables: { year: LAST_YEAR_KEY },
+				variables: { year: LAST_YEAR },
 			});
 		});
 	});

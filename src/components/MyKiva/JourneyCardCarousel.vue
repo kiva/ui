@@ -95,7 +95,6 @@
 </template>
 
 <script setup>
-import { parseISO, differenceInDays } from 'date-fns';
 import {
 	computed,
 	ref,
@@ -104,8 +103,7 @@ import {
 } from 'vue';
 import useBreakpoints from '#src/composables/useBreakpoints';
 import { isNonBadgeSlide } from '#src/util/achievementUtils';
-import { TRANSACTION_LOANS_KEY } from '#src/util/myKivaUtils';
-import useBadgeData, { getJourneysByLoan } from '#src/composables/useBadgeData';
+import useBadgeData from '#src/composables/useBadgeData';
 import { KvCarousel } from '@kiva/kv-components';
 import MyKivaSharingModal from '#src/components/MyKiva/MyKivaSharingModal';
 import MyKivaCard from '#src/components/MyKiva/MyKivaCard';
@@ -136,9 +134,9 @@ import {
 	filterNonBadgesSlides,
 	handlePrimaryCtaClick,
 	handleSecondaryCtaClick,
+	moveGoalCategoryAchievementLast,
+	sortAchievementSlidesByLatestLoan,
 } from '#src/util/myKiva/myKivaJourneyCardUtils';
-
-const TRANSACTION_DAYS_LIMIT = 30;
 
 const apollo = inject('apollo');
 const $kvTrackEvent = inject('$kvTrackEvent');
@@ -342,20 +340,10 @@ const dynamicOrderedSlides = computed(() => {
 			isTieredAchievementComplete,
 			includeMilestoneDiff: true,
 			sortByMilestoneDiff: true,
-			userGoalCategory: props.userGoal?.category,
 		});
-
-		const transactionLoans = props.userInfo?.transactions?.values?.filter(t => {
-			const diffInDays = differenceInDays(new Date(), parseISO(t.createTime));
-			return t.type === TRANSACTION_LOANS_KEY && diffInDays <= TRANSACTION_DAYS_LIMIT;
-		});
-
-		if (transactionLoans?.length) {
-			const loanJourneys = getJourneysByLoan(transactionLoans[0]?.loan ?? {});
-			if (loanJourneys.length) {
-				sortedSlides.sort((a, b) => loanJourneys.indexOf(b.badgeKey) - loanJourneys.indexOf(a.badgeKey)); // eslint-disable-line max-len
-			}
-		}
+		sortAchievementSlidesByLatestLoan(sortedSlides, props.userInfo?.transactions?.values);
+		// Goal step last, so the latest-loan sort cannot override it
+		moveGoalCategoryAchievementLast(sortedSlides, props.userGoal?.category);
 	}
 
 	const achievementSlides = sortedSlides.filter(slide => !isNonBadgeSlide(slide));

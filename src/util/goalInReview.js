@@ -14,15 +14,17 @@ import { capitalize } from '#src/util/stringParserUtils';
 // --- Automatic pop-up decision ---
 
 /**
- * Whether the in-progress release date has arrived. Missing or unparseable dates
- * read as "not yet", so an unset setting holds the pop-up back rather than
- * releasing it to every in-progress goal setter at once.
+ * Whether the in-progress release is open: from the release date through Dec 31 of the
+ * release date's year. The release ends with that year so a setting that hasn't been
+ * moved to the next year's date doesn't release the recap to goals that have just begun.
+ * Missing or unparseable dates read as "not open", so an unset setting holds the pop-up
+ * back rather than releasing it to every in-progress goal setter at once.
  *
  * @param {Date|string|null} startDate The configured release date.
  * @param {Date} now The effective current date.
- * @returns {boolean} Whether in-progress goal setters are eligible yet.
+ * @returns {boolean} Whether in-progress goal setters are eligible now.
  */
-function hasInProgressReleaseStarted(startDate, now) {
+function isInProgressReleaseOpen(startDate, now) {
 	if (!startDate) {
 		return false;
 	}
@@ -30,7 +32,8 @@ function hasInProgressReleaseStarted(startDate, now) {
 	if (Number.isNaN(start.getTime())) {
 		return false;
 	}
-	return now.getTime() >= start.getTime();
+	const end = new Date(start.getFullYear() + 1, 0, 1);
+	return now.getTime() >= start.getTime() && now.getTime() < end.getTime();
 }
 
 /**
@@ -48,7 +51,7 @@ function hasInProgressReleaseStarted(startDate, now) {
  * @param {boolean} options.holdUntilNextVisit Whether this is the visit that announces the
  *   completion, which holds the recap back until the next one.
  * @param {Date|string|null} options.inProgressStartDate The goal_in_review_in_progress_start
- *   setting, the date in-progress goal setters become eligible.
+ *   setting, the date in-progress goal setters become eligible, through Dec 31 of its year.
  * @param {Date} options.now The effective current date.
  * @returns {boolean} Whether to open the recap, apart from whether it has anything to show.
  */
@@ -78,9 +81,10 @@ export function shouldAutoOpenRecap({
 	}
 
 	// Completed goal setters see the recap as soon as the feature is live; in-progress
-	// ones wait for the configured release date so their goal has run most of its course.
+	// ones wait for the configured release date so their goal has run most of its course,
+	// and stop being eligible when that year ends.
 	if (goalStatus === GOAL_STATUS.IN_PROGRESS) {
-		return hasInProgressReleaseStarted(inProgressStartDate, now);
+		return isInProgressReleaseOpen(inProgressStartDate, now);
 	}
 
 	return false;
@@ -132,6 +136,30 @@ const CUTOFF_DAY = 31;
  */
 export function getGoalYear(goal) {
 	return goal?.dateStarted ? new Date(goal.dateStarted).getFullYear() : null;
+}
+
+/**
+ * The lender's goal for a recap year, any status, since the active-goal default drops expired
+ * and prior-year goals. Completed outranks expired outranks open; ties go to the latest start.
+ *
+ * @param {Array} goals The lender's goals, from preferences.
+ * @param {number|string|null} year The recap year.
+ * @returns {object|null} The goal for that year, or null when none ran then.
+ */
+export function findGoalForYear(goals = [], year = null) {
+	if (!year) {
+		return null;
+	}
+	// Read GOAL_STATUS here, not at module load: specs mock useGoalData without it.
+	const rank = ({ status }) => {
+		if (status === GOAL_STATUS.COMPLETED) return 0;
+		if (status === GOAL_STATUS.EXPIRED) return 1;
+		return 2;
+	};
+	return goals
+		.filter(goal => getGoalYear(goal) === Number(year))
+		.sort((a, b) => rank(a) - rank(b)
+			|| new Date(b.dateStarted).getTime() - new Date(a.dateStarted).getTime())[0] ?? null;
 }
 
 /**

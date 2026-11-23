@@ -1,24 +1,29 @@
 /* eslint-disable import/no-extraneous-dependencies */
-import { mount } from '@vue/test-utils';
+import { mount, flushPromises } from '@vue/test-utils';
 import { ref, isRef } from 'vue';
 import GoalSettingContainer from '#src/components/GoalSetting/GoalSettingContainer';
 
 // Spy on the recommended-loan composable so we can assert how the container wires it.
-const { recommendedLoanSpy } = vi.hoisted(() => ({
+const {
+	recommendedLoanSpy, storeGoalPreferencesMock, showTipMsgMock, loadGoalDataMock,
+} = vi.hoisted(() => ({
 	recommendedLoanSpy: vi.fn(),
+	storeGoalPreferencesMock: vi.fn(),
+	showTipMsgMock: vi.fn(),
+	loadGoalDataMock: vi.fn(),
 }));
 
 vi.mock('vue-router', () => ({
 	useRouter: () => ({ push: vi.fn() }),
 }));
 
-vi.mock('#src/composables/useGoalData', () => ({
+vi.mock('#src/composables/useGoalData', async importOriginal => ({
+	buildNewGoal: (await importOriginal()).buildNewGoal,
 	GOAL_STATUS: { COMPLETED: 'completed' },
-	GOALS_CURRENT_YEAR: 2026,
 	default: () => ({
 		userGoal: ref(null),
-		loadGoalData: vi.fn().mockResolvedValue(),
-		storeGoalPreferences: vi.fn(),
+		loadGoalData: loadGoalDataMock,
+		storeGoalPreferences: storeGoalPreferencesMock,
 		loading: ref(false),
 		getCategories: vi.fn(() => [
 			{
@@ -34,6 +39,10 @@ vi.mock('#src/composables/useGoalData', () => ({
 		userGoalAchieved: ref(false),
 		getRecommendedLoans: vi.fn(),
 	}),
+}));
+
+vi.mock('#src/composables/useTipMessage', () => ({
+	default: () => ({ $showTipMsg: showTipMsgMock }),
 }));
 
 vi.mock('#src/composables/useGoalSettingRecommendedLoan', () => ({
@@ -53,14 +62,16 @@ vi.mock('@kiva/kv-components', () => ({
 // container's template ref can call it.
 const RecommendLoanForGoalContainerStub = {
 	name: 'RecommendLoanForGoalContainer',
+	props: { loadedSetData: { type: Boolean, default: false } },
 	methods: {
 		getSelectedAmount: () => 25,
 	},
 	template: '<div />',
 };
 
-function mountContainer(provide = {}) {
+function mountContainer(provide = {}, props = {}) {
 	return mount(GoalSettingContainer, {
+		props,
 		global: {
 			provide: {
 				$kvTrackEvent: vi.fn(),
@@ -78,6 +89,7 @@ function mountContainer(provide = {}) {
 
 describe('GoalSettingContainer', () => {
 	beforeEach(() => {
+		loadGoalDataMock.mockResolvedValue();
 		recommendedLoanSpy.mockReset();
 		// Render the recommended-loan branch (which this composable feeds) so the
 		// container's lazily-loaded category forms never mount during the smoke test.
@@ -146,5 +158,31 @@ describe('GoalSettingContainer', () => {
 		// The raw loan keeps its themes; the blanked card loan would have `themes: []`.
 		expect(emitted[0][0].loan).toEqual(rawLoan);
 		expect(emitted[0][0].loan.themes).toEqual(['Growing businesses']);
+	});
+
+	describe('email flow', () => {
+		const loadedSetData = wrapper => wrapper
+			.findComponent({ name: 'RecommendLoanForGoalContainer' }).props('loadedSetData');
+
+		it('shows the goal details in the header once the emailed goal is saved', async () => {
+			storeGoalPreferencesMock.mockResolvedValue();
+			const wrapper = mountContainer({}, { emailTarget: '16' });
+			await flushPromises();
+
+			expect(storeGoalPreferencesMock).toHaveBeenCalledTimes(1);
+			// Only the load on mount: a reload after the save would read preferences without the new goal.
+			expect(loadGoalDataMock).toHaveBeenCalledTimes(1);
+			expect(loadedSetData(wrapper)).toBe(true);
+		});
+
+		it('shows an error instead of the "Goal set!" view when saving the emailed goal fails', async () => {
+			storeGoalPreferencesMock.mockRejectedValue(new Error('rejected'));
+			mountContainer({}, { emailTarget: '16' });
+			await flushPromises();
+
+			const { enterRecommendedLoanStepAfterGoalSave } = recommendedLoanSpy.mock.results[0].value;
+			expect(showTipMsgMock).toHaveBeenCalledWith('There was a problem setting up this goal', 'error');
+			expect(enterRecommendedLoanStepAfterGoalSave).not.toHaveBeenCalled();
+		});
 	});
 });

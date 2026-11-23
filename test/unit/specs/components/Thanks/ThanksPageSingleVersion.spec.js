@@ -8,6 +8,7 @@ import {
 	incrementGoalSignupThanksViewCount,
 } from '#src/util/myKivaUtils';
 import { LEND_AFTER_GOAL_SET_COOKIE } from '#src/util/thanksPage/expressCheckoutUtils';
+import { GOAL_DATE_COOKIE } from '#src/util/goalDate';
 import { globalOptions } from '../../../specUtils';
 
 const router = createRouter({
@@ -642,6 +643,29 @@ describe('ThanksPageSingleVersion', () => {
 					expect.anything()
 				);
 			});
+		});
+
+		it('ignores the view cap and leaves the counter alone under a kv_goal_date cookie override', async () => {
+			mockUserGoal.value = null;
+			incrementGoalSignupThanksViewCount.mockClear();
+
+			const { getByTestId, cookieStore } = renderComponent({
+				badgesAchieved: [],
+				cookieValues: {
+					[GOAL_SIGNUP_THANKS_VIEWS_COOKIE]: '3',
+					[GOAL_DATE_COOKIE]: '2027-04-02',
+				},
+			});
+
+			await vi.waitFor(() => {
+				expect(getByTestId('goal-entrypoint')).toBeTruthy();
+			});
+			expect(incrementGoalSignupThanksViewCount).not.toHaveBeenCalled();
+			expect(cookieStore.set).not.toHaveBeenCalledWith(
+				GOAL_SIGNUP_THANKS_VIEWS_COOKIE,
+				expect.anything(),
+				expect.anything()
+			);
 		});
 
 		it('shows goal progress after the view cap when checkout loans advanced the goal', async () => {

@@ -30,6 +30,16 @@ export function getBorrowerMessageAuthor(message) {
 }
 
 /**
+ * A loan name in the possessive. Group names such as "Sokha's Group" already read as possessive and stay as they are.
+ *
+ * @param {string} name - Loan name
+ * @returns {string}
+ */
+export function getPossessiveLoanName(name) {
+	return /'s? group$/i.test(name) ? name : formatPossessiveName(name);
+}
+
+/**
  * "Update for {Name}'s Loan", as the monolith titled update pages, or "Update from {Partner}" for partner messages.
  *
  * @param {object} message - Update with its loan
@@ -43,7 +53,7 @@ export function getBorrowerMessageTitle(message) {
 	if (isPartnerMessage(message)) {
 		return `Update from ${name}`;
 	}
-	return /'s? group$/i.test(name) ? `Update for ${name} Loan` : `Update for ${formatPossessiveName(name)} Loan`;
+	return `Update for ${getPossessiveLoanName(name)} Loan`;
 }
 
 /**

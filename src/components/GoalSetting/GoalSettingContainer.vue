@@ -128,7 +128,7 @@
 		<!-- Goal Actions modal -->
 		<KvLightbox
 			:visible="isDeleteGoalModalVisible"
-			:title="`Delete your ${GOALS_CURRENT_YEAR} impact goal?`"
+			:title="`Delete your ${goalYear} impact goal?`"
 			@lightbox-closed="handleKeepGoal"
 		>
 			<!-- eslint-disable-next-line max-len -->
@@ -170,7 +170,9 @@ import {
 import GoalSelector from '#src/components/MyKiva/GoalSetting/GoalSelector';
 import RecommendLoanForGoalContainer from
 	'#src/components/LoanCards/RecommendLoanForGoal/RecommendLoanForGoalContainer';
-import useGoalData, { GOAL_STATUS, GOALS_CURRENT_YEAR } from '#src/composables/useGoalData';
+import useGoalData, { buildNewGoal, GOAL_STATUS } from '#src/composables/useGoalData';
+import goalCopy from '#src/util/goalCopy';
+import useGoalNow from '#src/composables/useGoalNow';
 import useGoalSettingRecommendedLoan, {
 	GOAL_RECOMMENDED_LOAN_ENTRYPOINT_GOALS_PAGE,
 } from '#src/composables/useGoalSettingRecommendedLoan';
@@ -213,6 +215,7 @@ const {
 	userGoalAchieved,
 	getRecommendedLoans,
 } = useGoalData({ apollo });
+const { getGoalNow, goalYear } = useGoalNow();
 
 const props = defineProps({
 	/**
@@ -432,7 +435,7 @@ const recalculateGoalInformation = async () => {
 	// For ID_SUPPORT_ALL, load yearly loan count to calculate correct progress
 	let currentProgress = goalProgress.value;
 	if (selectedCategory.value?.badgeId === ID_SUPPORT_ALL) {
-		const stats = await getLoanStatsByYear(new Date().getFullYear(), 'network-only');
+		const stats = await getLoanStatsByYear(goalYear.value, 'network-only');
 		currentProgress = stats?.count || 0;
 	}
 	// Use goalProgress to calculate remaining loans needed based on current year progress
@@ -495,21 +498,11 @@ const handleClick = () => {
 	if (isSubmitting.value) return;
 	const categorySelected = selectedCategory.value?.badgeId;
 
-	const currentYear = new Date().getFullYear();
-	const goalName = `goal-${categorySelected}-${currentYear}`;
-	const target = goalSelectorLoanTarget.value;
-	const dateStarted = new Date().toISOString();
-	const status = 'in-progress';
-
-	const preferences = {
-		goalName,
+	setGoal(buildNewGoal({
 		category: categorySelected,
-		target,
-		dateStarted,
-		status,
-	};
-
-	setGoal(preferences);
+		target: goalSelectorLoanTarget.value,
+		now: getGoalNow(),
+	}));
 
 	$kvTrackEvent(
 		'event-tracking',
@@ -525,13 +518,11 @@ const goToDashboard = () => {
 	router.push('/mykiva');
 };
 
-const yearToDate = new Date().getFullYear();
-
 const ctaCopy = computed(() => {
 	if (isEditing.value) {
 		return 'Continue';
 	}
-	return `Set ${yearToDate} goal`;
+	return goalCopy.buttonSetGoal(goalYear.value);
 });
 
 const parseGoals = () => JSON.parse(userPreferences.value?.preferences || '{}').goals || [];
@@ -556,11 +547,14 @@ async function handleEmailFlow() {
 		allGoals: parseGoals(),
 		category,
 		validEmailTarget: validEmailTarget.value,
+		now: getGoalNow(),
 	});
 
+	let savedNewGoal = false;
 	if (newGoalPrefs) {
 		try {
 			await storeGoalPreferences(newGoalPrefs);
+			savedNewGoal = true;
 
 			$kvTrackEvent(
 				'event-tracking',
@@ -576,13 +570,17 @@ async function handleEmailFlow() {
 		}
 	}
 
+	// storeGoalPreferences already put the saved goal in local state. Reloading here would replace
+	// it with preferences read before the save landed, which don't have the new goal yet.
 	if (existingGoal ?? newGoalPrefs) {
-		await loadGoalData();
+		if (!savedNewGoal) await loadGoalData();
 	} else {
 		logFormatter('GoalSettingContainer: no goal found for email flow', 'error', { category });
 	}
 
 	applyGoalState();
+	// The "Goal set!" header shows the goal details only once the saved goal is loaded.
+	if (savedNewGoal) loadedSetData.value = true;
 
 	emailLoading.value = false;
 	$kvTrackEvent('event-tracking', 'view', 'goals-page-email');

@@ -5,7 +5,7 @@
 				<h2 class="!tw-text-title">
 					Fundraisers with Kiva
 				</h2>
-				<KvPill variant="caution" size="small">
+				<KvPill size="small" class="!tw-bg-action !tw-text-primary-inverse">
 					<template #icon>
 						<KvMaterialIcon class="tw-h-2 tw-w-2" :icon="mdiBullhornOutline" />
 					</template>
@@ -14,7 +14,7 @@
 			</div>
 			<div class="tw-flex tw-items-start tw-gap-0.5">
 				<p class="tw-text-base">
-					Easily create and share fundraisers that support the communities and places you choose.
+					Easily create and share fundraisers that support the kinds of loans you love.
 				</p>
 				<div class="tw-z-1 tw-shrink-0 tw-mt-0.5">
 					<button
@@ -98,6 +98,6 @@ const singleSlideWidth = computed(() => {
 	if (isMedium.value) {
 		return '336px';
 	}
-	return '90%';
+	return '100%';
 });
 </script>

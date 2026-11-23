@@ -33,7 +33,8 @@ import {
 import { KvPageContainer } from '@kiva/kv-components';
 import WwwPage from '#src/components/WwwFrame/WwwPage';
 import GoalSettingContainer from '#src/components/GoalSetting/GoalSettingContainer';
-import { LAST_YEAR_KEY } from '#src/composables/useGoalData';
+import { getLastGoalYear } from '#src/util/goalDate';
+import useGoalNow from '#src/composables/useGoalNow';
 import { readBoolSetting } from '#src/util/settingsUtils';
 import borrowerProfileExpMixin from '#src/plugins/borrower-profile-exp-mixin';
 
@@ -62,12 +63,12 @@ export default {
 		};
 	},
 	apollo: {
-		preFetch(_, client) {
+		preFetch(_, client, { cookieStore, route } = {}) {
 			return Promise.all([
 				client.query({ query: useGoalDataQuery }),
 				client.query({
 					query: userAchievementProgressQuery,
-					variables: { year: LAST_YEAR_KEY },
+					variables: { year: getLastGoalYear(route?.query, cookieStore) },
 					fetchPolicy: 'network-only',
 				}),
 				client.query({ query: goalSettingPageQuery }),
@@ -82,9 +83,11 @@ export default {
 	},
 	setup() {
 		const { getAllCategoryLoanCounts } = useBadgeData();
+		const { lastGoalYear } = useGoalNow();
 
 		return {
 			getAllCategoryLoanCounts,
+			lastGoalYear,
 		};
 	},
 	methods: {
@@ -127,7 +130,7 @@ export default {
 		// Fetch tiered achievements - try cache first, then network
 		const achievementsResult = this.apollo.readQuery({
 			query: userAchievementProgressQuery,
-			variables: { year: LAST_YEAR_KEY },
+			variables: { year: this.lastGoalYear },
 		});
 		if (achievementsResult?.userAchievementProgress?.tieredLendingAchievements) {
 			this.tieredAchievements = achievementsResult.userAchievementProgress.tieredLendingAchievements;
@@ -139,7 +142,7 @@ export default {
 		try {
 			const { data } = await this.apollo.query({
 				query: userAchievementProgressQuery,
-				variables: { year: LAST_YEAR_KEY },
+				variables: { year: this.lastGoalYear },
 				fetchPolicy: 'network-only',
 			});
 			this.tieredAchievements = data?.userAchievementProgress?.tieredLendingAchievements ?? [];
