@@ -49,7 +49,7 @@ describe('GoalInReviewGivingInsights', () => {
 		it('looks back on the top percentile when read in a later year', () => {
 			const { getByTestId, getByText } = renderSlide({ lifetimePercentile: 92, currentYear: NEXT_YEAR });
 			getByText('Top 8%');
-			expect(habitCopy(getByTestId)).toContain('among the top 8% of goal setters last year');
+			expect(habitCopy(getByTestId)).toContain('among the top 8% of goal-setters last year');
 		});
 
 		it('keeps the present tense when the years are unknown', () => {

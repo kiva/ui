@@ -793,12 +793,12 @@ describe('goalInReviewCopy.js', () => {
 	describe('getImpactIdentity', () => {
 		it('matches the women’s equality badge id and emphasizes "women entrepreneurs"', () => {
 			const { title, content } = goalInReviewCopy.getImpactIdentity('womens-equality');
-			expect(title).toBe('Barrier Breaker');
+			expect(title).toBe('Barrier breaker');
 			expect(content).toContain(`support ${strong('women entrepreneurs')},`);
 		});
 
 		it('matches the support-all badge id', () => {
-			expect(goalInReviewCopy.getImpactIdentity('support-all').title).toBe('Opportunity Spotter');
+			expect(goalInReviewCopy.getImpactIdentity('support-all').title).toBe('Opportunity spotter');
 		});
 
 		it('falls back to the cause advocate for any other category', () => {
@@ -865,7 +865,7 @@ describe('goalInReviewCopy.js', () => {
 		describe('a recap opened after its goal year ended', () => {
 			it('says "last year" in the top-percentile copy', () => {
 				expect(goalInReviewCopy.getImpactHabit({ lifetimePercentile: 92, isPastGoalYear: true }).content)
-					.toBe('Your lending places you among the top 8% of goal setters last year.');
+					.toBe('Your lending places you among the top 8% of goal-setters last year.');
 			});
 
 			it('says "last year" in the Kiva champion copy', () => {
