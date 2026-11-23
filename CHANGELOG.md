@@ -1,3 +1,64 @@
+## [3.103.0](https://github.com/kiva/ui/compare/v3.102.0...v3.103.0) (2026-11-23)
+
+### 🎉 New Features
+
+* add an empty loan context to borrower message suggested loans ([9485760](https://github.com/kiva/ui/commit/9485760683075313748508f062884939d99c4f24))
+* add geographic reach card ([c421f08](https://github.com/kiva/ui/commit/c421f0827503c66acf2fe9fbf1c0e9ddc0315a79))
+* add geographic reach region grouping ([2addd7e](https://github.com/kiva/ui/commit/2addd7edbd3fc25301e0377d6ac1046d2cc396f6))
+* add impact section card frame and header ([a4da73c](https://github.com/kiva/ui/commit/a4da73c98b9b17acaaca2b126528b133639228b1))
+* add loading and error states to the impact section card ([e50b284](https://github.com/kiva/ui/commit/e50b2848eaef129f245824718596f8018ea81242))
+* add suggested loans composable for borrower messages ([48128d4](https://github.com/kiva/ui/commit/48128d4a0e06a34d602854c796f74e4a860bcabe))
+* add suggested loans section for borrower messages ([d1709d1](https://github.com/kiva/ui/commit/d1709d180acc4c9ee8da980fae1c211d0399c432))
+* **apollo:** add the lazy option to useApolloQuery ([48e1d83](https://github.com/kiva/ui/commit/48e1d834e4861c38ada55c098c881e4d66fca3d9))
+* combine goal date qa params into a single preview only goal date param ([da4ce3f](https://github.com/kiva/ui/commit/da4ce3fad207b1871981cfd85eefe56dc813031b))
+* load geographic reach when scrolled near ([fe19ba0](https://github.com/kiva/ui/commit/fe19ba0818237a826fde0c28e1a5a8e721e2aca2))
+* read the borrower message suggested loans setting ([f0c8ff3](https://github.com/kiva/ui/commit/f0c8ff32dabd1fa6e732ac11f4794906b10aedbd))
+* show a managed-by-Kiva message on auto-lending settings for saved-search lenders ([f09373c](https://github.com/kiva/ui/commit/f09373c537a2f617c6972cf90ce8644012324e9d))
+* show geographic reach on the impact beta page ([f823a4a](https://github.com/kiva/ui/commit/f823a4a7398b81ac7a2a299e470a4fb2294c04af))
+* show suggested loans in the borrower messages zero state ([4922b5a](https://github.com/kiva/ui/commit/4922b5a9e8356744a01479422bf4547db543d8fd))
+* show suggested loans on the borrower message page ([1b89358](https://github.com/kiva/ui/commit/1b89358f38e4d1d40fd99131bbf85e6782db022a))
+* suggest loans from a list of partners for borrower messages ([7f08391](https://github.com/kiva/ui/commit/7f083915b59141b922a39ca063da43cca5e329b3))
+* update mykiva fundraiser rows to new card designs ([#7406](https://github.com/kiva/ui/issues/7406)) ([ae282bc](https://github.com/kiva/ui/commit/ae282bc4172076d283d17050ea8912fdbf542e49))
+* update the borrower messages zero state copy and partners ([625ce27](https://github.com/kiva/ui/commit/625ce279a7761a7ff5c680a804eaa94b52d6b6f2))
+* use the impact section card for the impact beta placeholders ([8047bd8](https://github.com/kiva/ui/commit/8047bd88662835894f7357855d80df21c1655cac))
+
+### 🐛 Bugfixes
+
+* [MP-3504] - show goal message when an older completed goal exists ([#7401](https://github.com/kiva/ui/issues/7401)) ([b6fc144](https://github.com/kiva/ui/commit/b6fc144fdbd2a45e106f72d233a7c863c9646e77))
+* **apollo:** bind a lazily started variables watch to its component ([e4a82bb](https://github.com/kiva/ui/commit/e4a82bb7cffc9bb96bcdbefc01fe93788f721741))
+* give the borrower messages zero state gem image alt text ([700b294](https://github.com/kiva/ui/commit/700b29467f2d53ec5f72647714df814033f693b9))
+* hide a data-driven subtitle when the impact section card errors ([bb9b182](https://github.com/kiva/ui/commit/bb9b182b3ef8d50d1f07ca24acd2983c25dd2dc6))
+* hide suggested loans on partner messages ([d3d6b44](https://github.com/kiva/ui/commit/d3d6b44b9fed35f8f60fbd2b689bd5160ee2244a))
+* keep long country names clear of their share ([9c9a718](https://github.com/kiva/ui/commit/9c9a718b118c5e631083290eb6725603f2767e62))
+* match the borrower messages zero state copy to the design ([1f8dc95](https://github.com/kiva/ui/commit/1f8dc95c23fd92907fc4bd8aa2a6ec75b654892c))
+* match the impact section card header to the design ([f5d3edc](https://github.com/kiva/ui/commit/f5d3edcb70a462a80ce59522e01a73f289029e2f))
+* more MyKiva goal issues around new year rollover ([#7416](https://github.com/kiva/ui/issues/7416)) ([daee19d](https://github.com/kiva/ui/commit/daee19dffea4fbd92b0d18c516d9ea8498f729d1))
+* mp-3475 keep the goal category achievement last in the next steps row ([#7415](https://github.com/kiva/ui/issues/7415)) ([f82766f](https://github.com/kiva/ui/commit/f82766f2b2761b385ac236231949edac54ddf305))
+* **MP-3490:** don't show last year's unfinished goal as this year's goal on MyKiva ([#7402](https://github.com/kiva/ui/issues/7402)) ([9d8ce38](https://github.com/kiva/ui/commit/9d8ce387494fd6c73a40cc3d356c836f2bc786eb))
+* mp-3499 stop embedding the journey module textures in the thanks… ([#7407](https://github.com/kiva/ui/issues/7407)) ([d8ba0f8](https://github.com/kiva/ui/commit/d8ba0f82bdaff9fe50f10f040e6801195c7bf827))
+* mp-3505 reach the recap of an expired or prior-year goal ([#7404](https://github.com/kiva/ui/issues/7404)) ([cf58656](https://github.com/kiva/ui/commit/cf58656658ed1360f3490d15caaa3f43c2670f2f))
+* name a country without a name by its code ([77cbf8d](https://github.com/kiva/ui/commit/77cbf8d00155743fb32a15314cab2095b015f9fc))
+* remove goal override global component ([#7409](https://github.com/kiva/ui/issues/7409)) ([fef508f](https://github.com/kiva/ui/commit/fef508fd2175d18f8ba5e6a05ba2d8f59ea05f5f))
+* resolve a couple more issues with mykiva goal rollover ([#7412](https://github.com/kiva/ui/issues/7412)) ([3076f23](https://github.com/kiva/ui/commit/3076f2385d4c6bcca42f4cf45c641428e544f1c4))
+* resolve issues identified from MyKiva query param work for goal year rollover ([#7411](https://github.com/kiva/ui/issues/7411)) ([1a772cd](https://github.com/kiva/ui/commit/1a772cda196954babe3fbcfd0496912441695f8b))
+* shorten the impact section card error note ([bcc32af](https://github.com/kiva/ui/commit/bcc32afa2c6571e544e4b5833fe5e1249d466f3c))
+* show the same pfp time left in the banner and progress bar ([62a5d51](https://github.com/kiva/ui/commit/62a5d512158f3f9109ea90443c674bb6b0259ab2))
+* tidy suggested loans copy, card links and short-list layout ([7ddaacd](https://github.com/kiva/ui/commit/7ddaacdfb9eb5858fb200258a52d41726a8370e5))
+
+### 🪚 Refactors
+
+* **apollo:** share lazy operation handling outside the plugin ([a51356f](https://github.com/kiva/ui/commit/a51356f86d035d2674603354c2df52cf00c4da43))
+* use the title text style for the impact section card heading ([c03d9b0](https://github.com/kiva/ui/commit/c03d9b0fdf74098d85307b7e8b20aea1191b3861))
+
+### 🔍 Tests
+
+* cover getPossessiveLoanName ([48cb841](https://github.com/kiva/ui/commit/48cb841445676aa8f6048cf51db1c7f5b6eabacb))
+
+### 🧹 Chores
+
+* **release:** 3.103.0-rc.1 [skip ci] ([dc03816](https://github.com/kiva/ui/commit/dc038167fdfbef1219a9728fe743278b3ef2b784)), closes [#7406](https://github.com/kiva/ui/issues/7406) [#7401](https://github.com/kiva/ui/issues/7401) [#7416](https://github.com/kiva/ui/issues/7416) [#7415](https://github.com/kiva/ui/issues/7415) [#7402](https://github.com/kiva/ui/issues/7402) [#7407](https://github.com/kiva/ui/issues/7407) [#7404](https://github.com/kiva/ui/issues/7404) [#7409](https://github.com/kiva/ui/issues/7409) [#7412](https://github.com/kiva/ui/issues/7412) [#7411](https://github.com/kiva/ui/issues/7411)
+* update latest kv deps withfixed secondary and tertiary colors in default theme ([d78eddc](https://github.com/kiva/ui/commit/d78eddc09e26170a2339742da97d93bef5840d60))
+
 ## [3.103.0-rc.1](https://github.com/kiva/ui/compare/v3.102.0...v3.103.0-rc.1) (2026-11-23)
 
 ### 🎉 New Features
