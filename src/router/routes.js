@@ -166,7 +166,7 @@ export default [
 		component: () => import('#src/pages/Legal/Legal'),
 		children: [
 			{
-				path: 'cookies-beta',
+				path: 'cookies',
 				component: () => import('#src/pages/Legal/CookiePolicy'),
 				meta: {
 					excludeFromStaticSitemap: true,

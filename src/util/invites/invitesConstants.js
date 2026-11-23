@@ -1,4 +1,4 @@
-export const INVITES_ROUTE = '/portfolio/invites-beta';
+export const INVITES_ROUTE = '/portfolio/invites';
 
 // Rows an invite table shows before "More"
 export const INVITES_TABLE_INITIAL_SIZE = 4;
