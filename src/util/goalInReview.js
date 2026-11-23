@@ -573,14 +573,14 @@ const goalInReviewCopy = {
 	getImpactIdentity(categoryId) {
 		if (categoryId === ID_WOMENS_EQUALITY) {
 			return {
-				title: 'Barrier Breaker',
+				title: 'Barrier breaker',
 				// eslint-disable-next-line max-len
 				content: `You chose to support ${bold('women entrepreneurs')}, helping break down barriers to opportunity, financial independence, and brighter futures.`,
 			};
 		}
 		if (categoryId === ID_SUPPORT_ALL) {
 			return {
-				title: 'Opportunity Spotter',
+				title: 'Opportunity spotter',
 				// eslint-disable-next-line max-len
 				content: 'You create your own path to impact. You keep your heart and mind open, believing anyone with the drive to build a better future deserves a chance.',
 			};
@@ -637,7 +637,7 @@ const goalInReviewCopy = {
 		return {
 			title: `Top ${topPercent}%`,
 			// eslint-disable-next-line max-len
-			content: `Your lending places you among the top ${topPercent}% of goal setters ${getRecapTimeframe(isPastGoalYear)}.`,
+			content: `Your lending places you among the top ${topPercent}% of goal-setters ${getRecapTimeframe(isPastGoalYear)}.`,
 		};
 	},
 };

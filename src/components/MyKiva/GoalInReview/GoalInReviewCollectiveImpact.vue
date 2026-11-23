@@ -10,7 +10,7 @@
 		</p>
 
 		<h1 class="tw-text-display tw-text-eco-green-4 tw-mb-0 md:tw-mb-4 kv-fade-up">
-			Goal Setters create something <span class="tw-text-marigold">bigger.</span>
+			Goal-setters create something <span class="tw-text-marigold">bigger.</span>
 		</h1>
 		<div class="tw-mx-auto tw-max-w-3xl">
 			<ul
@@ -57,7 +57,7 @@
 					tw-pt-3 md:tw-pt-1 kv-fade-up"
 				:style="{ animationDelay: staggerDelay(stats.length) }"
 			>
-				Kiva goal setters create extraordinary impact.
+				Kiva goal-setters create extraordinary impact.
 				<span class="tw-text-h3 tw-block !tw-font-medium">And you were part of it!</span>
 			</p>
 		</div>
