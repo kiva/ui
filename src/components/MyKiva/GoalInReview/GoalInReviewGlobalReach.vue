@@ -77,7 +77,7 @@
 		data-testid="goal-in-review-global-reach-sectors"
 	>
 		<p class="tw-text-label tw-text-eco-green-3 tw-mb-0.5 md:tw-mb-1 kv-fade-up global-reach-eyebrow">
-			Sectors Funded
+			Sectors funded
 		</p>
 
 		<h1 class="tw-text-display tw-text-eco-green-4 tw-mb-4 md:tw-mb-3 kv-fade-up global-reach-headline">

@@ -158,7 +158,7 @@ describe('GoalInReviewModal', () => {
 		await findByText('The people behind your loans');
 		await findByText('Global reach');
 		await findByText('Giving insights');
-		await findByText(/Goal Setters create something/);
+		await findByText(/Goal-setters create something/);
 		await findByText('Thank you!');
 	});
 

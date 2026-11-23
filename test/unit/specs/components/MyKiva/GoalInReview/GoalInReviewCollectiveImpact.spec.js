@@ -53,7 +53,7 @@ describe('GoalInReviewCollectiveImpact', () => {
 		const { getByText } = render(GoalInReviewCollectiveImpact, { global: globalOptions });
 
 		getByText('Collective impact');
-		getByText(/Goal Setters create something/);
+		getByText(/Goal-setters create something/);
 		getByText('borrowers');
 		getByText('countries');
 		getByText('women');
