@@ -1,3 +1,10 @@
+## [3.103.1-rc.1](https://github.com/kiva/ui/compare/v3.103.0...v3.103.1-rc.1) (2026-11-23)
+
+### 🐛 Bugfixes
+
+* host migrated pages on real urls and remove closed since it's not in cps ([#7418](https://github.com/kiva/ui/issues/7418)) ([cfb29d8](https://github.com/kiva/ui/commit/cfb29d823270cb46bb6921d45a1a7dd1708afc85))
+* mp-3510 goal recap copy updates ([#7417](https://github.com/kiva/ui/issues/7417)) ([edb228c](https://github.com/kiva/ui/commit/edb228c6dee50c8fab7506474e64d6dfa9199c06))
+
 ## [3.103.0](https://github.com/kiva/ui/compare/v3.102.0...v3.103.0) (2026-11-23)
 
 ### 🎉 New Features
