@@ -67,9 +67,10 @@
 				list-header="Lent to"
 				more-link-label="+{count} more"
 				:list-gap="listGap"
+				:segment-gap="segmentGap"
 			/>
 			<div v-if="notLentTo.length" class="md:tw-self-center">
-				<h4 class="tw-text-h4 tw-text-primary tw-mb-1">
+				<h4 class="tw-text-button-link tw-text-primary tw-mb-1">
 					Not yet lent to
 				</h4>
 				<ul class="tw-grid tw-grid-cols-2 md:tw-grid-cols-1 tw-gap-0.5">
@@ -171,6 +172,7 @@ const {
 
 const { isMobile } = useBreakpoints();
 const listGap = computed(() => (isMobile.value ? 2 : 5));
+const segmentGap = computed(() => (isMobile.value ? 7 : 5));
 
 const lightboxOpen = ref(false);
 
@@ -182,6 +184,10 @@ const moreCount = computed(() => (notLentTo.value?.length ?? 0) - shownNotLentTo
 <style lang="postcss" scoped>
 .breakdown-card__empty-ring {
 	border: 1.6rem solid theme('colors.gray.200');
+}
+
+.breakdown-card__row :deep(.legend-header) {
+	@apply tw-text-button-link;
 }
 
 @screen md {

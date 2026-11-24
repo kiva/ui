@@ -35,7 +35,7 @@ let chartProps;
 
 const KvPieChartV2 = {
 	name: 'KvPieChartV2',
-	props: ['values', 'layout', 'listHeader', 'moreLinkLabel', 'listGap'],
+	props: ['values', 'layout', 'listHeader', 'moreLinkLabel', 'listGap', 'segmentGap'],
 	setup(props) {
 		chartProps = props;
 	},
@@ -93,10 +93,10 @@ describe('ImpactBreakdownCard', () => {
 	});
 
 	it('lists four not-lent-to sectors and a more link', () => {
-		const { getByText, getAllByTestId, getByTestId } = renderCard();
+		const { getByRole, getAllByTestId, getByTestId } = renderCard();
 		const links = getAllByTestId('impact-sector-not-lent-item');
 
-		getByText('Not yet lent to');
+		expect(getByRole('heading', { level: 4, name: 'Not yet lent to' }).classList).toContain('tw-text-button-link');
 		expect(linkNames(links)).toEqual(['Arts', 'Entertainment', 'Food', 'Health']);
 		expect(links.map(link => link.getAttribute('href'))).toEqual([
 			'/lend/filter?sector=9',
@@ -196,13 +196,14 @@ describe('ImpactBreakdownCard', () => {
 	});
 
 	it.each([
-		[400, 2],
-		[1024, 5],
-	])('at %ipx wide uses list gap %i', async (width, gap) => {
+		[400, 2, 7],
+		[1024, 5, 5],
+	])('at %ipx wide uses list gap %i and segment gap %i', async (width, listGap, segmentGap) => {
 		window.innerWidth = width;
 		renderCard();
 		await nextTick();
 
-		expect(chartProps.listGap).toBe(gap);
+		expect(chartProps.listGap).toBe(listGap);
+		expect(chartProps.segmentGap).toBe(segmentGap);
 	});
 });
