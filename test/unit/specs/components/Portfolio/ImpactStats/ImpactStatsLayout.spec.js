@@ -13,7 +13,7 @@ const LEFT = [
 ];
 const RIGHT = ['impact-goal', 'impact-percentile', 'impact-badges', 'impact-first-loan'];
 const SECTION_TITLES = [
-	'By Sector', 'By Activity', 'By Gender', 'By Lending Partner',
+	'By Activity', 'By Gender', 'By Lending Partner',
 	'Goal', 'Lending percentile', 'Badges', 'Your first loan on Kiva',
 ];
 
@@ -45,6 +45,11 @@ const renderLayout = ({ showGivingFund = false } = {}) => {
 					name: 'GeographicReachCard',
 					template: '<div data-testid="impact-geographic-reach"></div>',
 				},
+				ImpactBreakdownCard: {
+					name: 'ImpactBreakdownCard',
+					props: ['type'],
+					template: '<div :data-testid="\'impact-\' + type"></div>',
+				},
 			},
 		},
 	});
@@ -74,6 +79,13 @@ describe('ImpactStatsLayout', () => {
 
 		getByTestId('impact-geographic-reach');
 		expect(queryByRole('heading', { level: 3, name: 'Geographic Reach' })).toBeNull();
+	});
+
+	it('shows the sector breakdown card in place of its placeholder', () => {
+		const { getByTestId, queryByRole } = renderLayout();
+
+		getByTestId('impact-sector');
+		expect(queryByRole('heading', { level: 3, name: 'By Sector' })).toBeNull();
 	});
 
 	it('renders a card per section', () => {

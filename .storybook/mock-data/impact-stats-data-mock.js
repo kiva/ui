@@ -22,12 +22,27 @@ const designLenderLoans = [
 	['PH', 32], ['KE', 22], ['CO', 18], ['MA', 14], ['PE', 9], ['HT', 3], ['DO', 2], ['VC', 1], ...middleEastLoans,
 ];
 
+export const sectorNames = [
+	'Agriculture', 'Arts', 'Clothing', 'Construction', 'Education', 'Entertainment', 'Food', 'Health', 'Housing',
+	'Manufacturing', 'Personal Use', 'Retail', 'Services', 'Transportation', 'Wholesale',
+];
+
+const sectors = sectorNames.map((name, index) => ({ id: index + 1, name }));
+
+const sectorByName = Object.fromEntries(sectors.map(sector => [sector.name, sector]));
+
+const designLenderSectors = [
+	['Agriculture', 32], ['Education', 24], ['Housing', 18], ['Food', 14], ['Health', 7], ['Retail', 3], ['Services', 2],
+];
+
 export const impactStatsPublicData = {
 	lend: {
 		countryFacets: facetCountries.map(country => ({ country })),
 	},
 	general: {
 		excluded_countries: { key: 'ui.excluded_countries', value: '"ZA, CA, AU"' },
+		excluded_sectors: { key: 'ui.excluded_sectors', value: '"Entertainment"' },
+		kivaStats: { sectors },
 	},
 };
 
@@ -37,6 +52,7 @@ export const impactStatsLender = ({
 	borrowers = 284,
 	loans = designLenderLoans,
 	countries = loans.length,
+	sectorLoans = designLenderSectors,
 	donated = '120.00',
 	lifetimeLent = '4240.00',
 } = {}) => ({
@@ -57,6 +73,13 @@ export const impactStatsLender = ({
 			id: `country-${isoCode}`,
 			loanCount,
 			country: facetCountryByIsoCode[isoCode] ?? countriesNoLongerLentIn[isoCode],
+		})),
+	},
+	statsPerSector: {
+		values: sectorLoans.map(([name, loanCount]) => ({
+			id: `sector-${sectorByName[name].id}`,
+			loanCount,
+			sector: sectorByName[name],
 		})),
 	},
 });

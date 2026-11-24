@@ -1,0 +1,27 @@
+query impactSectorBreakdown {
+	my {
+		id
+		statsPerSector {
+			values {
+				id
+				loanCount
+				sector {
+					id
+					name
+				}
+			}
+		}
+	}
+	general {
+		kivaStats {
+			sectors {
+				id
+				name
+			}
+		}
+		excluded_sectors: uiConfigSetting(key: "excluded_sectors") {
+			key
+			value
+		}
+	}
+}
