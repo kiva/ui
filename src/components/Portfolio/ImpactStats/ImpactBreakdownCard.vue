@@ -13,9 +13,13 @@
 		</template>
 		<template #loading>
 			<div class="tw-flex tw-items-center tw-gap-2" :data-testid="`impact-${type}-loading`">
-				<KvLoadingPlaceholder class="tw-shrink-0 tw-w-15 tw-h-15" />
-				<div class="tw-flex-1 tw-flex tw-flex-col tw-gap-1">
-					<KvLoadingPlaceholder v-for="line in 4" :key="line" class="tw-w-full tw-h-1.5" />
+				<div class="tw-shrink-0 tw-w-15 tw-h-15">
+					<KvLoadingPlaceholder />
+				</div>
+				<div class="tw-flex-1 md:tw-flex-none md:tw-w-1/3 tw-flex tw-flex-col tw-gap-1">
+					<div v-for="line in 4" :key="line" class="tw-h-1.5">
+						<KvLoadingPlaceholder />
+					</div>
 				</div>
 			</div>
 		</template>
@@ -35,7 +39,7 @@
 					Start anywhere
 				</p>
 				<ul class="tw-flex tw-flex-wrap tw-gap-x-2 tw-gap-y-1">
-					<li v-for="item in shownNotLentTo" :key="item.id">
+					<li v-for="item in shownNotLentTo" :key="item.id" class="tw-flex">
 						<KvTextLink
 							v-kv-track-event="['portfolio', 'click', `${type}-breakdown-not-lent-to`, item.id]"
 							:href="config.itemUrl(item.id)"
@@ -45,7 +49,7 @@
 							{{ item.name }}
 						</KvTextLink>
 					</li>
-					<li v-if="moreCount > 0">
+					<li v-if="moreCount > 0" class="tw-flex">
 						<KvTextLink
 							v-kv-track-event="['portfolio', 'click', `${type}-breakdown-more`]"
 							:icon="mdiChevronRight"
@@ -69,12 +73,12 @@
 				more-link-label="+{count} more"
 				:list-gap="listGap"
 			/>
-			<div v-if="notLentTo.length">
+			<div v-if="notLentTo.length" class="md:tw-self-center">
 				<h4 class="tw-text-h4 tw-text-primary tw-mb-1">
 					Not yet lent to
 				</h4>
 				<ul class="tw-grid tw-grid-cols-2 md:tw-grid-cols-1 tw-gap-0.5">
-					<li v-for="item in shownNotLentTo" :key="item.id" class="tw-min-w-0">
+					<li v-for="item in shownNotLentTo" :key="item.id" class="tw-flex tw-min-w-0">
 						<KvTextLink
 							v-kv-track-event="['portfolio', 'click', `${type}-breakdown-not-lent-to`, item.id]"
 							:href="config.itemUrl(item.id)"
@@ -84,7 +88,7 @@
 							{{ item.name }}
 						</KvTextLink>
 					</li>
-					<li v-if="moreCount > 0">
+					<li v-if="moreCount > 0" class="tw-flex">
 						<KvTextLink
 							v-kv-track-event="['portfolio', 'click', `${type}-breakdown-more`]"
 							class="tw-underline"
@@ -114,7 +118,7 @@
 			@lightbox-closed="lightboxOpen = false"
 		>
 			<ul class="tw-grid tw-grid-cols-2 tw-gap-x-2 tw-gap-y-1">
-				<li v-for="item in notLentTo" :key="item.id" class="tw-min-w-0">
+				<li v-for="item in notLentTo" :key="item.id" class="tw-flex tw-min-w-0">
 					<KvTextLink
 						v-kv-track-event="['portfolio', 'click', `${type}-breakdown-not-lent-to`, item.id]"
 						:href="config.itemUrl(item.id)"

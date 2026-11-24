@@ -20,7 +20,7 @@
 				</h2>
 				<impact-stats-row />
 				<geographic-reach-card />
-				<impact-section-card title="By Sector" data-testid="impact-sector" />
+				<impact-breakdown-card type="sector" />
 				<impact-section-card title="By Activity" data-testid="impact-activity" />
 				<impact-section-card title="By Gender" data-testid="impact-gender" />
 				<impact-section-card title="By Lending Partner" data-testid="impact-partner" />
@@ -46,6 +46,7 @@
 import AccountOverviewCard from '#src/components/Portfolio/ImpactStats/AccountOverviewCard';
 import GeographicReachCard from '#src/components/Portfolio/ImpactStats/GeographicReachCard';
 import GivingFundCard from '#src/components/Portfolio/ImpactStats/GivingFundCard';
+import ImpactBreakdownCard from '#src/components/Portfolio/ImpactStats/ImpactBreakdownCard';
 import ImpactSectionCard from '#src/components/Portfolio/ImpactStats/ImpactSectionCard';
 import ImpactStatsRow from '#src/components/Portfolio/ImpactStats/ImpactStatsRow';
 import useImpactStats from '#src/composables/useImpactStats';
