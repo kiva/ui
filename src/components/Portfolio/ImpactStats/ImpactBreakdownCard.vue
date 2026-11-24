@@ -69,7 +69,7 @@
 				:list-gap="listGap"
 				:segment-gap="segmentGap"
 			/>
-			<div v-if="notLentTo.length" class="md:tw-self-center">
+			<div v-if="notLentTo.length">
 				<h4 class="tw-text-button-link tw-text-primary tw-mb-1">
 					Not yet lent to
 				</h4>
@@ -197,6 +197,10 @@ const moreCount = computed(() => (notLentTo.value?.length ?? 0) - shownNotLentTo
 @screen md {
 	.breakdown-card__row {
 		grid-template-columns: minmax(0, 2fr) minmax(max-content, 1fr);
+	}
+
+	.breakdown-card__row :deep(.kv-pie-chart-v2) {
+		align-items: flex-start;
 	}
 }
 </style>
