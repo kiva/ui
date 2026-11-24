@@ -60,9 +60,8 @@
 			</div>
 		</div>
 
-		<div v-else class="tw-grid tw-gap-y-2 md:tw-grid-cols-3 md:tw-gap-x-4.5">
+		<div v-else class="breakdown-card__row tw-grid tw-gap-y-2 md:tw-gap-x-4.5">
 			<KvPieChartV2
-				class="md:tw-col-span-2"
 				:values="chartValues"
 				layout="two-column"
 				list-header="Lent to"
@@ -97,7 +96,7 @@
 				</ul>
 				<KvButton
 					v-kv-track-event="['portfolio', 'click', `${type}-breakdown-lend-new`]"
-					class="tw-mt-1 md:tw-mt-0.5"
+					class="tw-mt-1 md:tw-mt-0.5 tw-whitespace-nowrap"
 					variant="secondary"
 					size="small"
 					:href="config.lendNewUrl(notLentTo.map(item => item.id))"
@@ -183,5 +182,11 @@ const moreCount = computed(() => (notLentTo.value?.length ?? 0) - shownNotLentTo
 <style lang="postcss" scoped>
 .breakdown-card__empty-ring {
 	border: 1.6rem solid theme('colors.gray.200');
+}
+
+@screen md {
+	.breakdown-card__row {
+		grid-template-columns: minmax(0, 2fr) minmax(max-content, 1fr);
+	}
 }
 </style>
