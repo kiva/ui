@@ -16,11 +16,7 @@
 				<div class="tw-shrink-0 tw-w-15 tw-h-15">
 					<KvLoadingPlaceholder />
 				</div>
-				<div class="tw-flex-1 md:tw-flex-none md:tw-w-1/3 tw-flex tw-flex-col tw-gap-1">
-					<div v-for="line in 4" :key="line" class="tw-h-1.5">
-						<KvLoadingPlaceholder />
-					</div>
-				</div>
+				<KvLoadingText :lines="4" class="tw-flex-1 md:tw-flex-none md:tw-w-1/3 tw-text-small" />
 			</div>
 		</template>
 
@@ -137,7 +133,7 @@
 import { computed, ref } from 'vue';
 import { mdiChevronRight } from '@mdi/js';
 import {
-	KvButton, KvLightbox, KvLoadingPlaceholder, KvPieChartV2, KvTextLink,
+	KvButton, KvLightbox, KvLoadingPlaceholder, KvLoadingText, KvPieChartV2, KvTextLink,
 } from '@kiva/kv-components';
 import { useBreakpoints } from '@kiva/kv-components/utils/useBreakpoints';
 import ImpactSectionCard from '#src/components/Portfolio/ImpactStats/ImpactSectionCard';

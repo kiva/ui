@@ -180,7 +180,8 @@ describe('ImpactBreakdownCard', () => {
 	it('shows the loading state', () => {
 		const { getByTestId, queryByTestId } = renderCard({ loading: true });
 
-		getByTestId('impact-sector-loading');
+		const skeleton = getByTestId('impact-sector-loading');
+		expect(skeleton.querySelectorAll('.kv-loading-text-line')).toHaveLength(4);
 		expect(queryByTestId('impact-sector-not-lent-item')).toBeNull();
 		expect(queryByTestId('chart')).toBeNull();
 	});
