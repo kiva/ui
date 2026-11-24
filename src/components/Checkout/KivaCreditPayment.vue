@@ -3,6 +3,7 @@
 		type="submit"
 		id="kiva-credit-submit"
 		class="tw-mb-2"
+		:state="updatingTotals ? 'disabled' : ''"
 		v-kv-track-event="['payment.continueBtn']"
 		:title="titleText"
 		@click.prevent="validateCreditBasket"
@@ -38,6 +39,11 @@ export default {
 			type: Boolean,
 			default: false
 		},
+		// Payment waits while the host refreshes totals, or after a refresh fails
+		updatingTotals: {
+			type: Boolean,
+			default: false,
+		},
 	},
 	computed: {
 		titleText() {
@@ -46,6 +52,8 @@ export default {
 	},
 	methods: {
 		validateCreditBasket() {
+			// The loading overlay only blocks pointer events; a keyboard submit still lands here
+			if (this.updatingTotals) return;
 			this.$kvTrackEvent('basket', 'Kiva Checkout', 'Button Click');
 			this.$emit('updating-totals', true);
 			this.validateBasket()

@@ -77,6 +77,7 @@
 			type="submit"
 			id="kiva-credit-submit"
 			class="tw-mb-2"
+			:state="updatingTotals ? 'disabled' : ''"
 			v-kv-track-event="['payment.continueBtn']"
 			title="Checkout using your Kiva credit"
 			@click.prevent="validateCreditBasket"
@@ -130,7 +131,12 @@ export default {
 		promoName: {
 			type: String,
 			default: ''
-		}
+		},
+		// Payment waits while the host refreshes totals, or after a refresh fails
+		updatingTotals: {
+			type: Boolean,
+			default: false,
+		},
 	},
 	data() {
 		return {
@@ -151,6 +157,8 @@ export default {
 	},
 	methods: {
 		validateCreditBasket() {
+			// The loading overlay only blocks pointer events; a keyboard submit still lands here
+			if (this.updatingTotals) return;
 			this.$kvTrackEvent('basket', 'Kiva Checkout', 'Button Click');
 			this.$emit('updating-totals', true);
 			this.validateGuestPromoBasket(this.email, this.emailUpdates, this.promoFundId, this.managedAccountId)
