@@ -215,15 +215,6 @@
 							</li>
 							<li>
 								<router-link
-									to="/protocol"
-									v-kv-track-event="['Footer', 'click-Explore-Protocol']"
-									class="tw-text-small"
-								>
-									Protocol
-								</router-link>
-							</li>
-							<li>
-								<router-link
 									to="/gifts-that-give-back"
 									v-kv-track-event="['Footer', 'click-Explore-Gifts']"
 									class="tw-text-small"
@@ -274,13 +265,11 @@
 							</li>
 							<li>
 								<a
-									href="https://www.careers.kiva.org/fellowships"
-									target="_blank"
-									rel="noopener"
-									v-kv-track-event="['Footer', 'click-Work with us-Kiva fellows']"
+									href="/lp/ambassadors"
+									v-kv-track-event="['Footer', 'click-Work with us-ambassadors']"
 									class="tw-text-small"
 								>
-									Kiva fellows
+									Ambassadors
 								</a>
 							</li>
 							<li>
@@ -503,15 +492,6 @@
 								</li>
 								<li>
 									<router-link
-										to="/protocol"
-										v-kv-track-event="['Footer', 'click-Explore-Protocol']"
-										class="tw-text-small"
-									>
-										Protocol
-									</router-link>
-								</li>
-								<li>
-									<router-link
 										to="/gifts-that-give-back"
 										v-kv-track-event="['Footer', 'click-Explore-Gifts']"
 										class="tw-text-small"
@@ -721,14 +701,12 @@
 								</li>
 								<li class="tw-inline-block tw--translate-x-2">
 									<a
-										href="https://www.careers.kiva.org/fellowships"
-										target="_blank"
-										rel="noopener"
-										v-kv-track-event="['Footer', 'click-Work with us-Kiva fellows']"
+										href="/lp/ambassadors"
+										v-kv-track-event="['Footer', 'click-Work with us-ambassadors']"
 										class="tw-text-small tw-whitespace-nowrap
 											tw-border-l tw-border-tertiary tw-pl-1 tw-ml-1"
 									>
-										Kiva fellows
+										Ambassadors
 									</a>
 								</li>
 								<li class="tw-inline-block tw--translate-x-2">
