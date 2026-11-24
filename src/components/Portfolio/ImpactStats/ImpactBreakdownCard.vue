@@ -75,29 +75,30 @@
 				</h4>
 				<ul class="tw-grid tw-grid-cols-2 md:tw-grid-cols-1 tw-gap-0.5">
 					<li v-for="item in shownNotLentTo" :key="item.id" class="tw-flex tw-min-w-0">
-						<KvTextLink
+						<a
 							v-kv-track-event="['portfolio', 'click', `${type}-breakdown-not-lent-to`, item.id]"
 							:href="config.itemUrl(item.id)"
-							class="tw-underline"
+							class="tw-text-caption"
 							:data-testid="`impact-${type}-not-lent-item`"
 						>
 							{{ item.name }}
-						</KvTextLink>
+						</a>
 					</li>
 					<li v-if="moreCount > 0" class="tw-flex">
-						<KvTextLink
+						<button
 							v-kv-track-event="['portfolio', 'click', `${type}-breakdown-more`]"
-							class="tw-underline"
+							type="button"
+							class="tw-text-caption tw-text-link"
 							:data-testid="`impact-${type}-more`"
 							@click="lightboxOpen = true"
 						>
 							+ {{ moreCount }} more
-						</KvTextLink>
+						</button>
 					</li>
 				</ul>
 				<KvButton
 					v-kv-track-event="['portfolio', 'click', `${type}-breakdown-lend-new`]"
-					class="tw-mt-1 md:tw-mt-0.5 tw-whitespace-nowrap"
+					class="tw-mt-1.5 md:tw-mt-1 tw-whitespace-nowrap"
 					variant="secondary"
 					size="small"
 					:href="config.lendNewUrl(notLentTo.map(item => item.id))"
