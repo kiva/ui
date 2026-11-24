@@ -164,8 +164,10 @@ describe('ImpactBreakdownCard', () => {
 		} = renderCard({ lent: {} });
 
 		expect(getByTestId('impact-sector-count').textContent.trim()).toBe('8 to explore');
-		expect(getByTestId('impact-sector-no-loans').textContent.trim()).toBe('No loans yet');
-		getByText('Start anywhere');
+		const noLoans = getByTestId('impact-sector-no-loans');
+		expect(noLoans.textContent.trim()).toBe('No loans yet');
+		expect(noLoans.parentElement.classList).toContain('tw-text-tertiary');
+		expect(getByText('Start anywhere').classList).toContain('tw-text-tertiary');
 		expect(linkNames(getAllByTestId('impact-sector-not-lent-item'))).toEqual(['Agriculture', 'Arts', 'Education']);
 		expect(queryByTestId('impact-sector-lend-new')).toBeNull();
 		expect(queryByTestId('chart')).toBeNull();

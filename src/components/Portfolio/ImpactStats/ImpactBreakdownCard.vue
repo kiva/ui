@@ -24,14 +24,14 @@
 			<div class="tw-flex tw-items-center tw-gap-2">
 				<div class="breakdown-card__empty-ring tw-shrink-0 tw-w-15 tw-h-15 tw-rounded-full" aria-hidden="true">
 				</div>
-				<p class="tw-flex tw-items-center tw-gap-0.5 tw-text-caption tw-text-secondary">
+				<p class="tw-flex tw-items-center tw-gap-0.5 tw-text-caption tw-text-tertiary">
 					<span class="tw-w-1 tw-h-1 tw-rounded-full tw-bg-gray-300" aria-hidden="true"></span>
 					<span :data-testid="`impact-${type}-no-loans`">No loans yet</span>
 				</p>
 			</div>
 			<hr class="tw-border-tertiary">
 			<div>
-				<p class="tw-text-caption tw-text-secondary tw-mb-1">
+				<p class="tw-text-caption tw-text-tertiary tw-mb-1">
 					Start anywhere
 				</p>
 				<ul class="tw-flex tw-flex-wrap tw-gap-x-2 tw-gap-y-1">
@@ -188,6 +188,10 @@ const moreCount = computed(() => (notLentTo.value?.length ?? 0) - shownNotLentTo
 
 .breakdown-card__row :deep(.legend-header) {
 	@apply tw-text-button-link;
+}
+
+.breakdown-card__row :deep(.legend-value) {
+	@apply tw-text-tertiary;
 }
 
 @screen md {
