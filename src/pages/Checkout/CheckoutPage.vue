@@ -129,13 +129,12 @@
 								class="tw-text-danger tw-text-small tw-mb-2"
 							>
 								We couldn't update your order total.
-								<kv-button
-									variant="link"
+								<kv-text-link
 									data-testid="totals-refresh-retry"
-									@click="refreshTotals()"
+									@click.prevent="refreshTotals()"
 								>
 									Try again
-								</kv-button>
+								</kv-text-link>
 							</div>
 							<div v-if="isLoggedIn">
 								<form v-if="showKivaCreditButton" action="/checkout" method="GET">
@@ -391,7 +390,7 @@ import FtdsMessage from '#src/components/Checkout/FtdsMessage';
 import FtdsDisclaimer from '#src/components/Checkout/FtdsDisclaimer';
 import { removeLoansFromChallengeCookie } from '#src/util/teamChallengeUtils';
 import {
-	KvLoadingPlaceholder, KvPageContainer, KvButton, KvMaterialIcon
+	KvLoadingPlaceholder, KvPageContainer, KvButton, KvMaterialIcon, KvTextLink
 } from '@kiva/kv-components';
 import { fetchPostCheckoutAchievements } from '#src/util/myKivaUtils';
 import postCheckoutAchievementsQuery from '#src/graphql/query/postCheckoutAchievements.graphql';
@@ -471,6 +470,7 @@ export default {
 		WwwPage,
 		KivaCreditPayment,
 		KvButton,
+		KvTextLink,
 		OrderTotals,
 		BasketItemsList,
 		BasketVerification,
