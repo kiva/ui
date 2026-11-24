@@ -62,5 +62,5 @@ export function notLentToItems(available, lentTo) {
 	const lentIds = new Set(lentTo.map(item => item.id));
 	return available
 		.filter(item => !lentIds.has(item.id))
-		.sort((a, b) => a.name.localeCompare(b.name));
+		.sort((a, b) => (a.name ?? '').localeCompare(b.name ?? ''));
 }

@@ -127,6 +127,13 @@ describe('useSectorBreakdown', () => {
 		expect(notLentTo.map(item => item.name)).toEqual(['Arts', 'Personal Use']);
 	});
 
+	it('leaves out sectors without a name', async () => {
+		const fixture = renderFixture(respondWith(response({ sectors: [1, 9, 13, 4, 99] })));
+		await nearViewport();
+
+		expect(fixture.breakdown().notLentTo).toEqual([{ id: 13, name: 'Personal Use' }]);
+	});
+
 	it('reports an error when the request fails', async () => {
 		const fixture = renderFixture(observer => observer.error(new Error('Network error')));
 		await nearViewport();

@@ -64,6 +64,12 @@ describe('impactBreakdown', () => {
 			expect(notLentToItems([PERSONAL, FOOD, ARTS], [lent(FOOD, 3)])).toEqual([ARTS, PERSONAL]);
 		});
 
+		it('sorts items without a name instead of throwing', () => {
+			const NAMELESS = { id: 2, name: null };
+
+			expect(notLentToItems([FOOD, NAMELESS, ARTS], [])).toEqual([NAMELESS, ARTS, FOOD]);
+		});
+
 		it('returns nothing when everything is lent to', () => {
 			expect(notLentToItems(ALL, ALL.map(item => lent(item, 1)))).toEqual([]);
 		});

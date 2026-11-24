@@ -41,7 +41,7 @@ export default function useSectorBreakdown() {
 	const notLentTo = computed(() => {
 		if (!hasData.value) return null;
 		const excluded = readExcludedList(result.value, 'general.excluded_sectors.value');
-		const available = sectors.value.filter(Boolean).map(({ id, name }) => ({ id, name }));
+		const available = sectors.value.filter(sector => sector?.name).map(({ id, name }) => ({ id, name }));
 		return notLentToItems(filterExcluded(available, excluded), lentTo.value);
 	});
 
