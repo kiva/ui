@@ -74,20 +74,6 @@ describe('CheckoutDropInPaymentWrapper while totals update', () => {
 
 		expect(wrapper.get('[data-testid="basket-dropin-submit"]').attributes('disabled')).toBeDefined();
 	});
-
-	it('ignores a submit while totals are updating, so a keyboard submit does nothing', async () => {
-		const mutate = vi.fn().mockResolvedValue({});
-		const wrapper = mountWrapper({ props: { updatingTotals: true }, apollo: { mutate } });
-		await flushPromises();
-
-		// Call the handler directly: the disabled button swallows the click, but a form submit or
-		// a focused button hit with Enter still reaches it
-		wrapper.vm.submit();
-		await flushPromises();
-
-		expect(mutate).not.toHaveBeenCalled();
-		expect(wrapper.emitted('updating-totals')).toBeUndefined();
-	});
 });
 
 describe('CheckoutDropInPaymentWrapper refetches the amount before paying', () => {

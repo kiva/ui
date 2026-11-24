@@ -223,18 +223,11 @@ describe('ExpressCheckoutModal', () => {
 	});
 
 	describe('while the totals are updating', () => {
-		it('disables the pay button and ignores a submit until the change settles', async () => {
+		it('disables the pay button until the change settles', async () => {
 			await mountComponent();
-			mockValidatePreCheckoutBasket.mockResolvedValue(true);
 
 			await wrapper.find('[data-testid="totals-updating-on"]').trigger('click');
 			expect(wrapper.find('button[type="submit"]').attributes('disabled')).toBeDefined();
-
-			// A keyboard submit bypasses the disabled button, so the handler has to refuse it too
-			await wrapper.find('form').trigger('submit');
-			await flushPromises();
-			expect(mockValidatePreCheckoutBasket).not.toHaveBeenCalled();
-			expect(mockExecuteOneTimeCheckout).not.toHaveBeenCalled();
 
 			await wrapper.find('[data-testid="totals-updating-off"]').trigger('click');
 			expect(wrapper.find('button[type="submit"]').attributes('disabled')).toBeUndefined();

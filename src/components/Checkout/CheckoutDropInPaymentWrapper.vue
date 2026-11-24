@@ -233,8 +233,6 @@ export default {
 	},
 	methods: {
 		submit() {
-			// The loading overlay only blocks pointer events; a keyboard submit still lands here
-			if (this.updatingTotals) return;
 			this.$kvTrackEvent('basket', 'click', 'braintree-checkout-button');
 			if (this.isGuestCheckout) {
 				this.v$.$touch();

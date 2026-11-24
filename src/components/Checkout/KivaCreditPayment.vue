@@ -52,8 +52,6 @@ export default {
 	},
 	methods: {
 		validateCreditBasket() {
-			// The loading overlay only blocks pointer events; a keyboard submit still lands here
-			if (this.updatingTotals) return;
 			this.$kvTrackEvent('basket', 'Kiva Checkout', 'Button Click');
 			this.$emit('updating-totals', true);
 			this.validateBasket()

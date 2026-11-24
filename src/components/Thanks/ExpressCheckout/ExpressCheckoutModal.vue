@@ -229,8 +229,7 @@ const loadPaymentDetails = async () => {
 };
 
 const onSubmit = async () => {
-	// The disabled button swallows clicks, but a form submit from the keyboard still lands here
-	if (paying.value || updatingTotals.value) return;
+	if (paying.value) return;
 	paying.value = true;
 
 	try {

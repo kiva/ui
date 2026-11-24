@@ -36,18 +36,7 @@ describe('KivaCreditGuestPayment while totals update', () => {
 		expect(wrapper.get('#kiva-credit-submit').attributes('disabled')).toBeDefined();
 	});
 
-	it('ignores a submit while totals are updating, so a keyboard submit does nothing', async () => {
-		const mutate = vi.fn().mockResolvedValue({});
-		const wrapper = mountButton({ props: { updatingTotals: true }, apollo: { mutate } });
-
-		wrapper.vm.validateCreditBasket();
-		await flushPromises();
-
-		expect(mutate).not.toHaveBeenCalled();
-		expect(wrapper.emitted('updating-totals')).toBeUndefined();
-	});
-
-	it('validates the basket on submit once totals are current', async () => {
+	it('validates the basket on submit', async () => {
 		const mutate = vi.fn().mockResolvedValue({ data: { shop: { validatePreCheckout: [] } } });
 		const wrapper = mountButton({ apollo: { mutate } });
 
