@@ -207,6 +207,15 @@ const moreCount = computed(() => (notLentTo.value?.length ?? 0) - shownNotLentTo
 	max-width: 100%;
 }
 
+.breakdown-card__row :deep([data-test=kv-lightbox] .tw-shrink-0.tw-overflow-hidden) {
+	flex-shrink: 1;
+}
+
+.breakdown-card__row :deep([data-test=kv-lightbox] .tw-shrink-0.tw-overflow-hidden .tw-truncate) {
+	white-space: normal;
+	overflow-wrap: anywhere;
+}
+
 @screen md {
 	.breakdown-card__row {
 		grid-template-columns: minmax(0, 2fr) minmax(max-content, 1fr);
