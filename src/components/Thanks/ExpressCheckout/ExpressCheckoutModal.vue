@@ -27,7 +27,6 @@
 		>
 			<ExpressCheckoutTotals
 				:loan="loan"
-				@updating-totals="updatingTotals = $event"
 			/>
 
 			<KvPaymentSelect
@@ -123,8 +122,6 @@ const ready = ref(false);
 const paying = ref(false);
 const totalDue = ref('0.00');
 const transactionsEnabled = ref(false);
-// A credit or promotion change is in flight in the totals; payment waits for the new figure
-const updatingTotals = ref(false);
 const dropInAuthToken = ref('');
 let totalsSubscription = null;
 // Holds the in-flight client-token fetch started in openLoading() so
@@ -136,7 +133,7 @@ const depositRequired = computed(() => (numeral(totalDue.value).value() ?? 0) > 
 const lightboxTitle = computed(() => (ready.value ? 'Confirm payment' : 'Adding to basket'));
 
 const paymentButtonState = computed(() => {
-	if (updatingTotals.value || (depositRequired.value && !transactionsEnabled.value)) {
+	if (depositRequired.value && !transactionsEnabled.value) {
 		return 'disabled';
 	}
 	if (paying.value) {

@@ -90,7 +90,7 @@ const props = defineProps({
 	},
 });
 
-const emit = defineEmits(['credit-toggled', 'updating-totals']);
+const emit = defineEmits(['credit-toggled']);
 
 const apollo = inject('apollo');
 const cookieStore = inject('cookieStore');
@@ -106,10 +106,6 @@ const redemptionCodeAppliedTotal = ref('0.00');
 const bonusAppliedTotal = ref('0.00');
 const removingPromotion = ref(false);
 const removingKivaPromotion = ref(false);
-
-// A basket mutation is in flight; the host blocks payment until the new totals land
-const updatingTotals = computed(() => changingCredit.value || removingPromotion.value || removingKivaPromotion.value);
-watch(updatingTotals, value => emit('updating-totals', value));
 let totalsSubscription = null;
 
 const loanLabel = computed(() => {

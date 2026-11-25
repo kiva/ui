@@ -67,14 +67,7 @@ vi.mock('@kiva/kv-shop', () => ({
 }));
 
 vi.mock('#src/components/Thanks/ExpressCheckout/ExpressCheckoutTotals', () => ({
-	default: {
-		emits: ['updating-totals'],
-		// Stand-in so a test can raise and lower the in-flight state by hand
-		template: `<div data-testid="express-checkout-totals">
-			<button type="button" data-testid="totals-updating-on" @click="$emit('updating-totals', true)" />
-			<button type="button" data-testid="totals-updating-off" @click="$emit('updating-totals', false)" />
-		</div>`,
-	},
+	default: { template: '<div data-testid="express-checkout-totals" />' },
 }));
 
 vi.mock('#src/composables/useTipMessage', () => ({
@@ -220,18 +213,6 @@ describe('ExpressCheckoutModal', () => {
 		expect(mockExecuteOneTimeCheckout).toHaveBeenCalled();
 		expect(mockTrackFBTransaction).not.toHaveBeenCalled();
 		expect(mockGetCheckoutTrackingData).not.toHaveBeenCalled();
-	});
-
-	describe('while the totals are updating', () => {
-		it('disables the pay button until the change settles', async () => {
-			await mountComponent();
-
-			await wrapper.find('[data-testid="totals-updating-on"]').trigger('click');
-			expect(wrapper.find('button[type="submit"]').attributes('disabled')).toBeDefined();
-
-			await wrapper.find('[data-testid="totals-updating-off"]').trigger('click');
-			expect(wrapper.find('button[type="submit"]').attributes('disabled')).toBeUndefined();
-		});
 	});
 
 	describe('loading state', () => {

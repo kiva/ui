@@ -77,7 +77,6 @@
 			type="submit"
 			id="kiva-credit-submit"
 			class="tw-mb-2"
-			:state="updatingTotals ? 'disabled' : ''"
 			v-kv-track-event="['payment.continueBtn']"
 			title="Checkout using your Kiva credit"
 			@click.prevent="validateCreditBasket"
@@ -131,12 +130,7 @@ export default {
 		promoName: {
 			type: String,
 			default: ''
-		},
-		// Payment waits while the host refreshes totals, or after a refresh fails
-		updatingTotals: {
-			type: Boolean,
-			default: false,
-		},
+		}
 	},
 	data() {
 		return {

@@ -117,7 +117,7 @@
 					id="dropin-submit"
 					data-testid="basket-dropin-submit"
 					class="tw-mb-2"
-					:state="!enableCheckoutButton || updatingTotals ? 'disabled' : ''"
+					:state="`${!enableCheckoutButton ? 'disabled' : ''}`"
 					@click="submit"
 				>
 					Complete order
@@ -144,7 +144,6 @@ import braintreeDropInError from '#src/plugins/braintree-dropin-error-mixin';
 
 import braintreeDepositAndCheckout from '#src/graphql/mutation/braintreeDepositAndCheckout.graphql';
 import braintreeDepositAndCheckoutAsync from '#src/graphql/mutation/braintreeDepositAndCheckoutAsync.graphql';
-import shopBasketUpdate from '#src/graphql/query/checkout/shopBasketUpdate.graphql';
 
 import experimentVersionFragment from '#src/graphql/fragments/experimentVersion.graphql';
 import { trackExperimentVersion } from '#src/util/experiment/experimentUtils';
@@ -193,12 +192,7 @@ export default {
 		loansInBasket: {
 			type: Number,
 			default: 0,
-		},
-		// Payment waits while the host refreshes totals, or after a refresh fails
-		updatingTotals: {
-			type: Boolean,
-			default: false,
-		},
+		}
 	},
 	data() {
 		return {
@@ -345,46 +339,9 @@ export default {
 					});
 				});
 		},
-		// Read the amount from the server right before paying; the prop can lag a basket change
-		fetchCurrentAmount() {
-			return this.apollo.query({
-				query: shopBasketUpdate,
-				fetchPolicy: 'network-only',
-			}).then(({ data }) => data?.shop?.basket?.totals?.creditAmountNeeded ?? null);
-		},
 		submitDropInPayment() {
-			// Captured before the refetch: the cache write can update the prop before this resolves
-			const renderedAmount = numeral(this.amount).format('0.00');
-			return this.fetchCurrentAmount().then(
-				currentAmount => {
-					if (currentAmount === null) {
-						return this.handleAmountRefreshFailure(new Error('Basket totals missing from refresh'));
-					}
-					// The drop-in authorized the rendered figure, so a different one is not safe to charge
-					if (numeral(currentAmount).format('0.00') !== renderedAmount) {
-						this.$emit('updating-totals', false);
-						this.$showTipMsg('Your order total changed. Please review it and try again.', 'error');
-						this.$emit('refreshtotals');
-						return null;
-					}
-					return this.requestDropInPayment();
-				},
-				refreshError => this.handleAmountRefreshFailure(refreshError)
-			);
-		},
-		handleAmountRefreshFailure(error) {
-			// Without a confirmed amount there is nothing safe to charge
-			this.$emit('updating-totals', false);
-			this.$showTipMsg('We couldn\'t confirm your order total. Please try again.', 'error');
-			this.$emit('refreshtotals');
-			Sentry.withScope(scope => {
-				scope.setTag('bt_stage_dropin', 'btAmountRefreshCatch');
-				Sentry.captureException(error);
-			});
-		},
-		requestDropInPayment() {
 			// request payment method
-			return this.$refs.braintreeDropInInterface.btDropinInstance
+			this.$refs.braintreeDropInInterface.btDropinInstance
 				.requestPaymentMethod()
 				.then(btSubmitResponse => {
 					const transactionNonce = btSubmitResponse?.nonce;
