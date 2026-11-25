@@ -13,7 +13,7 @@ const LEFT = [
 ];
 const RIGHT = ['impact-goal', 'impact-percentile', 'impact-badges', 'impact-first-loan'];
 const SECTION_TITLES = [
-	'By Activity', 'By Gender', 'By Lending Partner',
+	'By Gender', 'By Lending Partner',
 	'Goal', 'Lending percentile', 'Badges', 'Your first loan on Kiva',
 ];
 
@@ -86,6 +86,13 @@ describe('ImpactStatsLayout', () => {
 
 		getByTestId('impact-sector');
 		expect(queryByRole('heading', { level: 3, name: 'By Sector' })).toBeNull();
+	});
+
+	it('shows the activity breakdown card in place of its placeholder', () => {
+		const { getByTestId, queryByRole } = renderLayout();
+
+		getByTestId('impact-activity');
+		expect(queryByRole('heading', { level: 3, name: 'By Activity' })).toBeNull();
 	});
 
 	it('renders a card per section', () => {

@@ -9,6 +9,10 @@ vi.mock('#src/composables/useSectorBreakdown', () => ({
 	default: () => breakdown,
 }));
 
+vi.mock('#src/composables/useActivityBreakdown', () => ({
+	default: () => breakdown,
+}));
+
 vi.mock('@kiva/kv-components', async importOriginal => ({
 	...await importOriginal(),
 	KvLightbox: {
@@ -42,7 +46,9 @@ const KvPieChartV2 = {
 	template: '<div data-testid="chart"></div>',
 };
 
-const renderCard = ({ lent = DEFAULT_LENT, loading = false, error = false } = {}) => {
+const renderCard = ({
+	type = 'sector', lent = DEFAULT_LENT, loading = false, error = false,
+} = {}) => {
 	chartProps = null;
 	const lentTo = Object.entries(lent).map(([name, loanCount]) => ({ ...named(name), loanCount }));
 	const notLentTo = SECTORS.filter(sector => !(sector.name in lent));
@@ -58,7 +64,7 @@ const renderCard = ({ lent = DEFAULT_LENT, loading = false, error = false } = {}
 	});
 	const tracked = [];
 	const result = render(ImpactBreakdownCard, {
-		props: { type: 'sector' },
+		props: { type },
 		global: {
 			...globalOptions,
 			stubs: { ...globalOptions.stubs, KvPieChartV2 },
@@ -207,5 +213,53 @@ describe('ImpactBreakdownCard', () => {
 
 		expect(chartProps.listGap).toBe(listGap);
 		expect(chartProps.segmentGap).toBe(segmentGap);
+	});
+
+	describe('activity type', () => {
+		it('shows the title and the pill', () => {
+			const { getByRole, getByTestId } = renderCard({ type: 'activity' });
+
+			getByRole('heading', { level: 3, name: 'By Activity' });
+			expect(getByTestId('impact-activity-count').textContent.trim()).toBe('3 of 8');
+		});
+
+		it('links not-lent-to activities to the lend page', () => {
+			const { getAllByTestId, getByTestId } = renderCard({ type: 'activity' });
+
+			expect(getAllByTestId('impact-activity-not-lent-item').map(link => link.getAttribute('href'))).toEqual([
+				'/lend?activity=9',
+				'/lend?activity=12',
+				'/lend?activity=4',
+				'/lend?activity=6',
+			]);
+			expect(getByTestId('impact-activity-more').textContent.trim()).toBe('+ 1 more');
+		});
+
+		it('links the button to every not-lent-to activity', () => {
+			const { getByTestId } = renderCard({ type: 'activity' });
+			const button = getByTestId('impact-activity-lend-new');
+
+			expect(button.textContent.trim()).toBe('Lend to a new activity');
+			expect(button.getAttribute('href')).toBe('/lend?activity=9,12,4,6,8');
+		});
+
+		it('links lightbox activities to the lend page', async () => {
+			const { getByTestId, getAllByTestId } = renderCard({ type: 'activity' });
+			await fireEvent.click(getByTestId('impact-activity-more'));
+
+			expect(getAllByTestId('impact-activity-lightbox-item')[4].getAttribute('href')).toBe('/lend?activity=8');
+		});
+
+		it('tracks every link and button', async () => {
+			const { getByTestId, tracked } = renderCard({ type: 'activity' });
+			await fireEvent.click(getByTestId('impact-activity-more'));
+
+			expect(tracked).toEqual(expect.arrayContaining([
+				['portfolio', 'click', 'activity-breakdown-not-lent-to', 9],
+				['portfolio', 'click', 'activity-breakdown-more'],
+				['portfolio', 'click', 'activity-breakdown-lend-new'],
+				['portfolio', 'click', 'activity-breakdown-not-lent-to', 8],
+			]));
+		});
 	});
 });

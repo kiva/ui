@@ -1,5 +1,5 @@
 import {
-	readExcludedList, filterExcluded, lentToItems, notLentToItems,
+	readExcludedList, filterExcluded, lentToItems, notLentToItems, getBreakdownChartValues,
 } from '#src/util/impactBreakdown';
 
 const ARTS = { id: 9, name: 'Arts' };
@@ -81,6 +81,44 @@ describe('impactBreakdown', () => {
 
 			expect(notLentTo).toEqual([FOOD, PERSONAL]);
 			expect(lentTo.length + notLentTo.length).toBe(3);
+		});
+	});
+
+	describe('getBreakdownChartValues', () => {
+		it('labels each item with its loan count, in the order given', () => {
+			expect(getBreakdownChartValues([
+				{ sector: FOOD, loanCount: 3 },
+				{ sector: ARTS, loanCount: 1 },
+			], 'sector')).toEqual([{ label: 'Food', value: 3 }, { label: 'Arts', value: 1 }]);
+		});
+
+		it('reads the item from the given field', () => {
+			expect(getBreakdownChartValues([{ activity: { id: 41, name: 'Farming' }, loanCount: 2 }], 'activity'))
+				.toEqual([{ label: 'Farming', value: 2 }]);
+		});
+
+		it('sums rows with no item name into one Other value, last', () => {
+			expect(getBreakdownChartValues([
+				{ sector: null, loanCount: 1 },
+				{ sector: FOOD, loanCount: 3 },
+				{ loanCount: 1 },
+				{ sector: { id: 99 }, loanCount: 2 },
+			], 'sector')).toEqual([
+				{ label: 'Food', value: 3 },
+				{ label: 'Other (4)', value: 4, isOther: true },
+			]);
+		});
+
+		it('skips rows with no loans', () => {
+			expect(getBreakdownChartValues([
+				{ sector: FOOD, loanCount: 0 },
+				{ sector: ARTS },
+				{ sector: PERSONAL, loanCount: 1 },
+			], 'sector')).toEqual([{ label: 'Personal Use', value: 1 }]);
+		});
+
+		it.each([[[]], [null], [undefined]])('returns no values for %p', values => {
+			expect(getBreakdownChartValues(values, 'sector')).toEqual([]);
 		});
 	});
 });

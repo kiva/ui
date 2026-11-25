@@ -1,0 +1,27 @@
+query impactActivityBreakdown {
+	my {
+		id
+		statsPerActivity {
+			values {
+				id
+				loanCount
+				activity {
+					id
+					name
+				}
+			}
+		}
+	}
+	general {
+		kivaStats {
+			activities {
+				id
+				name
+			}
+		}
+		excluded_activities: uiConfigSetting(key: "excluded_activities") {
+			key
+			value
+		}
+	}
+}

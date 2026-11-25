@@ -21,7 +21,7 @@
 				<impact-stats-row />
 				<geographic-reach-card />
 				<impact-breakdown-card type="sector" />
-				<impact-section-card title="By Activity" data-testid="impact-activity" />
+				<impact-breakdown-card type="activity" />
 				<impact-section-card title="By Gender" data-testid="impact-gender" />
 				<impact-section-card title="By Lending Partner" data-testid="impact-partner" />
 			</div>
