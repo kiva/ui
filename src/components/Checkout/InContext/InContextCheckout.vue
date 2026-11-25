@@ -101,7 +101,6 @@
 			</kv-grid>
 
 			<kiva-credit-payment
-				:updating-totals="updatingTotals"
 				v-if="showKivaCreditButton
 					&& !promoGuestCheckoutEnabled
 					&& isLoggedIn"
@@ -113,7 +112,6 @@
 				@checkout-failure="handleCheckoutFailure"
 			/>
 			<kiva-credit-guest-payment
-				:updating-totals="updatingTotals"
 				v-if="showKivaCreditButton
 					&& promoGuestCheckoutEnabled
 					&& continueAsGuest"
@@ -131,7 +129,6 @@
 			/>
 
 			<checkout-drop-in-payment-wrapper
-				:updating-totals="updatingTotals"
 				v-if="!showKivaCreditButton && (continueAsGuest || isLoggedIn)"
 				:amount="creditNeeded"
 				@refreshtotals="$emit('refreshtotals')"
