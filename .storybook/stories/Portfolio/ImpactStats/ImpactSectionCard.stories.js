@@ -12,11 +12,11 @@ const pill = '<template #pill>7 of 32 countries</template>';
 const loadingBody = '<template #loading><kv-loading-text :lines="3" /></template>';
 const geographicReach = { title: 'Geographic Reach', subtitle: 'Countries where you have lent' };
 
-const story = ({ props = {}, slots = '', wrapperStyle = 'max-width: 757px;' } = {}) => {
+const story = ({ props = {}, slots = '' } = {}) => {
 	const template = () => ({
 		components: { ImpactSectionCard, KvLoadingPlaceholder, KvLoadingText },
 		setup: () => ({ props }),
-		template: `<div style="${wrapperStyle}">
+		template: `<div style="max-width: 757px;">
 			<impact-section-card v-bind="props">${slots}</impact-section-card>
 		</div>`,
 	});
@@ -24,7 +24,6 @@ const story = ({ props = {}, slots = '', wrapperStyle = 'max-width: 757px;' } = 
 };
 
 const desktop = { viewport: { defaultViewport: 'largeBreakpoint' } };
-const mobile = { viewport: { defaultViewport: 'mobile2' } };
 
 const ready = { props: geographicReach, slots: `${body}${pill}` };
 const loading = { props: { ...geographicReach, loading: true }, slots: `${body}${pill}${loadingBody}` };
@@ -63,24 +62,3 @@ Untitled.parameters = desktop;
 
 export const LongTitle = story(longTitle);
 LongTitle.parameters = desktop;
-
-export const ReadyMobile = story({ ...ready, wrapperStyle: '' });
-ReadyMobile.parameters = mobile;
-
-export const LoadingMobile = story({ ...loading, wrapperStyle: '' });
-LoadingMobile.parameters = mobile;
-
-export const LoadingSlottedSubtitleMobile = story({ ...loadingSlottedSubtitle, wrapperStyle: '' });
-LoadingSlottedSubtitleMobile.parameters = mobile;
-
-export const ErrorMobile = story({ ...error, wrapperStyle: '' });
-ErrorMobile.parameters = mobile;
-
-export const FlushMobile = story({ ...flush, wrapperStyle: '' });
-FlushMobile.parameters = mobile;
-
-export const UntitledMobile = story({ ...untitled, wrapperStyle: '' });
-UntitledMobile.parameters = mobile;
-
-export const LongTitleMobile = story({ ...longTitle, wrapperStyle: '' });
-LongTitleMobile.parameters = mobile;
