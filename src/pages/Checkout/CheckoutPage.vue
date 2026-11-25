@@ -131,6 +131,7 @@
 								We couldn't update your order total.
 								<kv-text-link
 									data-testid="totals-refresh-retry"
+									v-kv-track-event="['basket', 'click-totals-refresh-retry', 'Try again']"
 									@click.prevent="refreshTotals()"
 								>
 									Try again
