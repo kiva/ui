@@ -139,6 +139,7 @@ import {
 import { useBreakpoints } from '@kiva/kv-components/utils/useBreakpoints';
 import ImpactSectionCard from '#src/components/Portfolio/ImpactStats/ImpactSectionCard';
 import useSectorBreakdown from '#src/composables/useSectorBreakdown';
+import useActivityBreakdown from '#src/composables/useActivityBreakdown';
 
 defineOptions({ name: 'ImpactBreakdownCard' });
 
@@ -150,13 +151,20 @@ const TYPES = {
 		itemUrl: id => `/lend/filter?sector=${id}`,
 		lendNewUrl: ids => `/lend/filter?sector=${ids.join(',')}`,
 	},
+	activity: {
+		title: 'By Activity',
+		noun: 'activity',
+		useBreakdown: useActivityBreakdown,
+		itemUrl: id => `/lend?activity=${id}`,
+		lendNewUrl: ids => `/lend?activity=${ids.join(',')}`,
+	},
 };
 
 const props = defineProps({
 	type: {
 		type: String,
 		required: true,
-		validator: value => ['sector'].includes(value),
+		validator: value => ['sector', 'activity'].includes(value),
 	},
 });
 
