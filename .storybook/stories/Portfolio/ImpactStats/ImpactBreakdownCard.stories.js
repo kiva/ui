@@ -9,9 +9,7 @@ export default {
 	title: 'Portfolio/ImpactStats/ImpactBreakdownCard',
 };
 
-const story = ({
-	type = 'sector', my, loading = false, wrapperStyle = 'max-width: 757px;',
-} = {}) => {
+const story = ({ type = 'sector', my, loading = false } = {}) => {
 	const { apollo } = apolloStoryMixin({
 		queryResult: { data: { my, ...impactStatsPublicData } },
 		loading,
@@ -21,13 +19,12 @@ const story = ({
 		mixins: [cookieStoreStoryMixin()],
 		// The mixin's readQuery always returns data, which would skip the loading state
 		provide: { apollo: loading ? { ...apollo, readQuery: () => null } : apollo },
-		template: `<div style="${wrapperStyle}"><impact-breakdown-card type="${type}" /></div>`,
+		template: `<div style="max-width: 757px;"><impact-breakdown-card type="${type}" /></div>`,
 	});
 	return template.bind({});
 };
 
 const desktop = { viewport: { defaultViewport: 'largeBreakpoint' } };
-const mobile = { viewport: { defaultViewport: 'mobile2' } };
 
 const everythingLent = impactStatsLender({
 	sectorLoans: sectorNames.filter(name => name !== 'Entertainment').map((name, index) => [name, 15 - index]),
@@ -52,15 +49,6 @@ Loading.parameters = desktop;
 export const Error = story({ my: null });
 Error.parameters = desktop;
 
-export const PopulatedMobile = story({ my: impactStatsLender(), wrapperStyle: '' });
-PopulatedMobile.parameters = mobile;
-
-export const EverythingLentMobile = story({ my: everythingLent, wrapperStyle: '' });
-EverythingLentMobile.parameters = mobile;
-
-export const NoLoansMobile = story({ my: noLoans, wrapperStyle: '' });
-NoLoansMobile.parameters = mobile;
-
 export const ActivityPopulated = story({ type: 'activity', my: impactStatsLender() });
 ActivityPopulated.parameters = desktop;
 
@@ -76,11 +64,3 @@ ActivityLoading.parameters = desktop;
 export const ActivityError = story({ type: 'activity', my: null });
 ActivityError.parameters = desktop;
 
-export const ActivityPopulatedMobile = story({ type: 'activity', my: impactStatsLender(), wrapperStyle: '' });
-ActivityPopulatedMobile.parameters = mobile;
-
-export const ActivityEverythingLentMobile = story({ type: 'activity', my: everythingLentActivities, wrapperStyle: '' });
-ActivityEverythingLentMobile.parameters = mobile;
-
-export const ActivityNoLoansMobile = story({ type: 'activity', my: noLoans, wrapperStyle: '' });
-ActivityNoLoansMobile.parameters = mobile;
