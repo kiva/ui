@@ -203,6 +203,10 @@ const moreCount = computed(() => (notLentTo.value?.length ?? 0) - shownNotLentTo
 	@apply tw-text-tertiary;
 }
 
+.breakdown-card__row :deep(.legend-item) {
+	max-width: 100%;
+}
+
 @screen md {
 	.breakdown-card__row {
 		grid-template-columns: minmax(0, 2fr) minmax(max-content, 1fr);

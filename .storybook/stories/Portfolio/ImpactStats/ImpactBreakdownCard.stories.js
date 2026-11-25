@@ -33,7 +33,7 @@ const everythingLent = impactStatsLender({
 	sectorLoans: sectorNames.filter(name => name !== 'Entertainment').map((name, index) => [name, 15 - index]),
 });
 const everythingLentActivities = impactStatsLender({
-	activityLoans: activityNames.filter(name => name !== 'Weaving').map((name, index) => [name, 15 - index]),
+	activityLoans: activityNames.filter(name => name !== 'Weaving').reverse().map((name, index) => [name, 15 - index]),
 });
 const noLoans = impactStatsLender({ sectorLoans: [], activityLoans: [] });
 
