@@ -113,7 +113,7 @@ import {
 } from 'vue';
 import { KvLightbox } from '@kiva/kv-components';
 import useGoalNow from '#src/composables/useGoalNow';
-import { getBreakdownChartValues, getNamedSectorCount } from '#src/util/goalInReview';
+import { getNamedSectorCount, getSectorChartValues } from '#src/util/goalInReview';
 import KvSocialShareButton from '#src/components/Kv/KvSocialShareButton';
 import goalCopy from '#src/util/goalCopy';
 import {
@@ -207,7 +207,7 @@ const shareMessage = computed(() => {
 		categoryId: summary?.category,
 		countryCount: summary?.countries?.length ?? 0,
 		// Counted the way the global reach slide counts them, so the share text matches the recap.
-		sectorCount: getNamedSectorCount(getBreakdownChartValues(summary?.sectors, 'sector')),
+		sectorCount: getNamedSectorCount(getSectorChartValues(summary?.sectors)),
 	});
 });
 

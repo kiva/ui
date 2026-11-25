@@ -431,28 +431,27 @@ export function getBorrowerCards(loans = [], totalBorrowerCount = null) {
 	};
 }
 
-// --- Breakdown chart ---
+// --- Sector chart ---
 
-export const OTHER_CHART_LABEL = 'Other';
+export const OTHER_SECTOR_LABEL = 'Other';
 
 /**
- * Maps per-item loan counts (sectors, activities, ...) into chart-ready values, collapsing
- * entries with no item name into a single "Other (n)" bucket flagged with `isOther`.
+ * Maps `GoalSummary.sectors` into chart-ready values, collapsing entries with no
+ * sector name into a single "Other (n)" bucket flagged with `isOther`.
  *
- * @param {Array} entries Entries like `{ sector { name }, loanCount }`, loan count descending.
- * @param {string} key Field holding each entry's item, e.g. 'sector' or 'activity'.
- * @returns {Array<{label: string, value: number, isOther?: boolean}>} Chart values.
+ * @param {Array} sectors `{ sector { name }, loanCount }` entries, loan count descending.
+ * @returns {Array<{label: string, value: number, isOther?: boolean}>} Sector entries.
  */
-export function getBreakdownChartValues(entries, key) {
+export function getSectorChartValues(sectors = []) {
 	const named = [];
 	let otherCount = 0;
 
-	(entries ?? []).forEach(entry => {
+	(sectors ?? []).forEach(entry => {
 		const value = Number(entry?.loanCount) || 0;
 		if (value <= 0) {
 			return;
 		}
-		const label = entry?.[key]?.name;
+		const label = entry?.sector?.name;
 		if (label) {
 			named.push({ label, value });
 		} else {
@@ -461,14 +460,14 @@ export function getBreakdownChartValues(entries, key) {
 	});
 
 	return otherCount > 0
-		? [...named, { label: `${OTHER_CHART_LABEL} (${otherCount})`, value: otherCount, isOther: true }]
+		? [...named, { label: `${OTHER_SECTOR_LABEL} (${otherCount})`, value: otherCount, isOther: true }]
 		: named;
 }
 
 /**
  * Counts the named sectors, excluding the "Other" bucket.
  *
- * @param {Array<{isOther?: boolean}>} sectorValues Output of getBreakdownChartValues.
+ * @param {Array<{isOther?: boolean}>} sectorValues Output of getSectorChartValues.
  * @returns {number} Number of named sectors.
  */
 export function getNamedSectorCount(sectorValues = []) {

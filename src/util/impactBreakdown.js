@@ -64,3 +64,32 @@ export function notLentToItems(available, lentTo) {
 		.filter(item => !lentIds.has(item.id))
 		.sort((a, b) => (a.name ?? '').localeCompare(b.name ?? ''));
 }
+
+/**
+ * Chart values from a statsPer… collection's values, in the order given. Rows whose item has no
+ * name are summed into one "Other (n)" value, last.
+ *
+ * @param {object[]} values Rows with `loanCount` and the item under `key`
+ * @param {string} key Field holding the item, e.g. 'sector'
+ * @returns {Array<{ label: string, value: number, isOther?: boolean }>}
+ */
+export function getBreakdownChartValues(values, key) {
+	const named = [];
+	let otherCount = 0;
+
+	(values ?? []).forEach(row => {
+		const value = Number(row?.loanCount) || 0;
+		if (value <= 0) return;
+
+		const label = row?.[key]?.name;
+		if (label) {
+			named.push({ label, value });
+		} else {
+			otherCount += value;
+		}
+	});
+
+	return otherCount > 0
+		? [...named, { label: `Other (${otherCount})`, value: otherCount, isOther: true }]
+		: named;
+}

@@ -1,9 +1,8 @@
 import { computed, watch } from 'vue';
 import activityBreakdownQuery from '#src/graphql/query/portfolio/impactActivityBreakdown.graphql';
 import logReadQueryError from '#src/util/logReadQueryError';
-import { getBreakdownChartValues } from '#src/util/goalInReview';
 import {
-	filterExcluded, lentToItems, notLentToItems, readExcludedList,
+	filterExcluded, getBreakdownChartValues, lentToItems, notLentToItems, readExcludedList,
 } from '#src/util/impactBreakdown';
 import useApolloQuery from '#src/composables/useApolloQuery';
 

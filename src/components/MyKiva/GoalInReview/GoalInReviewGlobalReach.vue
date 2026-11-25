@@ -117,8 +117,8 @@ import { KvMaterialIcon, KvPieChartV2, KvSimpleMap } from '@kiva/kv-components';
 import kvTokensPrimitives from '@kiva/kv-tokens';
 import { mdiMapMarker } from '@mdi/js';
 import {
-	getBreakdownChartValues,
 	getNamedSectorCount,
+	getSectorChartValues,
 } from '#src/util/goalInReview';
 import { createIntersectionObserver } from '#src/util/observerUtils';
 
@@ -155,7 +155,7 @@ const borderNoun = computed(() => (borderCount.value === 1 ? 'border' : 'borders
 const visibleCountries = computed(() => props.countries.slice(0, MAX_VISIBLE_COUNTRIES));
 const otherCount = computed(() => Math.max(props.countries.length - MAX_VISIBLE_COUNTRIES, 0));
 
-const sectorValues = computed(() => getBreakdownChartValues(props.sectors, 'sector'));
+const sectorValues = computed(() => getSectorChartValues(props.sectors));
 const sectorCount = computed(() => getNamedSectorCount(sectorValues.value));
 const sectorNoun = computed(() => (sectorCount.value === 1 ? 'sector' : 'sectors'));
 
