@@ -1,0 +1,1 @@
+function r(t={},e=[]){if(!e.every(i=>{var n,o;return!!((o=(n=t.$options)==null?void 0:n.inject)!=null&&o[i])})){const i=e.map(n=>`'${n}'`).join(", ");throw new Error(`Missing required injections! Add "inject: [${i}]" to this component definition`)}}export{r as c};
