@@ -440,9 +440,10 @@ export const OTHER_SECTOR_LABEL = 'Other';
  * sector name into a single "Other (n)" bucket flagged with `isOther`.
  *
  * @param {Array} sectors `{ sector { name }, loanCount }` entries, loan count descending.
+ * @param {string} key Field holding each entry's item, e.g. 'activity' for `{ activity { name }, loanCount }`.
  * @returns {Array<{label: string, value: number, isOther?: boolean}>} Sector entries.
  */
-export function getSectorChartValues(sectors = []) {
+export function getSectorChartValues(sectors = [], key = 'sector') {
 	const named = [];
 	let otherCount = 0;
 
@@ -451,7 +452,7 @@ export function getSectorChartValues(sectors = []) {
 		if (value <= 0) {
 			return;
 		}
-		const label = entry?.sector?.name;
+		const label = entry?.[key]?.name;
 		if (label) {
 			named.push({ label, value });
 		} else {

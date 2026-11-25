@@ -719,6 +719,17 @@ describe('goalInReviewSectors.js', () => {
 			expect(values).toEqual([{ label: 'Food', value: 1 }]);
 		});
 
+		it('reads the item from the given field', () => {
+			const values = getSectorChartValues([
+				{ activity: { name: 'Farming' }, loanCount: 2 },
+				{ activity: null, loanCount: 1 },
+			], 'activity');
+			expect(values).toEqual([
+				{ label: 'Farming', value: 2 },
+				{ label: `${OTHER_SECTOR_LABEL} (1)`, value: 1, isOther: true },
+			]);
+		});
+
 		it('returns an empty array for empty, null, or undefined input', () => {
 			expect(getSectorChartValues([])).toEqual([]);
 			expect(getSectorChartValues(null)).toEqual([]);
