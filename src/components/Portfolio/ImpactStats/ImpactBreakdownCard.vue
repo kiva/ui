@@ -204,16 +204,15 @@ const moreCount = computed(() => (notLentTo.value?.length ?? 0) - shownNotLentTo
 }
 
 .breakdown-card__row :deep(.legend-item) {
-	max-width: 100%;
+	@apply tw-max-w-full;
 }
 
 .breakdown-card__row :deep([data-test=kv-lightbox] .tw-shrink-0.tw-overflow-hidden) {
-	flex-shrink: 1;
+	@apply tw-shrink;
 }
 
 .breakdown-card__row :deep([data-test=kv-lightbox] .tw-shrink-0.tw-overflow-hidden .tw-truncate) {
-	white-space: normal;
-	overflow-wrap: anywhere;
+	@apply tw-whitespace-normal tw-break-words;
 }
 
 @screen md {
@@ -222,7 +221,7 @@ const moreCount = computed(() => (notLentTo.value?.length ?? 0) - shownNotLentTo
 	}
 
 	.breakdown-card__row :deep(.kv-pie-chart-v2) {
-		align-items: flex-start;
+		@apply tw-items-start;
 	}
 }
 </style>
