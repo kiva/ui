@@ -42,11 +42,6 @@ Desktop.parameters = {
 	viewport: { defaultViewport: 'largeBreakpoint' },
 };
 
-export const Mobile = story(lender);
-Mobile.parameters = {
-	viewport: { defaultViewport: 'mobile2' },
-};
-
 export const DesktopGivingFunds = story(givingFundLender);
 DesktopGivingFunds.parameters = {
 	viewport: { defaultViewport: 'largeBreakpoint' },
@@ -55,9 +50,4 @@ DesktopGivingFunds.parameters = {
 export const TabletGivingFunds = story(givingFundLender);
 TabletGivingFunds.parameters = {
 	viewport: { defaultViewport: 'mediumBreakpoint' },
-};
-
-export const MobileGivingFunds = story(givingFundLender);
-MobileGivingFunds.parameters = {
-	viewport: { defaultViewport: 'mobile2' },
 };

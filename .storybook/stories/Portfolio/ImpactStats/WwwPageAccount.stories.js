@@ -28,8 +28,3 @@ const Template = (templateArgs, { argTypes }) => ({
 });
 
 export const Default = Template.bind({});
-
-export const Mobile = Template.bind({});
-Mobile.parameters = {
-	viewport: { defaultViewport: 'mobile2' },
-};
