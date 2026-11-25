@@ -123,10 +123,25 @@
 						<div ref="checkoutActionsThreshold"></div>
 
 						<div class="checkout-actions md:tw-text-right tw-my-6">
+							<div
+								v-if="totalsRefreshFailed"
+								data-testid="totals-refresh-failed"
+								class="tw-text-danger tw-text-small tw-mb-2"
+							>
+								We couldn't update your order total.
+								<kv-text-link
+									data-testid="totals-refresh-retry"
+									v-kv-track-event="['basket', 'click', 'totals-refresh-retry']"
+									@click.prevent="refreshTotals()"
+								>
+									Try again
+								</kv-text-link>
+							</div>
 							<div v-if="isLoggedIn">
 								<form v-if="showKivaCreditButton" action="/checkout" method="GET">
 									<input type="hidden" name="js_loaded" value="false">
 									<kiva-credit-payment
+										:updating-totals="paymentBlocked"
 										@refreshtotals="refreshTotals"
 										@updating-totals="setUpdatingTotals"
 										@complete-transaction="completeTransaction"
@@ -138,6 +153,7 @@
 								</form>
 
 								<checkout-drop-in-payment-wrapper
+									:updating-totals="paymentBlocked"
 									v-if="!showKivaCreditButton && !pendingTipPreferenceReset"
 									:amount="creditNeeded"
 									:loans-in-basket="loanIdsInBasket.length"
@@ -375,7 +391,7 @@ import FtdsMessage from '#src/components/Checkout/FtdsMessage';
 import FtdsDisclaimer from '#src/components/Checkout/FtdsDisclaimer';
 import { removeLoansFromChallengeCookie } from '#src/util/teamChallengeUtils';
 import {
-	KvLoadingPlaceholder, KvPageContainer, KvButton, KvMaterialIcon
+	KvLoadingPlaceholder, KvPageContainer, KvButton, KvMaterialIcon, KvTextLink
 } from '@kiva/kv-components';
 import { fetchPostCheckoutAchievements } from '#src/util/myKivaUtils';
 import postCheckoutAchievementsQuery from '#src/graphql/query/postCheckoutAchievements.graphql';
@@ -455,6 +471,7 @@ export default {
 		WwwPage,
 		KivaCreditPayment,
 		KvButton,
+		KvTextLink,
 		OrderTotals,
 		BasketItemsList,
 		BasketVerification,
@@ -499,6 +516,7 @@ export default {
 			hasFreeCredits: false,
 			totals: {},
 			updatingTotals: false,
+			totalsRefreshFailed: false,
 			showReg: true,
 			showLogin: false,
 			loginLoading: false,
@@ -859,6 +877,10 @@ export default {
 		creditNeeded() {
 			return this.totals.creditAmountNeeded || '0.00';
 		},
+		// Blocked while totals refresh, and after a failed refresh until a retry succeeds
+		paymentBlocked() {
+			return this.updatingTotals || this.totalsRefreshFailed;
+		},
 		showKivaCreditButton() {
 			if (this.checkingOutAsGuest) {
 				return false;
@@ -1091,6 +1113,7 @@ export default {
 				});
 		},
 		refreshTotals(refreshEvent) {
+			this.totalsRefreshFailed = false;
 			this.setUpdatingTotals(true);
 
 			this.apollo.query({
@@ -1108,11 +1131,12 @@ export default {
 						this.donations = _filter(items, { __typename: 'Donation' });
 					}
 				}
-				setTimeout(() => {
-					this.setUpdatingTotals(false);
-				}, 2500);
+				// The drop-in picks up the new amount on the same flush as the cache write, so no extra delay is needed
+				this.setUpdatingTotals(false);
 			}).catch(response => {
 				console.error(`failed to update totals: ${response}`);
+				// The figures on screen may be stale: keep payment blocked and let the lender retry
+				this.totalsRefreshFailed = true;
 				this.setUpdatingTotals(false);
 			});
 		},
