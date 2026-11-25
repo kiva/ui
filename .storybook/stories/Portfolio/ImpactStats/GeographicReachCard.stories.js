@@ -7,7 +7,7 @@ export default {
 	title: 'Portfolio/ImpactStats/GeographicReachCard',
 };
 
-const story = ({ my, loading = false, wrapperStyle = 'max-width: 757px;' } = {}) => {
+const story = ({ my, loading = false } = {}) => {
 	const { apollo } = apolloStoryMixin({
 		queryResult: { data: { my, ...impactStatsPublicData } },
 		loading,
@@ -17,13 +17,12 @@ const story = ({ my, loading = false, wrapperStyle = 'max-width: 757px;' } = {})
 		mixins: [cookieStoreStoryMixin()],
 		// The mixin's readQuery always returns data, which would skip the loading state
 		provide: { apollo: loading ? { ...apollo, readQuery: () => null } : apollo },
-		template: `<div style="${wrapperStyle}"><geographic-reach-card /></div>`,
+		template: '<div style="max-width: 757px;"><geographic-reach-card /></div>',
 	});
 	return template.bind({});
 };
 
 const desktop = { viewport: { defaultViewport: 'largeBreakpoint' } };
-const mobile = { viewport: { defaultViewport: 'mobile2' } };
 
 const zero = impactStatsLender({ borrowers: 0, loans: [] });
 
@@ -38,9 +37,3 @@ Loading.parameters = desktop;
 
 export const Error = story({ my: null });
 Error.parameters = desktop;
-
-export const PopulatedMobile = story({ my: impactStatsLender(), wrapperStyle: '' });
-PopulatedMobile.parameters = mobile;
-
-export const ZeroMobile = story({ my: zero, wrapperStyle: '' });
-ZeroMobile.parameters = mobile;
