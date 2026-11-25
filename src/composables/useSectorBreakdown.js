@@ -1,7 +1,7 @@
 import { computed, watch } from 'vue';
 import sectorBreakdownQuery from '#src/graphql/query/portfolio/impactSectorBreakdown.graphql';
 import logReadQueryError from '#src/util/logReadQueryError';
-import { getSectorChartValues } from '#src/util/goalInReview';
+import { getBreakdownChartValues } from '#src/util/goalInReview';
 import {
 	filterExcluded, lentToItems, notLentToItems, readExcludedList,
 } from '#src/util/impactBreakdown';
@@ -45,7 +45,7 @@ export default function useSectorBreakdown() {
 		return notLentToItems(filterExcluded(available, excluded), lentTo.value);
 	});
 
-	const chartValues = computed(() => (hasData.value ? getSectorChartValues(stats.value) : null));
+	const chartValues = computed(() => (hasData.value ? getBreakdownChartValues(stats.value, 'sector') : null));
 	const lentCount = computed(() => lentTo.value?.length ?? null);
 	const totalCount = computed(() => (hasData.value ? lentTo.value.length + notLentTo.value.length : null));
 

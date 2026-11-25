@@ -1,7 +1,7 @@
 import { computed, watch } from 'vue';
 import activityBreakdownQuery from '#src/graphql/query/portfolio/impactActivityBreakdown.graphql';
 import logReadQueryError from '#src/util/logReadQueryError';
-import { getSectorChartValues } from '#src/util/goalInReview';
+import { getBreakdownChartValues } from '#src/util/goalInReview';
 import {
 	filterExcluded, lentToItems, notLentToItems, readExcludedList,
 } from '#src/util/impactBreakdown';
@@ -47,7 +47,7 @@ export default function useActivityBreakdown() {
 		return notLentToItems(filterExcluded(available, excluded), lentTo.value);
 	});
 
-	const chartValues = computed(() => (hasData.value ? getSectorChartValues(stats.value, 'activity') : null));
+	const chartValues = computed(() => (hasData.value ? getBreakdownChartValues(stats.value, 'activity') : null));
 	const lentCount = computed(() => lentTo.value?.length ?? null);
 	const totalCount = computed(() => (hasData.value ? lentTo.value.length + notLentTo.value.length : null));
 
