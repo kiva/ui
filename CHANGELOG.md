@@ -1,3 +1,41 @@
+## [3.104.0-rc.1](https://github.com/kiva/ui/compare/v3.103.1...v3.104.0-rc.1) (2026-11-26)
+
+### 🎉 New Features
+
+* add activity breakdown stories ([544e6d1](https://github.com/kiva/ui/commit/544e6d12020f8f47323cd0ef69341b52144f68fe))
+* add impact breakdown card with sector type ([e60c416](https://github.com/kiva/ui/commit/e60c4161a7d4a77c4cf05cb4a2eab946943ddf03))
+* add impact breakdown lent and not-lent util ([a33c290](https://github.com/kiva/ui/commit/a33c290b5f2138f7f3b79dc99ff9df255999717d))
+* load activity breakdown when scrolled near ([3b91a58](https://github.com/kiva/ui/commit/3b91a58182fc54d442ff953d4599e3b00edd34d4))
+* load sector breakdown when scrolled near ([fca48f7](https://github.com/kiva/ui/commit/fca48f74bf4e78f5cbf8c021a9f02ac113c8ebac))
+* **MP-3471:** replace the fellows footer link with ambassadors and drop protocol ([#7432](https://github.com/kiva/ui/issues/7432)) ([934c865](https://github.com/kiva/ui/commit/934c8656f31d46004e442cf8ad6ec9dd15b484be))
+* show activity breakdown on the impact beta page ([9289107](https://github.com/kiva/ui/commit/9289107d46a5782696e1bd4f80bb2618a82484ed))
+* show sector breakdown on the impact beta page ([d44f5fb](https://github.com/kiva/ui/commit/d44f5fbc7bdcadbe6097a53ffecd7b826145197c))
+
+### 🐛 Bugfixes
+
+* keep the lend button on one line in narrow breakdown cards ([e316d3f](https://github.com/kiva/ui/commit/e316d3f8f8f5f5c9b9512dde1a608febe5c0f081))
+* mp-3488 block payment until the basket totals are current ([#7431](https://github.com/kiva/ui/issues/7431)) ([041e191](https://github.com/kiva/ui/commit/041e19128a1a1647333325eece4ce3e8b36c173c))
+* skip unnamed sectors in the impact breakdown ([78fdbd7](https://github.com/kiva/ui/commit/78fdbd7800eaa2d7593ae14c7c2455fd9a58c1bf))
+* top-align the breakdown legend and not-lent column from tablet up ([dd84fb5](https://github.com/kiva/ui/commit/dd84fb5f3a15a2d567de79bdc02ed8b30c62b56c))
+* truncate long breakdown legend names on narrow cards ([a8c8393](https://github.com/kiva/ui/commit/a8c8393e0bacbecada0d9c2ba539528f4dc80a59))
+* use button-link headings and wider segment gaps in the breakdown card ([749e1a4](https://github.com/kiva/ui/commit/749e1a44c32bd802f88d247c053450b6a8c08f87))
+* use caption links in the breakdown card's not-lent column ([6d66efb](https://github.com/kiva/ui/commit/6d66efbd90b61b67942b8106d79445342e5f56d4))
+* use tertiary text for breakdown shares and no-loans captions ([c1a34e5](https://github.com/kiva/ui/commit/c1a34e56cea18d5f25c0b92bcbc94e1184362504))
+* use text skeleton lines in the breakdown card ([50918c9](https://github.com/kiva/ui/commit/50918c96c0deb438756a5146ec61cf74890bf104))
+* wrap long names in the breakdown legend lightbox ([e580ec0](https://github.com/kiva/ui/commit/e580ec0d9429cb27fcf34e7ddb05c91e68b9b48f))
+
+### 🪚 Refactors
+
+* give the impact breakdown cards their own chart values util ([f94be77](https://github.com/kiva/ui/commit/f94be7714684f2a52656d252abd765f7b4b0fbe9))
+* rename getSectorChartValues to getBreakdownChartValues ([637e472](https://github.com/kiva/ui/commit/637e4720bb63347eed383a0b15ec7d829853a892))
+* use tailwind utilities in breakdown card overrides ([b10ec21](https://github.com/kiva/ui/commit/b10ec21c9979160fcde5f822ae848e6e97cc76fe))
+
+### 🧹 Chores
+
+* **deps:** upgrade kiva packages to latest AD-687 ([0cd2f3d](https://github.com/kiva/ui/commit/0cd2f3db8fac53c0a7b7652a6c546869516b20c6))
+* drop mobile-only breakdown card stories ([1d6d3ed](https://github.com/kiva/ui/commit/1d6d3ed2d64c6df832ff5702f62cdccd4e37e558))
+* drop mobile-only impact stats stories ([d3c24bc](https://github.com/kiva/ui/commit/d3c24bcc9c9979c0e2686d58c961f7e3b324764e))
+
 ## [3.103.1](https://github.com/kiva/ui/compare/v3.103.0...v3.103.1) (2026-11-23)
 
 ### 🐛 Bugfixes
