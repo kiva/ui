@@ -130,7 +130,7 @@
 		"timesync": "^1.0.11",
 		"title-case": "^4.3.2",
 		"uuid": "^14.0.0",
-		"vue": "^3.5.15",
+		"vue": "^3.5.46",
 		"vue-focus-lock": "^3.0.0",
 		"vue-observe-visibility": "^1.0.0",
 		"vue-router": "^4.5.1",
